@@ -1454,6 +1454,8 @@ static void eepromWriteStep(uint8 type){
         SimpleProfile_SetParameter( HEALTH_DATA_HEADER, 2,  &length);
         SimpleProfile_SetParameter( HEALTH_SYNC, 8, dBuf);
 
+        // Batt_MeasLevel();
+
         // refresh oneData[point]
         oneData[point].tm = currentTm;
         oneData[point].hourSeconds = osal_ConvertUTCSecs(&oneData[point].tm);
