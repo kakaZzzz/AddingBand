@@ -38,7 +38,6 @@
 		72B418C518238BCA002EAD35 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 72B418C318238BCA002EAD35 /* InfoPlist.strings */; };
 		72B418C718238BCA002EAD35 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 72B418C618238BCA002EAD35 /* main.m */; };
 		72B418CB18238BCA002EAD35 /* BTAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 72B418CA18238BCA002EAD35 /* BTAppDelegate.m */; };
-		72B418CE18238BCA002EAD35 /* AddingBand.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 72B418CC18238BCA002EAD35 /* AddingBand.xcdatamodeld */; };
 		72B418D018238BCA002EAD35 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 72B418CF18238BCA002EAD35 /* Images.xcassets */; };
 		72B418D718238BCA002EAD35 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72B418D618238BCA002EAD35 /* XCTest.framework */; };
 		72B418D818238BCA002EAD35 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72B418B818238BCA002EAD35 /* Foundation.framework */; };
@@ -51,6 +50,16 @@
 		72B418FC18238E3E002EAD35 /* BTPhysicSportViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 72B418FB18238E3E002EAD35 /* BTPhysicSportViewController.m */; };
 		72B418FF18238E53002EAD35 /* BTMineViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 72B418FE18238E53002EAD35 /* BTMineViewController.m */; };
 		72B419041823904B002EAD35 /* BTCustomTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 72B419031823904B002EAD35 /* BTCustomTabBarController.m */; };
+		72CB9C31182B590500C0DAF0 /* BTBandCentral.m in Sources */ = {isa = PBXBuildFile; fileRef = 72CB9C2E182B590500C0DAF0 /* BTBandCentral.m */; };
+		72CB9C32182B590500C0DAF0 /* BTBandPeripheral.m in Sources */ = {isa = PBXBuildFile; fileRef = 72CB9C30182B590500C0DAF0 /* BTBandPeripheral.m */; };
+		72CB9C35182B592500C0DAF0 /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 72CB9C33182B592500C0DAF0 /* Model.xcdatamodeld */; };
+		72CB9C3C182B595200C0DAF0 /* BTConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 72CB9C37182B595200C0DAF0 /* BTConstants.m */; };
+		72CB9C3D182B595200C0DAF0 /* BTGlobals.m in Sources */ = {isa = PBXBuildFile; fileRef = 72CB9C39182B595200C0DAF0 /* BTGlobals.m */; };
+		72CB9C3E182B595200C0DAF0 /* BTUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 72CB9C3B182B595200C0DAF0 /* BTUtils.m */; };
+		72CB9C41182B599E00C0DAF0 /* BTEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 72CB9C40182B599E00C0DAF0 /* BTEntity.m */; };
+		72CB9C44182B599F00C0DAF0 /* BTBleList.m in Sources */ = {isa = PBXBuildFile; fileRef = 72CB9C43182B599F00C0DAF0 /* BTBleList.m */; };
+		72CB9C47182B599F00C0DAF0 /* BTRawData.m in Sources */ = {isa = PBXBuildFile; fileRef = 72CB9C46182B599F00C0DAF0 /* BTRawData.m */; };
+		72CB9C49182B59D100C0DAF0 /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72CB9C48182B59D100C0DAF0 /* CoreBluetooth.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -123,7 +132,6 @@
 		72B418C818238BCA002EAD35 /* AddingBand-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AddingBand-Prefix.pch"; sourceTree = "<group>"; };
 		72B418C918238BCA002EAD35 /* BTAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BTAppDelegate.h; sourceTree = "<group>"; };
 		72B418CA18238BCA002EAD35 /* BTAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BTAppDelegate.m; sourceTree = "<group>"; };
-		72B418CD18238BCA002EAD35 /* AddingBand.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = AddingBand.xcdatamodel; sourceTree = "<group>"; };
 		72B418CF18238BCA002EAD35 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		72B418D518238BCA002EAD35 /* AddingBandTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AddingBandTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		72B418D618238BCA002EAD35 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
@@ -141,6 +149,24 @@
 		72B4190118238EC1002EAD35 /* Head.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Head.h; sourceTree = "<group>"; };
 		72B419021823904B002EAD35 /* BTCustomTabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BTCustomTabBarController.h; path = "View Controllers/BTCustomTabBarController.h"; sourceTree = "<group>"; };
 		72B419031823904B002EAD35 /* BTCustomTabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BTCustomTabBarController.m; path = "View Controllers/BTCustomTabBarController.m"; sourceTree = "<group>"; };
+		72CB9C2D182B590500C0DAF0 /* BTBandCentral.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTBandCentral.h; sourceTree = "<group>"; };
+		72CB9C2E182B590500C0DAF0 /* BTBandCentral.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTBandCentral.m; sourceTree = "<group>"; };
+		72CB9C2F182B590500C0DAF0 /* BTBandPeripheral.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTBandPeripheral.h; sourceTree = "<group>"; };
+		72CB9C30182B590500C0DAF0 /* BTBandPeripheral.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTBandPeripheral.m; sourceTree = "<group>"; };
+		72CB9C34182B592500C0DAF0 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
+		72CB9C36182B595200C0DAF0 /* BTConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTConstants.h; sourceTree = "<group>"; };
+		72CB9C37182B595200C0DAF0 /* BTConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTConstants.m; sourceTree = "<group>"; };
+		72CB9C38182B595200C0DAF0 /* BTGlobals.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTGlobals.h; sourceTree = "<group>"; };
+		72CB9C39182B595200C0DAF0 /* BTGlobals.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTGlobals.m; sourceTree = "<group>"; };
+		72CB9C3A182B595200C0DAF0 /* BTUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTUtils.h; sourceTree = "<group>"; };
+		72CB9C3B182B595200C0DAF0 /* BTUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTUtils.m; sourceTree = "<group>"; };
+		72CB9C3F182B599E00C0DAF0 /* BTEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BTEntity.h; path = AddingBand/BTEntity.h; sourceTree = "<group>"; };
+		72CB9C40182B599E00C0DAF0 /* BTEntity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BTEntity.m; path = AddingBand/BTEntity.m; sourceTree = "<group>"; };
+		72CB9C42182B599F00C0DAF0 /* BTBleList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BTBleList.h; path = AddingBand/BTBleList.h; sourceTree = "<group>"; };
+		72CB9C43182B599F00C0DAF0 /* BTBleList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BTBleList.m; path = AddingBand/BTBleList.m; sourceTree = "<group>"; };
+		72CB9C45182B599F00C0DAF0 /* BTRawData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BTRawData.h; path = AddingBand/BTRawData.h; sourceTree = "<group>"; };
+		72CB9C46182B599F00C0DAF0 /* BTRawData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BTRawData.m; path = AddingBand/BTRawData.m; sourceTree = "<group>"; };
+		72CB9C48182B59D100C0DAF0 /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -148,6 +174,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				72CB9C49182B59D100C0DAF0 /* CoreBluetooth.framework in Frameworks */,
 				72B418BB18238BCA002EAD35 /* CoreGraphics.framework in Frameworks */,
 				72B418BF18238BCA002EAD35 /* CoreData.framework in Frameworks */,
 				72B418BD18238BCA002EAD35 /* UIKit.framework in Frameworks */,
@@ -314,6 +341,7 @@
 		72B418AC18238BCA002EAD35 = {
 			isa = PBXGroup;
 			children = (
+				72CB9C2C182B58E500C0DAF0 /* Model */,
 				72B418C018238BCA002EAD35 /* AddingBand */,
 				72B418DD18238BCA002EAD35 /* AddingBandTests */,
 				72B418B718238BCA002EAD35 /* Frameworks */,
@@ -334,6 +362,7 @@
 		72B418B718238BCA002EAD35 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				72CB9C48182B59D100C0DAF0 /* CoreBluetooth.framework */,
 				72B418B818238BCA002EAD35 /* Foundation.framework */,
 				72B418BA18238BCA002EAD35 /* CoreGraphics.framework */,
 				72B418BC18238BCA002EAD35 /* UIKit.framework */,
@@ -346,6 +375,7 @@
 		72B418C018238BCA002EAD35 /* AddingBand */ = {
 			isa = PBXGroup;
 			children = (
+				72CB9C2B182B58B900C0DAF0 /* BLE */,
 				7241465918274520008B05C5 /* MainCustomCell */,
 				728ECC051823B57B005053FE /* CustomSuperViewController */,
 				72B4190018238E74002EAD35 /* Global */,
@@ -353,7 +383,6 @@
 				72B418C918238BCA002EAD35 /* BTAppDelegate.h */,
 				72B418CA18238BCA002EAD35 /* BTAppDelegate.m */,
 				72B418CF18238BCA002EAD35 /* Images.xcassets */,
-				72B418CC18238BCA002EAD35 /* AddingBand.xcdatamodeld */,
 				72B418C118238BCA002EAD35 /* Supporting Files */,
 			);
 			path = AddingBand;
@@ -400,10 +429,41 @@
 		72B4190018238E74002EAD35 /* Global */ = {
 			isa = PBXGroup;
 			children = (
+				72CB9C36182B595200C0DAF0 /* BTConstants.h */,
+				72CB9C37182B595200C0DAF0 /* BTConstants.m */,
+				72CB9C38182B595200C0DAF0 /* BTGlobals.h */,
+				72CB9C39182B595200C0DAF0 /* BTGlobals.m */,
+				72CB9C3A182B595200C0DAF0 /* BTUtils.h */,
+				72CB9C3B182B595200C0DAF0 /* BTUtils.m */,
 				72B4190118238EC1002EAD35 /* Head.h */,
 				72414662182757C3008B05C5 /* LayoutDef.h */,
 			);
 			name = Global;
+			sourceTree = "<group>";
+		};
+		72CB9C2B182B58B900C0DAF0 /* BLE */ = {
+			isa = PBXGroup;
+			children = (
+				72CB9C2D182B590500C0DAF0 /* BTBandCentral.h */,
+				72CB9C2E182B590500C0DAF0 /* BTBandCentral.m */,
+				72CB9C2F182B590500C0DAF0 /* BTBandPeripheral.h */,
+				72CB9C30182B590500C0DAF0 /* BTBandPeripheral.m */,
+			);
+			name = BLE;
+			sourceTree = "<group>";
+		};
+		72CB9C2C182B58E500C0DAF0 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				72CB9C33182B592500C0DAF0 /* Model.xcdatamodeld */,
+				72CB9C45182B599F00C0DAF0 /* BTRawData.h */,
+				72CB9C46182B599F00C0DAF0 /* BTRawData.m */,
+				72CB9C42182B599F00C0DAF0 /* BTBleList.h */,
+				72CB9C43182B599F00C0DAF0 /* BTBleList.m */,
+				72CB9C3F182B599E00C0DAF0 /* BTEntity.h */,
+				72CB9C40182B599E00C0DAF0 /* BTEntity.m */,
+			);
+			name = Model;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -506,24 +566,31 @@
 			files = (
 				722ECE26182914F100129E6A /* BarChartView.m in Sources */,
 				728ECC0318239AB0005053FE /* BTNavicationController.m in Sources */,
+				72CB9C44182B599F00C0DAF0 /* BTBleList.m in Sources */,
 				722ECE27182914F100129E6A /* BarLabel.m in Sources */,
 				722ECE2C182914F100129E6A /* XMLElement.m in Sources */,
+				72CB9C32182B590500C0DAF0 /* BTBandPeripheral.m in Sources */,
 				722ECE2D182914F100129E6A /* XMLParser.m in Sources */,
 				722ECE2B182914F100129E6A /* UIViewSizeShortcuts.m in Sources */,
-				72B418CE18238BCA002EAD35 /* AddingBand.xcdatamodeld in Sources */,
+				72CB9C3E182B595200C0DAF0 /* BTUtils.m in Sources */,
 				72B418CB18238BCA002EAD35 /* BTAppDelegate.m in Sources */,
 				722EDEB21829E7CD006B25EE /* BTPhysicQuickeningViewController.m in Sources */,
 				722ECE2A182914F100129E6A /* UIColor+i7HexColor.m in Sources */,
 				7241465C18274581008B05C5 /* BTMainSuperCell.m in Sources */,
+				72CB9C31182B590500C0DAF0 /* BTBandCentral.m in Sources */,
 				723213551824D4E600C17EDC /* BTUndoCell.m in Sources */,
 				72B418F618238DC9002EAD35 /* BTMainViewController.m in Sources */,
 				722ECE29182914F100129E6A /* CMPopTipView.m in Sources */,
 				72B418FC18238E3E002EAD35 /* BTPhysicSportViewController.m in Sources */,
 				723213581824D50100C17EDC /* BTFinishedCell.m in Sources */,
+				72CB9C3D182B595200C0DAF0 /* BTGlobals.m in Sources */,
 				7232135B1824D52100C17EDC /* BTImageCell.m in Sources */,
 				72414665182758CC008B05C5 /* BTChartViewController.m in Sources */,
+				72CB9C35182B592500C0DAF0 /* Model.xcdatamodeld in Sources */,
 				722ECE2E182914F100129E6A /* XMLParserDelegate.m in Sources */,
+				72CB9C47182B599F00C0DAF0 /* BTRawData.m in Sources */,
 				72B418C718238BCA002EAD35 /* main.m in Sources */,
+				72CB9C41182B599E00C0DAF0 /* BTEntity.m in Sources */,
 				72B418F918238E2A002EAD35 /* BTPhysicalViewController.m in Sources */,
 				723213521824BD1F00C17EDC /* CircularProgressView.m in Sources */,
 				722ECE2F182914F100129E6A /* PlotChartView.m in Sources */,
@@ -532,6 +599,7 @@
 				728ECC0B1823B64F005053FE /* RBParallaxTableVC.m in Sources */,
 				722EDEF9182A3D43006B25EE /* BTBluetoothLinkCell.m in Sources */,
 				722EDF0B182A5200006B25EE /* PBFlatSettings.m in Sources */,
+				72CB9C3C182B595200C0DAF0 /* BTConstants.m in Sources */,
 				72B418FF18238E53002EAD35 /* BTMineViewController.m in Sources */,
 				7241467018277A67008B05C5 /* BTSyncViewController.m in Sources */,
 			);
@@ -752,13 +820,13 @@
 /* End XCConfigurationList section */
 
 /* Begin XCVersionGroup section */
-		72B418CC18238BCA002EAD35 /* AddingBand.xcdatamodeld */ = {
+		72CB9C33182B592500C0DAF0 /* Model.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
-				72B418CD18238BCA002EAD35 /* AddingBand.xcdatamodel */,
+				72CB9C34182B592500C0DAF0 /* Model.xcdatamodel */,
 			);
-			currentVersion = 72B418CD18238BCA002EAD35 /* AddingBand.xcdatamodel */;
-			path = AddingBand.xcdatamodeld;
+			currentVersion = 72CB9C34182B592500C0DAF0 /* Model.xcdatamodel */;
+			path = Model.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
 		};

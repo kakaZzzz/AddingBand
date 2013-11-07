@@ -7,8 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "BTBandCentral.h"
 
 @interface BTSyncViewController : UITableViewController
 @property (strong, nonatomic) NSMutableDictionary *dataDictionary;
+
+@property(strong, nonatomic) BTGlobals* g;
+@property(strong, nonatomic) BTBandCentral* bc;
 
 @end
