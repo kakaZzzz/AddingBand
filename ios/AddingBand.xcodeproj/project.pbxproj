@@ -60,6 +60,8 @@
 		72CB9C44182B599F00C0DAF0 /* BTBleList.m in Sources */ = {isa = PBXBuildFile; fileRef = 72CB9C43182B599F00C0DAF0 /* BTBleList.m */; };
 		72CB9C47182B599F00C0DAF0 /* BTRawData.m in Sources */ = {isa = PBXBuildFile; fileRef = 72CB9C46182B599F00C0DAF0 /* BTRawData.m */; };
 		72CB9C49182B59D100C0DAF0 /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72CB9C48182B59D100C0DAF0 /* CoreBluetooth.framework */; };
+		72E3E50A182B8C040062DA3D /* BTBluetoothConnectedCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 72E3E509182B8C040062DA3D /* BTBluetoothConnectedCell.m */; };
+		72E3E50D182B9A360062DA3D /* BTBluetoothFindCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 72E3E50C182B9A360062DA3D /* BTBluetoothFindCell.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -167,6 +169,10 @@
 		72CB9C45182B599F00C0DAF0 /* BTRawData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BTRawData.h; path = AddingBand/BTRawData.h; sourceTree = "<group>"; };
 		72CB9C46182B599F00C0DAF0 /* BTRawData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BTRawData.m; path = AddingBand/BTRawData.m; sourceTree = "<group>"; };
 		72CB9C48182B59D100C0DAF0 /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
+		72E3E508182B8C040062DA3D /* BTBluetoothConnectedCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BTBluetoothConnectedCell.h; path = MainCustomCell/BTBluetoothConnectedCell.h; sourceTree = "<group>"; };
+		72E3E509182B8C040062DA3D /* BTBluetoothConnectedCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BTBluetoothConnectedCell.m; path = MainCustomCell/BTBluetoothConnectedCell.m; sourceTree = "<group>"; };
+		72E3E50B182B9A360062DA3D /* BTBluetoothFindCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTBluetoothFindCell.h; sourceTree = "<group>"; };
+		72E3E50C182B9A360062DA3D /* BTBluetoothFindCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTBluetoothFindCell.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -270,6 +276,7 @@
 		7241465918274520008B05C5 /* MainCustomCell */ = {
 			isa = PBXGroup;
 			children = (
+				72E3E507182B89680062DA3D /* BTBluetoothLinkCell */,
 				722EDF09182A5200006B25EE /* PBFlatSettings.h */,
 				722EDF0A182A5200006B25EE /* PBFlatSettings.m */,
 				724146761827B116008B05C5 /* 分割线@2x.png */,
@@ -281,8 +288,6 @@
 				7232135A1824D52100C17EDC /* BTImageCell.m */,
 				7241465A18274581008B05C5 /* BTMainSuperCell.h */,
 				7241465B18274581008B05C5 /* BTMainSuperCell.m */,
-				722EDEF7182A3D43006B25EE /* BTBluetoothLinkCell.h */,
-				722EDEF8182A3D43006B25EE /* BTBluetoothLinkCell.m */,
 			);
 			name = MainCustomCell;
 			sourceTree = "<group>";
@@ -466,6 +471,19 @@
 			name = Model;
 			sourceTree = "<group>";
 		};
+		72E3E507182B89680062DA3D /* BTBluetoothLinkCell */ = {
+			isa = PBXGroup;
+			children = (
+				722EDEF7182A3D43006B25EE /* BTBluetoothLinkCell.h */,
+				722EDEF8182A3D43006B25EE /* BTBluetoothLinkCell.m */,
+				72E3E508182B8C040062DA3D /* BTBluetoothConnectedCell.h */,
+				72E3E509182B8C040062DA3D /* BTBluetoothConnectedCell.m */,
+				72E3E50B182B9A360062DA3D /* BTBluetoothFindCell.h */,
+				72E3E50C182B9A360062DA3D /* BTBluetoothFindCell.m */,
+			);
+			name = BTBluetoothLinkCell;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -576,6 +594,7 @@
 				72B418CB18238BCA002EAD35 /* BTAppDelegate.m in Sources */,
 				722EDEB21829E7CD006B25EE /* BTPhysicQuickeningViewController.m in Sources */,
 				722ECE2A182914F100129E6A /* UIColor+i7HexColor.m in Sources */,
+				72E3E50A182B8C040062DA3D /* BTBluetoothConnectedCell.m in Sources */,
 				7241465C18274581008B05C5 /* BTMainSuperCell.m in Sources */,
 				72CB9C31182B590500C0DAF0 /* BTBandCentral.m in Sources */,
 				723213551824D4E600C17EDC /* BTUndoCell.m in Sources */,
@@ -600,6 +619,7 @@
 				722EDEF9182A3D43006B25EE /* BTBluetoothLinkCell.m in Sources */,
 				722EDF0B182A5200006B25EE /* PBFlatSettings.m in Sources */,
 				72CB9C3C182B595200C0DAF0 /* BTConstants.m in Sources */,
+				72E3E50D182B9A360062DA3D /* BTBluetoothFindCell.m in Sources */,
 				72B418FF18238E53002EAD35 /* BTMineViewController.m in Sources */,
 				7241467018277A67008B05C5 /* BTSyncViewController.m in Sources */,
 			);

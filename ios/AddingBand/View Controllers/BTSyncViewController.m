@@ -8,6 +8,10 @@
 
 #import "BTSyncViewController.h"
 #import "BTBluetoothLinkCell.h"
+#import "BTBluetoothConnectedCell.h"
+#import "LayoutDef.h"
+#import "BTBluetoothFindCell.h"
+
 @interface BTSyncViewController ()
 
 @end
@@ -18,7 +22,8 @@
 {
     self = [super initWithStyle:style];
     if (self) {
-        
+        //
+        _isBreak = NO;
         //初始化
         self.g = [BTGlobals sharedGlobals];
         self.bc = [BTBandCentral sharedBandCentral];
@@ -27,36 +32,54 @@
         [self.g addObserver:self forKeyPath:@"bleListCount" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:NULL];
         
         // Custom initialization
-        self.tableView = [[UITableView alloc] initWithFrame:self.tableView.frame style:UITableViewStyleGrouped];
+      //   self.tableView = [[UITableView alloc] initWithFrame:self.tableView.frame style:UITableViewStyleGrouped];
+        
         //设置背景颜色
         UIView *_backgroundview = [[UIView alloc] initWithFrame:self.view.bounds];
         [_backgroundview setBackgroundColor:[UIColor whiteColor]];
         [self.tableView setBackgroundView:_backgroundview];
         
         self.tableView.allowsSelection = NO;
-        
+        self.tableView.rowHeight = kBluetoothConnectedHeight;
         //数据
-        self.keyArray = [NSArray arrayWithObjects:@"A1-- XXXX  95%",@"A2-- XXXX  98%", @"A3-- XXXX  100%",nil];
-        NSArray *valueArray1 = [NSArray arrayWithObjects:@"上次同步 Wednesday",@"立即同步", nil];
-        NSArray *valueArray2 = [NSArray arrayWithObjects:@"立即连接",nil];
-        NSArray *valueArray3 = [NSArray arrayWithObjects:@"立即连接", nil];
-        NSArray *valueArray = [NSArray arrayWithObjects:valueArray1,valueArray2,valueArray3, nil];
-        self.dataDictionary = [NSMutableDictionary dictionaryWithObjects:valueArray forKeys:_keyArray];
+        //存放蓝牙名字的数组
+        self.bluetoothBatteryArray = [NSMutableArray arrayWithCapacity:1];
+        //存放外部蓝牙设备
+        //self.peripheralArray = @[MAM_BAND_MODEL];
+        self.peripheralArray = [NSMutableArray arrayWithCapacity:1];
+      //  self.keyArray = [NSArray arrayWithObjects:@"A1-- XXXX  95%",@"A2-- XXXX  98%", @"A3-- XXXX  100%",nil];
+//        NSArray *valueArray1 = [NSArray arrayWithObjects:@"上次同步 Wednesday",@"立即同步", nil];
+//        NSArray *valueArray2 = [NSArray arrayWithObjects:@"立即连接",nil];
+//        NSArray *valueArray3 = [NSArray arrayWithObjects:@"立即连接", nil];
+//        NSArray *valueArray = [NSArray arrayWithObjects:valueArray1,valueArray2,valueArray3, nil];
+     //   self.dataDictionary = [NSMutableDictionary dictionaryWithObjects:valueArray forKeys:_keyArray];
       
     }
-    return self;
+        return self;
 }
 
-//监控参数，更新显示
+//监控参数，更新显示  当连接  断开的时候也会调用此方法
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
+    NSLog(@"监听设备数量变化");
     
     if([keyPath isEqualToString:@"bleListCount"])
     {
         NSLog(@"ble count: %d", self.g.bleListCount);
         
+//        //添加外部设备
+//        [self.peripheralArray removeAllObjects];
+//        for (int i = 0; i < self.g.bleListCount; i ++) {
+//            BTBandPeripheral *bp  = [self.bc getBpByIndex:i];
+//            [self.peripheralArray addObject:bp];
+//        }
+       
         //行数变化时，重新加载列表
+        if (_isBreak == NO || self.g.bleListCount > 0) {
         [self.tableView reloadData];
+        }
+     
+        
         
         
         if ([self.bc isConnectedByModel:MAM_BAND_MODEL]){
@@ -66,9 +89,10 @@
         }
     }
     
+    //侦听 同步进度
     if([keyPath isEqualToString:@"dlPercent"])
     {
-        BTBandPeripheral* bp = [self.bc getBpByModel:MAM_BAND_MODEL];
+        BTBandPeripheral *bp = [self.bc getBpByModel:MAM_BAND_MODEL];
         
         NSLog(@"dl: %f", bp.dlPercent);
         
@@ -100,49 +124,54 @@
 {
 
     // Return the number of sections.
-    return [self.dataDictionary count];
+//    return [self.peripheralArray count];
+    return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     // Return the number of rows in the section.
-//    return [[self.dataDictionary objectForKey:[[self.dataDictionary allKeys] objectAtIndex:section]] count];
     
+    //刚开始没有连接上设备的时候 每个设备下面只有一行  显示“立即连接” ;当连接上的时候 设备下面变成两行 显示“上次同步时间” “立即同步”
+    //当同步完的时候 怎么做？？？
     return self.g.bleListCount;
 }
 
-//分区头 所要显示的文字
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
-
-{
-//    switch (section) {
-//        case 0:
-//        {
-//         return @"A1-- XXXX  95%";
-//            break;
-//        }
-//        case 1:
-//        {
-//        return @"A2-- XXXX  98%";
-//            break;
-//        }
-//        case 2:
-//        {
-//        return @"A3-- XXXX  100%";
-//            break;
-//    
-//        }
-//        default:
-//            break;
-//    }
-//    return nil;
-    
-    //注意字典是无序的
-    return [self.keyArray objectAtIndex:section];
-}
+////分区头 所要显示的文字
+//- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 //
+//{
+//    //
+//    BTBandPeripheral *bp = [self.peripheralArray objectAtIndex:section];
+//    return bp.name;
+//}
+//
+
+//动态改变每一行的高度
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    //根据index找到对应的peripheral
+    BTBandPeripheral*bp  = [self.bc getBpByIndex:indexPath.row];
+    
+    //是否发现
+    Boolean isFinded = bp.isFinded;
+    //是否连接
+    Boolean isConnected = bp.isConnected;
+   
+    
+    if (isFinded && !isConnected) {
+        return kBluetoothFindHeight;
+    }
+    else if (isConnected)
+    {
+        return kBluetoothConnectedHeight;
+    }
+    else
+        return kBluetoothNotFindHeight;
+ }
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    
     //根据index找到对应的peripheral
     BTBandPeripheral*bp  = [self.bc getBpByIndex:indexPath.row];
     
@@ -157,47 +186,105 @@
     
     //电池电量
     uint8_t d = 0;
-    
     NSData *battRaw = [bp.allValues objectForKey:[CBUUID UUIDWithString:UUID_BATTERY_LEVEL]];
-    
     if (battRaw) {
         [battRaw getBytes:&d];
     }
-    
     NSNumber *batteryLevel = [NSNumber numberWithInt:d];
     
+    NSLog(@"外围设备电量是--%d",[batteryLevel intValue]);
     
+    //创建Cell 根据外围设备状态 创建不同的Cell用于显示
+    static NSString *CellIdentifierFind = @"CellFind";
+    static NSString *CellIdentifierConnect = @"CellConnect";
+    static NSString *CellIdentifierNoFind = @"CellNoFind";
     
+    BTBluetoothFindCell *cellFind = [tableView dequeueReusableCellWithIdentifier:CellIdentifierFind];
+    BTBluetoothConnectedCell *cellConnet = [tableView dequeueReusableCellWithIdentifier:CellIdentifierConnect];
+    BTBluetoothLinkCell *cellNofind = [tableView dequeueReusableCellWithIdentifier:CellIdentifierNoFind];
+    NSLog(@" %d  %d",isFinded,isConnected);
+    NSLog(@"外围设备名称是 %@",name);
     
-    
-    static NSString *CellIdentifier = @"Cell";
-    BTBluetoothLinkCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (!cell) {
-        cell = [[BTBluetoothLinkCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier tatget:self];
-        cell.contentView.backgroundColor = [UIColor whiteColor];
+    if (isFinded && !isConnected) {
+        
+        if (cellFind == nil) {
+            cellFind = [[BTBluetoothFindCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifierFind tatget:self];
+        }
+        cellFind.bluetoothName.text = [NSString stringWithFormat:@"%@",name];
+        return cellFind;
+    }
+    else if (isConnected)
+    {
+        if (cellConnet == nil) {
+            
+            cellConnet = [[BTBluetoothConnectedCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifierConnect tatget:self];
+        }
+        cellConnet.bluetoothName.text = [NSString stringWithFormat:@"%@  %@%@",name,batteryLevel,@"％"];
+        cellConnet.lastSyncTime.text = @"上次同步时间";//更新数据 从哪里读取数据
+        
+        return cellConnet;
+        
+    }
+    else
+    {
+        if (cellConnet == nil) {
+            
+            cellNofind = [[BTBluetoothConnectedCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifierConnect];
+        }
+        cellNofind.bluetoothName.text = [NSString stringWithFormat:@"%@  %@",bp.name,batteryLevel];
+        
+        return cellNofind;
     }
     
-   // cell.textLabel.text = @"首次连接";
-  cell.textLabel.text =  [[self.dataDictionary  objectForKey:[self.keyArray objectAtIndex:indexPath.section]] objectAtIndex:indexPath.row];
-    return cell;
+    
+    
+    
+    
 }
-
-//Cell上面按钮的触发事件 蛋疼
-- (void)testButtonOut:(UIButton *)button event:(id)event
+#pragma mark - 点击按钮 触发事件
+//Cell上面按钮的触发事件 同步数据 蛋疼
+- (void)toSync:(UIButton *)button event:(id)event
 {
     
-    //进行同步
+    //进行同步 这里也得判断设备是哪个设备啊
     [self.bc sync:MAM_BAND_MODEL];
+    //同步完成之后要通知数据页面进行数据刷新
+    [[NSNotificationCenter defaultCenter] postNotificationName:UPDATACIRCULARPROGRESSNOTICE object:nil userInfo:nil];//接受通知页面必须存在 
     
-    //连接过断开
-//    [self.bandCM togglePeripheralByIndex:[indexPath row]];
-    
+ }
+//Cell上面按钮的触发事件 连接外围设备 蛋疼
+- (void)toConnect:(UIButton *)button event:(id)event
+{
+    //连接或者断开断开
     NSSet *touches = [event allTouches];
     UITouch *touch = [touches anyObject];
     CGPoint currentTouchPosition = [touch locationInView:self.tableView];
     NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:currentTouchPosition];
-    NSLog(@"点击的是第 %d分区 第 %d 行",indexPath.section,indexPath.row);
+    //点击完之后让按钮不可点击 否则就会crash
+    button.userInteractionEnabled = NO;
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [self.bc togglePeripheralByIndex:[indexPath row]];
+    });
+  
 }
+
+//立即断开的时候 屏幕会闪动 在此时究竟发生了什么？？？
+//reason:以只有一个外围设备为例 当断开的时候  外围设备数量变为零  所以导致表视图空白  然后中心设备会再次搜索发现外围设备 刷新视图
+//measure:设定一个判断是否进行断开操作的标识符  isBreak
+- (void)breakConnect:(UIButton *)button event:(id)event
+{
+    //连接或者断开断开
+    NSSet *touches = [event allTouches];
+    UITouch *touch = [touches anyObject];
+    CGPoint currentTouchPosition = [touch locationInView:self.tableView];
+    NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:currentTouchPosition];
+     _isBreak = YES;
+    //点击完之后让按钮不可点击 否则就会crash
+    button.userInteractionEnabled = NO;
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [self.bc togglePeripheralByIndex:[indexPath row]];
+    });
+      }
 /*
 // Override to support conditional editing of the table view.
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath

@@ -12,7 +12,7 @@
 
 @property(nonatomic,strong)UILabel *bluetoothName;//设备蓝牙名称
 
-@property(nonatomic,strong)UIButton *testButton;//设备蓝牙名称
-
-- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier tatget:(id)target;
+//@property(nonatomic,strong)UIButton *testButton;//设备蓝牙名称
+//
+//- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier tatget:(id)target;
 @end

@@ -9,7 +9,7 @@
 #import "BTPhysicSportViewController.h"
 #import "CircularProgressView.h"
 #import "BarChartView.h"
-
+#import "LayoutDef.h"
 //button
 #define syncButtonX 200
 #define syncButtonY 390
@@ -27,6 +27,8 @@
 @property (strong, nonatomic) UIButton *sycnButton;
 @end
 
+static BTPhysicSportViewController *sharedPhysicSportInstance = nil;//单例
+
 @implementation BTPhysicSportViewController
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -34,8 +36,28 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
+        //注册同步的观察者
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateCircularProgress:) name:UPDATACIRCULARPROGRESSNOTICE object:nil];
+        //添加圆形进度条 和 Label
+        [self addCircleProgress];
+        //添加柱状图
+        [self loadBarChartUsingArray];
+        //添加同步按钮
+        [self addSycnButton];
+
     }
     return self;
+}
+//单例
++(BTPhysicSportViewController *)sharedPhysicSportViewController
+{
+   @synchronized(self)
+    {
+    if (sharedPhysicSportInstance == nil ) {
+        sharedPhysicSportInstance = [[BTPhysicSportViewController alloc] init];
+    }
+    }
+    return sharedPhysicSportInstance;
 }
 
 - (void)viewDidLoad
@@ -44,12 +66,6 @@
     self.view.backgroundColor = [UIColor yellowColor];
     self.navigationItem.title = @"MAMA运动";
  
-    //添加圆形进度条 和 Label
-    [self addCircleProgress];
-    //添加柱状图
-    [self loadBarChartUsingArray];
-    //添加同步按钮
-    [self addSycnButton];
     
 
 	// Do any additional setup after loading the view.
@@ -93,8 +109,6 @@
     [buttonSync addTarget:self action:@selector(syncData) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:buttonSync];
     
-    //亲，在这个方法里传入进度参数即可
-    [self.circularProgressView updateProgressCircle:1000 withTotal:12000];
 }
 
 - (void)syncData
@@ -134,7 +148,14 @@
                      withColor:[UIColor clearColor]//指示坐标颜色
        shouldPlotVerticalLines:YES];
     }
+//更新圆形进度条
+- (void)updateCircularProgress:(NSNotification *)notification
+{
+    //亲，在这个方法里传入进度参数即可
+    [self.circularProgressView updateProgressCircle:1000 withTotal:12000];
+    NSLog(@"要更新数据了");
 
+}
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];

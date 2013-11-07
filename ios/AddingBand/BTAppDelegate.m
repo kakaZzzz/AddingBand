@@ -8,6 +8,8 @@
 
 #import "BTAppDelegate.h"
 #import "BTCustomTabBarController.h"
+//需要同步数据的妈妈运动页面
+#import "BTPhysicSportViewController.h"
 @implementation BTAppDelegate
 
 @synthesize managedObjectContext = _managedObjectContext;
@@ -18,7 +20,8 @@
 {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
-    
+    //
+    BTPhysicSportViewController *sportVC = [BTPhysicSportViewController sharedPhysicSportViewController];
     //将tabBarController设置为根视图
     self.tabBarController = [[BTCustomTabBarController alloc] init];
     self.window.rootViewController = _tabBarController;

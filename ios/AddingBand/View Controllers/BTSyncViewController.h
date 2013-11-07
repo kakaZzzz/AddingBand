@@ -12,10 +12,14 @@
 @interface BTSyncViewController : UITableViewController
 @property (strong, nonatomic) NSMutableDictionary *dataDictionary;
 
-@property (strong, nonatomic) NSArray *keyArray;
+@property (strong, nonatomic) NSMutableArray *bluetoothBatteryArray;
 
+//存放外设备
+@property (strong, nonatomic) NSMutableArray *peripheralArray;
 
 @property(strong, nonatomic) BTGlobals* g;
 @property(strong, nonatomic) BTBandCentral* bc;
 
+//断开操作标示符
+@property(assign, nonatomic) BOOL isBreak;
 @end

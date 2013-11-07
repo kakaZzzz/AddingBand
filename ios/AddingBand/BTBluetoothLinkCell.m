@@ -7,7 +7,7 @@
 //
 
 #import "BTBluetoothLinkCell.h"
-
+#import "LayoutDef.h"
 @implementation BTBluetoothLinkCell
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
@@ -15,52 +15,48 @@
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
         // Initialization code
-//        [self createSubControls];
-    }
+        [self createSubControls];
+               NSLog(@"父视图  cell 加载子图    ");
+           }
     return self;
 }
 
 - (void)createSubControls
 {
     
+ 
+     //显示外部设备名字和电量
+    self.bluetoothName = [[UILabel alloc]initWithFrame:CGRectMake(kBluetoothNameX, kBluetoothNameY, kBluetoothNameWidth, kBluetoothNameHeight)];
+     _bluetoothName.backgroundColor = [UIColor redColor];
+    _bluetoothName.font = [UIFont systemFontOfSize:20];
+    _bluetoothName.textColor = [UIColor whiteColor];
+    _bluetoothName.textAlignment = NSTextAlignmentLeft;
+    _bluetoothName.lineBreakMode = NSLineBreakByTruncatingTail;
+    _bluetoothName.numberOfLines= 0;
+    [self addSubview:_bluetoothName];
     
-//    //内容气泡图片
-//    self.contentImageView = [[UIImageView alloc]initWithFrame:CGRectMake(self.iconImageView.frame.origin.x + self.iconImageView.frame.size.width + 30, self.iconImageView.frame.origin.y, kContentLabelWidth, kContentLabelHeight)];
-//    _contentImageView.backgroundColor = [UIColor blueColor];
-//    [self addSubview:_contentImageView];
+//    self.testButton =[UIButton buttonWithType:UIButtonTypeRoundedRect];
+//    _testButton.frame = CGRectMake(200, 10, 100, 50);
+//    [_testButton setTitle:@"测试按钮" forState:UIControlStateNormal];
 //    
-//    //内容Label
-//    self.contentLabel = [[UILabel alloc]initWithFrame:CGRectMake(self.iconImageView.frame.origin.x , self.iconImageView.frame.origin.y, 100, 40)];
-//    // _contentLabel.backgroundColor = [UIColor blueColor];
-//    _contentLabel.font = [UIFont systemFontOfSize:kContentFontSize];
-//    _contentLabel.textColor = [UIColor redColor];
-//    _contentLabel.textAlignment = NSTextAlignmentLeft;
-//    _contentLabel.lineBreakMode = NSLineBreakByTruncatingTail;
-//    _contentLabel.numberOfLines= 0;
-//    [self.contentImageView addSubview:_contentLabel];
-    
-    self.testButton =[UIButton buttonWithType:UIButtonTypeRoundedRect];
-    _testButton.frame = CGRectMake(200, 10, 100, 50);
-    [_testButton setTitle:@"测试按钮" forState:UIControlStateNormal];
-    
-    [self addSubview:_testButton];
+//    [self addSubview:_testButton];
     
 }
-- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier tatget:(id)target
-{
-  self =  [super initWithStyle:style reuseIdentifier:reuseIdentifier];
-    if (self) {
-        
-        self.testButton =[UIButton buttonWithType:UIButtonTypeRoundedRect];
-        _testButton.frame = CGRectMake(200, 10, 80, 30);
-        [_testButton setTitle:@"测试按钮" forState:UIControlStateNormal];
-        [_testButton addTarget:target action:@selector(testButtonOut:event:) forControlEvents:UIControlEventTouchUpInside];
-        [self addSubview:_testButton];
-
-    }
-    return self;
-    
-}
+//- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier tatget:(id)target
+//{
+//  self =  [super initWithStyle:style reuseIdentifier:reuseIdentifier];
+//    if (self) {
+//        
+//        self.testButton =[UIButton buttonWithType:UIButtonTypeRoundedRect];
+//        _testButton.frame = CGRectMake(200, 10, 80, 30);
+//        [_testButton setTitle:@"测试按钮" forState:UIControlStateNormal];
+//        [_testButton addTarget:target action:@selector(testButtonOut:event:) forControlEvents:UIControlEventTouchUpInside];
+//        [self addSubview:_testButton];
+//
+//    }
+//    return self;
+//    
+//}
 
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated

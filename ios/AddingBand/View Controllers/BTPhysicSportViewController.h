@@ -13,4 +13,7 @@
 @property (strong, nonatomic)BarChartView *barChart;//柱形图
 @property (strong, nonatomic)UILabel *totalStep;//一共走了多少步
 @property (strong, nonatomic)UILabel *realStep;//实际走了多少步
+
++(BTPhysicSportViewController *)sharedPhysicSportViewController;
+
 @end

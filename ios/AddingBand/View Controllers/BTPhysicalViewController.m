@@ -48,7 +48,7 @@
     _aScrollView.backgroundColor = [UIColor orangeColor];
     [self.view addSubview:_aScrollView];
     
-    //配置图片
+    //配置图片 传得参数为图片数量
     [self addImageViewByNumber:5];
     
     
@@ -99,7 +99,7 @@
     switch (tap.view.tag) {
         case 100:
         {
-            BTPhysicSportViewController *sportVC = [[BTPhysicSportViewController alloc] init];
+            BTPhysicSportViewController *sportVC = [BTPhysicSportViewController sharedPhysicSportViewController];
             sportVC.hidesBottomBarWhenPushed = YES;
             [self.navigationController pushViewController:sportVC animated:YES];
             break;
