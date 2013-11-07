@@ -67,20 +67,10 @@
     {
         NSLog(@"ble count: %d", self.g.bleListCount);
         
-//        //添加外部设备
-//        [self.peripheralArray removeAllObjects];
-//        for (int i = 0; i < self.g.bleListCount; i ++) {
-//            BTBandPeripheral *bp  = [self.bc getBpByIndex:i];
-//            [self.peripheralArray addObject:bp];
-//        }
-       
         //行数变化时，重新加载列表
         if (_isBreak == NO || self.g.bleListCount > 0) {
-        [self.tableView reloadData];
+            [self.tableView reloadData];
         }
-     
-        
-        
         
         if ([self.bc isConnectedByModel:MAM_BAND_MODEL]){
             NSLog(@"oh oh fuck");
@@ -95,6 +85,10 @@
         BTBandPeripheral *bp = [self.bc getBpByModel:MAM_BAND_MODEL];
         
         NSLog(@"dl: %f", bp.dlPercent);
+        NSDictionary *dicProgress = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:bp.dlPercent] forKey:@"progress"];
+        //同步完成之后要通知数据页面进行数据刷新
+        [[NSNotificationCenter defaultCenter] postNotificationName:UPDATACIRCULARPROGRESSNOTICE object:nil userInfo:dicProgress];//接受通知页面必须存在
+
         
     }
 }
@@ -248,8 +242,6 @@
     
     //进行同步 这里也得判断设备是哪个设备啊
     [self.bc sync:MAM_BAND_MODEL];
-    //同步完成之后要通知数据页面进行数据刷新
-    [[NSNotificationCenter defaultCenter] postNotificationName:UPDATACIRCULARPROGRESSNOTICE object:nil userInfo:nil];//接受通知页面必须存在 
     
  }
 //Cell上面按钮的触发事件 连接外围设备 蛋疼

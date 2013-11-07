@@ -10,6 +10,10 @@
 #import "CircularProgressView.h"
 #import "BarChartView.h"
 #import "LayoutDef.h"
+#import "BTUtils.h"
+#import "BTRawData.h"
+#import "BTGlobals.h"
+#import "BTBandCentral.h"
 //button
 #define syncButtonX 200
 #define syncButtonY 390
@@ -38,6 +42,8 @@ static BTPhysicSportViewController *sharedPhysicSportInstance = nil;//单例
         // Custom initialization
         //注册同步的观察者
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateCircularProgress:) name:UPDATACIRCULARPROGRESSNOTICE object:nil];
+        //
+        [self.globals addObserver:self forKeyPath:@"dlPercent" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:NULL];
         //添加圆形进度条 和 Label
         [self addCircleProgress];
         //添加柱状图
@@ -148,14 +154,22 @@ static BTPhysicSportViewController *sharedPhysicSportInstance = nil;//单例
                      withColor:[UIColor clearColor]//指示坐标颜色
        shouldPlotVerticalLines:YES];
     }
+
+
 //更新圆形进度条
 - (void)updateCircularProgress:(NSNotification *)notification
 {
     //亲，在这个方法里传入进度参数即可
-    [self.circularProgressView updateProgressCircle:1000 withTotal:12000];
+    float progress = [[notification.userInfo objectForKey:@"progress"] floatValue];
+    [self.circularProgressView updateProgressCircle:progress withTotal:10];
     NSLog(@"要更新数据了");
+    [[BTBandCentral sharedBandCentral] sync:MAM_BAND_MODEL];
+    
+    
 
 }
+
+
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];

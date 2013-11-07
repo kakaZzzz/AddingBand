@@ -20,7 +20,7 @@
 {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
-    //
+    //程序启动的时候就创建这个页面 而且注意一定要执行页面加载的数据
     BTPhysicSportViewController *sportVC = [BTPhysicSportViewController sharedPhysicSportViewController];
     //将tabBarController设置为根视图
     self.tabBarController = [[BTCustomTabBarController alloc] init];
