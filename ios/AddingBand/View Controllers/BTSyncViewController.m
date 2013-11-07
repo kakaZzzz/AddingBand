@@ -28,14 +28,13 @@
         self.tableView.allowsSelection = NO;
         
         //数据
-        NSArray *keyArray = [NSArray arrayWithObjects:@"A1-- XXXX  95%",@"A2-- XXXX  98%", @"A3-- XXXX  100%",nil];
+        self.keyArray = [NSArray arrayWithObjects:@"A1-- XXXX  95%",@"A2-- XXXX  98%", @"A3-- XXXX  100%",nil];
         NSArray *valueArray1 = [NSArray arrayWithObjects:@"上次同步 Wednesday",@"立即同步", nil];
         NSArray *valueArray2 = [NSArray arrayWithObjects:@"立即连接",nil];
         NSArray *valueArray3 = [NSArray arrayWithObjects:@"立即连接", nil];
         NSArray *valueArray = [NSArray arrayWithObjects:valueArray1,valueArray2,valueArray3, nil];
-        self.dataDictionary = [NSMutableDictionary dictionaryWithObjects:valueArray forKeys:keyArray];
-        
-
+        self.dataDictionary = [NSMutableDictionary dictionaryWithObjects:valueArray forKeys:_keyArray];
+      
     }
     return self;
 }
@@ -45,7 +44,7 @@
     [super viewDidLoad];
     self.tableView.backgroundColor = [UIColor whiteColor];
     NSLog(@"3333333333333333333%@",NSStringFromCGRect(self.tableView.frame));
-
+   
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
  
@@ -71,7 +70,7 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     // Return the number of rows in the section.
-    return [[self.dataDictionary objectForKey:[[self.dataDictionary allKeys] objectAtIndex:section]] count];
+    return [[self.dataDictionary  objectForKey:[self.keyArray objectAtIndex:section]] count];
 }
 //分区头 所要显示的文字
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
@@ -99,8 +98,8 @@
 //    }
 //    return nil;
     
-    
-    return [[self.dataDictionary allKeys] objectAtIndex:section];
+    //注意字典是无序的
+    return [self.keyArray objectAtIndex:section];
 }
 //
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -113,7 +112,7 @@
     }
     
    // cell.textLabel.text = @"首次连接";
-  cell.textLabel.text =  [[self.dataDictionary objectForKey:[[self.dataDictionary allKeys] objectAtIndex:indexPath.section]] objectAtIndex:indexPath.row];
+  cell.textLabel.text =  [[self.dataDictionary  objectForKey:[self.keyArray objectAtIndex:indexPath.section]] objectAtIndex:indexPath.row];
     return cell;
 }
 

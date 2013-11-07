@@ -10,5 +10,5 @@
 
 @interface BTSyncViewController : UITableViewController
 @property (strong, nonatomic) NSMutableDictionary *dataDictionary;
-
+@property (strong, nonatomic) NSArray *keyArray;
 @end
