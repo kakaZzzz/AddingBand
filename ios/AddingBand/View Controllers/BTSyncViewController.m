@@ -18,6 +18,14 @@
 {
     self = [super initWithStyle:style];
     if (self) {
+        
+        //初始化
+        self.g = [BTGlobals sharedGlobals];
+        self.bc = [BTBandCentral sharedBandCentral];
+        
+        //监听设备变化
+        [self.g addObserver:self forKeyPath:@"bleListCount" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:NULL];
+        
         // Custom initialization
         self.tableView = [[UITableView alloc] initWithFrame:self.tableView.frame style:UITableViewStyleGrouped];
         //设置背景颜色
@@ -37,6 +45,34 @@
       
     }
     return self;
+}
+
+//监控参数，更新显示
+-(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    
+    if([keyPath isEqualToString:@"bleListCount"])
+    {
+        NSLog(@"ble count: %d", self.g.bleListCount);
+        
+        //行数变化时，重新加载列表
+        [self.tableView reloadData];
+        
+        
+        if ([self.bc isConnectedByModel:MAM_BAND_MODEL]){
+            NSLog(@"oh oh fuck");
+            
+            [[self.bc getBpByModel:MAM_BAND_MODEL] addObserver:self forKeyPath:@"dlPercent" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:NULL];
+        }
+    }
+    
+    if([keyPath isEqualToString:@"dlPercent"])
+    {
+        BTBandPeripheral* bp = [self.bc getBpByModel:MAM_BAND_MODEL];
+        
+        NSLog(@"dl: %f", bp.dlPercent);
+        
+    }
 }
 
 - (void)viewDidLoad
@@ -70,8 +106,11 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     // Return the number of rows in the section.
-    return [[self.dataDictionary  objectForKey:[self.keyArray objectAtIndex:section]] count];
+//    return [[self.dataDictionary objectForKey:[[self.dataDictionary allKeys] objectAtIndex:section]] count];
+    
+    return self.g.bleListCount;
 }
+
 //分区头 所要显示的文字
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 
@@ -104,6 +143,33 @@
 //
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    //根据index找到对应的peripheral
+    BTBandPeripheral*bp  = [self.bc getBpByIndex:indexPath.row];
+    
+    //是否发现
+    Boolean isFinded = bp.isFinded;
+    
+    //是否连接
+    Boolean isConnected = bp.isConnected;
+    
+    //设备名称
+    NSString* name = bp.name;
+    
+    //电池电量
+    uint8_t d = 0;
+    
+    NSData *battRaw = [bp.allValues objectForKey:[CBUUID UUIDWithString:UUID_BATTERY_LEVEL]];
+    
+    if (battRaw) {
+        [battRaw getBytes:&d];
+    }
+    
+    NSNumber *batteryLevel = [NSNumber numberWithInt:d];
+    
+    
+    
+    
+    
     static NSString *CellIdentifier = @"Cell";
     BTBluetoothLinkCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (!cell) {
@@ -119,6 +185,12 @@
 //Cell上面按钮的触发事件 蛋疼
 - (void)testButtonOut:(UIButton *)button event:(id)event
 {
+    
+    //进行同步
+    [self.bc sync:MAM_BAND_MODEL];
+    
+    //连接过断开
+//    [self.bandCM togglePeripheralByIndex:[indexPath row]];
     
     NSSet *touches = [event allTouches];
     UITouch *touch = [touches anyObject];
