@@ -7,6 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "BTBandCentral.h"
+
 @class BarChartView;
 @class BTGlobals;
 @interface BTPhysicSportViewController : UIViewController
@@ -17,7 +19,10 @@
 @property(strong, nonatomic) NSManagedObjectContext* context;
 @property (strong, nonatomic) NSMutableArray* dailyData;
 @property (assign, nonatomic) int stepCount;
-@property(strong, nonatomic) BTGlobals* globals;
+
+@property(strong, nonatomic) BTGlobals* g;
+@property(strong, nonatomic) BTBandCentral* bc;
+
 +(BTPhysicSportViewController *)sharedPhysicSportViewController;
 
 @end

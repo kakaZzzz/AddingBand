@@ -43,7 +43,8 @@ static BTPhysicSportViewController *sharedPhysicSportInstance = nil;//单例
         //注册同步的观察者
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateCircularProgress:) name:UPDATACIRCULARPROGRESSNOTICE object:nil];
         //
-        [self.globals addObserver:self forKeyPath:@"dlPercent" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:NULL];
+        [self.g addObserver:self forKeyPath:@"bleListCount" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:NULL];
+        
         //添加圆形进度条 和 Label
         [self addCircleProgress];
         //添加柱状图
@@ -54,6 +55,113 @@ static BTPhysicSportViewController *sharedPhysicSportInstance = nil;//单例
     }
     return self;
 }
+
+//监控参数，更新显示
+-(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    
+    if([keyPath isEqualToString:@"dlPercent"])
+    {
+        NSLog(@"what");
+        
+        BTBandPeripheral* bp = [self.bc getBpByModel:MAM_BAND_MODEL];
+        
+        if (bp.dlPercent == 1) {
+            
+            //同步完成逻辑
+            
+        }
+    }
+    
+    if([keyPath isEqualToString:@"bleListCount"])
+    {
+        //连接上该型号设备
+        if ([self.bc isConnectedByModel:MAM_BAND_MODEL]){
+            
+            //注册同步进度的监听
+            [[self.bc getBpByModel:MAM_BAND_MODEL] addObserver:self forKeyPath:@"dlPercent" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:NULL];
+            
+            
+        }else{
+            
+            //没有连接上时的处理
+        }
+        
+        //读取一下对更新时间的描述
+        NSString* syncWord = [self.bc getLastSyncDesc:MAM_BAND_MODEL];
+        
+    }
+}
+
+// 建立主要区域
+-(void)buildMain{
+    
+    NSLog(@"build graph!!");
+    
+    //设置数据类型
+    int type = 2;
+    
+    //分割出年月日小时
+    NSDate* date = [NSDate date];
+    NSTimeZone *zone = [NSTimeZone systemTimeZone];
+    NSInteger interval = [zone secondsFromGMTForDate: date];
+    NSDate *localeDate = [date  dateByAddingTimeInterval: interval];
+    
+    NSLog(@"%@", localeDate);
+    
+    NSNumber* year = [BTUtils getYear:localeDate];
+    NSNumber* month = [BTUtils getMonth:localeDate];
+    NSNumber* day = [BTUtils getDay:localeDate];
+    NSNumber* hour = [BTUtils getHour:localeDate];
+    
+    //设置coredata
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"BTRawData" inManagedObjectContext:self.context];
+    
+    NSFetchRequest* request = [[NSFetchRequest alloc] init];
+    [request setEntity:entity];
+    
+    //设置查询条件
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"year == %@ AND month == %@ AND day = %@ AND hour == %@ AND type == %@",year, month, day, hour, [NSNumber numberWithInt:type]];
+    
+    [request setPredicate:predicate];
+    
+    //排序
+    NSMutableArray *sortDescriptors = [NSMutableArray array];
+    [sortDescriptors addObject:[[NSSortDescriptor alloc] initWithKey:@"minute" ascending:YES] ];
+    
+    [request setSortDescriptors:sortDescriptors];
+    
+    NSError* error;
+    NSArray* raw = [self.context executeFetchRequest:request error:&error];
+    
+    //初始化数据
+    _dailyData = [NSMutableArray arrayWithCapacity:60];
+    
+    for (int i = 0; i < 60; i++) {
+        // 显示好看，空的设1
+        [_dailyData addObject:[NSNumber numberWithInt:1]];
+    }
+    
+    _stepCount = 0;
+    
+    //如果有数据
+    
+    for (BTRawData* one in raw) {
+        NSNumber* m = one.minute;
+        [_dailyData insertObject:one.count atIndex:59 - [m integerValue]];
+        
+        _stepCount += [one.count intValue];
+    }
+    
+    //总步数
+    _stepCount;
+    
+    //具体步数时间分布
+    //index-小时，value-步数
+    _dailyData;
+    
+}
+
 //单例
 +(BTPhysicSportViewController *)sharedPhysicSportViewController
 {
