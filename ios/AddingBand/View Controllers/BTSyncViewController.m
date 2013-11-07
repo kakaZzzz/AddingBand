@@ -190,6 +190,9 @@
     //进行同步
     [self.bc sync:MAM_BAND_MODEL];
     
+    //连接过断开
+//    [self.bandCM togglePeripheralByIndex:[indexPath row]];
+    
     NSSet *touches = [event allTouches];
     UITouch *touch = [touches anyObject];
     CGPoint currentTouchPosition = [touch locationInView:self.tableView];

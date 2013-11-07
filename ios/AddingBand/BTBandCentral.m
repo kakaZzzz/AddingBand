@@ -633,7 +633,7 @@
 }
 
 //连接选中的peripheral
--(void)connectSelectedPeripheral:(NSUInteger)index{
+-(void)togglePeripheralByIndex:(NSUInteger)index{
     
     //根据index找到对应的peripheral
     NSEnumerator * enumeratorValue = [_allPeripherals objectEnumerator];

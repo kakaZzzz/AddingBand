@@ -38,7 +38,7 @@
 
 -(void)scan;
 
--(void)connectSelectedPeripheral:(NSUInteger)index;
+-(void)togglePeripheralByIndex:(NSUInteger)index;
 
 -(void)sync:(NSString*)model;
 -(NSString*)getLastSyncDesc:(NSString*)model;
