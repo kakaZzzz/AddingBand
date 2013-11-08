@@ -63,6 +63,10 @@
     return [name substringWithRange:NSMakeRange(7, 2)];
 }
 
++(Boolean)isSameModel:(NSString*)one and:(NSString*)two{
+    return [[self getModel:one] isEqual:[self getModel:two]];
+}
+
 +(NSString*)getSN:(NSString *)name{
     return [name substringWithRange:NSMakeRange(10, 6)];
 }
