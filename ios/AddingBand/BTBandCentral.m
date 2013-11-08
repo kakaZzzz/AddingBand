@@ -415,7 +415,7 @@
         [characteristic.value getBytes:&count range:NSMakeRange(4, 2)];
         [characteristic.value getBytes:&type range:NSMakeRange(6, 1)];
         
-        NSLog(@"%@, c:%d t:%d", [BTUtils dateWithSeconds:(NSTimeInterval)seconds], count, type);
+        
         //获取当前时间
         NSDate* date = [NSDate date];
         NSTimeZone *zone = [NSTimeZone systemTimeZone];
@@ -425,15 +425,18 @@
         NSLog(@"localeDate111==%@", localeDate);
 //
 
-        if (count > 0) {
+        if (count > 0 && seconds) {
+            
+            NSLog(@"%@, c:%d t:%d", [BTUtils dateWithSeconds:(NSTimeInterval)seconds], count, type);
+            
             //分割出年月日小时
             NSDate* date = [BTUtils dateWithSeconds:(NSTimeInterval)seconds];
             
-            NSNumber* year = [BTUtils getYear:localeDate];
-            NSNumber* month = [BTUtils getMonth:localeDate];
-            NSNumber* day = [BTUtils getDay:localeDate];
-            NSNumber* hour = [BTUtils getHour:localeDate];
-            NSNumber* minute = [BTUtils getMinutes:localeDate];
+            NSNumber* year = [BTUtils getYear:date];
+            NSNumber* month = [BTUtils getMonth:date];
+            NSNumber* day = [BTUtils getDay:date];
+            NSNumber* hour = [BTUtils getHour:date];
+            NSNumber* minute = [BTUtils getMinutes:date];
             NSLog(@"%@ %@ %@ %@ %@",year,month,day,hour,minute);
             //设置coredataye
             NSEntityDescription *entity = [NSEntityDescription entityForName:@"BTRawData" inManagedObjectContext:_context];

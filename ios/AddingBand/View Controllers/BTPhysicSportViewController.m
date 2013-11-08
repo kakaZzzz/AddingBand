@@ -244,8 +244,9 @@ static int dailyStep = 0;
     NSNumber* year = [BTUtils getYear:localeDate];
     NSNumber* month = [BTUtils getMonth:localeDate];
     NSNumber* day = [BTUtils getDay:localeDate];
+    NSNumber* hour = [BTUtils getHour:localeDate];
        //设置查询条件
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"year == %@ AND month == %@ AND day = %@ AND type == %@",year, month, day, [NSNumber numberWithInt:type]];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"year == %@ AND month == %@ AND day == %@ AND hour == %@ AND type == %@",year, month, day, hour, [NSNumber numberWithInt:type]];
 
      int stepCount = 0;
     
