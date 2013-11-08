@@ -271,7 +271,7 @@ static BTPhysicSportViewController *sharedPhysicSportInstance = nil;//单例
     float progress = [[notification.userInfo objectForKey:@"progress"] floatValue];
     [self.circularProgressView updateProgressCircle:progress withTotal:10];
     NSLog(@"要更新数据了");
-    [[BTBandCentral sharedBandCentral] sync:MAM_BAND_MODEL];
+  //  [[BTBandCentral sharedBandCentral] sync:MAM_BAND_MODEL];
     
     
 
