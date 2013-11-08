@@ -53,8 +53,8 @@
  * CONSTANTS
  */
 
-#define HI_UINT32(x)        (((x) >> 16) & 0xffff)
-#define LO_UINT32(x)        ((x) & 0xffff)
+#define HI_UINT32(x)                          (((x) >> 16) & 0xffff)
+#define LO_UINT32(x)                          ((x) & 0xffff)
 
 // How often to perform periodic event
 #define SBP_PERIODIC_EVT_PERIOD               5000
@@ -476,8 +476,6 @@ void SimpleBLEPeripheral_Init( uint8 task_id )
         Batt_SetParameter( BATT_PARAM_CRITICAL_LEVEL, sizeof (uint8 ), &critical );
     }
 
-#if (defined FAC_TEST) && (FAC_TEST == TRUE)
-
     P0DIR |= BV(0) | BV(1) | BV(2) | BV(3) | BV(4);
     P0SEL &= ~(BV(0) | BV(1) | BV(2) | BV(3) | BV(4));
 
@@ -497,8 +495,6 @@ void SimpleBLEPeripheral_Init( uint8 task_id )
     // P1_1 = 1;
 
     // osal_start_timerEx( simpleBLEPeripheral_TaskID, SBP_LED_STOP_EVT, SBP_PERIODIC_EVT_PERIOD );
-
-#endif
 
 #if (defined HAL_LCD) && (HAL_LCD == TRUE)
 
@@ -667,8 +663,6 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
     //     return (events ^ LED_CYCLE_EVT);
     // }
 
-#if (defined FAC_TEST) && (FAC_TEST == TRUE)
-
     if ( events & SBP_LED_STOP_EVT )
     {
 
@@ -739,8 +733,6 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
 
         return (events ^ SBP_LED_STOP_EVT);
     }
-
-#endif
 
 #if defined ( PLUS_BROADCASTER )
     if ( events & SBP_ADV_IN_CONNECTION_EVT )

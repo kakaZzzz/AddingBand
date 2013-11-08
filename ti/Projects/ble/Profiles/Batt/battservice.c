@@ -532,7 +532,7 @@ static void battNotifyCB( linkDBItem_t *pLinkItem )
  */
 static uint8 battMeasure( void )
 {
-  uint16 adc;
+  uint16 adc = 0;
   uint8 percent;
 
   /**
@@ -575,7 +575,14 @@ static uint8 battMeasure( void )
 
   // Configure ADC and perform a read
   HalAdcSetReference( HAL_ADC_REF_125V );
-  adc = HalAdcRead( battServiceAdcCh, HAL_ADC_RESOLUTION_10 );
+
+  // read 10 times, then make average
+  for (int i = 0; i < 10; i++)
+  {
+    adc += HalAdcRead( battServiceAdcCh, HAL_ADC_RESOLUTION_10 );
+  }
+  
+  adc = adc/10;
 
   // Call measurement teardown callback
   if (battServiceTeardownCB != NULL)
