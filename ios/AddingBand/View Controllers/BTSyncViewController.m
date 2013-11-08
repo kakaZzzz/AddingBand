@@ -68,6 +68,7 @@
         NSLog(@"ble count: %d", self.g.bleListCount);
         
         //行数变化时，重新加载列表
+        //todo 等于0的时候处理成“查找中”
         if (_isBreak == NO || self.g.bleListCount > 0) {
             [self.tableView reloadData];
         }
