@@ -28,6 +28,7 @@
 		72414665182758CC008B05C5 /* BTChartViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 72414664182758CC008B05C5 /* BTChartViewController.m */; };
 		7241467018277A67008B05C5 /* BTSyncViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7241466F18277A67008B05C5 /* BTSyncViewController.m */; };
 		724146771827B116008B05C5 /* 分割线@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 724146761827B116008B05C5 /* 分割线@2x.png */; };
+		725E018D182CDF0B00022A15 /* BTGetData.m in Sources */ = {isa = PBXBuildFile; fileRef = 725E018C182CDF0B00022A15 /* BTGetData.m */; };
 		728ECC0318239AB0005053FE /* BTNavicationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 728ECC0218239AB0005053FE /* BTNavicationController.m */; };
 		728ECC0B1823B64F005053FE /* RBParallaxTableVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 728ECC0A1823B64F005053FE /* RBParallaxTableVC.m */; };
 		728ECC0D1823C092005053FE /* demo1@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 728ECC0C1823C092005053FE /* demo1@2x.png */; };
@@ -118,6 +119,8 @@
 		7241466E18277A67008B05C5 /* BTSyncViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BTSyncViewController.h; path = "View Controllers/BTSyncViewController.h"; sourceTree = "<group>"; };
 		7241466F18277A67008B05C5 /* BTSyncViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BTSyncViewController.m; path = "View Controllers/BTSyncViewController.m"; sourceTree = "<group>"; };
 		724146761827B116008B05C5 /* 分割线@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "分割线@2x.png"; sourceTree = "<group>"; };
+		725E018B182CDF0B00022A15 /* BTGetData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BTGetData.h; path = Global/BTGetData.h; sourceTree = "<group>"; };
+		725E018C182CDF0B00022A15 /* BTGetData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BTGetData.m; path = Global/BTGetData.m; sourceTree = "<group>"; };
 		728ECC0118239AB0005053FE /* BTNavicationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BTNavicationController.h; path = "View Controllers/BTNavicationController.h"; sourceTree = "<group>"; };
 		728ECC0218239AB0005053FE /* BTNavicationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BTNavicationController.m; path = "View Controllers/BTNavicationController.m"; sourceTree = "<group>"; };
 		728ECC091823B64F005053FE /* RBParallaxTableVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RBParallaxTableVC.h; path = CustomSuperViewController/RBParallaxTableVC.h; sourceTree = "<group>"; };
@@ -440,6 +443,8 @@
 				72CB9C39182B595200C0DAF0 /* BTGlobals.m */,
 				72CB9C3A182B595200C0DAF0 /* BTUtils.h */,
 				72CB9C3B182B595200C0DAF0 /* BTUtils.m */,
+				725E018B182CDF0B00022A15 /* BTGetData.h */,
+				725E018C182CDF0B00022A15 /* BTGetData.m */,
 				72B4190118238EC1002EAD35 /* Head.h */,
 				72414662182757C3008B05C5 /* LayoutDef.h */,
 			);
@@ -616,6 +621,7 @@
 				722ECE28182914F100129E6A /* BarView.m in Sources */,
 				72B419041823904B002EAD35 /* BTCustomTabBarController.m in Sources */,
 				728ECC0B1823B64F005053FE /* RBParallaxTableVC.m in Sources */,
+				725E018D182CDF0B00022A15 /* BTGetData.m in Sources */,
 				722EDEF9182A3D43006B25EE /* BTBluetoothLinkCell.m in Sources */,
 				722EDF0B182A5200006B25EE /* PBFlatSettings.m in Sources */,
 				72CB9C3C182B595200C0DAF0 /* BTConstants.m in Sources */,

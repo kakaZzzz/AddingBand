@@ -381,10 +381,10 @@
     
     //接到数据通知
     if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:UUID_HEALTH_DATA_BODY]]) {
-        NSLog(@"v:%@",  characteristic.value);
+        NSLog(@"value:%@",  characteristic.value);
         
         uint32_t seconds;
-        uint16_t count;
+        uint16_t count;//同步数据的时候的运动步数
         uint8_t type;
         
         [characteristic.value getBytes:&seconds range:NSMakeRange(0, 4)];
@@ -392,18 +392,26 @@
         [characteristic.value getBytes:&type range:NSMakeRange(6, 1)];
         
         NSLog(@"%@, c:%d t:%d", [BTUtils dateWithSeconds:(NSTimeInterval)seconds], count, type);
+        //获取当前时间
+        NSDate* date = [NSDate date];
+        NSTimeZone *zone = [NSTimeZone systemTimeZone];
+        NSInteger interval = [zone secondsFromGMTForDate: date];
+        NSDate *localeDate = [date  dateByAddingTimeInterval: interval];
         
+        NSLog(@"localeDate111==%@", localeDate);
+//
+
         if (count > 0) {
             //分割出年月日小时
             NSDate* date = [BTUtils dateWithSeconds:(NSTimeInterval)seconds];
             
-            NSNumber* year = [BTUtils getYear:date];
-            NSNumber* month = [BTUtils getMonth:date];
-            NSNumber* day = [BTUtils getDay:date];
-            NSNumber* hour = [BTUtils getHour:date];
-            NSNumber* minute = [BTUtils getMinutes:date];
-            
-            //设置coredata
+            NSNumber* year = [BTUtils getYear:localeDate];
+            NSNumber* month = [BTUtils getMonth:localeDate];
+            NSNumber* day = [BTUtils getDay:localeDate];
+            NSNumber* hour = [BTUtils getHour:localeDate];
+            NSNumber* minute = [BTUtils getMinutes:localeDate];
+            NSLog(@"%@ %@ %@ %@ %@",year,month,day,hour,minute);
+            //设置coredataye
             NSEntityDescription *entity = [NSEntityDescription entityForName:@"BTRawData" inManagedObjectContext:_context];
             
             NSFetchRequest* request = [[NSFetchRequest alloc] init];
@@ -420,16 +428,24 @@
             if (raw.count == 1) {
                 
                 //已经有条目了
-                
+                //进行coredata的更改数据操作
                 BTRawData* one = [raw objectAtIndex:0];
                 
                 NSLog(@"ther is %@", one.count);
                 
                 one.count = [NSNumber numberWithInt:[one.count intValue] + count];
+                NSLog(@"ther is %@", one.count);
+                //如果先前已经存有数据的话 判断写的数据是否跟原有数据是同一天的 如果是仅仅改变这个实体的count属性就可以了
+//                BTRawData *one = [raw lastObject];
+//                if ([year isEqual:one.year] && [month isEqual:month] && [day isEqual:day]) {
+//                     count = [one.count intValue] + count;
+//                    one.count = [NSNumber numberWithInt:count];
+//                    
+//                }
                 
             }else if(raw.count == 0){
                 
-                //木有啊,就新建一条
+                //木有啊,就新建一条  进行coredata的插入数据操作
                 
                 NSLog(@"there no");
                 
@@ -443,8 +459,10 @@
                 new.type = [NSNumber numberWithInt:type];
                 new.count = [NSNumber numberWithInt:count];
                 new.from = peripheral.name;
+                
             }
             
+            [_context save:&error];
             // 及时保存
             if(![_context save:&error]){
                 NSLog(@"%@", [error localizedDescription]);

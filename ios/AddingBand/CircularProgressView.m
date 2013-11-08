@@ -15,6 +15,7 @@
 @property (assign, nonatomic) CGFloat lineWidth;
 @property (assign, nonatomic) float progress;
 
+
 @end
 
 @implementation CircularProgressView
@@ -31,6 +32,9 @@
         _backColor = backColor;
         _progressColor = progressColor;
         _lineWidth = lineWidth;
+        
+        
+ 
     }
     return self;
 }
@@ -46,11 +50,16 @@
     
     if (self.progress != 0) {
         //draw progress circle
+        
         UIBezierPath *progressCircle = [UIBezierPath bezierPathWithArcCenter:CGPointMake(self.bounds.size.width / 2,self.bounds.size.height / 2) radius:self.bounds.size.width / 2 - self.lineWidth / 2 startAngle:(CGFloat) -M_PI_2 endAngle:(CGFloat)(-M_PI_2 + self.progress * 2 * M_PI) clockwise:YES];
         [self.progressColor setStroke];
         progressCircle.lineWidth = self.lineWidth;
         [progressCircle stroke];
+        
+ 
     }
+    
+  
 }
 
 - (void)updateProgressCircle:(int)start withTotal:(int)total{

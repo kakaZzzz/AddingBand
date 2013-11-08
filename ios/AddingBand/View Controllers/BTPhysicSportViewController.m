@@ -14,6 +14,7 @@
 #import "BTRawData.h"
 #import "BTGlobals.h"
 #import "BTBandCentral.h"
+#import "BTGetData.h"
 //button
 #define syncButtonX 200
 #define syncButtonY 390
@@ -32,7 +33,8 @@
 @end
 
 static BTPhysicSportViewController *sharedPhysicSportInstance = nil;//单例
-
+static int totalStep = 0;
+static int dailyStep = 0;
 @implementation BTPhysicSportViewController
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -52,6 +54,13 @@ static BTPhysicSportViewController *sharedPhysicSportInstance = nil;//单例
         //添加同步按钮
         [self addSycnButton];
 
+        
+        //读取当天总步数 和  累计总步数
+        totalStep = [self getTotalStep];
+        dailyStep = [self getDailyStep];
+//        self.totalStep.text = [NSString stringWithFormat:@"%d",totalStep];
+//        [self.circularProgressView updateProgressCircle:dailyStep withTotal:totalStep];
+
     }
     return self;
 }
@@ -59,6 +68,7 @@ static BTPhysicSportViewController *sharedPhysicSportInstance = nil;//单例
 //监控参数，更新显示
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
+    NSLog(@"更新数据");
     
     if([keyPath isEqualToString:@"dlPercent"])
     {
@@ -69,6 +79,7 @@ static BTPhysicSportViewController *sharedPhysicSportInstance = nil;//单例
         if (bp.dlPercent == 1) {
             
             //同步完成逻辑
+            //   [self buildMain];
             
         }
     }
@@ -107,7 +118,7 @@ static BTPhysicSportViewController *sharedPhysicSportInstance = nil;//单例
     NSInteger interval = [zone secondsFromGMTForDate: date];
     NSDate *localeDate = [date  dateByAddingTimeInterval: interval];
     
-    NSLog(@"%@", localeDate);
+    NSLog(@"localeDate==%@", localeDate);
     
     NSNumber* year = [BTUtils getYear:localeDate];
     NSNumber* month = [BTUtils getMonth:localeDate];
@@ -115,47 +126,69 @@ static BTPhysicSportViewController *sharedPhysicSportInstance = nil;//单例
     NSNumber* hour = [BTUtils getHour:localeDate];
     
     //设置coredata
-    NSEntityDescription *entity = [NSEntityDescription entityForName:@"BTRawData" inManagedObjectContext:self.context];
-    
-    NSFetchRequest* request = [[NSFetchRequest alloc] init];
-    [request setEntity:entity];
-    
-    //设置查询条件
+    //取得context
+    //获取上下文··
+//    self.context =[(BTAppDelegate *) [UIApplication sharedApplication].delegate managedObjectContext];
+//    NSEntityDescription *entity = [NSEntityDescription entityForName:@"BTRawData" inManagedObjectContext:self.context];
+//    
+//    NSFetchRequest* request = [[NSFetchRequest alloc] init];
+//    [request setEntity:entity];
+//    
+//    //设置查询条件
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"year == %@ AND month == %@ AND day = %@ AND hour == %@ AND type == %@",year, month, day, hour, [NSNumber numberWithInt:type]];
     
-    [request setPredicate:predicate];
-    
-    //排序
-    NSMutableArray *sortDescriptors = [NSMutableArray array];
-    [sortDescriptors addObject:[[NSSortDescriptor alloc] initWithKey:@"minute" ascending:YES] ];
-    
-    [request setSortDescriptors:sortDescriptors];
-    
-    NSError* error;
-    NSArray* raw = [self.context executeFetchRequest:request error:&error];
-    
-    //初始化数据
-    _dailyData = [NSMutableArray arrayWithCapacity:60];
-    
-    for (int i = 0; i < 60; i++) {
-        // 显示好看，空的设1
-        [_dailyData addObject:[NSNumber numberWithInt:1]];
-    }
-    
-    _stepCount = 0;
+//    [request setPredicate:predicate];
+//    
+//    //排序
+//    NSMutableArray *sortDescriptors = [NSMutableArray array];
+//    [sortDescriptors addObject:[[NSSortDescriptor alloc] initWithKey:@"minute" ascending:YES] ];
+//    
+//    [request setSortDescriptors:sortDescriptors];
+//    
+//    
+////    //
+////    //创建一个请求
+////    self.context =[(BTAppDelegate *) [UIApplication sharedApplication].delegate managedObjectContext];
+////    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"BTRawData"];
+////    
+////    NSArray* raw = [self.context executeFetchRequest:request error:nil];
+//
+//    NSError* error;
+   //从coredata中读取的数据 记录时间和步数
+    NSArray* raw = [BTGetData getFromCoreDataWithPredicate:predicate
+                                                entityName:@"BTRawData" sortKey:@"minute"];
+    NSLog(@"从coredata里取出的数据%@",raw);
+//    //初始化数据
+//    _dailyData = [NSMutableArray arrayWithCapacity:1];
+//    [_dailyData removeAllObjects];
+//    for (int i = 0; i < 60; i++) {
+//        // 显示好看，空的设1
+//        [_dailyData addObject:[NSNumber numberWithInt:1]];
+//    }
+//    
+//    _stepCount = 0;
     
     //如果有数据
     
-    for (BTRawData* one in raw) {
-        NSNumber* m = one.minute;
-        [_dailyData insertObject:one.count atIndex:59 - [m integerValue]];
-        
-        _stepCount += [one.count intValue];
-    }
+//    for (BTRawData* one in raw) {
+//           NSLog(@"走的步数一共是 %d",_stepCount);
+//        NSNumber* m = one.minute;
+//     //   [_dailyData insertObject:one.count atIndex:59 - [m integerValue]];
+//        
+//        _stepCount += [one.count intValue];
+//      
+//    }
+    //更新总步数Label和圆形进度条
+    //总步数 和整体一天的步数数据
+   // [self getDailyStep];
+    dailyStep = [self getDailyStep];
+    totalStep = [self getTotalStep];
+    [self updateUIWithStepDaily:dailyStep totalStep:totalStep];
+    //总步数   用来显示用户总的数据
     
-    //总步数
-    _stepCount;
-    
+  //  _stepCount;
+  //  NSLog(@"每日数据是 %@",_dailyData);
+   
     //具体步数时间分布
     //index-小时，value-步数
     _dailyData;
@@ -181,8 +214,53 @@ static BTPhysicSportViewController *sharedPhysicSportInstance = nil;//单例
     self.navigationItem.title = @"MAMA运动";
  
     
+   	// Do any additional setup after loading the view.
+}
 
-	// Do any additional setup after loading the view.
+#pragma mark - 读取当天总步数
+- (int)getTotalStep
+{
+     int stepCount = 0;
+    NSArray *array = [BTGetData getFromCoreDataWithPredicate:nil entityName:@"BTRawData" sortKey:nil];
+    for (BTRawData* one in array) {
+        stepCount += [one.count intValue];
+        
+    }
+    NSLog(@"一共步数%d",stepCount);
+    return stepCount;
+}
+#pragma mark - 读取累计总步数
+- (int)getDailyStep
+{
+    //设置数据类型
+    int type = 2;
+    NSDate* date = [NSDate date];
+    NSTimeZone *zone = [NSTimeZone systemTimeZone];
+    NSInteger interval = [zone secondsFromGMTForDate: date];
+    NSDate *localeDate = [date  dateByAddingTimeInterval: interval];
+    
+    NSLog(@"localeDate==%@", localeDate);
+    
+    NSNumber* year = [BTUtils getYear:localeDate];
+    NSNumber* month = [BTUtils getMonth:localeDate];
+    NSNumber* day = [BTUtils getDay:localeDate];
+       //设置查询条件
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"year == %@ AND month == %@ AND day = %@ AND type == %@",year, month, day, [NSNumber numberWithInt:type]];
+
+     int stepCount = 0;
+    
+    NSArray *array = [BTGetData getFromCoreDataWithPredicate:predicate entityName:@"BTRawData" sortKey:nil];
+    for (BTRawData* one in array) {
+        stepCount += [one.count intValue];
+        
+    }
+    NSLog(@"当天总步数%d",stepCount);
+    return stepCount;
+
+}
+- (void)updateUIWithStepDaily:(int)stepDaily totalStep:(int)totalStep
+{
+    [self.circularProgressView updateProgressCircle:stepDaily withTotal:totalStep];
 }
 #pragma mark - add circle progress
 - (void)addCircleProgress
@@ -271,12 +349,24 @@ static BTPhysicSportViewController *sharedPhysicSportInstance = nil;//单例
     float progress = [[notification.userInfo objectForKey:@"progress"] floatValue];
     [self.circularProgressView updateProgressCircle:progress withTotal:10];
     NSLog(@"要更新数据了");
+ 
+    [self buildMain];
   //  [[BTBandCentral sharedBandCentral] sync:MAM_BAND_MODEL];
     
     
 
 }
+//页面将要显示的时候 处理数据
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [UIView animateWithDuration:1 animations:^{
+        [self updateUIWithStepDaily:dailyStep totalStep:totalStep];
+        self.totalStep.text = [NSString stringWithFormat:@"%d",totalStep];
 
+    }];
+    
+}
 
 - (void)didReceiveMemoryWarning
 {

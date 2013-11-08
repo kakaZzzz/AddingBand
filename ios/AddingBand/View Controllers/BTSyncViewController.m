@@ -83,12 +83,17 @@
     if([keyPath isEqualToString:@"dlPercent"])
     {
         BTBandPeripheral *bp = [self.bc getBpByModel:MAM_BAND_MODEL];
-        
+        //bp.dlPercent表示同步进度
         NSLog(@"dl: %f", bp.dlPercent);
         NSDictionary *dicProgress = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:bp.dlPercent] forKey:@"progress"];
-        //同步完成之后要通知数据页面进行数据刷新
-        [[NSNotificationCenter defaultCenter] postNotificationName:UPDATACIRCULARPROGRESSNOTICE object:nil userInfo:dicProgress];//接受通知页面必须存在
-
+        
+        if (bp.dlPercent == 1) {
+            
+            //同步完成逻辑
+            //在这里发送通知  刷新需要显示运动量之类页面的数据 包括进度条  label  柱形图
+            //同步完成之后要通知数据页面进行数据刷新
+            [[NSNotificationCenter defaultCenter] postNotificationName:UPDATACIRCULARPROGRESSNOTICE object:nil userInfo:dicProgress];//接受通知页面必须存在
+        }
         
     }
 }
@@ -223,7 +228,7 @@
     {
         if (cellConnet == nil) {
             
-            cellNofind = [[BTBluetoothConnectedCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifierConnect];
+            cellNofind = [[BTBluetoothLinkCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifierConnect];
         }
         cellNofind.bluetoothName.text = [NSString stringWithFormat:@"%@  %@",bp.name,batteryLevel];
         
