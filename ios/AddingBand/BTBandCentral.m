@@ -62,9 +62,12 @@
                 
                 new.name = old.name;
                 new.lastSync = [old.lastSync intValue];
-                new.isConnected = NO;
                 new.batteryLevel = 0;
+                
+                new.isConnected = NO;
+                new.isConnecting = NO;
                 new.isFinded =NO;
+                
                 
                 [_allPeripherals setObject:new forKey:new.name];
             }
@@ -153,6 +156,7 @@
                 
                 find.name = peripheral.name;
                 find.isConnected = NO;
+                find.isConnecting = NO;
                 find.batteryLevel = 0;
             }
             
@@ -205,7 +209,7 @@
     BTBandPeripheral* find = [_allPeripherals objectForKey:peripheral.name];
     
     //缓存中变更连接状态
-    find.isConnected = YES;
+    find.isConnecting = YES;
     
     
     //查找之前是否连接过
@@ -247,14 +251,10 @@
     
     for (CBService *s in peripheral.services) {
         
-        
-        
         if ([s.UUID isEqual:[CBUUID UUIDWithString:UUID_HEALTH_SERVICE]] || [s.UUID isEqual:[CBUUID UUIDWithString:UUID_BATTERY_SERVICE]]) {
             NSLog(@"s:%@", s.UUID);
             [peripheral discoverCharacteristics:nil forService:s];
         }
-        
-        
         
     }
     
@@ -306,7 +306,7 @@
             NSLog(@"ge zaile ");
             
             //更新手环状态
-            self.globals.bleListCount += 0;
+//            self.globals.bleListCount += 0;
             
             //同步锁打开
             _syncLocker = NO;
@@ -342,7 +342,7 @@
             [peripheral readValueForCharacteristic:characteristic];
         }
         
-        // 发现可以注册notify以后，读取一下数据长度
+        // 发现可以注册notify以后，读取一下电量
         if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:UUID_BATTERY_LEVEL]]) {
             [peripheral readValueForCharacteristic:characteristic];
         }
@@ -390,6 +390,10 @@
     if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:UUID_BATTERY_LEVEL]]) {
         
         NSLog(@"Battery: %@", characteristic.value);
+        
+        BTBandPeripheral* bp = [_allPeripherals objectForKey:peripheral.name];
+        
+        bp.isConnected = YES;
         
         //更新手环状态
         self.globals.bleListCount += 0;
@@ -593,7 +597,8 @@
             new.lastSync = 0;
             new.isConnected = NO;
             new.batteryLevel = 0;
-            new.isFinded =NO;
+            new.isFinded = NO;
+            new.isConnecting = NO;
             
             [_allPeripherals setObject:new forKey:new.name];
             

@@ -20,8 +20,10 @@
 @property(strong, nonatomic) NSString* name;
 @property(assign, nonatomic) int lastSync;
 @property(strong, nonatomic) NSNumber* batteryLevel;
+
 @property(assign, nonatomic) Boolean isConnected;
 @property(assign, nonatomic) Boolean isFinded;
+@property(assign, nonatomic) Boolean isConnecting;
 
 //同步用
 @property(assign, nonatomic) uint16_t dataLength;
