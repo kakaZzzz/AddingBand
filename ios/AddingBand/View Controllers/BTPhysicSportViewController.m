@@ -42,19 +42,13 @@ static int dailyStep = 0;
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
-        //注册同步的观察者
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateCircularProgress:) name:UPDATACIRCULARPROGRESSNOTICE object:nil];
-        //
-        [self.g addObserver:self forKeyPath:@"bleListCount" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:NULL];
         
-
+        [self.g addObserver:self forKeyPath:@"bleListCount" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:NULL];
         
         //读取当天总步数 和  累计总步数
         totalStep = [self getTotalStep];
         dailyStep = [self getDailyStep];
-//        self.totalStep.text = [NSString stringWithFormat:@"%d",totalStep];
-//        [self.circularProgressView updateProgressCircle:dailyStep withTotal:totalStep];
-
+        self.barValue = [NSArray arrayWithObjects:@"10",@"20",@"15",@"8",@"5",@"30",@"10", nil];
     }
     return self;
 }
@@ -189,22 +183,10 @@ static int dailyStep = 0;
     
 }
 
-////单例
-//+(BTPhysicSportViewController *)sharedPhysicSportViewController
-//{
-//   @synchronized(self)
-//    {
-//    if (sharedPhysicSportInstance == nil ) {
-//        sharedPhysicSportInstance = [[BTPhysicSportViewController alloc] init];
-//    }
-//    }
-//    return sharedPhysicSportInstance;
-//}
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.view.backgroundColor = [UIColor yellowColor];
+    self.view.backgroundColor = [UIColor grayColor];
     self.navigationItem.title = @"MAMA运动";
     //添加圆形进度条 和 Label
     [self addCircleProgress];
@@ -270,7 +252,7 @@ static int dailyStep = 0;
     UIColor *progressColor = [UIColor colorWithRed:255.0/255.0 green:153.0/255.0 blue:153.0/255.0 alpha:1.0];
     
     //alloc CircularProgressView instance
-    self.circularProgressView = [[CircularProgressView alloc] initWithFrame:CGRectMake(25, 77, 270, 270) backColor:backColor progressColor:progressColor lineWidth:10];
+    self.circularProgressView = [[CircularProgressView alloc] initWithFrame:CGRectMake(25, 77, 270, 270) backColor:backColor progressColor:progressColor lineWidth:11];
     
     //add CircularProgressView
     [self.view addSubview:self.circularProgressView];
@@ -314,10 +296,11 @@ static int dailyStep = 0;
  /*   在此传入横坐标名称  柱子表示的数值  柱子颜色  以及label中字体颜色 */
     
     _barChart = [[BarChartView alloc] initWithFrame:CGRectMake(60, 160, 200, 100)];//柱形图背景大小
+    _barChart.backgroundColor = [UIColor clearColor];
     [self.view addSubview:_barChart];
 
     NSArray *array = [_barChart createChartDataWithTitles:[NSArray arrayWithObjects:@"1", @"2", @"3", @"4",@"5" ,@"6",@"7",nil]
-                                                  values:[NSArray arrayWithObjects:@"4.7", @"8.3", @"50", @"5.4",@"10.0" ,@"10.0" ,@"10.0" ,nil]
+                                                  values:_barValue
                                                   colors:[NSArray arrayWithObjects:@"87E317", @"17A9E3", @"E32F17", @"FFE53D",@"FFE53D", @"FFE53D",@"FFE53D",nil]
                                              labelColors:[NSArray arrayWithObjects:@"17A9E3", @"17A9E3", @"17A9E3", @"17A9E3", @"17A9E3",@"17A9E3",@"17A9E3",nil]];
     
@@ -342,37 +325,10 @@ static int dailyStep = 0;
     }
 
 
-////更新圆形进度条
-//- (void)updateCircularProgress:(NSNotification *)notification
-//{
-//    //亲，在这个方法里传入进度参数即可
-//    float progress = [[notification.userInfo objectForKey:@"progress"] floatValue];
-//    [self.circularProgressView updateProgressCircle:progress withTotal:10];
-//    NSLog(@"要更新数据了");
-// 
-//    [self buildMain];
-//  //  [[BTBandCentral sharedBandCentral] sync:MAM_BAND_MODEL];
-//    
-//    
-//
-//}
 //页面将要显示的时候 处理数据
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-//    [UIView animateWithDuration:5000 animations:^{
-//        static int k = 0;
-//        
-//        for (int i = 1; i < 11; i ++) {
-//            k = k + 50/10;
-//            [self updateUIWithStepDaily:k totalStep:totalStep];
-//        }
-//        k = 0;
-//        self.totalStep.text = [NSString stringWithFormat:@"%d",totalStep];
-//        
-//    }];
-  //  [self updateUIWithStepDaily:50 totalStep:totalStep];
-  //  [self updateUIWithStepDaily:50 totalStep:100];
     [self updateUIWithStepDaily:dailyStep totalStep:totalStep];
 
 }

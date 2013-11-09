@@ -102,7 +102,7 @@
 	
 	plotView = [[UIView alloc] initWithFrame:CGRectZero];
 	//plotView.backgroundColor = [UIColor colorWithRed:220/255 green:220/255 blue:220/255 alpha:0.5];
-	plotView.backgroundColor = [UIColor clearColor];
+	plotView.backgroundColor = [UIColor clearColor];//背景颜色
 	plotView.clipsToBounds = true;
 	plotView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin;
 	[plotChart addSubview:plotView];
@@ -127,7 +127,7 @@
         bar.barViewShape = self.barViewShape;
         bar.barViewDisplayStyle = self.barViewDisplayStyle;
         bar.barViewShadow = self.barViewShadow;
-		bar.backgroundColor = [UIColor clearColor];
+		bar.backgroundColor = [UIColor grayColor];
 		bar.buttonColor = [barInfo objectForKey:@"color"];
 		[plotView addSubview:bar];
 		[barViews addObject:bar];
@@ -183,32 +183,33 @@
 	[super layoutSubviews];
 	
 	[self calculateFrames];
-	NSUInteger index = 0;
-	for (NSDictionary *barInfo in chartDataArray)  {
-		BarView *bar = [barViews objectAtIndex:index];
-		bar.frame = CGRectMake((barFullWidth - barWidth)/2 + index*(barFullWidth),
-                               plotView.height - roundf([[barInfo objectForKey:@"value"] floatValue]*barHeightRatio),
-                               barWidth, roundf([[barInfo objectForKey:@"value"] floatValue]*barHeightRatio));
-		[bar setNeedsDisplay];
-		
-		if (showAxisX) {
-			BarLabel *barLabel = [barLabels objectAtIndex:index];
-			barLabel.frame = CGRectMake(roundf(plotView.left + index*barFullWidth + CHANGE_BARX),
-                                        plotChart.bottom - PLOT_PADDING_BOTTOM,
-                                        barFullWidth, fontSize + PLOT_PADDING_BOTTOM);
-            
-			[barLabel setNeedsDisplay];
-		}
-		index++;
-	}
+    [self animateBars];
+//	NSUInteger index = 0;
+//	for (NSDictionary *barInfo in chartDataArray)  {
+//		BarView *bar = [barViews objectAtIndex:index];
+//		bar.frame = CGRectMake((barFullWidth - barWidth)/2 + index*(barFullWidth),
+//                               plotView.height - roundf([[barInfo objectForKey:@"value"] floatValue]*barHeightRatio),
+//                               barWidth, roundf([[barInfo objectForKey:@"value"] floatValue]*barHeightRatio));
+//		[bar setNeedsDisplay];
+//		
+//		if (showAxisX) {
+//			BarLabel *barLabel = [barLabels objectAtIndex:index];
+//			barLabel.frame = CGRectMake(roundf(plotView.left + index*barFullWidth + CHANGE_BARX),
+//                                        plotChart.bottom - PLOT_PADDING_BOTTOM,
+//                                        barFullWidth, fontSize + PLOT_PADDING_BOTTOM);
+//            
+//			[barLabel setNeedsDisplay];
+//		}
+//		index++;
+//	}
 }
-
+//动态创建bar
 - (void)animateBars {
 	for (BarView *bar in barViews)  {
 		bar.bottom += bar.height;
 	}
 	
-	[UIView animateWithDuration:0.8 animations:^{
+	[UIView animateWithDuration:1.0 animations:^{
 		NSUInteger index = 0;
 		for (NSDictionary *barInfo in chartDataArray)  {
 			BarView *bar = [barViews objectAtIndex:index];
@@ -216,6 +217,14 @@
                                    plotView.height - roundf([[barInfo objectForKey:@"value"] floatValue]*barHeightRatio),
                                    barWidth,
                                    roundf([[barInfo objectForKey:@"value"] floatValue]*barHeightRatio));
+            
+            if (showAxisX) {
+                BarLabel *barLabel = [barLabels objectAtIndex:index];
+                barLabel.frame = CGRectMake(roundf(plotView.left + index*barFullWidth + CHANGE_BARX),
+                                            plotChart.bottom - PLOT_PADDING_BOTTOM,
+                                            barFullWidth, fontSize + PLOT_PADDING_BOTTOM);
+            }
+
 			index++;
 		}
 	}];

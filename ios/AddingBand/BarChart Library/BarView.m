@@ -77,27 +77,28 @@
 		}
 	}	
 }
-
-- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
-	if (popTipView != nil)  {
-		[popTipView dismissAnimated:true];
-		popTipView = nil;
-		return;
-	}
-	
-	NSString *contentMessage = [NSString stringWithFormat:@"%.1f", barValue];
-	popTipView = [[CMPopTipView alloc] initWithMessage:contentMessage];
-	popTipView.backgroundColor = buttonColor;
-	popTipView.textColor = [UIColor whiteColor];
-	popTipView.animation = arc4random() % 2;
-	[popTipView presentPointingAtView:self inView:owner animated:YES];
-	
-	dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, 2.0 * NSEC_PER_SEC);
-	dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-		[popTipView dismissAnimated:true];
-		popTipView = nil;
-	});
-}
+#pragma mark - 点击柱形图
+//点击柱形图触发事件
+//- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+//	if (popTipView != nil)  {
+//		[popTipView dismissAnimated:true];
+//		popTipView = nil;
+//		return;
+//	}
+//	
+//	NSString *contentMessage = [NSString stringWithFormat:@"%.1f", barValue];
+//	popTipView = [[CMPopTipView alloc] initWithMessage:contentMessage];
+//	popTipView.backgroundColor = buttonColor;
+//	popTipView.textColor = [UIColor clearColor];
+//	popTipView.animation = arc4random() % 2;
+//	[popTipView presentPointingAtView:self inView:owner animated:YES];
+//	
+//	dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, 2.0 * NSEC_PER_SEC);
+//	dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+//		[popTipView dismissAnimated:true];
+//		popTipView = nil;
+//	});
+//}
 
 #pragma mark - Drawing methods
 

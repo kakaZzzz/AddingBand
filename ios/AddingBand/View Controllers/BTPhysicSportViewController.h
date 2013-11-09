@@ -22,7 +22,6 @@
 
 @property(strong, nonatomic) BTGlobals* g;
 @property(strong, nonatomic) BTBandCentral* bc;
-
-+(BTPhysicSportViewController *)sharedPhysicSportViewController;
-
+//
+@property(strong, nonatomic) NSArray *barValue;
 @end
