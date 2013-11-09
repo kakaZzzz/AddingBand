@@ -73,9 +73,14 @@
         
         //行数变化时，重新加载列表
         //todo 等于0的时候处理成“查找中”
+        if (self.g.bleListCount == 0) {
+            //加载动画显示
+            [self.indicator startAnimating];
+            [self.tableView reloadData];
+        }
         if (_isBreak == NO || self.g.bleListCount > 0) {
             
-          //  [self.indicator startAnimating];
+            [self.indicator stopAnimating];
             //reloaddata的条件还得加以判断
             [self.tableView reloadData];
         }
@@ -166,9 +171,19 @@ return @"加丁手环";
     //是否连接
     Boolean isConnected = bp.isConnected;
    
+    //是否正在连接中
+    BOOL isConneting = bp.isConnecting;
     
+    NSLog(@"设备是否正在连接  %d",isConneting);
+    //
+    if (isConneting && !isConnected) {
+        [self.indicator startAnimating];
+    }
+    if (isConnected && isConneting) {
+        [self.indicator stopAnimating];
+    }
     if (isFinded && !isConnected) {
-        NSLog(@"发现未连接");
+        NSLog(@"发现未连接  %d",isConneting);
         return kBluetoothFindHeight;
     }
     else if (isConnected)
@@ -193,6 +208,8 @@ return @"加丁手环";
     //是否连接
     Boolean isConnected = bp.isConnected;
     
+    //是否正在连接中
+    BOOL isConneting = bp.isConnecting;
     //设备名称
     NSString* name = bp.name;
     

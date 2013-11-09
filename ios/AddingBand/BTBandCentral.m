@@ -156,7 +156,7 @@
                 
                 find.name = peripheral.name;
                 find.isConnected = NO;
-                find.isConnecting = NO;
+                find.isConnecting = NO;//改过
                 find.batteryLevel = 0;
             }
             
@@ -204,13 +204,12 @@
         [_allPeripherals removeObjectForKey:deleteName];
     }
     
-    self.globals.bleListCount = [_allPeripherals count];
-    
     BTBandPeripheral* find = [_allPeripherals objectForKey:peripheral.name];
     
     //缓存中变更连接状态
-    find.isConnecting = YES;
+    find.isConnecting = YES;//改了
     
+    self.globals.bleListCount = [_allPeripherals count];
     
     //查找之前是否连接过
     Boolean never = YES;
