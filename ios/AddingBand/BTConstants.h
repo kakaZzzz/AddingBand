@@ -60,6 +60,7 @@
 #define UUID_HEALTH_DATA_HEADER         @"2303"
 #define UUID_HEALTH_DATA_BODY           @"2304"
 
+#define UUID_BATTERY_SERVICE            @"180F"
 #define UUID_BATTERY_LEVEL              @"2A19"
 
 

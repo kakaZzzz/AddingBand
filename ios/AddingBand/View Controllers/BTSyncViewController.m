@@ -32,7 +32,7 @@
         [self.g addObserver:self forKeyPath:@"bleListCount" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:NULL];
         
         // Custom initialization
-      //   self.tableView = [[UITableView alloc] initWithFrame:self.tableView.frame style:UITableViewStyleGrouped];
+         self.tableView = [[UITableView alloc] initWithFrame:self.tableView.frame style:UITableViewStyleGrouped];
         
         //设置背景颜色
         UIView *_backgroundview = [[UIView alloc] initWithFrame:self.view.bounds];
@@ -53,6 +53,10 @@
 //        NSArray *valueArray3 = [NSArray arrayWithObjects:@"立即连接", nil];
 //        NSArray *valueArray = [NSArray arrayWithObjects:valueArray1,valueArray2,valueArray3, nil];
      //   self.dataDictionary = [NSMutableDictionary dictionaryWithObjects:valueArray forKeys:_keyArray];
+        
+        //
+        self.indicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+        [self.tableView addSubview:_indicator];
       
     }
         return self;
@@ -70,6 +74,9 @@
         //行数变化时，重新加载列表
         //todo 等于0的时候处理成“查找中”
         if (_isBreak == NO || self.g.bleListCount > 0) {
+            
+          //  [self.indicator startAnimating];
+            //reloaddata的条件还得加以判断
             [self.tableView reloadData];
         }
         
@@ -86,14 +93,14 @@
         BTBandPeripheral *bp = [self.bc getBpByModel:MAM_BAND_MODEL];
         //bp.dlPercent表示同步进度
         NSLog(@"dl: %f", bp.dlPercent);
-        NSDictionary *dicProgress = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:bp.dlPercent] forKey:@"progress"];
+      //  NSDictionary *dicProgress = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:bp.dlPercent] forKey:@"progress"];
         
         if (bp.dlPercent == 1) {
             
             //同步完成逻辑
             //在这里发送通知  刷新需要显示运动量之类页面的数据 包括进度条  label  柱形图
             //同步完成之后要通知数据页面进行数据刷新
-            [[NSNotificationCenter defaultCenter] postNotificationName:UPDATACIRCULARPROGRESSNOTICE object:nil userInfo:dicProgress];//接受通知页面必须存在
+        //    [[NSNotificationCenter defaultCenter] postNotificationName:UPDATACIRCULARPROGRESSNOTICE object:nil userInfo:dicProgress];//接受通知页面必须存在
         }
         
     }
@@ -138,17 +145,19 @@
 }
 
 ////分区头 所要显示的文字
-//- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
-//
-//{
-//    //
-//    BTBandPeripheral *bp = [self.peripheralArray objectAtIndex:section];
-//    return bp.name;
-//}
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+
+{
+    //
+return @"加丁手环";
+    
+}
 //
 
 //动态改变每一行的高度
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+   
+    NSLog(@"heightForRowAtIndexPath");
     //根据index找到对应的peripheral
     BTBandPeripheral*bp  = [self.bc getBpByIndex:indexPath.row];
     
@@ -159,10 +168,12 @@
    
     
     if (isFinded && !isConnected) {
+        NSLog(@"发现未连接");
         return kBluetoothFindHeight;
     }
     else if (isConnected)
     {
+        NSLog(@"已连接");
         return kBluetoothConnectedHeight;
     }
     else
@@ -171,6 +182,7 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    NSLog(@"cellForRowAtIndexPath");
     
     //根据index找到对应的peripheral
     BTBandPeripheral*bp  = [self.bc getBpByIndex:indexPath.row];
@@ -215,7 +227,7 @@
     }
     else if (isConnected)
     {
-        if (cellConnet == nil) {
+         if (cellConnet == nil) {
             
             cellConnet = [[BTBluetoothConnectedCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifierConnect tatget:self];
         }
@@ -227,10 +239,11 @@
     }
     else
     {
-        if (cellConnet == nil) {
+        if (cellNofind == nil) {
             
             cellNofind = [[BTBluetoothLinkCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifierConnect];
         }
+        cellNofind.bluetoothName.backgroundColor = [UIColor grayColor];
         cellNofind.bluetoothName.text = [NSString stringWithFormat:@"%@  %@",bp.name,batteryLevel];
         
         return cellNofind;
@@ -245,7 +258,7 @@
 //Cell上面按钮的触发事件 同步数据 蛋疼
 - (void)toSync:(UIButton *)button event:(id)event
 {
-    
+    NSLog(@"同步数据");
     //进行同步 这里也得判断设备是哪个设备啊
     [self.bc sync:MAM_BAND_MODEL];
     

@@ -99,7 +99,7 @@
     switch (tap.view.tag) {
         case 100:
         {
-            BTPhysicSportViewController *sportVC = [BTPhysicSportViewController sharedPhysicSportViewController];
+            BTPhysicSportViewController *sportVC = [[BTPhysicSportViewController alloc] init];
             sportVC.hidesBottomBarWhenPushed = YES;
             [self.navigationController pushViewController:sportVC animated:YES];
             break;

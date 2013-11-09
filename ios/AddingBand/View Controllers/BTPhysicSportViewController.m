@@ -47,12 +47,6 @@ static int dailyStep = 0;
         //
         [self.g addObserver:self forKeyPath:@"bleListCount" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:NULL];
         
-        //添加圆形进度条 和 Label
-        [self addCircleProgress];
-        //添加柱状图
-        [self loadBarChartUsingArray];
-        //添加同步按钮
-        [self addSycnButton];
 
         
         //读取当天总步数 和  累计总步数
@@ -65,44 +59,44 @@ static int dailyStep = 0;
     return self;
 }
 
-//监控参数，更新显示
--(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
-{
-    NSLog(@"更新数据");
-    
-    if([keyPath isEqualToString:@"dlPercent"])
-    {
-        NSLog(@"what");
-        
-        BTBandPeripheral* bp = [self.bc getBpByModel:MAM_BAND_MODEL];
-        
-        if (bp.dlPercent == 1) {
-            
-            //同步完成逻辑
-            //   [self buildMain];
-            
-        }
-    }
-    
-    if([keyPath isEqualToString:@"bleListCount"])
-    {
-        //连接上该型号设备
-        if ([self.bc isConnectedByModel:MAM_BAND_MODEL]){
-            
-            //注册同步进度的监听
-            [[self.bc getBpByModel:MAM_BAND_MODEL] addObserver:self forKeyPath:@"dlPercent" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:NULL];
-            
-            
-        }else{
-            
-            //没有连接上时的处理
-        }
-        
-        //读取一下对更新时间的描述
-        NSString* syncWord = [self.bc getLastSyncDesc:MAM_BAND_MODEL];
-        
-    }
-}
+////监控参数，更新显示
+//-(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+//{
+//    NSLog(@"更新数据");
+//    
+//    if([keyPath isEqualToString:@"dlPercent"])
+//    {
+//        NSLog(@"what");
+//        
+//        BTBandPeripheral* bp = [self.bc getBpByModel:MAM_BAND_MODEL];
+//        
+//        if (bp.dlPercent == 1) {
+//            
+//            //同步完成逻辑
+//            //   [self buildMain];
+//            
+//        }
+//    }
+//    
+//    if([keyPath isEqualToString:@"bleListCount"])
+//    {
+//        //连接上该型号设备
+//        if ([self.bc isConnectedByModel:MAM_BAND_MODEL]){
+//            
+//            //注册同步进度的监听
+//            [[self.bc getBpByModel:MAM_BAND_MODEL] addObserver:self forKeyPath:@"dlPercent" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:NULL];
+//            
+//            
+//        }else{
+//            
+//            //没有连接上时的处理
+//        }
+//        
+//        //读取一下对更新时间的描述
+//        NSString* syncWord = [self.bc getLastSyncDesc:MAM_BAND_MODEL];
+//        
+//    }
+//}
 
 // 建立主要区域
 -(void)buildMain{
@@ -195,29 +189,34 @@ static int dailyStep = 0;
     
 }
 
-//单例
-+(BTPhysicSportViewController *)sharedPhysicSportViewController
-{
-   @synchronized(self)
-    {
-    if (sharedPhysicSportInstance == nil ) {
-        sharedPhysicSportInstance = [[BTPhysicSportViewController alloc] init];
-    }
-    }
-    return sharedPhysicSportInstance;
-}
+////单例
+//+(BTPhysicSportViewController *)sharedPhysicSportViewController
+//{
+//   @synchronized(self)
+//    {
+//    if (sharedPhysicSportInstance == nil ) {
+//        sharedPhysicSportInstance = [[BTPhysicSportViewController alloc] init];
+//    }
+//    }
+//    return sharedPhysicSportInstance;
+//}
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor yellowColor];
     self.navigationItem.title = @"MAMA运动";
- 
+    //添加圆形进度条 和 Label
+    [self addCircleProgress];
+    //添加柱状图
+    [self loadBarChartUsingArray];
+    //添加同步按钮
+    [self addSycnButton];
     
    	// Do any additional setup after loading the view.
 }
 
-#pragma mark - 读取当天总步数
+#pragma mark - 读取累计总步数
 - (int)getTotalStep
 {
      int stepCount = 0;
@@ -229,7 +228,7 @@ static int dailyStep = 0;
     NSLog(@"一共步数%d",stepCount);
     return stepCount;
 }
-#pragma mark - 读取累计总步数
+#pragma mark - 读取当天总步数
 - (int)getDailyStep
 {
     //设置数据类型
@@ -343,30 +342,39 @@ static int dailyStep = 0;
     }
 
 
-//更新圆形进度条
-- (void)updateCircularProgress:(NSNotification *)notification
-{
-    //亲，在这个方法里传入进度参数即可
-    float progress = [[notification.userInfo objectForKey:@"progress"] floatValue];
-    [self.circularProgressView updateProgressCircle:progress withTotal:10];
-    NSLog(@"要更新数据了");
- 
-    [self buildMain];
-  //  [[BTBandCentral sharedBandCentral] sync:MAM_BAND_MODEL];
-    
-    
-
-}
+////更新圆形进度条
+//- (void)updateCircularProgress:(NSNotification *)notification
+//{
+//    //亲，在这个方法里传入进度参数即可
+//    float progress = [[notification.userInfo objectForKey:@"progress"] floatValue];
+//    [self.circularProgressView updateProgressCircle:progress withTotal:10];
+//    NSLog(@"要更新数据了");
+// 
+//    [self buildMain];
+//  //  [[BTBandCentral sharedBandCentral] sync:MAM_BAND_MODEL];
+//    
+//    
+//
+//}
 //页面将要显示的时候 处理数据
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    [UIView animateWithDuration:1 animations:^{
-        [self updateUIWithStepDaily:dailyStep totalStep:totalStep];
-        self.totalStep.text = [NSString stringWithFormat:@"%d",totalStep];
+//    [UIView animateWithDuration:5000 animations:^{
+//        static int k = 0;
+//        
+//        for (int i = 1; i < 11; i ++) {
+//            k = k + 50/10;
+//            [self updateUIWithStepDaily:k totalStep:totalStep];
+//        }
+//        k = 0;
+//        self.totalStep.text = [NSString stringWithFormat:@"%d",totalStep];
+//        
+//    }];
+  //  [self updateUIWithStepDaily:50 totalStep:totalStep];
+  //  [self updateUIWithStepDaily:50 totalStep:100];
+    [self updateUIWithStepDaily:dailyStep totalStep:totalStep];
 
-    }];
-    
 }
 
 - (void)didReceiveMemoryWarning

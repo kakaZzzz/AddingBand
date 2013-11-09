@@ -247,9 +247,14 @@
     
     for (CBService *s in peripheral.services) {
         
-        NSLog(@"s:%@", s.UUID);
         
-        [peripheral discoverCharacteristics:nil forService:s];
+        
+        if ([s.UUID isEqual:[CBUUID UUIDWithString:UUID_HEALTH_SERVICE]] || [s.UUID isEqual:[CBUUID UUIDWithString:UUID_BATTERY_SERVICE]]) {
+            NSLog(@"s:%@", s.UUID);
+            [peripheral discoverCharacteristics:nil forService:s];
+        }
+        
+        
         
     }
     
@@ -422,7 +427,7 @@
         NSInteger interval = [zone secondsFromGMTForDate: date];
         NSDate *localeDate = [date  dateByAddingTimeInterval: interval];
         
-        NSLog(@"localeDate111==%@", localeDate);
+        NSLog(@"localeDate211==%@", localeDate);
 //
 
         if (count > 0 && seconds) {

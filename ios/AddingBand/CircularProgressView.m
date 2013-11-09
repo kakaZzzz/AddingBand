@@ -54,14 +54,33 @@
         UIBezierPath *progressCircle = [UIBezierPath bezierPathWithArcCenter:CGPointMake(self.bounds.size.width / 2,self.bounds.size.height / 2) radius:self.bounds.size.width / 2 - self.lineWidth / 2 startAngle:(CGFloat) -M_PI_2 endAngle:(CGFloat)(-M_PI_2 + self.progress * 2 * M_PI) clockwise:YES];
         [self.progressColor setStroke];
         progressCircle.lineWidth = self.lineWidth;
-        [progressCircle stroke];
+       // [progressCircle stroke];//直接把圆画出来
         
- 
+        //把圆动态的画出来
+        CAShapeLayer * arcLayer=[CAShapeLayer layer];
+        arcLayer.strokeColor=self.progressColor.CGColor;
+        //圆的填充颜色为透明色
+        arcLayer.fillColor = [UIColor clearColor].CGColor;
+        arcLayer.lineWidth=self.lineWidth;
+
+        arcLayer.path = progressCircle.CGPath;
+        [self.layer addSublayer:arcLayer];
+        [self drawLineAnimation:arcLayer];
+        
     }
     
   
 }
-
+//画圆动画
+-(void)drawLineAnimation:(CALayer*)layer
+{
+    CABasicAnimation *bas=[CABasicAnimation animationWithKeyPath:@"strokeEnd"];
+    bas.duration=1;
+    //bas.delegate=self;
+    bas.fromValue=[NSNumber numberWithInteger:0];
+    bas.toValue=[NSNumber numberWithInteger:1];
+    [layer addAnimation:bas forKey:@"key"];
+}
 - (void)updateProgressCircle:(int)start withTotal:(int)total{
     //update progress value
     
