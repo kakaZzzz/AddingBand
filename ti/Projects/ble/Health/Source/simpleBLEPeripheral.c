@@ -522,6 +522,8 @@ void SimpleBLEPeripheral_Init( uint8 task_id )
     // P1 = 0x00;
     // P2= 0x00;
 
+    // P1 = B(11000001);
+
     // P1_0 = 1;
     // P1_1 = 1;
 
@@ -798,16 +800,23 @@ static void simpleBLEPeripheral_ProcessOSALMsg( osal_event_hdr_t *pMsg )
 
       uint8 shift = ((keyChange_t *)pMsg)->state;
       uint8 keys = ((keyChange_t *)pMsg)->keys;
-      
+
       if ( keys & HAL_KEY_SW_1 )
       {
-        LED12_PI0 = 0;
+        LED1_PI0 = !LED1_PI0;
       }
 
       if ( keys & HAL_KEY_SW_2 )
       {
 
-        LED3_PI0 = 0;
+        LED2_PI0 = !LED2_PI0;
+
+      }
+
+      if ( keys & HAL_KEY_SW_3 )
+      {
+
+        LED3_PI0 = !LED3_PI0;
 
       }
 
