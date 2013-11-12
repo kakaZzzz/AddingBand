@@ -1329,11 +1329,11 @@
           <state>HAL_DMA=TRUE</state>
           <state>POWER_SAVING</state>
           <state>xPLUS_BROADCASTER</state>
-          <state>xHAL_LCD=TRUE</state>
+          <state>HAL_LCD=TRUE</state>
           <state>HAL_LED=TRUE</state>
-          <state>HAL_UART=TRUE</state>
-          <state>HAL_UART_DMA=1</state>
-          <state>HAL_KEY=FALSE</state>
+          <state>xHAL_UART=TRUE</state>
+          <state>xHAL_UART_DMA=1</state>
+          <state>HAL_KEY=TRUE</state>
           <state>FAC_TEST=TRUE</state>
         </option>
         <option>

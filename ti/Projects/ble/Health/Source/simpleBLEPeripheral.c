@@ -53,8 +53,26 @@
  * CONSTANTS
  */
 
+#define B(A)    ( (((bool)(A&0X10000000UL))<<7) | (((bool)(A&0X01000000UL))<<6) | (((bool)(A&0X00100000UL))<<5) \
+                | (((bool)(A&0X00010000UL))<<4) | (((bool)(A&0X00001000UL))<<3) | (((bool)(A&0X00000100UL))<<2) \
+                | (((bool)(A&0X00000010UL))<<1) | (((bool)(A&0X00000001UL))<<0) )
+
 #define HI_UINT32(x)                          (((x) >> 16) & 0xffff)
 #define LO_UINT32(x)                          ((x) & 0xffff)
+
+// define LEDs
+#define LED12_PI0                             P0_2
+#define LED1_PI0                              P0_3
+#define LED2_PI0                              P0_1
+#define LED3_PI0                              P0_4
+#define LED4_PI0                              P0_5
+#define LED5_PI0                              P0_6
+#define LED6_PI0                              P1_0
+#define LED7_PI0                              P1_6
+#define LED8_PI0                              P1_7
+#define LED9_PI0                              P2_1
+#define LED10_PI0                             P2_2
+#define LED11_PI0                             P2_0
 
 // How often to perform periodic event
 #define SBP_PERIODIC_EVT_PERIOD               5000
@@ -356,7 +374,7 @@ void SimpleBLEPeripheral_Init( uint8 task_id )
 {
     simpleBLEPeripheral_TaskID = task_id;
 
-    Debug_init(simpleBLEPeripheral_TaskID);
+    // Debug_init(simpleBLEPeripheral_TaskID);
 
     //xp code
     adxl345Init();
@@ -476,8 +494,12 @@ void SimpleBLEPeripheral_Init( uint8 task_id )
         Batt_SetParameter( BATT_PARAM_CRITICAL_LEVEL, sizeof (uint8 ), &critical );
     }
 
-    P0DIR |= BV(0) | BV(1) | BV(2) | BV(3) | BV(4);
-    P0SEL &= ~(BV(0) | BV(1) | BV(2) | BV(3) | BV(4));
+    RegisterForKeys( simpleBLEPeripheral_TaskID );
+
+    // P0DIR |= BV(0) | BV(1) | BV(2) | BV(3) | BV(4);
+    P0DIR = 0x7F;
+    // P0SEL &= ~(BV(0) | BV(1) | BV(2) | BV(3) | BV(4));
+    P0SEL = 0x00;
 
     // P0_0 = 0;
     // P0_1 = 0;
@@ -485,11 +507,22 @@ void SimpleBLEPeripheral_Init( uint8 task_id )
     // P0_3 = 0;
 //    P0_4 = 1;
 
-    OBSSEL0 = 0x00;
-    OBSSEL1 = 0x00;
+    // OBSSEL0 = 0x00;
+    // OBSSEL1 = 0x00;
 
-    P1DIR |= BV(0) | BV(1);
-    P1SEL &= ~(BV(0) | BV(1));
+    // P1DIR |= BV(0) | BV(1);
+    P1DIR = 0xC3;
+    // P1SEL &= ~(BV(0) | BV(1));
+    P1SEL = 0x00;
+
+    P2DIR = 0xFF;
+    P2SEL = 0x00;
+
+    // P0 = B(10000001);
+    // P1 = 0x00;
+    // P2= 0x00;
+
+    // P1 = B(11000001);
 
     // P1_0 = 1;
     // P1_1 = 1;
@@ -666,14 +699,14 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
     if ( events & SBP_LED_STOP_EVT )
     {
 
-        P0_0 = 1;
-        P0_1 = 1;
-        P0_2 = 1;
+        // P0_0 = 1;
+        // P0_1 = 1;
+        // P0_2 = 1;
 
-        P0_3 = 1;
+        // P0_3 = 1;
 
-        P1_0 = 0;
-        P1_1 = 0;
+        // P1_0 = 0;
+        // P1_1 = 0;
 
         // HalI2CInit(EEPROM_ADDRESS, I2C_CLOCK_RATE);
 
@@ -762,6 +795,32 @@ static void simpleBLEPeripheral_ProcessOSALMsg( osal_event_hdr_t *pMsg )
 {
     switch ( pMsg->event )
     {
+
+    case KEY_CHANGE:
+
+      uint8 shift = ((keyChange_t *)pMsg)->state;
+      uint8 keys = ((keyChange_t *)pMsg)->keys;
+
+      if ( keys & HAL_KEY_SW_1 )
+      {
+        LED1_PI0 = !LED1_PI0;
+      }
+
+      if ( keys & HAL_KEY_SW_2 )
+      {
+
+        LED2_PI0 = !LED2_PI0;
+
+      }
+
+      if ( keys & HAL_KEY_SW_3 )
+      {
+
+        LED3_PI0 = !LED3_PI0;
+
+      }
+
+      break;
 
     default:
         // do nothing
@@ -1206,11 +1265,11 @@ static void adxl345Loop(void)
 
                     // osal_start_timerEx( simpleBLEPeripheral_TaskID, LED_CYCLE_EVT, 10 );
 
-                    P0_0 = 0;
-                    P0_1 = 0;
-                    P0_2 = 0;
-                    P1_0 = 1;
-                    P1_1 = 1;
+                    // P0_0 = 0;
+                    // P0_1 = 0;
+                    // P0_2 = 0;
+                    // P1_0 = 1;
+                    // P1_1 = 1;
 
                     osal_start_timerEx( simpleBLEPeripheral_TaskID, SBP_LED_STOP_EVT, 500 );
 
@@ -1275,7 +1334,7 @@ static void adxl345Loop(void)
 
         eepromWriteStep(TAP_DATA_TYPE);
 
-        P0_3 = 0;
+        // P0_3 = 0;
 
         osal_start_timerEx( simpleBLEPeripheral_TaskID, SBP_LED_STOP_EVT, 1000 );
     }
