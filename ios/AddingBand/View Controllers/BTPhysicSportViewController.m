@@ -57,38 +57,38 @@ static int dailyStep = 0;
 //-(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 //{
 //    NSLog(@"更新数据");
-//    
+//
 //    if([keyPath isEqualToString:@"dlPercent"])
 //    {
 //        NSLog(@"what");
-//        
+//
 //        BTBandPeripheral* bp = [self.bc getBpByModel:MAM_BAND_MODEL];
-//        
+//
 //        if (bp.dlPercent == 1) {
-//            
+//
 //            //同步完成逻辑
 //            //   [self buildMain];
-//            
+//
 //        }
 //    }
-//    
+//
 //    if([keyPath isEqualToString:@"bleListCount"])
 //    {
 //        //连接上该型号设备
 //        if ([self.bc isConnectedByModel:MAM_BAND_MODEL]){
-//            
+//
 //            //注册同步进度的监听
 //            [[self.bc getBpByModel:MAM_BAND_MODEL] addObserver:self forKeyPath:@"dlPercent" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:NULL];
-//            
-//            
+//
+//
 //        }else{
-//            
+//
 //            //没有连接上时的处理
 //        }
-//        
+//
 //        //读取一下对更新时间的描述
 //        NSString* syncWord = [self.bc getLastSyncDesc:MAM_BAND_MODEL];
-//        
+//
 //    }
 //}
 
@@ -116,67 +116,67 @@ static int dailyStep = 0;
     //设置coredata
     //取得context
     //获取上下文··
-//    self.context =[(BTAppDelegate *) [UIApplication sharedApplication].delegate managedObjectContext];
-//    NSEntityDescription *entity = [NSEntityDescription entityForName:@"BTRawData" inManagedObjectContext:self.context];
-//    
-//    NSFetchRequest* request = [[NSFetchRequest alloc] init];
-//    [request setEntity:entity];
-//    
-//    //设置查询条件
+    //    self.context =[(BTAppDelegate *) [UIApplication sharedApplication].delegate managedObjectContext];
+    //    NSEntityDescription *entity = [NSEntityDescription entityForName:@"BTRawData" inManagedObjectContext:self.context];
+    //
+    //    NSFetchRequest* request = [[NSFetchRequest alloc] init];
+    //    [request setEntity:entity];
+    //
+    //    //设置查询条件
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"year == %@ AND month == %@ AND day = %@ AND hour == %@ AND type == %@",year, month, day, hour, [NSNumber numberWithInt:type]];
     
-//    [request setPredicate:predicate];
-//    
-//    //排序
-//    NSMutableArray *sortDescriptors = [NSMutableArray array];
-//    [sortDescriptors addObject:[[NSSortDescriptor alloc] initWithKey:@"minute" ascending:YES] ];
-//    
-//    [request setSortDescriptors:sortDescriptors];
-//    
-//    
-////    //
-////    //创建一个请求
-////    self.context =[(BTAppDelegate *) [UIApplication sharedApplication].delegate managedObjectContext];
-////    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"BTRawData"];
-////    
-////    NSArray* raw = [self.context executeFetchRequest:request error:nil];
-//
-//    NSError* error;
-   //从coredata中读取的数据 记录时间和步数
+    //    [request setPredicate:predicate];
+    //
+    //    //排序
+    //    NSMutableArray *sortDescriptors = [NSMutableArray array];
+    //    [sortDescriptors addObject:[[NSSortDescriptor alloc] initWithKey:@"minute" ascending:YES] ];
+    //
+    //    [request setSortDescriptors:sortDescriptors];
+    //
+    //
+    ////    //
+    ////    //创建一个请求
+    ////    self.context =[(BTAppDelegate *) [UIApplication sharedApplication].delegate managedObjectContext];
+    ////    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"BTRawData"];
+    ////
+    ////    NSArray* raw = [self.context executeFetchRequest:request error:nil];
+    //
+    //    NSError* error;
+    //从coredata中读取的数据 记录时间和步数
     NSArray* raw = [BTGetData getFromCoreDataWithPredicate:predicate
                                                 entityName:@"BTRawData" sortKey:@"minute"];
     NSLog(@"从coredata里取出的数据%@",raw);
-//    //初始化数据
-//    _dailyData = [NSMutableArray arrayWithCapacity:1];
-//    [_dailyData removeAllObjects];
-//    for (int i = 0; i < 60; i++) {
-//        // 显示好看，空的设1
-//        [_dailyData addObject:[NSNumber numberWithInt:1]];
-//    }
-//    
-//    _stepCount = 0;
+    //    //初始化数据
+    //    _dailyData = [NSMutableArray arrayWithCapacity:1];
+    //    [_dailyData removeAllObjects];
+    //    for (int i = 0; i < 60; i++) {
+    //        // 显示好看，空的设1
+    //        [_dailyData addObject:[NSNumber numberWithInt:1]];
+    //    }
+    //
+    //    _stepCount = 0;
     
     //如果有数据
     
-//    for (BTRawData* one in raw) {
-//           NSLog(@"走的步数一共是 %d",_stepCount);
-//        NSNumber* m = one.minute;
-//     //   [_dailyData insertObject:one.count atIndex:59 - [m integerValue]];
-//        
-//        _stepCount += [one.count intValue];
-//      
-//    }
+    //    for (BTRawData* one in raw) {
+    //           NSLog(@"走的步数一共是 %d",_stepCount);
+    //        NSNumber* m = one.minute;
+    //     //   [_dailyData insertObject:one.count atIndex:59 - [m integerValue]];
+    //
+    //        _stepCount += [one.count intValue];
+    //
+    //    }
     //更新总步数Label和圆形进度条
     //总步数 和整体一天的步数数据
-   // [self getDailyStep];
+    // [self getDailyStep];
     dailyStep = [self getDailyStep];
     totalStep = [self getTotalStep];
     [self updateUIWithStepDaily:dailyStep totalStep:totalStep];
     //总步数   用来显示用户总的数据
     
-  //  _stepCount;
-  //  NSLog(@"每日数据是 %@",_dailyData);
-   
+    //  _stepCount;
+    //  NSLog(@"每日数据是 %@",_dailyData);
+    
     //具体步数时间分布
     //index-小时，value-步数
     _dailyData;
@@ -201,7 +201,7 @@ static int dailyStep = 0;
 #pragma mark - 读取累计总步数
 - (int)getTotalStep
 {
-     int stepCount = 0;
+    int stepCount = 0;
     NSArray *array = [BTGetData getFromCoreDataWithPredicate:nil entityName:@"BTRawData" sortKey:nil];
     for (BTRawData* one in array) {
         stepCount += [one.count intValue];
@@ -226,10 +226,12 @@ static int dailyStep = 0;
     NSNumber* month = [BTUtils getMonth:localeDate];
     NSNumber* day = [BTUtils getDay:localeDate];
     NSNumber* hour = [BTUtils getHour:localeDate];
-       //设置查询条件
+    
+    
+    //设置查询条件
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"year == %@ AND month == %@ AND day == %@ AND hour == %@ AND type == %@",year, month, day, hour, [NSNumber numberWithInt:type]];
-
-     int stepCount = 0;
+    
+    int stepCount = 0;
     
     NSArray *array = [BTGetData getFromCoreDataWithPredicate:predicate entityName:@"BTRawData" sortKey:nil];
     for (BTRawData* one in array) {
@@ -237,8 +239,75 @@ static int dailyStep = 0;
         
     }
     NSLog(@"当天总步数%d",stepCount);
+    
+    //
+   // NSDate *date = [NSDate date];
+    NSCalendar*calendar = [NSCalendar currentCalendar];
+    NSDateComponents *comps;
+    
+    // 年月日获得
+    comps =[calendar components:(NSYearCalendarUnit | NSMonthCalendarUnit |NSDayCalendarUnit)
+                       fromDate:date];
+    NSInteger year1 = [comps year];
+    NSInteger month1 = [comps month];
+    NSInteger day1 = [comps day];
+    NSLog(@"year:%d month: %d, day: %d", year1, month1, day1);
+    
+    //周几 星期几的获取
+    comps =[calendar components:(NSWeekCalendarUnit | NSWeekdayCalendarUnit |NSWeekdayOrdinalCalendarUnit)
+                       fromDate:date];
+    NSInteger week = [comps week]; // 今年的第几周
+    NSInteger weekday = [comps weekday]; // 星期几（注意，周日是“1”，周一是“2”。。。。）
+    NSInteger weekdayOrdinal = [comps weekdayOrdinal]; // 这个月的第几周
+    NSLog(@"week:%d weekday: %d weekday ordinal: %d", week, weekday, weekdayOrdinal);
+    //
     return stepCount;
+    
+}
 
+#pragma mark - 读取最近一周每天的运动量
+- (NSArray *)getResentOneWeekSteps
+{
+    //设置数据类型
+    int type = 2;
+    //读取当前时间
+    NSDate* date = [NSDate date];
+    NSTimeZone *zone = [NSTimeZone systemTimeZone];
+    NSInteger interval = [zone secondsFromGMTForDate: date];
+    NSDate *localeDate = [date  dateByAddingTimeInterval: interval];
+    
+    NSLog(@"localeDate==%@", localeDate);
+    //分割出年 月 日 小时
+    NSNumber* year = [BTUtils getYear:localeDate];
+    //    NSNumber* month = [BTUtils getMonth:localeDate];
+    //    NSNumber* day = [BTUtils getDay:localeDate];
+    //    NSNumber* hour = [BTUtils getHour:localeDate];
+    //设置查询条件
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"year == %@ AND type == %@",year, [NSNumber numberWithInt:type]];
+    NSArray *array = [BTGetData getFromCoreDataWithPredicate:predicate entityName:@"BTRawData" sortKey:nil];
+    //最近七天的一个范围
+    NSArray *resultArray;
+    //如果数据大于七天
+    if (array.count >= 7) {
+        NSRange theRange;
+        theRange.location = array.count - 7;//range的起点
+        theRange.length = 7;//range的长度
+        resultArray = [array subarrayWithRange:theRange];
+        
+    }
+    //如果数据少于七天
+    else{
+        resultArray = array;
+    }
+    
+    return resultArray;
+    
+    
+}
+#pragma mark - 根据今天日期 推算出前七天分别是周几
+- (void)getWeeklyByTodayDate
+{
+    //
 }
 - (void)updateUIWithStepDaily:(int)stepDaily totalStep:(int)totalStep
 {
@@ -270,8 +339,8 @@ static int dailyStep = 0;
     _realStep.font = [UIFont systemFontOfSize:stepLabelFont];
     _realStep.textAlignment =  NSTextAlignmentCenter;
     [self.view addSubview:_realStep];
-
-
+    
+    
 }
 #pragma mark - add sync button
 - (void)addSycnButton
@@ -293,18 +362,18 @@ static int dailyStep = 0;
 - (void)loadBarChartUsingArray {
     //Generate properly formatted data to give to the bar chart
     //横坐标元素
- /*   在此传入横坐标名称  柱子表示的数值  柱子颜色  以及label中字体颜色 */
+    /*   在此传入横坐标名称  柱子表示的数值  柱子颜色  以及label中字体颜色 */
     
     _barChart = [[BarChartView alloc] initWithFrame:CGRectMake(60, 160, 200, 100)];//柱形图背景大小
     _barChart.backgroundColor = [UIColor clearColor];
     [self.view addSubview:_barChart];
-
-    NSArray *array = [_barChart createChartDataWithTitles:[NSArray arrayWithObjects:@"1", @"2", @"3", @"4",@"5" ,@"6",@"7",nil]
-                                                  values:_barValue
-                                                  colors:[NSArray arrayWithObjects:@"87E317", @"17A9E3", @"E32F17", @"FFE53D",@"FFE53D", @"FFE53D",@"FFE53D",nil]
-                                             labelColors:[NSArray arrayWithObjects:@"17A9E3", @"17A9E3", @"17A9E3", @"17A9E3", @"17A9E3",@"17A9E3",@"17A9E3",nil]];
     
-  
+    NSArray *array = [_barChart createChartDataWithTitles:[NSArray arrayWithObjects:@"1", @"2", @"3", @"4",@"5" ,@"6",@"7",nil]
+                                                   values:_barValue
+                                                   colors:[NSArray arrayWithObjects:@"87E317", @"17A9E3", @"E32F17", @"FFE53D",@"FFE53D", @"FFE53D",@"FFE53D",nil]
+                                              labelColors:[NSArray arrayWithObjects:@"17A9E3", @"17A9E3", @"17A9E3", @"17A9E3", @"17A9E3",@"17A9E3",@"17A9E3",nil]];
+    
+    
     //Set the Shape of the Bars (Rounded or Squared) - Rounded is default
     //柱形形状  分圆角型和直角型
     [_barChart setupBarViewShape:BarShapeSquared];
@@ -319,10 +388,10 @@ static int dailyStep = 0;
     
     //Generate the bar chart using the formatted data
     [_barChart setDataWithArray:array
-                      showAxis:DisplayBothAxes
-                     withColor:[UIColor clearColor]//指示坐标颜色
-       shouldPlotVerticalLines:YES];
-    }
+                       showAxis:DisplayBothAxes
+                      withColor:[UIColor clearColor]//指示坐标颜色
+        shouldPlotVerticalLines:YES];
+}
 
 
 //页面将要显示的时候 处理数据
@@ -330,7 +399,7 @@ static int dailyStep = 0;
 {
     [super viewWillAppear:animated];
     [self updateUIWithStepDaily:dailyStep totalStep:totalStep];
-
+    
 }
 
 - (void)didReceiveMemoryWarning

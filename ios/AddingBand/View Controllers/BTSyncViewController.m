@@ -31,8 +31,8 @@
         //监听设备变化
         [self.g addObserver:self forKeyPath:@"bleListCount" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:NULL];
         
-        // Custom initialization
-         self.tableView = [[UITableView alloc] initWithFrame:self.tableView.frame style:UITableViewStyleGrouped];
+        //设置tableview类型 为UITableViewStyleGrouped
+        self.tableView = [[UITableView alloc] initWithFrame:self.tableView.frame style:UITableViewStyleGrouped];
         
         //设置背景颜色
         UIView *_backgroundview = [[UIView alloc] initWithFrame:self.view.bounds];
@@ -42,26 +42,28 @@
         self.tableView.allowsSelection = NO;
         self.tableView.rowHeight = kBluetoothConnectedHeight;
         //数据
-        //存放蓝牙名字的数组
-        self.bluetoothBatteryArray = [NSMutableArray arrayWithCapacity:1];
         //存放外部蓝牙设备
         //self.peripheralArray = @[MAM_BAND_MODEL];
         self.peripheralArray = [NSMutableArray arrayWithCapacity:1];
-      //  self.keyArray = [NSArray arrayWithObjects:@"A1-- XXXX  95%",@"A2-- XXXX  98%", @"A3-- XXXX  100%",nil];
-//        NSArray *valueArray1 = [NSArray arrayWithObjects:@"上次同步 Wednesday",@"立即同步", nil];
-//        NSArray *valueArray2 = [NSArray arrayWithObjects:@"立即连接",nil];
-//        NSArray *valueArray3 = [NSArray arrayWithObjects:@"立即连接", nil];
-//        NSArray *valueArray = [NSArray arrayWithObjects:valueArray1,valueArray2,valueArray3, nil];
-     //   self.dataDictionary = [NSMutableDictionary dictionaryWithObjects:valueArray forKeys:_keyArray];
-        
-        //
         self.indicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
         [self.tableView addSubview:_indicator];
-      
+        
+        
+        //启动计时器 监控上次更新时间   反复调用会不会出现什么意外情况？？？
+        [self observeLastSyncTime];
+        [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(observeLastSyncTime) userInfo:nil repeats:YES];
     }
-        return self;
+    return self;
 }
-
+//
+- (void)observeLastSyncTime
+{
+    //读取一下对更新时间的描述
+    _lastSyncTime = [self.bc getLastSyncDesc:MAM_BAND_MODEL];
+    NSLog(@"上次同步时间是：%@",_lastSyncTime);
+    [self.tableView reloadData];
+    
+}
 //监控参数，更新显示  当连接  断开的时候也会调用此方法
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
@@ -98,14 +100,16 @@
         BTBandPeripheral *bp = [self.bc getBpByModel:MAM_BAND_MODEL];
         //bp.dlPercent表示同步进度
         NSLog(@"dl: %f", bp.dlPercent);
-      //  NSDictionary *dicProgress = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:bp.dlPercent] forKey:@"progress"];
+        //  NSDictionary *dicProgress = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:bp.dlPercent] forKey:@"progress"];
         
         if (bp.dlPercent == 1) {
+            
+            
             
             //同步完成逻辑
             //在这里发送通知  刷新需要显示运动量之类页面的数据 包括进度条  label  柱形图
             //同步完成之后要通知数据页面进行数据刷新
-        //    [[NSNotificationCenter defaultCenter] postNotificationName:UPDATACIRCULARPROGRESSNOTICE object:nil userInfo:dicProgress];//接受通知页面必须存在
+            //    [[NSNotificationCenter defaultCenter] postNotificationName:UPDATACIRCULARPROGRESSNOTICE object:nil userInfo:dicProgress];//接受通知页面必须存在
         }
         
     }
@@ -116,10 +120,10 @@
     [super viewDidLoad];
     self.tableView.backgroundColor = [UIColor whiteColor];
     NSLog(@"3333333333333333333%@",NSStringFromCGRect(self.tableView.frame));
-   
+    
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
- 
+    
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
@@ -134,9 +138,9 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-
+    
     // Return the number of sections.
-//    return [self.peripheralArray count];
+    //    return [self.peripheralArray count];
     return 1;
 }
 
@@ -154,14 +158,14 @@
 
 {
     //
-return @"加丁手环";
+    return @"加丁手环";
     
 }
 //
 
 //动态改变每一行的高度
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-   
+    
     NSLog(@"heightForRowAtIndexPath");
     //根据index找到对应的peripheral
     BTBandPeripheral*bp  = [self.bc getBpByIndex:indexPath.row];
@@ -170,20 +174,20 @@ return @"加丁手环";
     Boolean isFinded = bp.isFinded;
     //是否连接
     Boolean isConnected = bp.isConnected;
-   
-    //是否正在连接中
-    BOOL isConneting = bp.isConnecting;
     
-    NSLog(@"设备是否正在连接  %d",isConneting);
+    //是否正在连接中
+    BOOL isConnecting = bp.isConnecting;
+    
+    NSLog(@"设备是否正在连接  %d",isConnecting);
     //
-    if (isConneting && !isConnected) {
+    if (isConnecting && !isConnected) {
         [self.indicator startAnimating];
     }
-    if (isConnected && isConneting) {
+    if (isConnected && isConnecting) {
         [self.indicator stopAnimating];
     }
     if (isFinded && !isConnected) {
-        NSLog(@"发现未连接  %d",isConneting);
+        NSLog(@"发现未连接  %d",isConnecting);
         return kBluetoothFindHeight;
     }
     else if (isConnected)
@@ -193,7 +197,7 @@ return @"加丁手环";
     }
     else
         return kBluetoothNotFindHeight;
- }
+}
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -209,7 +213,7 @@ return @"加丁手环";
     Boolean isConnected = bp.isConnected;
     
     //是否正在连接中
-    BOOL isConneting = bp.isConnecting;
+    BOOL isConnecting = bp.isConnecting;
     //设备名称
     NSString* name = bp.name;
     
@@ -244,13 +248,12 @@ return @"加丁手环";
     }
     else if (isConnected)
     {
-         if (cellConnet == nil) {
+        if (cellConnet == nil) {
             
             cellConnet = [[BTBluetoothConnectedCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifierConnect tatget:self];
         }
         cellConnet.bluetoothName.text = [NSString stringWithFormat:@"%@  %@%@",name,batteryLevel,@"％"];
-        cellConnet.lastSyncTime.text = @"上次同步时间";//更新数据 从哪里读取数据
-        
+        cellConnet.lastSyncTime.text = _lastSyncTime;//更新数据 从哪里读取数据
         return cellConnet;
         
     }
@@ -279,7 +282,7 @@ return @"加丁手环";
     //进行同步 这里也得判断设备是哪个设备啊
     [self.bc sync:MAM_BAND_MODEL];
     
- }
+}
 //Cell上面按钮的触发事件 连接外围设备 蛋疼
 - (void)toConnect:(UIButton *)button event:(id)event
 {
@@ -293,7 +296,7 @@ return @"加丁手环";
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [self.bc togglePeripheralByIndex:[indexPath row]];
     });
-  
+    
 }
 
 //立即断开的时候 屏幕会闪动 在此时究竟发生了什么？？？
@@ -306,62 +309,62 @@ return @"加丁手环";
     UITouch *touch = [touches anyObject];
     CGPoint currentTouchPosition = [touch locationInView:self.tableView];
     NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:currentTouchPosition];
-     _isBreak = YES;
+    _isBreak = YES;
     //点击完之后让按钮不可点击 否则就会crash
     button.userInteractionEnabled = NO;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [self.bc togglePeripheralByIndex:[indexPath row]];
     });
-      }
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
 }
-*/
-
 /*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    }   
-    else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
-}
-*/
+ // Override to support conditional editing of the table view.
+ - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
+ {
+ // Return NO if you do not want the specified item to be editable.
+ return YES;
+ }
+ */
 
 /*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
-{
-}
-*/
+ // Override to support editing the table view.
+ - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+ {
+ if (editingStyle == UITableViewCellEditingStyleDelete) {
+ // Delete the row from the data source
+ [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+ }
+ else if (editingStyle == UITableViewCellEditingStyleInsert) {
+ // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
+ }
+ }
+ */
 
 /*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
+ // Override to support rearranging the table view.
+ - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
+ {
+ }
+ */
 
 /*
-#pragma mark - Navigation
+ // Override to support conditional rearranging of the table view.
+ - (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
+ {
+ // Return NO if you do not want the item to be re-orderable.
+ return YES;
+ }
+ */
 
-// In a story board-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-
+/*
+ #pragma mark - Navigation
+ 
+ // In a story board-based application, you will often want to do a little preparation before navigation
+ - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+ {
+ // Get the new view controller using [segue destinationViewController].
+ // Pass the selected object to the new view controller.
+ }
+ 
  */
 
 @end

@@ -24,6 +24,23 @@
 		723213551824D4E600C17EDC /* BTUndoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 723213541824D4E600C17EDC /* BTUndoCell.m */; };
 		723213581824D50100C17EDC /* BTFinishedCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 723213571824D50100C17EDC /* BTFinishedCell.m */; };
 		7232135B1824D52100C17EDC /* BTImageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7232135A1824D52100C17EDC /* BTImageCell.m */; };
+		723F248E18308791001F27DA /* BTGuideViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 723F248D18308791001F27DA /* BTGuideViewController.m */; };
+		723F24A018308925001F27DA /* 1.png in Resources */ = {isa = PBXBuildFile; fileRef = 723F249018308925001F27DA /* 1.png */; };
+		723F24A118308925001F27DA /* 1@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 723F249118308925001F27DA /* 1@2x.png */; };
+		723F24A218308925001F27DA /* 2.png in Resources */ = {isa = PBXBuildFile; fileRef = 723F249218308925001F27DA /* 2.png */; };
+		723F24A318308925001F27DA /* 2@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 723F249318308925001F27DA /* 2@2x.png */; };
+		723F24A418308925001F27DA /* 3.png in Resources */ = {isa = PBXBuildFile; fileRef = 723F249418308925001F27DA /* 3.png */; };
+		723F24A518308925001F27DA /* 3@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 723F249518308925001F27DA /* 3@2x.png */; };
+		723F24A618308925001F27DA /* 4.png in Resources */ = {isa = PBXBuildFile; fileRef = 723F249618308925001F27DA /* 4.png */; };
+		723F24A718308925001F27DA /* 4@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 723F249718308925001F27DA /* 4@2x.png */; };
+		723F24A818308925001F27DA /* btn_nor.png in Resources */ = {isa = PBXBuildFile; fileRef = 723F249818308925001F27DA /* btn_nor.png */; };
+		723F24A918308925001F27DA /* btn_nor@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 723F249918308925001F27DA /* btn_nor@2x.png */; };
+		723F24AA18308925001F27DA /* btn_press.png in Resources */ = {isa = PBXBuildFile; fileRef = 723F249A18308925001F27DA /* btn_press.png */; };
+		723F24AB18308925001F27DA /* btn_press@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 723F249B18308925001F27DA /* btn_press@2x.png */; };
+		723F24AC18308925001F27DA /* checkBox_blankCheck.png in Resources */ = {isa = PBXBuildFile; fileRef = 723F249C18308925001F27DA /* checkBox_blankCheck.png */; };
+		723F24AD18308925001F27DA /* checkBox_blankCheck@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 723F249D18308925001F27DA /* checkBox_blankCheck@2x.png */; };
+		723F24AE18308925001F27DA /* checkBox_selectCheck.png in Resources */ = {isa = PBXBuildFile; fileRef = 723F249E18308925001F27DA /* checkBox_selectCheck.png */; };
+		723F24AF18308925001F27DA /* checkBox_selectCheck@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 723F249F18308925001F27DA /* checkBox_selectCheck@2x.png */; };
 		7241465C18274581008B05C5 /* BTMainSuperCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7241465B18274581008B05C5 /* BTMainSuperCell.m */; };
 		72414665182758CC008B05C5 /* BTChartViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 72414664182758CC008B05C5 /* BTChartViewController.m */; };
 		7241467018277A67008B05C5 /* BTSyncViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7241466F18277A67008B05C5 /* BTSyncViewController.m */; };
@@ -111,6 +128,24 @@
 		723213571824D50100C17EDC /* BTFinishedCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BTFinishedCell.m; path = CustomSuperViewController/BTFinishedCell.m; sourceTree = "<group>"; };
 		723213591824D52100C17EDC /* BTImageCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BTImageCell.h; path = CustomSuperViewController/BTImageCell.h; sourceTree = "<group>"; };
 		7232135A1824D52100C17EDC /* BTImageCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BTImageCell.m; path = CustomSuperViewController/BTImageCell.m; sourceTree = "<group>"; };
+		723F248C18308791001F27DA /* BTGuideViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTGuideViewController.h; sourceTree = "<group>"; };
+		723F248D18308791001F27DA /* BTGuideViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTGuideViewController.m; sourceTree = "<group>"; };
+		723F249018308925001F27DA /* 1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 1.png; sourceTree = "<group>"; };
+		723F249118308925001F27DA /* 1@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "1@2x.png"; sourceTree = "<group>"; };
+		723F249218308925001F27DA /* 2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 2.png; sourceTree = "<group>"; };
+		723F249318308925001F27DA /* 2@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "2@2x.png"; sourceTree = "<group>"; };
+		723F249418308925001F27DA /* 3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 3.png; sourceTree = "<group>"; };
+		723F249518308925001F27DA /* 3@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "3@2x.png"; sourceTree = "<group>"; };
+		723F249618308925001F27DA /* 4.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 4.png; sourceTree = "<group>"; };
+		723F249718308925001F27DA /* 4@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "4@2x.png"; sourceTree = "<group>"; };
+		723F249818308925001F27DA /* btn_nor.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = btn_nor.png; sourceTree = "<group>"; };
+		723F249918308925001F27DA /* btn_nor@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "btn_nor@2x.png"; sourceTree = "<group>"; };
+		723F249A18308925001F27DA /* btn_press.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = btn_press.png; sourceTree = "<group>"; };
+		723F249B18308925001F27DA /* btn_press@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "btn_press@2x.png"; sourceTree = "<group>"; };
+		723F249C18308925001F27DA /* checkBox_blankCheck.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = checkBox_blankCheck.png; sourceTree = "<group>"; };
+		723F249D18308925001F27DA /* checkBox_blankCheck@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "checkBox_blankCheck@2x.png"; sourceTree = "<group>"; };
+		723F249E18308925001F27DA /* checkBox_selectCheck.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = checkBox_selectCheck.png; sourceTree = "<group>"; };
+		723F249F18308925001F27DA /* checkBox_selectCheck@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "checkBox_selectCheck@2x.png"; sourceTree = "<group>"; };
 		7241465A18274581008B05C5 /* BTMainSuperCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BTMainSuperCell.h; path = MainCustomCell/BTMainSuperCell.h; sourceTree = "<group>"; };
 		7241465B18274581008B05C5 /* BTMainSuperCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BTMainSuperCell.m; path = MainCustomCell/BTMainSuperCell.m; sourceTree = "<group>"; };
 		72414662182757C3008B05C5 /* LayoutDef.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LayoutDef.h; path = Global/LayoutDef.h; sourceTree = "<group>"; };
@@ -276,6 +311,39 @@
 			path = AddingBand;
 			sourceTree = "<group>";
 		};
+		723F248B1830875C001F27DA /* BTGuideViewController */ = {
+			isa = PBXGroup;
+			children = (
+				723F248C18308791001F27DA /* BTGuideViewController.h */,
+				723F248D18308791001F27DA /* BTGuideViewController.m */,
+				723F248F18308925001F27DA /* Image */,
+			);
+			name = BTGuideViewController;
+			sourceTree = "<group>";
+		};
+		723F248F18308925001F27DA /* Image */ = {
+			isa = PBXGroup;
+			children = (
+				723F249018308925001F27DA /* 1.png */,
+				723F249118308925001F27DA /* 1@2x.png */,
+				723F249218308925001F27DA /* 2.png */,
+				723F249318308925001F27DA /* 2@2x.png */,
+				723F249418308925001F27DA /* 3.png */,
+				723F249518308925001F27DA /* 3@2x.png */,
+				723F249618308925001F27DA /* 4.png */,
+				723F249718308925001F27DA /* 4@2x.png */,
+				723F249818308925001F27DA /* btn_nor.png */,
+				723F249918308925001F27DA /* btn_nor@2x.png */,
+				723F249A18308925001F27DA /* btn_press.png */,
+				723F249B18308925001F27DA /* btn_press@2x.png */,
+				723F249C18308925001F27DA /* checkBox_blankCheck.png */,
+				723F249D18308925001F27DA /* checkBox_blankCheck@2x.png */,
+				723F249E18308925001F27DA /* checkBox_selectCheck.png */,
+				723F249F18308925001F27DA /* checkBox_selectCheck@2x.png */,
+			);
+			path = Image;
+			sourceTree = "<group>";
+		};
 		7241465918274520008B05C5 /* MainCustomCell */ = {
 			isa = PBXGroup;
 			children = (
@@ -383,6 +451,7 @@
 		72B418C018238BCA002EAD35 /* AddingBand */ = {
 			isa = PBXGroup;
 			children = (
+				723F248B1830875C001F27DA /* BTGuideViewController */,
 				72CB9C2B182B58B900C0DAF0 /* BLE */,
 				7241465918274520008B05C5 /* MainCustomCell */,
 				728ECC051823B57B005053FE /* CustomSuperViewController */,
@@ -565,10 +634,26 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				723F24A618308925001F27DA /* 4.png in Resources */,
+				723F24A118308925001F27DA /* 1@2x.png in Resources */,
+				723F24AC18308925001F27DA /* checkBox_blankCheck.png in Resources */,
 				72B418C518238BCA002EAD35 /* InfoPlist.strings in Resources */,
+				723F24AF18308925001F27DA /* checkBox_selectCheck@2x.png in Resources */,
+				723F24A918308925001F27DA /* btn_nor@2x.png in Resources */,
+				723F24A818308925001F27DA /* btn_nor.png in Resources */,
+				723F24A518308925001F27DA /* 3@2x.png in Resources */,
+				723F24A218308925001F27DA /* 2.png in Resources */,
+				723F24A418308925001F27DA /* 3.png in Resources */,
 				728ECC0D1823C092005053FE /* demo1@2x.png in Resources */,
 				724146771827B116008B05C5 /* 分割线@2x.png in Resources */,
 				72B418D018238BCA002EAD35 /* Images.xcassets in Resources */,
+				723F24A718308925001F27DA /* 4@2x.png in Resources */,
+				723F24AA18308925001F27DA /* btn_press.png in Resources */,
+				723F24AB18308925001F27DA /* btn_press@2x.png in Resources */,
+				723F24AD18308925001F27DA /* checkBox_blankCheck@2x.png in Resources */,
+				723F24AE18308925001F27DA /* checkBox_selectCheck.png in Resources */,
+				723F24A018308925001F27DA /* 1.png in Resources */,
+				723F24A318308925001F27DA /* 2@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -593,6 +678,7 @@
 				722ECE27182914F100129E6A /* BarLabel.m in Sources */,
 				722ECE2C182914F100129E6A /* XMLElement.m in Sources */,
 				72CB9C32182B590500C0DAF0 /* BTBandPeripheral.m in Sources */,
+				723F248E18308791001F27DA /* BTGuideViewController.m in Sources */,
 				722ECE2D182914F100129E6A /* XMLParser.m in Sources */,
 				722ECE2B182914F100129E6A /* UIViewSizeShortcuts.m in Sources */,
 				72CB9C3E182B595200C0DAF0 /* BTUtils.m in Sources */,

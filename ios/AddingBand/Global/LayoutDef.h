@@ -52,4 +52,12 @@
 #define kBluetoothNotFindHeight (kBluetoothNameY + kBluetoothNameHeight + 10)
 //通知中心发出得各个通知
 #define UPDATACIRCULARPROGRESSNOTICE @"updateCircleProgressNotice"//更新圆形进度条通知
+
+//体征页面 布局宏定义
+#define kPhysicalImageX 35
+#define kPhysicalImageY 0
+#define kPhysicalImageWidth 100
+#define kPhysicalImageHeight 100
+
+
 #endif

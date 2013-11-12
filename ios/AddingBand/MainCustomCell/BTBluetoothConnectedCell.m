@@ -22,6 +22,7 @@
 - (void)initSubControls
 
 {
+ 
     
     NSLog(@"cell 加载子图    ");
     //显示外部设备名字和电量

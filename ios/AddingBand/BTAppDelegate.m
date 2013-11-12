@@ -8,8 +8,8 @@
 
 #import "BTAppDelegate.h"
 #import "BTCustomTabBarController.h"
-//需要同步数据的妈妈运动页面
-#import "BTPhysicSportViewController.h"
+//程序引导页面
+#import "BTGuideViewController.h"
 @implementation BTAppDelegate
 
 @synthesize managedObjectContext = _managedObjectContext;
@@ -20,14 +20,24 @@
 {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
-    //程序启动的时候就创建这个页面 而且注意一定要执行页面加载的数据
+   
+    //增加标识，用于判断是否是第一次启动应用...
+    if (![[NSUserDefaults standardUserDefaults] boolForKey:@"everLaunched"]) {
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"everLaunched"];
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"firstLaunch"];
+    }
+
       //将tabBarController设置为根视图
     self.tabBarController = [[BTCustomTabBarController alloc] init];
     self.window.rootViewController = _tabBarController;
-    
-     
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
+    //如果是第一次启动 加载启动页面
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"firstLaunch"]) {
+        [BTGuideViewController show];
+    }
+    
+
     return YES;
 }
 

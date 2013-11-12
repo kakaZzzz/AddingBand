@@ -9,10 +9,7 @@
 #import "BTPhysicalViewController.h"
 #import "BTPhysicSportViewController.h"
 #import "BTPhysicQuickeningViewController.h"
-#define kPhysicalImageX 35
-#define kPhysicalImageY 0
-#define kPhysicalImageWidth 100
-#define kPhysicalImageHeight 100
+#import "LayoutDef.h"
 @interface BTPhysicalViewController ()
 @property(nonatomic,strong)UIScrollView *aScrollView;
 
