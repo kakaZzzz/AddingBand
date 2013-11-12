@@ -13,7 +13,9 @@
 #include "hal_adc.h"
 #include "hal_led.h"
 #include "hal_key.h"
-#include "hal_lcd.h"
+#if (defined HAL_LCD) && (HAL_LCD == TRUE)
+  #include "hal_lcd.h"
+#endif
 
 #include "hal_i2c.h"
 
@@ -494,40 +496,27 @@ void SimpleBLEPeripheral_Init( uint8 task_id )
         Batt_SetParameter( BATT_PARAM_CRITICAL_LEVEL, sizeof (uint8 ), &critical );
     }
 
+    // see the name
     RegisterForKeys( simpleBLEPeripheral_TaskID );
 
-    // P0DIR |= BV(0) | BV(1) | BV(2) | BV(3) | BV(4);
-    P0DIR = 0x7F;
-    // P0SEL &= ~(BV(0) | BV(1) | BV(2) | BV(3) | BV(4));
-    P0SEL = 0x00;
-
-    // P0_0 = 0;
-    // P0_1 = 0;
-    // P0_2 = 0;
-    // P0_3 = 0;
-//    P0_4 = 1;
+    // initialize IO's settings    
 
     // OBSSEL0 = 0x00;
     // OBSSEL1 = 0x00;
 
-    // P1DIR |= BV(0) | BV(1);
+    P0DIR = 0x7F;
+    P0SEL = 0x00;
+
     P1DIR = 0xC3;
-    // P1SEL &= ~(BV(0) | BV(1));
     P1SEL = 0x00;
 
     P2DIR = 0xFF;
     P2SEL = 0x00;
 
-    // P0 = B(10000001);
-    // P1 = 0x00;
-    // P2= 0x00;
-
-    // P1 = B(11000001);
-
-    // P1_0 = 1;
-    // P1_1 = 1;
-
-    // osal_start_timerEx( simpleBLEPeripheral_TaskID, SBP_LED_STOP_EVT, SBP_PERIODIC_EVT_PERIOD );
+    // sunshine!
+    P0 = B(10000001);
+    P1 = 0x00;
+    P2= 0x00;
 
 #if (defined HAL_LCD) && (HAL_LCD == TRUE)
 
@@ -798,27 +787,27 @@ static void simpleBLEPeripheral_ProcessOSALMsg( osal_event_hdr_t *pMsg )
 
     case KEY_CHANGE:
 
-      uint8 shift = ((keyChange_t *)pMsg)->state;
+    {
       uint8 keys = ((keyChange_t *)pMsg)->keys;
 
       if ( keys & HAL_KEY_SW_1 )
       {
-        LED1_PI0 = !LED1_PI0;
+        LED11_PI0 = !LED11_PI0;
       }
 
       if ( keys & HAL_KEY_SW_2 )
       {
 
-        LED2_PI0 = !LED2_PI0;
+        LED12_PI0 = !LED12_PI0;
 
       }
 
       if ( keys & HAL_KEY_SW_3 )
       {
 
-        LED3_PI0 = !LED3_PI0;
-
+        LED1_PI0 = !LED1_PI0;
       }
+    }
 
       break;
 
