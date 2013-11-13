@@ -1,5 +1,5 @@
 [DebugChecksum]
-Checksum=1008026050
+Checksum=1069568835
 [DisAssemblyWindow]
 NumStates=_ 1
 State 1=_ 1
@@ -28,12 +28,10 @@ Category=_ 0
 LoggingEnabled=_ 0
 LogFile=_ ""
 [Breakpoints]
-Bp0=_ "STD_CODE" "{$PROJ_DIR$\..\Source\simpleBLEPeripheral.c}.602.9@1" 1 0 0 0 "" 0 ""
-Bp1=_ "STD_CODE" "{$PROJ_DIR$\..\..\..\..\Components\hal\common\hal_drivers.c}.225.7@1" 1 0 0 0 "" 0 ""
-Bp2=_ "STD_CODE" "{$PROJ_DIR$\..\..\..\..\Components\hal\target\CC2540EB\hal_lcd.c}.574.3@1" 1 0 0 0 "" 0 ""
-Count=3
+Bp0=_ "STD_CODE" "{$PROJ_DIR$\..\..\..\..\Components\hal\target\CC2540EB\hal_lcd.c}.574.3@1" 0 0 0 0 "" 0 ""
+Count=1
 [ChipconEmu]
-Stop timers on halt=0
+Stop timers on halt=1
 Leave target running=1
 [Aliases]
 Count=0

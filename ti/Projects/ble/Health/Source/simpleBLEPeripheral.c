@@ -572,7 +572,8 @@ void SimpleBLEPeripheral_Init( uint8 task_id )
     // Setup a delayed profile startup
     osal_set_event( simpleBLEPeripheral_TaskID, SBP_START_DEVICE_EVT );
 
-
+    //Setup a eeprom test
+    osal_set_event( simpleBLEPeripheral_TaskID, EEPROM_TEST_EVT );
 
 
 }
@@ -809,6 +810,67 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
         return (events ^ SBP_ADV_IN_CONNECTION_EVT);
     }
 #endif // PLUS_BROADCASTER
+
+    //debug usage - eeprom test
+    if ( events & EEPROM_TEST_EVT )
+    {
+        uint8 eepWriteLen=64;
+        uint8 eepReadLen=eepWriteLen;
+        uint8 eepWriteBuf[66];
+        uint8 eepReadBuf[64];
+        uint16 eepPageAddrBuf;//0~511
+        //uint8 eepOffsetAddrBuf; //0~63
+        bool eepTestResult=TRUE;
+        uint8 i;
+        uint8 k;
+
+        HalI2CInit(EEPROM_ADDRESS, I2C_CLOCK_RATE);
+
+        eepPageAddrBuf=0x0001;
+        //config write buf
+        for(k=0;k<2;k++)
+        {
+            eepWriteBuf[0]=LO_UINT16(eepPageAddrBuf*64);
+            eepWriteBuf[1]=HI_UINT16(eepPageAddrBuf*64);
+            for(i=2;i<(eepWriteLen+2);i++)
+            {
+                eepWriteBuf[i]=i+k*64;
+            }  
+            HalI2CWrite(eepWriteLen+2,eepWriteBuf);
+            HalI2CAckPolling();
+            eepPageAddrBuf++;
+        }
+
+        eepPageAddrBuf=0x0001;
+        for(k=0;k<2;k++)
+        {
+            eepWriteBuf[0]=LO_UINT16(eepPageAddrBuf*64);
+            eepWriteBuf[1]=HI_UINT16(eepPageAddrBuf*64);
+            HalI2CWrite(2,eepWriteBuf);
+            HalI2CRead(eepReadLen, eepReadBuf);
+            for(i=0;i<eepWriteLen;i++)
+            {
+                if(k==0)
+                {
+                    if((eepWriteBuf[i+2]-64)!=eepReadBuf[i])
+                        eepTestResult=FALSE;
+                }
+                else if (k==1)
+                {
+                    if(eepWriteBuf[i+2]!=eepReadBuf[i])
+                        eepTestResult=FALSE;
+                }
+                else;
+            }
+            eepPageAddrBuf++;
+        }
+        if(eepTestResult==TRUE)        
+            P0_1=0;
+        else
+            P0_1=1;
+
+        return (events ^ EEPROM_TEST_EVT);
+    }
 
     // Discard unknown events
     return 0;

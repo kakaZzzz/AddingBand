@@ -75,7 +75,6 @@ int main(void)
 {
   /* Initialize hardware */
    HAL_BOARD_INIT();
-
   // Initialize board I/O
   InitBoard( OB_COLD );
 
