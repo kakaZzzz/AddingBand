@@ -1330,7 +1330,7 @@
           <state>POWER_SAVING</state>
           <state>xPLUS_BROADCASTER</state>
           <state>HAL_LCD=FALSE</state>
-          <state>HAL_LED=TRUE</state>
+          <state>HAL_LED=FALSE</state>
           <state>HAL_UART=FALSE</state>
           <state>xHAL_UART_DMA=1</state>
           <state>HAL_KEY=TRUE</state>

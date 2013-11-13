@@ -111,12 +111,12 @@
 
 /* SW_2 is at P0.1 */
 #define HAL_KEY_SW_2_PORT   P1
-#define HAL_KEY_SW_2_BIT    BV(3)
+#define HAL_KEY_SW_2_BIT    BV(4)
 #define HAL_KEY_SW_2_SEL    P1SEL
 #define HAL_KEY_SW_2_DIR    P1DIR
 
 #define HAL_KEY_SW_3_PORT   P1
-#define HAL_KEY_SW_3_BIT    BV(4)
+#define HAL_KEY_SW_3_BIT    BV(3)
 #define HAL_KEY_SW_3_SEL    P1SEL
 #define HAL_KEY_SW_3_DIR    P1DIR
 
@@ -128,13 +128,13 @@
 
 #define HAL_KEY_SW_2_IEN      IEN2  /* CPU interrupt mask register */
 #define HAL_KEY_SW_2_ICTL     P1IEN /* Port Interrupt Control register */
-#define HAL_KEY_SW_2_ICTLBIT  BV(3) /* P0IEN - P0.1 enable/disable bit */
+#define HAL_KEY_SW_2_ICTLBIT  BV(4) /* P0IEN - P0.1 enable/disable bit */
 #define HAL_KEY_SW_2_IENBIT   BV(4) /* Mask bit for all of Port_0 */
 #define HAL_KEY_SW_2_PXIFG    P1IFG /* Interrupt flag at source */
 
 #define HAL_KEY_SW_3_IEN      IEN2  /* CPU interrupt mask register */
 #define HAL_KEY_SW_3_ICTL     P1IEN /* Port Interrupt Control register */
-#define HAL_KEY_SW_3_ICTLBIT  BV(4) /* P0IEN - P0.1 enable/disable bit */
+#define HAL_KEY_SW_3_ICTLBIT  BV(3) /* P0IEN - P0.1 enable/disable bit */
 #define HAL_KEY_SW_3_IENBIT   BV(4) /* Mask bit for all of Port_0 */
 #define HAL_KEY_SW_3_PXIFG    P1IFG /* Interrupt flag at source */
 

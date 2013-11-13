@@ -76,6 +76,11 @@
 #define LED10_PI0                             P2_2
 #define LED11_PI0                             P2_0
 
+#define MOTOR_PIO                             P0_0
+
+#define OPEN_PIO                              0
+#define CLOSE_PIO                             1
+
 // How often to perform periodic event
 #define SBP_PERIODIC_EVT_PERIOD               5000
 
@@ -304,6 +309,8 @@ uint8 db[EEPROM_ADDRESS_DATA_MAX];
 
 int ledCycleCount = 0;
 
+bool slipWaitFor = 0, slipFrom = 0;
+
 /*********************************************************************
  * LOCAL FUNCTIONS
  */
@@ -323,6 +330,13 @@ static void adxl345GetAccData(void);
 
 static void eepromWriteStep(uint8 type);
 static void eepromReadStep(void);
+
+static void closeAllPIO(void);
+
+static void shock(void);
+static void time(void);
+
+static void togglePIOWithTime(uint8 num, uint8 io);
 
 #if (defined HAL_LCD) && (HAL_LCD == TRUE)
 static char *bdAddr2Str ( uint8 *pAddr );
@@ -455,16 +469,16 @@ void SimpleBLEPeripheral_Init( uint8 task_id )
 
     // Setup the GAP Bond Manager
     {
-            uint32 passkey = 0; // passkey "000000"
-            uint8 pairMode = GAPBOND_PAIRING_MODE_WAIT_FOR_REQ;
+        uint32 passkey = 0; // passkey "000000"
+        uint8 pairMode = GAPBOND_PAIRING_MODE_WAIT_FOR_REQ;
         // uint8 pairMode = GAPBOND_PAIRING_MODE_NO_PAIRING;
-            uint8 mitm = TRUE;
-            uint8 ioCap = GAPBOND_IO_CAP_DISPLAY_ONLY;
+        uint8 mitm = TRUE;
+        uint8 ioCap = GAPBOND_IO_CAP_DISPLAY_ONLY;
         uint8 bonding = TRUE;
-            GAPBondMgr_SetParameter( GAPBOND_DEFAULT_PASSCODE, sizeof ( uint32 ), &passkey );
+        GAPBondMgr_SetParameter( GAPBOND_DEFAULT_PASSCODE, sizeof ( uint32 ), &passkey );
         GAPBondMgr_SetParameter( GAPBOND_PAIRING_MODE, sizeof ( uint8 ), &pairMode );
         GAPBondMgr_SetParameter( GAPBOND_MITM_PROTECTION, sizeof ( uint8 ), &mitm );
-            GAPBondMgr_SetParameter( GAPBOND_IO_CAPABILITIES, sizeof ( uint8 ), &ioCap );
+        GAPBondMgr_SetParameter( GAPBOND_IO_CAPABILITIES, sizeof ( uint8 ), &ioCap );
         GAPBondMgr_SetParameter( GAPBOND_BONDING_ENABLED, sizeof ( uint8 ), &bonding );
     }
 
@@ -514,9 +528,12 @@ void SimpleBLEPeripheral_Init( uint8 task_id )
     P2SEL = 0x00;
 
     // sunshine!
-    P0 = B(10000001);
-    P1 = 0x00;
-    P2= 0x00;
+    // P0 = B(10000001);
+    // P1 = 0x00;
+    // P2 = 0x00;
+
+    //close all
+    closeAllPIO();
 
 #if (defined HAL_LCD) && (HAL_LCD == TRUE)
 
@@ -643,6 +660,30 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
         return (events ^ SBP_PERIODIC_EVT);
     }
 
+    if ( events & SLIP_TIMEOUT_EVT )
+    {
+        
+        if (slipWaitFor == 1 || slipWaitFor == 3)
+        {
+            LED12_PI0 = !LED12_PI0;
+
+            shock();
+        }
+
+        slipWaitFor = 0;
+        slipFrom = 0;
+
+        return (events ^ SLIP_TIMEOUT_EVT);
+    }
+
+    if ( events & MOTOR_STOP_EVT )
+    {
+        
+        MOTOR_PIO = CLOSE_PIO;
+
+        return (events ^ MOTOR_STOP_EVT);
+    }
+
     // if ( events & LED_CYCLE_EVT )
     // {
 
@@ -685,8 +726,10 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
     //     return (events ^ LED_CYCLE_EVT);
     // }
 
-    if ( events & SBP_LED_STOP_EVT )
+    if ( events & CLOSE_ALL_EVT )
     {
+
+        closeAllPIO();
 
         // P0_0 = 1;
         // P0_1 = 1;
@@ -753,7 +796,7 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
 
         // osal_start_timerEx( simpleBLEPeripheral_TaskID, SBP_LED_STOP_EVT, SBP_PERIODIC_EVT_PERIOD );
 
-        return (events ^ SBP_LED_STOP_EVT);
+        return (events ^ CLOSE_ALL_EVT);
     }
 
 #if defined ( PLUS_BROADCASTER )
@@ -790,23 +833,75 @@ static void simpleBLEPeripheral_ProcessOSALMsg( osal_event_hdr_t *pMsg )
     {
       uint8 keys = ((keyChange_t *)pMsg)->keys;
 
+      // 1
       if ( keys & HAL_KEY_SW_1 )
-      {
-        LED11_PI0 = !LED11_PI0;
+      { 
+
+        if (slipWaitFor == 0)
+        {
+            slipFrom = 1;
+            slipWaitFor = 2;
+        }
+
+        if (slipWaitFor == 1)
+        {
+            // LED11_PI0 = !LED11_PI0;
+            time();
+
+            shock();
+
+            slipFrom = 0;
+            slipWaitFor = 0;
+        }
+
       }
 
+      // 2
       if ( keys & HAL_KEY_SW_2 )
       {
 
-        LED12_PI0 = !LED12_PI0;
+        if (slipWaitFor == 2)
+        {
+            if (slipFrom == 1)
+            {
+                slipWaitFor = 3;
+            }
+
+            if (slipFrom == 3)
+            {
+                slipWaitFor = 1;
+            }
+        }
 
       }
 
+      // 3
       if ( keys & HAL_KEY_SW_3 )
       {
 
-        LED1_PI0 = !LED1_PI0;
+        if (slipWaitFor == 0)
+        {
+            slipFrom = 3;
+            slipWaitFor = 2;
+        }
+
+        if (slipWaitFor == 3)
+        {
+            LED1_PI0 = !LED1_PI0;
+
+            shock();
+
+            slipFrom = 0;
+            slipWaitFor = 0;
+        }
+
       }
+
+      if (slipWaitFor != 0)
+      {
+          osal_start_timerEx( simpleBLEPeripheral_TaskID, SLIP_TIMEOUT_EVT , 500 );
+      }
+
     }
 
       break;
@@ -1100,6 +1195,102 @@ char *bdAddr2Str( uint8 *pAddr )
 }
 #endif // (defined HAL_LCD) && (HAL_LCD == TRUE)
 
+/*********************************************************************
+ * @fn      closeAllPIO
+ *
+ * @param   none
+ *
+ * @return  none
+ */
+
+static void closeAllPIO(void){
+
+    P0 = 0xFF;
+    P1 = 0xC1;
+    P2 = 0x07;
+}
+
+/*********************************************************************
+ * @fn      shock
+ *
+ * @param   none
+ *
+ * @return  none
+ */
+
+static void shock(void){
+
+    MOTOR_PIO = OPEN_PIO;
+
+    osal_start_timerEx( simpleBLEPeripheral_TaskID, MOTOR_STOP_EVT, 200 );
+}
+
+
+
+/*********************************************************************
+ * @fn      time
+ *
+ * @param   none
+ *
+ * @return  none
+ */
+
+static void togglePIOWithTime(uint8 num, uint8 io){
+
+    switch(num){
+        case 1:
+            LED1_PI0 = io;
+            break;
+        case 2:
+            LED2_PI0 = io;
+            break;
+        case 3:
+            LED3_PI0 = io;
+            break;
+        case 4:
+            LED4_PI0 = io;
+            break;
+        case 5:
+            LED5_PI0 = io;
+            break;
+        case 6:
+            LED6_PI0 = io;
+            break;
+        case 7:
+            LED7_PI0 = io;
+            break;
+        case 8:
+            LED8_PI0 = io;
+            break;
+        case 9:
+            LED9_PI0 = io;
+            break;
+        case 10:
+            LED10_PI0 = io;
+            break;
+        case 11:
+            LED11_PI0 = io;
+            break;
+        case 12:
+            LED12_PI0 = io;
+            break;
+        default:
+            break; 
+    }
+}
+
+static void time(void){
+
+    UTCTime current;
+    UTCTimeStruct currentTm;
+
+    current = osal_getClock();
+    osal_ConvertUTCTime(&currentTm, current);
+
+    togglePIOWithTime(currentTm.hour, OPEN_PIO);
+
+    osal_start_timerEx( simpleBLEPeripheral_TaskID, MOTOR_STOP_EVT, 200 );
+}
 
 /*********************************************************************
  * @fn      adxl345Init
@@ -1260,7 +1451,7 @@ static void adxl345Loop(void)
                     // P1_0 = 1;
                     // P1_1 = 1;
 
-                    osal_start_timerEx( simpleBLEPeripheral_TaskID, SBP_LED_STOP_EVT, 500 );
+                    // osal_start_timerEx( simpleBLEPeripheral_TaskID, SBP_LED_STOP_EVT, 500 );
 
                     cross_count = 0;
 
@@ -1325,7 +1516,7 @@ static void adxl345Loop(void)
 
         // P0_3 = 0;
 
-        osal_start_timerEx( simpleBLEPeripheral_TaskID, SBP_LED_STOP_EVT, 1000 );
+        // osal_start_timerEx( simpleBLEPeripheral_TaskID, SBP_LED_STOP_EVT, 1000 );
     }
     time_count++;
 }

@@ -61,10 +61,9 @@ extern "C"
 #define BATT_PERIODIC_EVT                                 0x0008
 #define ADXL345_PERIODIC_EVT                              0x0010
 #define LED_CYCLE_EVT                                     0x0020
-  
-#if (defined FAC_TEST) && (FAC_TEST == TRUE)
-  #define SBP_LED_STOP_EVT                                0x0040
-#endif
+#define CLOSE_ALL_EVT                                     0x0040
+#define SLIP_TIMEOUT_EVT                                  0x0080
+#define MOTOR_STOP_EVT                                    0x0100
 
 /*********************************************************************
  * MACROS
