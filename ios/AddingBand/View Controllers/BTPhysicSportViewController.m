@@ -48,7 +48,8 @@ static int dailyStep = 0;
         //读取当天总步数 和  累计总步数
         totalStep = [self getTotalStep];
         dailyStep = [self getDailyStep];
-        self.barValue = [NSArray arrayWithObjects:@"10",@"20",@"15",@"8",@"5",@"30",@"10", nil];
+        self.barYValue = [self getResentOneWeekSteps];
+      //  self.barXValue = [self getWeeklyByTodayDate];
     }
     return self;
 }
@@ -241,33 +242,17 @@ static int dailyStep = 0;
     NSLog(@"当天总步数%d",stepCount);
     
     //
-   // NSDate *date = [NSDate date];
-    NSCalendar*calendar = [NSCalendar currentCalendar];
-    NSDateComponents *comps;
-    
-    // 年月日获得
-    comps =[calendar components:(NSYearCalendarUnit | NSMonthCalendarUnit |NSDayCalendarUnit)
-                       fromDate:date];
-    NSInteger year1 = [comps year];
-    NSInteger month1 = [comps month];
-    NSInteger day1 = [comps day];
-    NSLog(@"year:%d month: %d, day: %d", year1, month1, day1);
-    
-    //周几 星期几的获取
-    comps =[calendar components:(NSWeekCalendarUnit | NSWeekdayCalendarUnit |NSWeekdayOrdinalCalendarUnit)
-                       fromDate:date];
-    NSInteger week = [comps week]; // 今年的第几周
-    NSInteger weekday = [comps weekday]; // 星期几（注意，周日是“1”，周一是“2”。。。。）
-    NSInteger weekdayOrdinal = [comps weekdayOrdinal]; // 这个月的第几周
-    NSLog(@"week:%d weekday: %d weekday ordinal: %d", week, weekday, weekdayOrdinal);
-    //
-    return stepCount;
+     return stepCount;
     
 }
 
-#pragma mark - 读取最近一周每天的运动量
+#pragma mark - 读取最近一周每天的运动量 并配置绘制柱形图所需参数
 - (NSArray *)getResentOneWeekSteps
 {
+    
+    self.barColors = [NSMutableArray arrayWithObjects:@"87E317",@"87E317",@"87E317",@"87E317",@"87E317",@"87E317",@"87E317", nil];
+    self.barLabelColors = [NSMutableArray arrayWithObjects:@"87E317",@"87E317",@"87E317",@"87E317",@"87E317",@"87E317",@"87E317", nil];
+    
     //设置数据类型
     int type = 2;
     //读取当前时间
@@ -283,31 +268,72 @@ static int dailyStep = 0;
     //    NSNumber* day = [BTUtils getDay:localeDate];
     //    NSNumber* hour = [BTUtils getHour:localeDate];
     //设置查询条件
+    //按月查询
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"year == %@ AND type == %@",year, [NSNumber numberWithInt:type]];
     NSArray *array = [BTGetData getFromCoreDataWithPredicate:predicate entityName:@"BTRawData" sortKey:nil];
+    
+    NSMutableArray *arrayStep = [NSMutableArray arrayWithCapacity:1];
+    NSMutableArray *arrayDate = [NSMutableArray arrayWithCapacity:1];
+    for (BTRawData* one in array) {
+        [arrayStep addObject:[NSString stringWithFormat:@"%@",one.count]];
+        [arrayDate addObject:[NSString stringWithFormat:@"%@时",one.hour]];//测试用小时 实际上线时 用天
+        
+    }
+
     //最近七天的一个范围
     NSArray *resultArray;
     //如果数据大于七天
-    if (array.count >= 7) {
+    if (arrayStep.count >= 7) {
         NSRange theRange;
-        theRange.location = array.count - 7;//range的起点
+        theRange.location = arrayStep.count - 7;//range的起点
         theRange.length = 7;//range的长度
-        resultArray = [array subarrayWithRange:theRange];
+        resultArray = [arrayStep subarrayWithRange:theRange];
+        self.barXValue = [arrayDate subarrayWithRange:theRange];
         
     }
     //如果数据少于七天
     else{
-        resultArray = array;
+        resultArray = arrayStep;
+        //横坐标值
+        self.barXValue = arrayDate;
+        
+        NSRange theRange;
+        theRange.location = arrayStep.count ;//range的起点
+        theRange.length = 7 - arrayStep.count;//range的长度
+
+        //柱子颜色
+        [self.barColors removeObjectsInRange:theRange];
+        [self.barLabelColors removeObjectsInRange:theRange];
+        
     }
-    
+    NSLog(@"最近一周的运动量是 %@",resultArray);
     return resultArray;
     
     
 }
-#pragma mark - 根据今天日期 推算出前七天分别是周几
-- (void)getWeeklyByTodayDate
+#pragma mark - 根据今天日期 算出前七天分别是周几
+- (NSArray *)getWeeklyByTodayDate
 {
-    //
+    NSMutableArray *arrayWeek = [NSMutableArray arrayWithCapacity:1];
+    NSDate *date = [NSDate date];
+    NSCalendar *calendar = [NSCalendar currentCalendar];
+    
+    //周几 星期几的获取
+    NSDateComponents *components =[calendar components:(NSWeekCalendarUnit | NSWeekdayCalendarUnit |NSWeekdayOrdinalCalendarUnit)
+                       fromDate:date];
+  //  NSInteger week = [components week]; // 今年的第几周
+    NSInteger weekday = [components weekday]; // 星期几（注意，周日是“1”，周一是“2”。。。。）
+  //  NSInteger weekdayOrdinal = [components weekdayOrdinal]; // 这个月的第几周
+  //
+    NSDictionary *dicWeek = [NSDictionary dictionaryWithObjectsAndKeys:@"周日",@"1",@"周一",@"2",@"周二",@"3",@"周三",@"4",@"周四",@"5",@"周五",@"6",@"周六",@"7",@"周六",@"0", nil];
+    int count = [[self getResentOneWeekSteps] count];
+    for (int i = 0; i < count; i++) {
+        NSString *keyWeek = [NSString stringWithFormat:@"%d",(weekday + 7 - i)%7];
+        NSString *valueWeek = [dicWeek objectForKey:keyWeek];
+        [arrayWeek insertObject:valueWeek atIndex:0];
+        NSLog(@"今天是 %@",valueWeek);
+     }
+    return arrayWeek;
 }
 - (void)updateUIWithStepDaily:(int)stepDaily totalStep:(int)totalStep
 {
@@ -368,12 +394,12 @@ static int dailyStep = 0;
     _barChart.backgroundColor = [UIColor clearColor];
     [self.view addSubview:_barChart];
     
-    NSArray *array = [_barChart createChartDataWithTitles:[NSArray arrayWithObjects:@"1", @"2", @"3", @"4",@"5" ,@"6",@"7",nil]
-                                                   values:_barValue
-                                                   colors:[NSArray arrayWithObjects:@"87E317", @"17A9E3", @"E32F17", @"FFE53D",@"FFE53D", @"FFE53D",@"FFE53D",nil]
-                                              labelColors:[NSArray arrayWithObjects:@"17A9E3", @"17A9E3", @"17A9E3", @"17A9E3", @"17A9E3",@"17A9E3",@"17A9E3",nil]];
+    NSArray *array = [_barChart createChartDataWithTitles:_barXValue
+                                                   values:_barYValue
+                                                   colors:_barColors
+                                              labelColors:_barLabelColors];
     
-    
+     
     //Set the Shape of the Bars (Rounded or Squared) - Rounded is default
     //柱形形状  分圆角型和直角型
     [_barChart setupBarViewShape:BarShapeSquared];

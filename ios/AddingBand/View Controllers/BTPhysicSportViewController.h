@@ -22,6 +22,12 @@
 
 @property(strong, nonatomic) BTGlobals* g;
 @property(strong, nonatomic) BTBandCentral* bc;
-//
-@property(strong, nonatomic) NSArray *barValue;
+//柱形图Y值
+@property(strong, nonatomic) NSArray *barYValue;
+//柱形图X值
+@property(strong, nonatomic) NSArray *barXValue;
+//柱形图柱子颜色
+@property(strong, nonatomic) NSMutableArray *barColors;
+//柱形图下横坐标颜色
+@property(strong, nonatomic) NSMutableArray *barLabelColors;
 @end

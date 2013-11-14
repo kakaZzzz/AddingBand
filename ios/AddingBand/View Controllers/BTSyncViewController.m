@@ -55,7 +55,7 @@
     }
     return self;
 }
-//
+//检测上次更新时间
 - (void)observeLastSyncTime
 {
     //读取一下对更新时间的描述
@@ -268,10 +268,6 @@
         
         return cellNofind;
     }
-    
-    
-    
-    
     
 }
 #pragma mark - 点击按钮 触发事件

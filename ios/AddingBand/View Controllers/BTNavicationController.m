@@ -7,7 +7,7 @@
 //
 
 #import "BTNavicationController.h"
-
+#import <QuartzCore/QuartzCore.h>
 @interface BTNavicationController ()
 @property(nonatomic,strong) CALayer *animationLayer;
 @end

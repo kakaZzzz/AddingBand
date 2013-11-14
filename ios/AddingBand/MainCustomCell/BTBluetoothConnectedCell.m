@@ -22,12 +22,12 @@
 - (void)initSubControls
 
 {
- 
+    
     
     NSLog(@"cell 加载子图    ");
     //显示外部设备名字和电量
     self.lastSyncTime = [[UILabel alloc]initWithFrame:CGRectMake(kLastSyncTimeX, kLastSyncTimeY, kLastSyncTimeWidth, kLastSyncTimeHeight)];
-     _lastSyncTime.backgroundColor = [UIColor blueColor];
+    _lastSyncTime.backgroundColor = [UIColor blueColor];
     _lastSyncTime.font = [UIFont systemFontOfSize:15];
     _lastSyncTime.textColor = [UIColor whiteColor];
     _lastSyncTime.textAlignment = NSTextAlignmentLeft;
@@ -44,7 +44,7 @@
 }
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier tatget:(id)target
 {
-  self =  [super initWithStyle:style reuseIdentifier:reuseIdentifier];
+    self =  [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
         [self initSubControls];
         self.toSync =[UIButton buttonWithType:UIButtonTypeRoundedRect];
@@ -52,25 +52,24 @@
         [_toSync setTitle:@"立即同步" forState:UIControlStateNormal];
         [_toSync addTarget:target action:@selector(toSync:event:) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:_toSync];
-
+        
         self.breakConnect =[UIButton buttonWithType:UIButtonTypeRoundedRect];
         _breakConnect.frame = CGRectMake(kbreakConnectX, kbreakConnectY, kbreakConnectWidth, kbreakConnectHeight);
         [_breakConnect setTitle:@"立即断开" forState:UIControlStateNormal];
         [_breakConnect addTarget:target action:@selector(breakConnect:event:) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:_breakConnect];
-
+        
     }
     return self;
-
 }
 
 /*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect
-{
-    // Drawing code
-}
-*/
+ // Only override drawRect: if you perform custom drawing.
+ // An empty implementation adversely affects performance during animation.
+ - (void)drawRect:(CGRect)rect
+ {
+ // Drawing code
+ }
+ */
 
 @end

@@ -24,6 +24,8 @@
 		723213551824D4E600C17EDC /* BTUndoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 723213541824D4E600C17EDC /* BTUndoCell.m */; };
 		723213581824D50100C17EDC /* BTFinishedCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 723213571824D50100C17EDC /* BTFinishedCell.m */; };
 		7232135B1824D52100C17EDC /* BTImageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7232135A1824D52100C17EDC /* BTImageCell.m */; };
+		7236B7BA1833253F002E4FA8 /* BTLoginRegisterCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7236B7B91833253F002E4FA8 /* BTLoginRegisterCell.m */; };
+		7236B7BE18332CC6002E4FA8 /* BTRegisterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7236B7BD18332CC6002E4FA8 /* BTRegisterViewController.m */; };
 		723F248E18308791001F27DA /* BTGuideViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 723F248D18308791001F27DA /* BTGuideViewController.m */; };
 		723F24A018308925001F27DA /* 1.png in Resources */ = {isa = PBXBuildFile; fileRef = 723F249018308925001F27DA /* 1.png */; };
 		723F24A118308925001F27DA /* 1@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 723F249118308925001F27DA /* 1@2x.png */; };
@@ -46,6 +48,7 @@
 		7241467018277A67008B05C5 /* BTSyncViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7241466F18277A67008B05C5 /* BTSyncViewController.m */; };
 		724146771827B116008B05C5 /* 分割线@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 724146761827B116008B05C5 /* 分割线@2x.png */; };
 		725E018D182CDF0B00022A15 /* BTGetData.m in Sources */ = {isa = PBXBuildFile; fileRef = 725E018C182CDF0B00022A15 /* BTGetData.m */; };
+		72875CB718346F3D00F6D49B /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72875CB618346F3D00F6D49B /* QuartzCore.framework */; };
 		728ECC0318239AB0005053FE /* BTNavicationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 728ECC0218239AB0005053FE /* BTNavicationController.m */; };
 		728ECC0B1823B64F005053FE /* RBParallaxTableVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 728ECC0A1823B64F005053FE /* RBParallaxTableVC.m */; };
 		728ECC0D1823C092005053FE /* demo1@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 728ECC0C1823C092005053FE /* demo1@2x.png */; };
@@ -128,6 +131,10 @@
 		723213571824D50100C17EDC /* BTFinishedCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BTFinishedCell.m; path = CustomSuperViewController/BTFinishedCell.m; sourceTree = "<group>"; };
 		723213591824D52100C17EDC /* BTImageCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BTImageCell.h; path = CustomSuperViewController/BTImageCell.h; sourceTree = "<group>"; };
 		7232135A1824D52100C17EDC /* BTImageCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BTImageCell.m; path = CustomSuperViewController/BTImageCell.m; sourceTree = "<group>"; };
+		7236B7B81833253F002E4FA8 /* BTLoginRegisterCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BTLoginRegisterCell.h; path = MainCustomCell/BTLoginRegisterCell.h; sourceTree = "<group>"; };
+		7236B7B91833253F002E4FA8 /* BTLoginRegisterCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BTLoginRegisterCell.m; path = MainCustomCell/BTLoginRegisterCell.m; sourceTree = "<group>"; };
+		7236B7BC18332CC6002E4FA8 /* BTRegisterViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BTRegisterViewController.h; path = "View Controllers/BTRegisterViewController.h"; sourceTree = "<group>"; };
+		7236B7BD18332CC6002E4FA8 /* BTRegisterViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BTRegisterViewController.m; path = "View Controllers/BTRegisterViewController.m"; sourceTree = "<group>"; };
 		723F248C18308791001F27DA /* BTGuideViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTGuideViewController.h; sourceTree = "<group>"; };
 		723F248D18308791001F27DA /* BTGuideViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTGuideViewController.m; sourceTree = "<group>"; };
 		723F249018308925001F27DA /* 1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 1.png; sourceTree = "<group>"; };
@@ -156,6 +163,7 @@
 		724146761827B116008B05C5 /* 分割线@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "分割线@2x.png"; sourceTree = "<group>"; };
 		725E018B182CDF0B00022A15 /* BTGetData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BTGetData.h; path = Global/BTGetData.h; sourceTree = "<group>"; };
 		725E018C182CDF0B00022A15 /* BTGetData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BTGetData.m; path = Global/BTGetData.m; sourceTree = "<group>"; };
+		72875CB618346F3D00F6D49B /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		728ECC0118239AB0005053FE /* BTNavicationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BTNavicationController.h; path = "View Controllers/BTNavicationController.h"; sourceTree = "<group>"; };
 		728ECC0218239AB0005053FE /* BTNavicationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BTNavicationController.m; path = "View Controllers/BTNavicationController.m"; sourceTree = "<group>"; };
 		728ECC091823B64F005053FE /* RBParallaxTableVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RBParallaxTableVC.h; path = CustomSuperViewController/RBParallaxTableVC.h; sourceTree = "<group>"; };
@@ -218,6 +226,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				72875CB718346F3D00F6D49B /* QuartzCore.framework in Frameworks */,
 				72CB9C49182B59D100C0DAF0 /* CoreBluetooth.framework in Frameworks */,
 				72B418BB18238BCA002EAD35 /* CoreGraphics.framework in Frameworks */,
 				72B418BF18238BCA002EAD35 /* CoreData.framework in Frameworks */,
@@ -311,6 +320,24 @@
 			path = AddingBand;
 			sourceTree = "<group>";
 		};
+		7236B7B7183324CA002E4FA8 /* BTLoginRegisterCell */ = {
+			isa = PBXGroup;
+			children = (
+				7236B7B81833253F002E4FA8 /* BTLoginRegisterCell.h */,
+				7236B7B91833253F002E4FA8 /* BTLoginRegisterCell.m */,
+			);
+			name = BTLoginRegisterCell;
+			sourceTree = "<group>";
+		};
+		7236B7BB18332A7C002E4FA8 /* 注册和登录 */ = {
+			isa = PBXGroup;
+			children = (
+				7236B7BC18332CC6002E4FA8 /* BTRegisterViewController.h */,
+				7236B7BD18332CC6002E4FA8 /* BTRegisterViewController.m */,
+			);
+			name = "注册和登录";
+			sourceTree = "<group>";
+		};
 		723F248B1830875C001F27DA /* BTGuideViewController */ = {
 			isa = PBXGroup;
 			children = (
@@ -347,6 +374,7 @@
 		7241465918274520008B05C5 /* MainCustomCell */ = {
 			isa = PBXGroup;
 			children = (
+				7236B7B7183324CA002E4FA8 /* BTLoginRegisterCell */,
 				72E3E507182B89680062DA3D /* BTBluetoothLinkCell */,
 				722EDF09182A5200006B25EE /* PBFlatSettings.h */,
 				722EDF0A182A5200006B25EE /* PBFlatSettings.m */,
@@ -438,6 +466,7 @@
 		72B418B718238BCA002EAD35 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				72875CB618346F3D00F6D49B /* QuartzCore.framework */,
 				72CB9C48182B59D100C0DAF0 /* CoreBluetooth.framework */,
 				72B418B818238BCA002EAD35 /* Foundation.framework */,
 				72B418BA18238BCA002EAD35 /* CoreGraphics.framework */,
@@ -497,6 +526,7 @@
 		72B418ED18238C15002EAD35 /* View Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				7236B7BB18332A7C002E4FA8 /* 注册和登录 */,
 				72414668182758FB008B05C5 /* 二级页面 */,
 				72414666182758D9008B05C5 /* 一级页面 */,
 			);
@@ -683,7 +713,9 @@
 				722ECE2B182914F100129E6A /* UIViewSizeShortcuts.m in Sources */,
 				72CB9C3E182B595200C0DAF0 /* BTUtils.m in Sources */,
 				72B418CB18238BCA002EAD35 /* BTAppDelegate.m in Sources */,
+				7236B7BE18332CC6002E4FA8 /* BTRegisterViewController.m in Sources */,
 				722EDEB21829E7CD006B25EE /* BTPhysicQuickeningViewController.m in Sources */,
+				7236B7BA1833253F002E4FA8 /* BTLoginRegisterCell.m in Sources */,
 				722ECE2A182914F100129E6A /* UIColor+i7HexColor.m in Sources */,
 				72E3E50A182B8C040062DA3D /* BTBluetoothConnectedCell.m in Sources */,
 				7241465C18274581008B05C5 /* BTMainSuperCell.m in Sources */,
@@ -832,12 +864,14 @@
 		72B418E818238BCB002EAD35 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "AddingBand/AddingBand-Prefix.pch";
 				INFOPLIST_FILE = "AddingBand/AddingBand-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -846,12 +880,14 @@
 		72B418E918238BCB002EAD35 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "AddingBand/AddingBand-Prefix.pch";
 				INFOPLIST_FILE = "AddingBand/AddingBand-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -860,8 +896,10 @@
 		72B418EB18238BCB002EAD35 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/AddingBand.app/AddingBand";
+				CODE_SIGN_IDENTITY = "iPhone Developer: XUEJIAN LI (PN3UEV8QP7)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: XUEJIAN LI (PN3UEV8QP7)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
@@ -874,8 +912,12 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = "AddingBandTests/AddingBandTests-Info.plist";
+				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "8AD22CC4-A60F-424A-B059-645A45694BBF";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "8AD22CC4-A60F-424A-B059-645A45694BBF";
 				TEST_HOST = "$(BUNDLE_LOADER)";
+				VALID_ARCHS = "armv7 armv6";
 				WRAPPER_EXTENSION = xctest;
 			};
 			name = Debug;
@@ -883,7 +925,7 @@
 		72B418EC18238BCB002EAD35 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/AddingBand.app/AddingBand";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
@@ -893,8 +935,10 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "AddingBand/AddingBand-Prefix.pch";
 				INFOPLIST_FILE = "AddingBandTests/AddingBandTests-Info.plist";
+				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUNDLE_LOADER)";
+				VALID_ARCHS = "armv7 armv6";
 				WRAPPER_EXTENSION = xctest;
 			};
 			name = Release;
@@ -909,7 +953,7 @@
 				72B418E618238BCB002EAD35 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 		72B418E718238BCB002EAD35 /* Build configuration list for PBXNativeTarget "AddingBand" */ = {
 			isa = XCConfigurationList;
@@ -918,7 +962,7 @@
 				72B418E918238BCB002EAD35 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 		72B418EA18238BCB002EAD35 /* Build configuration list for PBXNativeTarget "AddingBandTests" */ = {
 			isa = XCConfigurationList;
@@ -927,7 +971,7 @@
 				72B418EC18238BCB002EAD35 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
 
