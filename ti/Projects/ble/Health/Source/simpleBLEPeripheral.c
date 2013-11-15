@@ -538,6 +538,8 @@ void SimpleBLEPeripheral_Init( uint8 task_id )
     //close all
     closeAllPIO();
 
+    // LED10_PI0 = OPEN_PIO;
+
 #if (defined HAL_LCD) && (HAL_LCD == TRUE)
 
 #if defined FEATURE_OAD
@@ -839,60 +841,60 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
     //debug usage - eeprom test
     if ( events & EEPROM_TEST_EVT )
     {
-        uint8 eepWriteLen=64;
-        uint8 eepReadLen=eepWriteLen;
-        uint8 eepWriteBuf[66];
-        uint8 eepReadBuf[64];
-        uint16 eepPageAddrBuf;//0~511
-        //uint8 eepOffsetAddrBuf; //0~63
-        bool eepTestResult=TRUE;
-        uint8 i;
-        uint8 k;
+        // uint8 eepWriteLen=64;
+        // uint8 eepReadLen=eepWriteLen;
+        // uint8 eepWriteBuf[66];
+        // uint8 eepReadBuf[64];
+        // uint16 eepPageAddrBuf;//0~511
+        // //uint8 eepOffsetAddrBuf; //0~63
+        // bool eepTestResult=TRUE;
+        // uint8 i;
+        // uint8 k;
 
-        HalI2CInit(EEPROM_ADDRESS, I2C_CLOCK_RATE);
+        // HalI2CInit(EEPROM_ADDRESS, I2C_CLOCK_RATE);
 
-        eepPageAddrBuf=0x0001;
-        //config write buf
-        for(k=0;k<2;k++)
-        {
-            eepWriteBuf[0]=LO_UINT16(eepPageAddrBuf*64);
-            eepWriteBuf[1]=HI_UINT16(eepPageAddrBuf*64);
-            for(i=2;i<(eepWriteLen+2);i++)
-            {
-                eepWriteBuf[i]=i+k*64;
-            }  
-            HalI2CWrite(eepWriteLen+2,eepWriteBuf);
-            HalI2CAckPolling();
-            eepPageAddrBuf++;
-        }
+        // eepPageAddrBuf=0x0001;
+        // //config write buf
+        // for(k=0;k<2;k++)
+        // {
+        //     eepWriteBuf[0]=LO_UINT16(eepPageAddrBuf*64);
+        //     eepWriteBuf[1]=HI_UINT16(eepPageAddrBuf*64);
+        //     for(i=2;i<(eepWriteLen+2);i++)
+        //     {
+        //         eepWriteBuf[i]=i+k*64;
+        //     }  
+        //     HalI2CWrite(eepWriteLen+2,eepWriteBuf);
+        //     HalI2CAckPolling();
+        //     eepPageAddrBuf++;
+        // }
 
-        eepPageAddrBuf=0x0001;
-        for(k=0;k<2;k++)
-        {
-            eepWriteBuf[0]=LO_UINT16(eepPageAddrBuf*64);
-            eepWriteBuf[1]=HI_UINT16(eepPageAddrBuf*64);
-            HalI2CWrite(2,eepWriteBuf);
-            HalI2CRead(eepReadLen, eepReadBuf);
-            for(i=0;i<eepWriteLen;i++)
-            {
-                if(k==0)
-                {
-                    if((eepWriteBuf[i+2]-64)!=eepReadBuf[i])
-                        eepTestResult=FALSE;
-                }
-                else if (k==1)
-                {
-                    if(eepWriteBuf[i+2]!=eepReadBuf[i])
-                        eepTestResult=FALSE;
-                }
-                else;
-            }
-            eepPageAddrBuf++;
-        }
-        if(eepTestResult==TRUE)        
-            P0_1=0;
-        else
-            P0_1=1;
+        // eepPageAddrBuf=0x0001;
+        // for(k=0;k<2;k++)
+        // {
+        //     eepWriteBuf[0]=LO_UINT16(eepPageAddrBuf*64);
+        //     eepWriteBuf[1]=HI_UINT16(eepPageAddrBuf*64);
+        //     HalI2CWrite(2,eepWriteBuf);
+        //     HalI2CRead(eepReadLen, eepReadBuf);
+        //     for(i=0;i<eepWriteLen;i++)
+        //     {
+        //         if(k==0)
+        //         {
+        //             if((eepWriteBuf[i+2]-64)!=eepReadBuf[i])
+        //                 eepTestResult=FALSE;
+        //         }
+        //         else if (k==1)
+        //         {
+        //             if(eepWriteBuf[i+2]!=eepReadBuf[i])
+        //                 eepTestResult=FALSE;
+        //         }
+        //         else;
+        //     }
+        //     eepPageAddrBuf++;
+        // }
+        // if(eepTestResult==TRUE)        
+        //     P0_1=0;
+        // else
+        //     P0_1=1;
 
         return (events ^ EEPROM_TEST_EVT);
     }
@@ -938,9 +940,9 @@ static void simpleBLEPeripheral_ProcessOSALMsg( osal_event_hdr_t *pMsg )
         if (slipWaitFor == 1)
         {
             // LED11_PI0 = !LED11_PI0;
-            time();
-
             shock();
+
+            time();
 
             slipFrom = 0;
             slipWaitFor = 0;
@@ -1392,7 +1394,8 @@ static void time(void){
     osal_ConvertUTCTime(&currentTm, current);
 
     // display hour
-    toggleLEDWithTime(currentTm.hour, OPEN_PIO);
+    uint8 hour = currentTm.hour;
+    toggleLEDWithTime(hour, OPEN_PIO);
 
     // display minutes
     blinkMinutes = currentTm.minutes / 5;
