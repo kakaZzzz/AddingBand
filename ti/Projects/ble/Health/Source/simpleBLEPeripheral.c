@@ -309,7 +309,9 @@ uint8 db[EEPROM_ADDRESS_DATA_MAX];
 
 int ledCycleCount = 0;
 
-bool slipWaitFor = 0, slipFrom = 0;
+uint8 slipWaitFor = 0, slipFrom = 0, lockSlip = 0;
+
+uint8 blinkPIO = 0, blinkMinutes = 13;
 
 /*********************************************************************
  * LOCAL FUNCTIONS
@@ -336,7 +338,8 @@ static void closeAllPIO(void);
 static void shock(void);
 static void time(void);
 
-static void togglePIOWithTime(uint8 num, uint8 io);
+static void toggleLEDWithTime(uint8 num, uint8 io);
+static void blinkLED(void);
 
 #if (defined HAL_LCD) && (HAL_LCD == TRUE)
 static char *bdAddr2Str ( uint8 *pAddr );
@@ -685,6 +688,28 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
         return (events ^ MOTOR_STOP_EVT);
     }
 
+    if ( events & BLINK_LED_EVT )
+    {
+        
+        blinkLED();
+
+        return (events ^ BLINK_LED_EVT);
+    }
+
+    if ( events & TIME_STOP_EVT )
+    {
+        
+        osal_stop_timerEx(simpleBLEPeripheral_TaskID, BLINK_LED_EVT);
+
+        blinkPIO = 0;
+
+        blinkMinutes = 13;
+
+        lockSlip = 0;
+
+        return (events ^ TIME_STOP_EVT);
+    }
+
     // if ( events & LED_CYCLE_EVT )
     // {
 
@@ -893,6 +918,11 @@ static void simpleBLEPeripheral_ProcessOSALMsg( osal_event_hdr_t *pMsg )
     case KEY_CHANGE:
 
     {
+      if (lockSlip)
+      {
+          break;
+      }
+
       uint8 keys = ((keyChange_t *)pMsg)->keys;
 
       // 1
@@ -1297,7 +1327,7 @@ static void shock(void){
  * @return  none
  */
 
-static void togglePIOWithTime(uint8 num, uint8 io){
+static void toggleLEDWithTime(uint8 num, uint8 io){
 
     switch(num){
         case 1:
@@ -1341,17 +1371,47 @@ static void togglePIOWithTime(uint8 num, uint8 io){
     }
 }
 
+static void blinkLED(void){
+
+    blinkPIO = !blinkPIO;
+
+    toggleLEDWithTime(blinkMinutes, blinkPIO);
+
+    osal_start_timerEx( simpleBLEPeripheral_TaskID, BLINK_LED_EVT, 500 );
+}
+
 static void time(void){
 
+    lockSlip = 1;
+
+    // get current time
     UTCTime current;
     UTCTimeStruct currentTm;
 
     current = osal_getClock();
     osal_ConvertUTCTime(&currentTm, current);
 
-    togglePIOWithTime(currentTm.hour, OPEN_PIO);
+    // display hour
+    toggleLEDWithTime(currentTm.hour, OPEN_PIO);
 
-    osal_start_timerEx( simpleBLEPeripheral_TaskID, MOTOR_STOP_EVT, 200 );
+    // display minutes
+    blinkMinutes = currentTm.minutes / 5;
+
+    if (currentTm.hour == blinkMinutes)
+    {
+        if (blinkMinutes == 12)
+        {
+            blinkMinutes = 11;
+        }else{
+            blinkMinutes--;
+        }
+    }
+
+    blinkLED();
+
+    // stop time
+    osal_start_timerEx( simpleBLEPeripheral_TaskID, TIME_STOP_EVT, 5000 );
+
 }
 
 /*********************************************************************
