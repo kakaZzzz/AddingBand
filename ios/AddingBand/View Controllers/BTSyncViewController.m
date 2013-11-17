@@ -121,13 +121,29 @@
     self.tableView.backgroundColor = [UIColor whiteColor];
     NSLog(@"3333333333333333333%@",NSStringFromCGRect(self.tableView.frame));
     
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
-    
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    //
+    [self configureNavigationbar];
 }
-
+#pragma mark - 设置导航栏上面的按钮
+- (void)configureNavigationbar
+{
+    UIButton *syncButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    syncButton.frame = CGRectMake(250, 5, 65, 30);
+    
+    [syncButton setTitle:@"立即同步" forState:UIControlStateNormal];//title的值根据定位和和选择而改变
+    syncButton.tag = 198;
+    
+    [syncButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [syncButton addTarget:self action:@selector(presentCitySelect) forControlEvents:UIControlEventTouchUpInside];
+    [syncButton setBackgroundImage:[UIImage imageNamed:@"透明.png"] forState:UIControlStateNormal];
+    syncButton.tintColor = [UIColor colorWithRed:70/255.0 green:163/255.0 blue:210/255.0 alpha:1];
+    
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:(UIView *)syncButton];
+}
+- (void)presentCitySelect
+{
+    NSLog(@"立即同步");
+}
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];

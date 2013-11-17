@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="3400" systemVersion="13A2093" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
+<model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="2061" systemVersion="13A603" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="BTBleList" representedClassName="BTBleList" isAbstract="YES" syncable="YES">
         <attribute name="lastSync" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
@@ -8,6 +8,13 @@
         <attribute name="hasAskGrade" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="installDate" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="lastCheckVersionDate" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+    </entity>
+    <entity name="BTPhsicalData" representedClassName="BTPhsicalData" syncable="YES">
+        <attribute name="babyHeart" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="babyHeight" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="babyWeight" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="mamaTempetature" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="mamaWeight" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
     </entity>
     <entity name="BTRawData" representedClassName="BTRawData" syncable="YES">
         <attribute name="count" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
@@ -20,8 +27,9 @@
         <attribute name="year" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
     </entity>
     <elements>
-        <element name="BTBleList" positionX="0" positionY="0" width="0" height="0"/>
-        <element name="BTEntity" positionX="0" positionY="0" width="0" height="0"/>
-        <element name="BTRawData" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="BTBleList" positionX="0" positionY="0" width="128" height="75"/>
+        <element name="BTEntity" positionX="0" positionY="0" width="128" height="90"/>
+        <element name="BTPhsicalData" positionX="160" positionY="192" width="128" height="120"/>
+        <element name="BTRawData" positionX="0" positionY="0" width="128" height="165"/>
     </elements>
 </model>
