@@ -321,8 +321,8 @@ static void peripheralStateNotificationCB( gaprole_States_t newState );
 static void performPeriodicTask( void );
 static void simpleProfileChangeCB( uint8 paramID );
 
-static void heartRateBattPeriodicTask( void );
-static void heartRateBattCB(uint8 event);
+static void battPeriodicTask( void );
+static void battCB(uint8 event);
 
 static void adxl345Init(void);
 static void adxl345Loop(void);
@@ -538,7 +538,7 @@ void SimpleBLEPeripheral_Init( uint8 task_id )
     //close all
     closeAllPIO();
 
-    // LED10_PI0 = OPEN_PIO;
+    // MOTOR_PIO = OPEN_PIO;
 
 #if (defined HAL_LCD) && (HAL_LCD == TRUE)
 
@@ -558,7 +558,7 @@ void SimpleBLEPeripheral_Init( uint8 task_id )
     VOID SimpleProfile_RegisterAppCBs( &simpleBLEPeripheral_SimpleProfileCBs );
 
     // Register for Battery service callback;
-    Batt_Register ( heartRateBattCB );
+    Batt_Register ( battCB );
 
     // Enable clock divide on halt
     // This reduces active current while radio is active and CC254x MCU
@@ -647,7 +647,7 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
     if ( events & BATT_PERIODIC_EVT )
     {
         // Perform periodic battery task
-        heartRateBattPeriodicTask();
+        battPeriodicTask();
 
         return (events ^ BATT_PERIODIC_EVT);
     }
@@ -669,11 +669,17 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
     if ( events & SLIP_TIMEOUT_EVT )
     {
         
-        if (slipWaitFor == 1 || slipWaitFor == 3)
+        if (slipWaitFor == 3)
         {
             LED12_PI0 = !LED12_PI0;
 
             shock();
+        }
+
+        if (slipWaitFor == 1)
+        {
+
+            time();
         }
 
         slipWaitFor = 0;
@@ -702,6 +708,8 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
     {
         
         osal_stop_timerEx(simpleBLEPeripheral_TaskID, BLINK_LED_EVT);
+
+        closeAllPIO();
 
         blinkPIO = 0;
 
@@ -758,71 +766,6 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
     {
 
         closeAllPIO();
-
-        // P0_0 = 1;
-        // P0_1 = 1;
-        // P0_2 = 1;
-
-        // P0_3 = 1;
-
-        // P1_0 = 0;
-        // P1_1 = 0;
-
-        // HalI2CInit(EEPROM_ADDRESS, I2C_CLOCK_RATE);
-
-        // uint8 aBuf[2] = {
-        //     LO_UINT16(stepDataStop),
-        //     HI_UINT16(stepDataStop)
-        // };
-
-        // SimpleProfile_SetParameter( HEALTH_DATA_HEADER, 2,  aBuf);
-
-        // uint8 w[] = {3,4};
-
-        // HalI2CWrite(2, aBuf);
-
-        // asm("nop");
-        //     asm("nop");
-        //     asm("nop");
-        //     asm("nop");
-        //     asm("nop");
-        //     asm("nop");
-        //     asm("nop");
-        //     asm("nop");
-        //     asm("nop");
-
-        // HalI2CWrite(1, w);
-
-        // asm("nop");
-        //     asm("nop");
-        //     asm("nop");
-        //     asm("nop");
-        //     asm("nop");
-        //     asm("nop");
-        //     asm("nop");
-        //     asm("nop");
-        //     asm("nop");
-
-        // uint8 r[] = {0,0};
-
-        // HalI2CWrite(2, aBuf);
-
-        // asm("nop");
-        //     asm("nop");
-        //     asm("nop");
-        //     asm("nop");
-        //     asm("nop");
-        //     asm("nop");
-        //     asm("nop");
-        //     asm("nop");
-        //     asm("nop");
-
-        // HalI2CRead(1, r);
-
-        // SimpleProfile_SetParameter( HEALTH_DATA_HEADER, 2,  r);
-
-
-        // osal_start_timerEx( simpleBLEPeripheral_TaskID, SBP_LED_STOP_EVT, SBP_PERIODIC_EVT_PERIOD );
 
         return (events ^ CLOSE_ALL_EVT);
     }
@@ -939,8 +882,6 @@ static void simpleBLEPeripheral_ProcessOSALMsg( osal_event_hdr_t *pMsg )
 
         if (slipWaitFor == 1)
         {
-            // LED11_PI0 = !LED11_PI0;
-            shock();
 
             time();
 
@@ -1110,7 +1051,7 @@ static void peripheralStateNotificationCB( gaprole_States_t newState )
 }
 
 /*********************************************************************
- * @fn      heartRateBattCB
+ * @fn      battCB
  *
  * @brief   Callback function for battery service.
  *
@@ -1118,7 +1059,7 @@ static void peripheralStateNotificationCB( gaprole_States_t newState )
  *
  * @return  none
  */
-static void heartRateBattCB(uint8 event)
+static void battCB(uint8 event)
 {
     if (event == BATT_LEVEL_NOTI_ENABLED)
     {
@@ -1136,7 +1077,7 @@ static void heartRateBattCB(uint8 event)
 }
 
 /*********************************************************************
- * @fn      heartRateBattPeriodicTask
+ * @fn      battPeriodicTask
  *
  * @brief   Perform a periodic task for battery measurement.
  *
@@ -1144,7 +1085,7 @@ static void heartRateBattCB(uint8 event)
  *
  * @return  none
  */
-static void heartRateBattPeriodicTask( void )
+static void battPeriodicTask( void )
 {
     if (gapProfileState == GAPROLE_CONNECTED)
     {
@@ -1386,6 +1327,8 @@ static void time(void){
 
     lockSlip = 1;
 
+    shock();
+
     // get current time
     UTCTime current;
     UTCTimeStruct currentTm;
@@ -1395,6 +1338,12 @@ static void time(void){
 
     // display hour
     uint8 hour = currentTm.hour;
+
+    if (hour > 12)
+    {
+        hour = hour - 12;
+    }
+
     toggleLEDWithTime(hour, OPEN_PIO);
 
     // display minutes
@@ -1404,7 +1353,7 @@ static void time(void){
     {
         if (blinkMinutes == 12)
         {
-            blinkMinutes = 11;
+            blinkMinutes = 1;
         }else{
             blinkMinutes--;
         }
