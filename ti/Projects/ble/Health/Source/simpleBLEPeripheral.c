@@ -139,37 +139,88 @@
 //define i2c clock rate
 #define I2C_CLOCK_RATE                        i2cClock_33KHZ
 
+//define registers for MMA8652FC
+#define F_STATUS                    0x00
+#define OUT_X_MSB                   0x01
+#define OUT_X_LSB                   0x02
+#define OUT_Y_MSB                   0x03
+#define OUT_Y_LSB                   0x04
+#define OUT_Z_MSB                   0x05
+#define OUT_Z_LSB                   0x06
+
+#define F_SETUP                     0x09
+#define TRIG_CFG                    0x0A
+#define SYSMOD                      0x0B
+#define INT_SOURCE                  0x0C
+#define WHO_AM_I                    0x0D
+#define XYZ_DATA_CFG                0x0E
+#define HP_FILTER_CUTOFF            0x0F
+
+#define PL_STATUS                   0x10
+#define PL_CFG                      0x11
+#define PL_COUNT                    0x12
+#define PL_BF_ZCOMP                 0x13
+#define P_L_THS_REG                 0x14
+#define FF_MT_CFG                   0x15
+#define FF_MT_SRC                   0x16
+#define FF_MT_THS                   0x17
+#define FF_MT_COUNT                 0x18
+
+#define TRANSIENT_CFG               0x1D
+#define TRANSIENT_SRC               0x1E
+#define TRANSIENT_THS               0x1F
+#define TRANSIENT_COUNT             0x20
+
+#define PULSE_CFG                   0x21
+#define PULSE_SRC                   0x22
+#define PULSE_THSX                  0x23
+#define PULSE_THSY                  0x24
+#define PULSE_THSZ                  0x25
+#define PULSE_TMLT                  0x26
+#define PULSE_LTCY                  0x27
+#define PULSE_WIND                  0x28
+#define ASLP_COUNT                  0x29
+#define CTRL_REG1                   0x2A
+#define CTRL_REG2                   0x2B
+#define CTRL_REG3                   0x2C
+#define CTRL_REG4                   0x2D
+#define CTRL_REG5                   0x2E
+#define OFF_X                       0x2F
+#define OFF_Y                       0x30
+#define OFF_Z                       0x31
+
+
 // define for adxl345
-#define Reg_ID                  0
-#define Reg_thresh_tap          0x1D
-#define Reg_OFSX                0x1E
-#define Reg_OFSY                0x1F
-#define Reg_OFSZ                0x20
-#define Reg_DUR                 0x21
-#define Reg_LATENT              0X22
-#define Reg_WINDOW              0X23
-#define Reg_THRESH_ACT          0X24
-#define Reg_THRESH_INACT        0X25
-#define Reg_TIME_INACT          0X26
-#define Reg_ACT_INACT_CTL       0X27
-#define Reg_THRESH_FF           0X28
-#define Reg_TIME_FF             0X29
-#define Reg_TAP_AXES            0X2A
-#define Reg_ACT_TAP_STATUS      0X2B
-#define Reg_BW_RATE             0X2C
-#define Reg_POWER_CTL           0x2D
-#define Reg_INT_ENABLE          0x2E
-#define Reg_INT_MAP             0X2F
-#define Reg_INT_SOURCE          0X30
-#define Reg_DATA_FORMAT         0X31
-#define Reg_DX0                 0x32
-#define Reg_DX1                 0x33
-#define Reg_DY0                 0x34
-#define Reg_DY1                 0x35
-#define Reg_DZ0                 0x36
-#define Reg_DZ1                 0x37
-#define Reg_FIFO_CTL            0X38
-#define Reg_FIFO_STATUS         0X39
+// #define Reg_ID                  0
+// #define Reg_thresh_tap          0x1D
+// #define Reg_OFSX                0x1E
+// #define Reg_OFSY                0x1F
+// #define Reg_OFSZ                0x20
+// #define Reg_DUR                 0x21
+// #define Reg_LATENT              0X22
+// #define Reg_WINDOW              0X23
+// #define Reg_THRESH_ACT          0X24
+// #define Reg_THRESH_INACT        0X25
+// #define Reg_TIME_INACT          0X26
+// #define Reg_ACT_INACT_CTL       0X27
+// #define Reg_THRESH_FF           0X28
+// #define Reg_TIME_FF             0X29
+// #define Reg_TAP_AXES            0X2A
+// #define Reg_ACT_TAP_STATUS      0X2B
+// #define Reg_BW_RATE             0X2C
+// #define Reg_POWER_CTL           0x2D
+// #define Reg_INT_ENABLE          0x2E
+// #define Reg_INT_MAP             0X2F
+// #define Reg_INT_SOURCE          0X30
+// #define Reg_DATA_FORMAT         0X31
+// #define Reg_DX0                 0x32
+// #define Reg_DX1                 0x33
+// #define Reg_DY0                 0x34
+// #define Reg_DY1                 0x35
+// #define Reg_DZ0                 0x36
+// #define Reg_DZ1                 0x37
+// #define Reg_FIFO_CTL            0X38
+// #define Reg_FIFO_STATUS         0X39
 
 uint8 X0, X1, Y0, Y1, Z1, Z0;
 int16 X_out, Y_out, Z_out;
@@ -1375,91 +1426,91 @@ static void time(void){
  */
 static void adxl345Init( void )
 {
-    HalI2CInit(ADXL345_ADDRESS, I2C_CLOCK_RATE);
+    // HalI2CInit(ADXL345_ADDRESS, I2C_CLOCK_RATE);
 
-    uint8 pBuf[2];
+    // uint8 pBuf[2];
 
-    pBuf[0] = Reg_thresh_tap;
-    pBuf[1] = 0x30;
-    HalI2CWrite(2, pBuf);
+    // pBuf[0] = Reg_thresh_tap;
+    // pBuf[1] = 0x30;
+    // HalI2CWrite(2, pBuf);
 
-    pBuf[0] = Reg_DUR;
-    pBuf[1] = 0x30;
-    HalI2CWrite(2, pBuf);
+    // pBuf[0] = Reg_DUR;
+    // pBuf[1] = 0x30;
+    // HalI2CWrite(2, pBuf);
 
-    pBuf[0] = Reg_LATENT;
-    pBuf[1] = 0xC0;
-    HalI2CWrite(2, pBuf);
+    // pBuf[0] = Reg_LATENT;
+    // pBuf[1] = 0xC0;
+    // HalI2CWrite(2, pBuf);
 
-    pBuf[0] = Reg_WINDOW;
-    pBuf[1] = 0xF0;
-    HalI2CWrite(2, pBuf);
+    // pBuf[0] = Reg_WINDOW;
+    // pBuf[1] = 0xF0;
+    // HalI2CWrite(2, pBuf);
 
-    pBuf[0] = Reg_OFSX;
-    pBuf[1] = 0;
-    HalI2CWrite(2, pBuf);
+    // pBuf[0] = Reg_OFSX;
+    // pBuf[1] = 0;
+    // HalI2CWrite(2, pBuf);
 
-    pBuf[0] = Reg_OFSY;
-    pBuf[1] = 0;
-    HalI2CWrite(2, pBuf);
+    // pBuf[0] = Reg_OFSY;
+    // pBuf[1] = 0;
+    // HalI2CWrite(2, pBuf);
 
-    pBuf[0] = Reg_OFSZ;
-    pBuf[1] = 0;
-    HalI2CWrite(2, pBuf);
+    // pBuf[0] = Reg_OFSZ;
+    // pBuf[1] = 0;
+    // HalI2CWrite(2, pBuf);
 
-    pBuf[0] = Reg_THRESH_ACT;
-    pBuf[1] = 10;
-    HalI2CWrite(2, pBuf);
+    // pBuf[0] = Reg_THRESH_ACT;
+    // pBuf[1] = 10;
+    // HalI2CWrite(2, pBuf);
 
-    pBuf[0] = Reg_THRESH_INACT;
-    pBuf[1] = 5;
-    HalI2CWrite(2, pBuf);
+    // pBuf[0] = Reg_THRESH_INACT;
+    // pBuf[1] = 5;
+    // HalI2CWrite(2, pBuf);
 
-    pBuf[0] = Reg_TIME_INACT;
-    pBuf[1] = 1;
-    HalI2CWrite(2, pBuf);
+    // pBuf[0] = Reg_TIME_INACT;
+    // pBuf[1] = 1;
+    // HalI2CWrite(2, pBuf);
 
-    pBuf[0] = Reg_ACT_INACT_CTL;
-    pBuf[1] = 0xff;
-    HalI2CWrite(2, pBuf);
+    // pBuf[0] = Reg_ACT_INACT_CTL;
+    // pBuf[1] = 0xff;
+    // HalI2CWrite(2, pBuf);
 
-    pBuf[0] = Reg_THRESH_FF;
-    pBuf[1] = 10;
-    HalI2CWrite(2, pBuf);
+    // pBuf[0] = Reg_THRESH_FF;
+    // pBuf[1] = 10;
+    // HalI2CWrite(2, pBuf);
 
-    pBuf[0] = Reg_TIME_FF;
-    pBuf[1] = 10;
-    HalI2CWrite(2, pBuf);
+    // pBuf[0] = Reg_TIME_FF;
+    // pBuf[1] = 10;
+    // HalI2CWrite(2, pBuf);
 
-    pBuf[0] = Reg_TAP_AXES;
-    pBuf[1] = 0x0f;
-    // pBuf[1] = 0x09;
-    HalI2CWrite(2, pBuf);
+    // pBuf[0] = Reg_TAP_AXES;
+    // pBuf[1] = 0x0f;
+    // // pBuf[1] = 0x09;
+    // HalI2CWrite(2, pBuf);
 
-    pBuf[0] = Reg_BW_RATE;
-    // pBuf[1] = 0x17;
-    pBuf[1] = 0x0A;
-    HalI2CWrite(2, pBuf);
+    // pBuf[0] = Reg_BW_RATE;
+    // // pBuf[1] = 0x17;
+    // pBuf[1] = 0x0A;
+    // HalI2CWrite(2, pBuf);
 
-    pBuf[0] = Reg_POWER_CTL;
-    pBuf[1] = 8;
-    HalI2CWrite(2, pBuf);
+    // pBuf[0] = Reg_POWER_CTL;
+    // pBuf[1] = 8;
+    // HalI2CWrite(2, pBuf);
 
-    pBuf[0] = Reg_INT_ENABLE;
-    pBuf[1] = 0x60;
-    HalI2CWrite(2, pBuf);
+    // pBuf[0] = Reg_INT_ENABLE;
+    // pBuf[1] = 0x60;
+    // HalI2CWrite(2, pBuf);
 
-    pBuf[0] = Reg_INT_MAP;
-    pBuf[1] = 0x00;
-    HalI2CWrite(2, pBuf);
+    // pBuf[0] = Reg_INT_MAP;
+    // pBuf[1] = 0x00;
+    // HalI2CWrite(2, pBuf);
 
-    pBuf[0] = Reg_DATA_FORMAT;
-    pBuf[1] = 0x0b;
-    HalI2CWrite(2, pBuf);
+    // pBuf[0] = Reg_DATA_FORMAT;
+    // pBuf[1] = 0x0b;
+    // HalI2CWrite(2, pBuf);
 
-    pBuf[0] = Reg_FIFO_CTL;
-    pBuf[1] = 0;
-    HalI2CWrite(2, pBuf);
+    // pBuf[0] = Reg_FIFO_CTL;
+    // pBuf[1] = 0;
+    // HalI2CWrite(2, pBuf);
 
 }
 
@@ -1516,6 +1567,9 @@ static void adxl345Loop(void)
                 {
                     // add one step
                     pace_count = pace_count + 1;
+
+                    LED12_PI0 = !LED12_PI0;
+                    LED1_PI0 = !LED1_PI0;
 
                     // osal_start_timerEx( simpleBLEPeripheral_TaskID, LED_CYCLE_EVT, 10 );
 
@@ -1603,12 +1657,22 @@ static void adxl345GetAccData(void)
     uint8 pBuf[2];
 
     //read X_acc
-    pBuf[0] = Reg_DX0;
+    // pBuf[0] = Reg_DX0;
+    // HalI2CWrite(1, pBuf);
+    // HalI2CRead(1, &pBuf[1]);
+    // X0 = pBuf[1];
+
+    // pBuf[0] = Reg_DX1;
+    // HalI2CWrite(1, pBuf);
+    // HalI2CRead(1, &pBuf[1]);
+    // X1 = pBuf[1];
+
+    pBuf[0] = OUT_X_LSB;
     HalI2CWrite(1, pBuf);
     HalI2CRead(1, &pBuf[1]);
     X0 = pBuf[1];
 
-    pBuf[0] = Reg_DX1;
+    pBuf[0] = OUT_X_MSB;
     HalI2CWrite(1, pBuf);
     HalI2CRead(1, &pBuf[1]);
     X1 = pBuf[1];
@@ -1616,12 +1680,22 @@ static void adxl345GetAccData(void)
     X_out = (int16)((X1 << 8) | X0);
 
     //read Y_acc
-    pBuf[0] = Reg_DY0;
+    // pBuf[0] = Reg_DY0;
+    // HalI2CWrite(1, pBuf);
+    // HalI2CRead(1, &pBuf[1]);
+    // Y0 = pBuf[1];
+
+    // pBuf[0] = Reg_DY1;
+    // HalI2CWrite(1, pBuf);
+    // HalI2CRead(1, &pBuf[1]);
+    // Y1 = pBuf[1];
+
+    pBuf[0] = OUT_Y_LSB;
     HalI2CWrite(1, pBuf);
     HalI2CRead(1, &pBuf[1]);
     Y0 = pBuf[1];
 
-    pBuf[0] = Reg_DY1;
+    pBuf[0] = OUT_Y_MSB;
     HalI2CWrite(1, pBuf);
     HalI2CRead(1, &pBuf[1]);
     Y1 = pBuf[1];
@@ -1629,12 +1703,22 @@ static void adxl345GetAccData(void)
     Y_out = (int16)((Y1 << 8) | Y0);
 
     //read Z_acc
-    pBuf[0] = Reg_DZ0;
+    // pBuf[0] = Reg_DZ0;
+    // HalI2CWrite(1, pBuf);
+    // HalI2CRead(1, &pBuf[1]);
+    // Z0 = pBuf[1];
+
+    // pBuf[0] = Reg_DZ1;
+    // HalI2CWrite(1, pBuf);
+    // HalI2CRead(1, &pBuf[1]);
+    // Z1 = pBuf[1];
+
+    pBuf[0] = OUT_Z_LSB;
     HalI2CWrite(1, pBuf);
     HalI2CRead(1, &pBuf[1]);
     Z0 = pBuf[1];
 
-    pBuf[0] = Reg_DZ1;
+    pBuf[0] = OUT_Z_MSB;
     HalI2CWrite(1, pBuf);
     HalI2CRead(1, &pBuf[1]);
     Z1 = pBuf[1];
