@@ -20,10 +20,7 @@ DerivedData
 #CocoaPods
 Pods
 
-CC2541
-
-ti\Projects\ble\Health\CC2541DB\CC2541
-
+#ti
 *.hex
 *.d51
 *.map
