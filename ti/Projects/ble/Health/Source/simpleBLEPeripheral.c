@@ -63,7 +63,7 @@
 #define LO_UINT32(x)                          ((x) & 0xffff)
 
 // define LEDs
-#define LED12_PI0                             P0_2
+#define LED0_PI0                             P0_2
 #define LED1_PI0                              P0_3
 #define LED2_PI0                              P0_1
 #define LED3_PI0                              P0_4
@@ -722,7 +722,7 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
         
         if (slipWaitFor == 3)
         {
-            LED12_PI0 = !LED12_PI0;
+            LED0_PI0 = !LED0_PI0;
 
             shock();
         }
@@ -1357,8 +1357,8 @@ static void toggleLEDWithTime(uint8 num, uint8 io){
         case 11:
             LED11_PI0 = io;
             break;
-        case 12:
-            LED12_PI0 = io;
+        case 0:
+            LED0_PI0 = io;
             break;
         default:
             break; 
@@ -1390,7 +1390,7 @@ static void time(void){
     // display hour
     uint8 hour = currentTm.hour;
 
-    if (hour > 12)
+    if (hour >= 12)
     {
         hour = hour - 12;
     }
@@ -1400,9 +1400,9 @@ static void time(void){
     // display minutes
     blinkMinutes = currentTm.minutes / 5;
 
-    if (currentTm.hour == blinkMinutes)
+    if (hour == blinkMinutes)
     {
-        if (blinkMinutes == 12)
+        if (blinkMinutes == 0)
         {
             blinkMinutes = 1;
         }else{
@@ -1568,7 +1568,7 @@ static void adxl345Loop(void)
                     // add one step
                     pace_count = pace_count + 1;
 
-                    LED12_PI0 = !LED12_PI0;
+                    LED0_PI0 = !LED0_PI0;
                     LED1_PI0 = !LED1_PI0;
 
                     // osal_start_timerEx( simpleBLEPeripheral_TaskID, LED_CYCLE_EVT, 10 );
@@ -1733,7 +1733,7 @@ static void adxl345GetIntData(void)
     uint8 pBuf[2];
 
     //read INT
-    pBuf[0] = Reg_INT_SOURCE;
+    pBuf[0] = INT_SOURCE;
     HalI2CWrite(1, pBuf);
     HalI2CRead(1, &pBuf[1]);
     INT_STATUS = pBuf[1];
