@@ -318,12 +318,14 @@ void HalI2CDisable(void)
 static uint8 i2cMstReStrt(uint8 RD_WRn)
 {
   I2C_STRT();
-
-  if (I2CSTAT == mstRepStart) /* A start condition has been transmitted */
-  {
+//  while (I2CSTAT != mstRepStart) /* A start condition has been transmitted */
+//  {
+//    
+//  }
+//
+//  I2C_WRITE(i2cAddr | RD_WRn);
+  if(I2CSTAT == mstRepStart) /* A start condition has been transmitted */
     I2C_WRITE(i2cAddr | RD_WRn);
-  }
-
   return I2CSTAT;
 }
 
@@ -340,6 +342,116 @@ uint8 HalI2CAckPolling(void)
     }
   }
   return 1;
+}
+
+/**************************************************************************************************
+ * @fn          HalMotionI2CWrite
+ *
+ * @brief       Write to the I2C bus as a Master.
+ *
+ * input parameters
+ *
+ * @param       len - Number of bytes to write.
+ * @param       pBuf - Pointer to the data buffer to write.
+ *
+ * output parameters
+ *
+ * None.
+ *
+ * @return      The number of bytes successfully written.
+ */
+uint8 HalMotionI2CWrite(uint8 len, uint8 *pBuf)
+{
+  if (i2cMstStrt(0) != mstAddrAckW)
+  {
+    len = 0;
+  }
+
+  for (uint8 cnt = 0; cnt < len; cnt++)
+  {
+    I2C_WRITE(*pBuf++);
+
+    if (I2CSTAT != mstDataAckW)
+    {
+      if (I2CSTAT == mstDataNackW)
+      {
+        len = cnt + 1;
+      }
+      else
+      {
+        len = cnt;
+      }
+      break;
+    }
+  }
+
+  //I2C_STOP();
+
+  return len;
+}
+
+/**************************************************************************************************
+ * @fn          HalMotionI2CRead
+ *
+ * @brief       Read from the I2C bus as a Master.
+ *
+ * input parameters
+ *
+ * @param       len - Number of bytes to read.
+ * @param       pBuf - Pointer to the data buffer to put read bytes.
+ *
+ * output parameters
+ *
+ * None.
+ *
+ * @return      The number of bytes successfully read.
+ */
+uint8 HalMotionI2CRead(uint8 len, uint8 *pBuf)
+{
+  uint8 cnt = 0;
+
+//  if (i2cMstReStrt(I2C_MST_RD_BIT) != mstAddrAckR)
+//  {
+//    len = 0;
+//  }
+  while(i2cMstReStrt(I2C_MST_RD_BIT)!= mstAddrAckR)
+  {
+     for(uint8 cnt=0;cnt<10;cnt++);
+  }
+  // All bytes are ACK'd except for the last one which is NACK'd. If only
+  // 1 byte is being read, a single NACK will be sent. Thus, we only want
+  // to enable ACK if more than 1 byte is going to be read.
+  if (len > 1)
+  {
+    I2C_SET_ACK();
+  }
+
+  while (len > 0)
+  {
+    // slave devices require NACK to be sent after reading last byte
+    if (len == 1)
+    {
+      I2C_SET_NACK();
+    }
+
+    // read a byte from the I2C interface
+    I2C_READ(*pBuf++);
+    cnt++;
+    len--;
+
+    if (I2CSTAT != mstDataAckR)
+    {
+      if (I2CSTAT != mstDataNackR)
+      {
+        // something went wrong, so don't count last byte
+        cnt--;
+      }
+      break;
+    }
+  }
+  I2C_STOP();
+
+  return cnt;
 }
 
 /*********************************************************************

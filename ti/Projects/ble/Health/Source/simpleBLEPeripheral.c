@@ -40,6 +40,8 @@
 
 #include "gapbondmgr.h"
 
+#include "mma865x.h"
+
 #include "simpleBLEPeripheral.h"
 
 #if defined FEATURE_OAD
@@ -256,6 +258,99 @@ int16 ACC_CUR = 0;
 
 #define SYNC_CODE           22
 
+#define SR_SENT 0x08
+#define RS_SENT 0x10
+#define SLAW_ACK_SENT 0x18
+#define SLAW_NACK_SENT 0x20
+#define DATA_ACK_SENT 0x28
+#define DATA_SENT 0x30
+#define SLAR_ACK_SENT 0x40
+#define SLAR_NACK_SENT 0x48
+#define DATA_ACK_RECV 0x50
+#define DATA_NACK_RECV 0x58
+
+// I2C functions for I2CCFG
+
+#define I2C_SR  0xE2 // speed min if speed max : 
+#define I2C_SP  0xD2 // speed min if speed max :
+#define I2C_DO  0x40 //0xC2 // speed min if speed max :
+
+#define waitI2CStat(x) {while(I2CSTAT!=x);}
+
+#define MMA_W 0x3A
+#define MMA_R 0x3B
+
+void I2CSend( uint8 addr, uint8 val)
+{ 
+        uint8 i;
+        // Sent start condition and wait for it to be received
+        I2CCFG=I2C_SR;
+        waitI2CStat(SR_SENT);
+        
+        // Send Device Address
+        I2CDATA=MMA_W;
+        I2CCFG=I2C_DO;
+        waitI2CStat(SLAW_ACK_SENT);
+        
+        // Send Register address
+        
+        I2CDATA=addr;
+        I2CCFG=I2C_DO;
+        waitI2CStat(DATA_ACK_SENT);
+        
+        // Send Register Value
+        
+        I2CDATA=val;
+        I2CCFG=I2C_DO;
+        waitI2CStat(DATA_ACK_SENT);
+        
+        // Send Stop Condition
+        
+        I2CCFG=I2C_SP;
+        
+}
+        
+uint8 I2CRead( uint8 addr)
+{        
+        
+        // Sent start condition and wait for it to be received
+        I2CCFG=I2C_SR;
+        waitI2CStat(SR_SENT);
+        
+        // Send Device Address
+        I2CDATA=MMA_W;
+        I2CCFG=I2C_DO;
+        waitI2CStat(SLAW_ACK_SENT);
+        
+        // Send Register address
+        
+        I2CDATA=addr;
+        I2CCFG=I2C_DO;
+        waitI2CStat(DATA_ACK_SENT);
+              
+        // Send Restart condition
+        
+        I2CCFG=I2C_SR;
+        waitI2CStat(RS_SENT);
+        
+        // Send Device Address Read
+        
+        I2CDATA=MMA_R;
+        I2CCFG=I2C_DO;
+        waitI2CStat(SLAR_ACK_SENT);
+        
+        // Do the transfer
+        
+        I2CCFG=I2C_DO;
+        waitI2CStat(DATA_NACK_RECV);
+        // Send Stop Condition
+        
+        I2CCFG=I2C_SP;
+        
+        return I2CDATA;
+
+}
+
 
 /*********************************************************************
  * TYPEDEFS
@@ -388,6 +483,8 @@ static void closeAllPIO(void);
 
 static void shock(void);
 static void time(void);
+
+static void babyMove(void);
 
 static void toggleLEDWithTime(uint8 num, uint8 io);
 static void blinkLED(void);
@@ -589,7 +686,7 @@ void SimpleBLEPeripheral_Init( uint8 task_id )
     //close all
     closeAllPIO();
 
-    // MOTOR_PIO = OPEN_PIO;
+    MOTOR_PIO = OPEN_PIO;
 
 #if (defined HAL_LCD) && (HAL_LCD == TRUE)
 
@@ -722,9 +819,7 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
         
         if (slipWaitFor == 3)
         {
-            LED0_PI0 = !LED0_PI0;
-
-            shock();
+            // babyMove();
         }
 
         if (slipWaitFor == 1)
@@ -771,47 +866,33 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
         return (events ^ TIME_STOP_EVT);
     }
 
-    // if ( events & LED_CYCLE_EVT )
-    // {
-
-    //     ledCycleCount++;
-
-    //     switch(ledCycleCount){
-    //         case 1:
-    //             P1_1 = 1;
-    //             break;
-    //         case 2:
-    //             P0_0 = 0;
-    //             P1_1 = 0;
-    //             break;
-    //         case 3:
-    //             P0_1 = 0;
-    //             P0_0 = 1;
-    //             break;
-    //         case 4:
-    //             P1_0 = 1;
-    //             P0_1 = 1;
-    //             break;
-    //         case 5:
-    //             P0_2 = 0;
-    //             P1_0 = 0;
-    //             break;
-    //         case 6:
-    //             P0_2 = 1;
-    //             break;
-    //         default:
-    //             break;
-    //     }
+    if ( events & LED_CYCLE_EVT )
+    {
         
-    //     if (ledCycleCount < 6)
-    //     {
-    //         osal_start_timerEx( simpleBLEPeripheral_TaskID, LED_CYCLE_EVT, 100 );
-    //     }else{
-    //         ledCycleCount = 0;
-    //     }
+        if (ledCycleCount < 7)
+        {
+            toggleLEDWithTime(ledCycleCount, OPEN_PIO);
+            toggleLEDWithTime(12 - ledCycleCount, OPEN_PIO);
+        }
+        
+        toggleLEDWithTime(ledCycleCount - 1, CLOSE_PIO);
+        toggleLEDWithTime(13 - ledCycleCount, CLOSE_PIO);
+        
+        ledCycleCount++;
+        
+        if (ledCycleCount < 8)
+        {
+            osal_start_timerEx( simpleBLEPeripheral_TaskID, LED_CYCLE_EVT, 100 );
 
-    //     return (events ^ LED_CYCLE_EVT);
-    // }
+        }else{
+
+            ledCycleCount = 0;
+
+            lockSlip = 0;
+        }
+
+        return (events ^ LED_CYCLE_EVT);
+    }
 
     if ( events & CLOSE_ALL_EVT )
     {
@@ -857,7 +938,7 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
         //     {
         //         eepWriteBuf[i]=i+k*64;
         //     }  
-        //     HalI2CWrite(eepWriteLen+2,eepWriteBuf);
+        //     HalMotionI2CWrite(eepWriteLen+2,eepWriteBuf);
         //     HalI2CAckPolling();
         //     eepPageAddrBuf++;
         // }
@@ -867,8 +948,8 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
         // {
         //     eepWriteBuf[0]=LO_UINT16(eepPageAddrBuf*64);
         //     eepWriteBuf[1]=HI_UINT16(eepPageAddrBuf*64);
-        //     HalI2CWrite(2,eepWriteBuf);
-        //     HalI2CRead(eepReadLen, eepReadBuf);
+        //     HalMotionI2CWrite(2,eepWriteBuf);
+        //     HalMotionI2CRead(eepReadLen, eepReadBuf);
         //     for(i=0;i<eepWriteLen;i++)
         //     {
         //         if(k==0)
@@ -973,9 +1054,7 @@ static void simpleBLEPeripheral_ProcessOSALMsg( osal_event_hdr_t *pMsg )
 
         if (slipWaitFor == 3)
         {
-            LED1_PI0 = !LED1_PI0;
-
-            shock();
+            babyMove();
 
             slipFrom = 0;
             slipWaitFor = 0;
@@ -1225,6 +1304,17 @@ static void simpleProfileChangeCB( uint8 paramID )
 
         osal_ConvertUTCTime(&date, now);
 
+        // {
+        //     uint8 d[8] = {1,2,3,4,5,6,7,8};
+
+        //     // osal_memcpy(&d[0], &X_out, sizeof(int16));
+        //     // osal_memcpy(&d[2], &Y_out, sizeof(int16));
+        //     // osal_memcpy(&d[4], &Z_out, sizeof(int16));
+
+        //     SimpleProfile_SetParameter( HEALTH_SYNC, 8, d );
+        // }
+
+
 #if (defined HAL_LCD) && (HAL_LCD == TRUE)
         HalLcdWriteStringValue( "year:", date.year, 10,  HAL_LCD_LINE_4 );
         HalLcdWriteStringValue( "month:", date.month + 1, 10,  HAL_LCD_LINE_5 );
@@ -1417,6 +1507,13 @@ static void time(void){
 
 }
 
+static void babyMove(void){
+
+    osal_set_event( simpleBLEPeripheral_TaskID, LED_CYCLE_EVT );
+
+    shock();
+}
+
 /*********************************************************************
  * @fn      adxl345Init
  *
@@ -1426,98 +1523,162 @@ static void time(void){
  */
 static void adxl345Init( void )
 {
-    // HalI2CInit(ADXL345_ADDRESS, I2C_CLOCK_RATE);
+    HalI2CInit(ADXL345_ADDRESS, I2C_CLOCK_RATE);
 
-    // uint8 pBuf[2];
+    uint8 pBuf[2], n;
+
+     pBuf[0] = CTRL_REG2;
+     pBuf[1] = RST_MASK;
+     HalI2CWrite(2, pBuf);
+
+    //I2CSend(CTRL_REG2, RST_MASK);
+
+     do {
+          pBuf[0] = CTRL_REG2;
+          HalMotionI2CWrite(1, pBuf);
+          HalMotionI2CRead(1, &pBuf[1]);
+          n = pBuf[1];
+
+        // n = I2CRead(CTRL_REG2);
+
+     } while (n & RST_MASK);
+
+     pBuf[0] = CTRL_REG1;
+     pBuf[1] = ASLP_RATE_20MS + DATA_RATE_5MS;
+     HalI2CWrite(2, pBuf);
+
+    // pBuf[0] = XYZ_DATA_CFG;
+    // pBuf[1] = FULL_SCALE_2G;
+    // HalI2CWrite(2, pBuf);
+
+    // pBuf[0] = CTRL_REG1;
+    // pBuf[1] = (ASLP_RATE_20MS + DATA_RATE_5MS) | ACTIVE_MASK;
+    // HalI2CWrite(2, pBuf);
+
+    
+
+    // pBuf[0] = F_SETUP;
+    // pBuf[1] = 0x00;
+    // HalMotionI2CWrite(2, pBuf);
+
+    // pBuf[0] = TRIG_CFG;
+    // pBuf[1] = 0x00;
+    // HalMotionI2CWrite(2, pBuf);
+
+    // // high pass filter enabled, +-8g
+    // pBuf[0] = XYZ_DATA_CFG;
+    // pBuf[1] = 0012;
+    // HalMotionI2CWrite(2, pBuf);
+
+    // pBuf[0] = CTRL_REG1;
+    // pBuf[1] = 0x01;
+    // HalMotionI2CWrite(2, pBuf);
+
+    // pBuf[0] = F_SETUP;
+    // pBuf[1] = 0x00;
+    // HalMotionI2CWrite(2, pBuf);
+
+    // pBuf[0] = TRIG_CFG;
+    // pBuf[1] = 0x00;
+    // HalMotionI2CWrite(2, pBuf);
+
+    // pBuf[0] = F_SETUP;
+    // pBuf[1] = 0x00;
+    // HalMotionI2CWrite(2, pBuf);
+
+    // pBuf[0] = TRIG_CFG;
+    // pBuf[1] = 0x00;
+    // HalMotionI2CWrite(2, pBuf);
+
 
     // pBuf[0] = Reg_thresh_tap;
     // pBuf[1] = 0x30;
-    // HalI2CWrite(2, pBuf);
+    // HalMotionI2CWrite(2, pBuf);
 
     // pBuf[0] = Reg_DUR;
     // pBuf[1] = 0x30;
-    // HalI2CWrite(2, pBuf);
+    // HalMotionI2CWrite(2, pBuf);
 
     // pBuf[0] = Reg_LATENT;
     // pBuf[1] = 0xC0;
-    // HalI2CWrite(2, pBuf);
+    // HalMotionI2CWrite(2, pBuf);
 
     // pBuf[0] = Reg_WINDOW;
     // pBuf[1] = 0xF0;
-    // HalI2CWrite(2, pBuf);
+    // HalMotionI2CWrite(2, pBuf);
 
     // pBuf[0] = Reg_OFSX;
     // pBuf[1] = 0;
-    // HalI2CWrite(2, pBuf);
+    // HalMotionI2CWrite(2, pBuf);
 
     // pBuf[0] = Reg_OFSY;
     // pBuf[1] = 0;
-    // HalI2CWrite(2, pBuf);
+    // HalMotionI2CWrite(2, pBuf);
 
     // pBuf[0] = Reg_OFSZ;
     // pBuf[1] = 0;
-    // HalI2CWrite(2, pBuf);
+    // HalMotionI2CWrite(2, pBuf);
 
     // pBuf[0] = Reg_THRESH_ACT;
     // pBuf[1] = 10;
-    // HalI2CWrite(2, pBuf);
+    // HalMotionI2CWrite(2, pBuf);
 
     // pBuf[0] = Reg_THRESH_INACT;
     // pBuf[1] = 5;
-    // HalI2CWrite(2, pBuf);
+    // HalMotionI2CWrite(2, pBuf);
 
     // pBuf[0] = Reg_TIME_INACT;
     // pBuf[1] = 1;
-    // HalI2CWrite(2, pBuf);
+    // HalMotionI2CWrite(2, pBuf);
 
     // pBuf[0] = Reg_ACT_INACT_CTL;
     // pBuf[1] = 0xff;
-    // HalI2CWrite(2, pBuf);
+    // HalMotionI2CWrite(2, pBuf);
 
     // pBuf[0] = Reg_THRESH_FF;
     // pBuf[1] = 10;
-    // HalI2CWrite(2, pBuf);
+    // HalMotionI2CWrite(2, pBuf);
 
     // pBuf[0] = Reg_TIME_FF;
     // pBuf[1] = 10;
-    // HalI2CWrite(2, pBuf);
+    // HalMotionI2CWrite(2, pBuf);
 
     // pBuf[0] = Reg_TAP_AXES;
     // pBuf[1] = 0x0f;
     // // pBuf[1] = 0x09;
-    // HalI2CWrite(2, pBuf);
+    // HalMotionI2CWrite(2, pBuf);
 
     // pBuf[0] = Reg_BW_RATE;
     // // pBuf[1] = 0x17;
     // pBuf[1] = 0x0A;
-    // HalI2CWrite(2, pBuf);
+    // HalMotionI2CWrite(2, pBuf);
 
     // pBuf[0] = Reg_POWER_CTL;
     // pBuf[1] = 8;
-    // HalI2CWrite(2, pBuf);
+    // HalMotionI2CWrite(2, pBuf);
 
     // pBuf[0] = Reg_INT_ENABLE;
     // pBuf[1] = 0x60;
-    // HalI2CWrite(2, pBuf);
+    // HalMotionI2CWrite(2, pBuf);
 
     // pBuf[0] = Reg_INT_MAP;
     // pBuf[1] = 0x00;
-    // HalI2CWrite(2, pBuf);
+    // HalMotionI2CWrite(2, pBuf);
 
     // pBuf[0] = Reg_DATA_FORMAT;
     // pBuf[1] = 0x0b;
-    // HalI2CWrite(2, pBuf);
+    // HalMotionI2CWrite(2, pBuf);
 
     // pBuf[0] = Reg_FIFO_CTL;
     // pBuf[1] = 0;
-    // HalI2CWrite(2, pBuf);
+    // HalMotionI2CWrite(2, pBuf);
 
 }
 
 static void adxl345Loop(void)
 {
 
-    // P0_3 = !P0_3;
+    LED0_PI0 = !LED0_PI0;
 
     adxl345GetAccData();
 
@@ -1526,13 +1687,13 @@ static void adxl345Loop(void)
     Y_out = Y_out >> 2;
     Z_out = Z_out >> 2;
 
-    // uint8 d[6];
+    uint8 d[8];
 
-    // osal_memcpy(&d[0], &X_out, sizeof(int16));
-    // osal_memcpy(&d[2], &Y_out, sizeof(int16));
-    // osal_memcpy(&d[4], &Z_out, sizeof(int16));
+    osal_memcpy(&d[0], &X_out, sizeof(int16));
+    osal_memcpy(&d[2], &Y_out, sizeof(int16));
+    osal_memcpy(&d[4], &Z_out, sizeof(int16));
 
-    // SimpleProfile_SetParameter( HEALTH_SYNC, sizeof ( d ), d );
+    SimpleProfile_SetParameter( HEALTH_SYNC, sizeof ( d ), d );
 
 
     ACC_CUR = X_out * X_out + Y_out * Y_out + Z_out * Z_out - 4000;
@@ -1656,71 +1817,81 @@ static void adxl345GetAccData(void)
 
     uint8 pBuf[2];
 
+    // uint8 d[8];
+
+    // pBuf[0] = WHO_AM_I;
+    // HalMotionI2CWrite(1, pBuf);
+    // HalMotionI2CRead(1, &pBuf[1]);
+
+    // d[0] = pBuf[1];
+
+    // SimpleProfile_SetParameter( HEALTH_SYNC, sizeof ( d ), d );
+
     //read X_acc
     // pBuf[0] = Reg_DX0;
-    // HalI2CWrite(1, pBuf);
-    // HalI2CRead(1, &pBuf[1]);
+    // HalMotionI2CWrite(1, pBuf);
+    // HalMotionI2CRead(1, &pBuf[1]);
     // X0 = pBuf[1];
 
     // pBuf[0] = Reg_DX1;
-    // HalI2CWrite(1, pBuf);
-    // HalI2CRead(1, &pBuf[1]);
+    // HalMotionI2CWrite(1, pBuf);
+    // HalMotionI2CRead(1, &pBuf[1]);
     // X1 = pBuf[1];
 
     pBuf[0] = OUT_X_LSB;
-    HalI2CWrite(1, pBuf);
-    HalI2CRead(1, &pBuf[1]);
+    HalMotionI2CWrite(1, pBuf);
+    HalMotionI2CRead(1, &pBuf[1]);
     X0 = pBuf[1];
 
     pBuf[0] = OUT_X_MSB;
-    HalI2CWrite(1, pBuf);
-    HalI2CRead(1, &pBuf[1]);
+    HalMotionI2CWrite(1, pBuf);
+    HalMotionI2CRead(1, &pBuf[1]);
     X1 = pBuf[1];
 
     X_out = (int16)((X1 << 8) | X0);
 
     //read Y_acc
     // pBuf[0] = Reg_DY0;
-    // HalI2CWrite(1, pBuf);
-    // HalI2CRead(1, &pBuf[1]);
+    // HalMotionI2CWrite(1, pBuf);
+    // HalMotionI2CRead(1, &pBuf[1]);
     // Y0 = pBuf[1];
 
     // pBuf[0] = Reg_DY1;
-    // HalI2CWrite(1, pBuf);
-    // HalI2CRead(1, &pBuf[1]);
+    // HalMotionI2CWrite(1, pBuf);
+    // HalMotionI2CRead(1, &pBuf[1]);
     // Y1 = pBuf[1];
 
     pBuf[0] = OUT_Y_LSB;
-    HalI2CWrite(1, pBuf);
-    HalI2CRead(1, &pBuf[1]);
+    HalMotionI2CWrite(1, pBuf);
+    HalMotionI2CRead(1, &pBuf[1]);
     Y0 = pBuf[1];
 
     pBuf[0] = OUT_Y_MSB;
-    HalI2CWrite(1, pBuf);
-    HalI2CRead(1, &pBuf[1]);
+    HalMotionI2CWrite(1, pBuf);
+    HalMotionI2CRead(1, &pBuf[1]);
     Y1 = pBuf[1];
 
     Y_out = (int16)((Y1 << 8) | Y0);
 
     //read Z_acc
     // pBuf[0] = Reg_DZ0;
-    // HalI2CWrite(1, pBuf);
-    // HalI2CRead(1, &pBuf[1]);
+    // HalMotionI2CWrite(1, pBuf);
+    // HalMotionI2CRead(1, &pBuf[1]);
     // Z0 = pBuf[1];
 
     // pBuf[0] = Reg_DZ1;
-    // HalI2CWrite(1, pBuf);
-    // HalI2CRead(1, &pBuf[1]);
+    // HalMotionI2CWrite(1, pBuf);
+    // HalMotionI2CRead(1, &pBuf[1]);
     // Z1 = pBuf[1];
 
     pBuf[0] = OUT_Z_LSB;
-    HalI2CWrite(1, pBuf);
-    HalI2CRead(1, &pBuf[1]);
+    HalMotionI2CWrite(1, pBuf);
+    HalMotionI2CRead(1, &pBuf[1]);
     Z0 = pBuf[1];
 
     pBuf[0] = OUT_Z_MSB;
-    HalI2CWrite(1, pBuf);
-    HalI2CRead(1, &pBuf[1]);
+    HalMotionI2CWrite(1, pBuf);
+    HalMotionI2CRead(1, &pBuf[1]);
     Z1 = pBuf[1];
 
     Z_out = (int16)((Z1 << 8) | Z0);
@@ -1734,8 +1905,8 @@ static void adxl345GetIntData(void)
 
     //read INT
     pBuf[0] = INT_SOURCE;
-    HalI2CWrite(1, pBuf);
-    HalI2CRead(1, &pBuf[1]);
+    HalMotionI2CWrite(1, pBuf);
+    HalMotionI2CRead(1, &pBuf[1]);
     INT_STATUS = pBuf[1];
 
     //DebugValue(INT_STATUS);
@@ -1810,7 +1981,7 @@ static void eepromWriteStep(uint8 type){
         //     aBuf[0] = LO_UINT16(stepDataStop);
         //     aBuf[1] = HI_UINT16(stepDataStop);
 
-        //     HalI2CWrite(2, aBuf);
+        //     HalMotionI2CWrite(2, aBuf);
 
         //     asm("nop");
         //     asm("nop");
@@ -1822,7 +1993,7 @@ static void eepromWriteStep(uint8 type){
         //     asm("nop");
         //     asm("nop");
 
-        //     HalI2CWrite(1, &dBuf[i]);
+        //     HalMotionI2CWrite(1, &dBuf[i]);
 
         //     asm("nop");
         //     asm("nop");
@@ -1869,7 +2040,7 @@ static void eepromReadStep(void){
     //     aBuf[0] = LO_UINT16(stepDataStart);
     //     aBuf[1] = HI_UINT16(stepDataStart);
 
-    //     HalI2CWrite(2, aBuf);
+    //     HalMotionI2CWrite(2, aBuf);
 
     //     asm("nop");
     //         asm("nop");
@@ -1881,7 +2052,7 @@ static void eepromReadStep(void){
     //         asm("nop");
     //         asm("nop");
 
-    //     HalI2CRead(1, &dBuf[i]);
+    //     HalMotionI2CRead(1, &dBuf[i]);
 
     //     stepDataStart += 1;
     // }

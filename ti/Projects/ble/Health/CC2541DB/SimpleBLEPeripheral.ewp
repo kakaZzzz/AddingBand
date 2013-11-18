@@ -1335,6 +1335,7 @@
           <state>xHAL_UART_DMA=1</state>
           <state>HAL_KEY=TRUE</state>
           <state>FAC_TEST=TRUE</state>
+          <state>HAL_I2C=TRUE</state>
         </option>
         <option>
           <name>CCPreprocFile</name>
@@ -6370,6 +6371,9 @@
     </file>
     <file>
       <name>$PROJ_DIR$\..\Source\debug.h</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\Source\mma865x.h</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\Source\OSAL_SimpleBLEPeripheral.c</name>
