@@ -273,7 +273,7 @@ int16 ACC_CUR = 0;
 
 #define I2C_SR  0xE2 // speed min if speed max : 
 #define I2C_SP  0xD2 // speed min if speed max :
-#define I2C_DO  0x40 //0xC2 // speed min if speed max :
+#define I2C_DO  0xC2 // speed min if speed max :
 
 #define waitI2CStat(x) {while(I2CSTAT!=x);}
 
@@ -686,7 +686,7 @@ void SimpleBLEPeripheral_Init( uint8 task_id )
     //close all
     closeAllPIO();
 
-    MOTOR_PIO = OPEN_PIO;
+    // MOTOR_PIO = OPEN_PIO;
 
 #if (defined HAL_LCD) && (HAL_LCD == TRUE)
 
@@ -1527,33 +1527,33 @@ static void adxl345Init( void )
 
     uint8 pBuf[2], n;
 
-     pBuf[0] = CTRL_REG2;
-     pBuf[1] = RST_MASK;
-     HalI2CWrite(2, pBuf);
+    pBuf[0] = CTRL_REG2;
+    pBuf[1] = RST_MASK;
+    HalI2CWrite(2, pBuf);
 
     //I2CSend(CTRL_REG2, RST_MASK);
 
-     do {
-          pBuf[0] = CTRL_REG2;
-          HalMotionI2CWrite(1, pBuf);
-          HalMotionI2CRead(1, &pBuf[1]);
-          n = pBuf[1];
+    do {
+      pBuf[0] = CTRL_REG2;
+      HalMotionI2CWrite(1, pBuf);
+      HalMotionI2CRead(1, &pBuf[1]);
+      n = pBuf[1];
 
-        // n = I2CRead(CTRL_REG2);
+    // n = I2CRead(CTRL_REG2);
 
-     } while (n & RST_MASK);
+    } while (n & RST_MASK);
 
-     pBuf[0] = CTRL_REG1;
-     pBuf[1] = ASLP_RATE_20MS + DATA_RATE_5MS;
-     HalI2CWrite(2, pBuf);
+    pBuf[0] = CTRL_REG1;
+    pBuf[1] = ASLP_RATE_20MS + DATA_RATE_5MS;
+    HalI2CWrite(2, pBuf);
 
-    // pBuf[0] = XYZ_DATA_CFG;
-    // pBuf[1] = FULL_SCALE_2G;
-    // HalI2CWrite(2, pBuf);
+    pBuf[0] = XYZ_DATA_CFG;
+    pBuf[1] = FULL_SCALE_8G;
+    HalI2CWrite(2, pBuf);
 
-    // pBuf[0] = CTRL_REG1;
-    // pBuf[1] = (ASLP_RATE_20MS + DATA_RATE_5MS) | ACTIVE_MASK;
-    // HalI2CWrite(2, pBuf);
+    pBuf[0] = CTRL_REG1;
+    pBuf[1] = (ASLP_RATE_12_5HZ + DATA_RATE_12_5HZ) | ACTIVE_MASK;
+    HalI2CWrite(2, pBuf);
 
     
 
@@ -1678,14 +1678,14 @@ static void adxl345Init( void )
 static void adxl345Loop(void)
 {
 
-    LED0_PI0 = !LED0_PI0;
+    
 
     adxl345GetAccData();
 
     //todo
-    X_out = X_out >> 2;
-    Y_out = Y_out >> 2;
-    Z_out = Z_out >> 2;
+    X_out = X_out >> 6;
+    Y_out = Y_out >> 6;
+    Z_out = Z_out >> 6;
 
     uint8 d[8];
 
@@ -1696,7 +1696,7 @@ static void adxl345Loop(void)
     SimpleProfile_SetParameter( HEALTH_SYNC, sizeof ( d ), d );
 
 
-    ACC_CUR = X_out * X_out + Y_out * Y_out + Z_out * Z_out - 4000;
+    ACC_CUR = X_out * X_out + Y_out * Y_out + Z_out * Z_out - 4096;
 
     //SimpleProfile_SetParameter( HEALTH_SYNC, sizeof ( ACC_CUR ), &ACC_CUR );
 

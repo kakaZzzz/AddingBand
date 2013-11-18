@@ -1,5 +1,5 @@
 [DebugChecksum]
-Checksum=508764842
+Checksum=-140414199
 [DisAssemblyWindow]
 NumStates=_ 1
 State 1=_ 1
@@ -22,8 +22,7 @@ FilePath=_ ""
 UseFilter=_ 0
 [Breakpoints]
 Bp0=_ "STD_CODE" "{$PROJ_DIR$\..\..\..\..\Components\hal\target\CC2540EB\hal_lcd.c}.574.3@1" 0 0 0 0 "" 0 ""
-Bp1=_ "STD_CODE" "{$PROJ_DIR$\..\..\..\..\Components\hal\target\CC2541ST\hal_i2c.c}.424.3@1" 1 0 0 0 "" 0 ""
-Count=2
+Count=1
 [ChipconEmu]
 Stop timers on halt=0
 Leave target running=1

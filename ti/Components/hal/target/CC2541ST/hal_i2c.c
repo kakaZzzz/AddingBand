@@ -410,10 +410,10 @@ uint8 HalMotionI2CRead(uint8 len, uint8 *pBuf)
 {
   uint8 cnt = 0;
 
-//  if (i2cMstReStrt(I2C_MST_RD_BIT) != mstAddrAckR)
-//  {
-//    len = 0;
-//  }
+ // if (i2cMstReStrt(I2C_MST_RD_BIT) != mstAddrAckR)
+ // {
+ //   len = 0;
+ // }
   while(i2cMstReStrt(I2C_MST_RD_BIT)!= mstAddrAckR)
   {
      for(uint8 cnt=0;cnt<10;cnt++);
