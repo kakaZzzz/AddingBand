@@ -65,7 +65,7 @@
 #define LO_UINT32(x)                          ((x) & 0xffff)
 
 // define LEDs
-#define LED0_PI0                             P0_2
+#define LED0_PI0                              P0_2
 #define LED1_PI0                              P0_3
 #define LED2_PI0                              P0_1
 #define LED3_PI0                              P0_4
@@ -127,14 +127,14 @@
 #define DEFAULT_BATT_PERIOD                   15000
 
 // Battery measurement period in ms
-#define DEFAULT_ADXL345_PERIOD                100
+#define DEFAULT_ACC_PERIOD                100
 
 #if defined ( PLUS_BROADCASTER )
 #define ADV_IN_CONN_WAIT                      500 // delay 500 ms
 #endif
 
 // define i2c address
-#define ADXL345_ADDRESS                       0x1D
+#define ACC_ADDRESS                       0x1D
 
 #define EEPROM_ADDRESS                        0x50
 
@@ -191,39 +191,6 @@
 #define OFF_Y                       0x30
 #define OFF_Z                       0x31
 
-
-// define for adxl345
-// #define Reg_ID                  0
-// #define Reg_thresh_tap          0x1D
-// #define Reg_OFSX                0x1E
-// #define Reg_OFSY                0x1F
-// #define Reg_OFSZ                0x20
-// #define Reg_DUR                 0x21
-// #define Reg_LATENT              0X22
-// #define Reg_WINDOW              0X23
-// #define Reg_THRESH_ACT          0X24
-// #define Reg_THRESH_INACT        0X25
-// #define Reg_TIME_INACT          0X26
-// #define Reg_ACT_INACT_CTL       0X27
-// #define Reg_THRESH_FF           0X28
-// #define Reg_TIME_FF             0X29
-// #define Reg_TAP_AXES            0X2A
-// #define Reg_ACT_TAP_STATUS      0X2B
-// #define Reg_BW_RATE             0X2C
-// #define Reg_POWER_CTL           0x2D
-// #define Reg_INT_ENABLE          0x2E
-// #define Reg_INT_MAP             0X2F
-// #define Reg_INT_SOURCE          0X30
-// #define Reg_DATA_FORMAT         0X31
-// #define Reg_DX0                 0x32
-// #define Reg_DX1                 0x33
-// #define Reg_DY0                 0x34
-// #define Reg_DY1                 0x35
-// #define Reg_DZ0                 0x36
-// #define Reg_DZ1                 0x37
-// #define Reg_FIFO_CTL            0X38
-// #define Reg_FIFO_STATUS         0X39
-
 uint8 X0, X1, Y0, Y1, Z1, Z0;
 int16 X_out, Y_out, Z_out;
 uint8 INT_STATUS;
@@ -257,99 +224,6 @@ int16 ACC_CUR = 0;
 #define DATA_TYPE_COUNT     2
 
 #define SYNC_CODE           22
-
-#define SR_SENT 0x08
-#define RS_SENT 0x10
-#define SLAW_ACK_SENT 0x18
-#define SLAW_NACK_SENT 0x20
-#define DATA_ACK_SENT 0x28
-#define DATA_SENT 0x30
-#define SLAR_ACK_SENT 0x40
-#define SLAR_NACK_SENT 0x48
-#define DATA_ACK_RECV 0x50
-#define DATA_NACK_RECV 0x58
-
-// I2C functions for I2CCFG
-
-#define I2C_SR  0xE2 // speed min if speed max : 
-#define I2C_SP  0xD2 // speed min if speed max :
-#define I2C_DO  0xC2 // speed min if speed max :
-
-#define waitI2CStat(x) {while(I2CSTAT!=x);}
-
-#define MMA_W 0x3A
-#define MMA_R 0x3B
-
-void I2CSend( uint8 addr, uint8 val)
-{ 
-        uint8 i;
-        // Sent start condition and wait for it to be received
-        I2CCFG=I2C_SR;
-        waitI2CStat(SR_SENT);
-        
-        // Send Device Address
-        I2CDATA=MMA_W;
-        I2CCFG=I2C_DO;
-        waitI2CStat(SLAW_ACK_SENT);
-        
-        // Send Register address
-        
-        I2CDATA=addr;
-        I2CCFG=I2C_DO;
-        waitI2CStat(DATA_ACK_SENT);
-        
-        // Send Register Value
-        
-        I2CDATA=val;
-        I2CCFG=I2C_DO;
-        waitI2CStat(DATA_ACK_SENT);
-        
-        // Send Stop Condition
-        
-        I2CCFG=I2C_SP;
-        
-}
-        
-uint8 I2CRead( uint8 addr)
-{        
-        
-        // Sent start condition and wait for it to be received
-        I2CCFG=I2C_SR;
-        waitI2CStat(SR_SENT);
-        
-        // Send Device Address
-        I2CDATA=MMA_W;
-        I2CCFG=I2C_DO;
-        waitI2CStat(SLAW_ACK_SENT);
-        
-        // Send Register address
-        
-        I2CDATA=addr;
-        I2CCFG=I2C_DO;
-        waitI2CStat(DATA_ACK_SENT);
-              
-        // Send Restart condition
-        
-        I2CCFG=I2C_SR;
-        waitI2CStat(RS_SENT);
-        
-        // Send Device Address Read
-        
-        I2CDATA=MMA_R;
-        I2CCFG=I2C_DO;
-        waitI2CStat(SLAR_ACK_SENT);
-        
-        // Do the transfer
-        
-        I2CCFG=I2C_DO;
-        waitI2CStat(DATA_NACK_RECV);
-        // Send Stop Condition
-        
-        I2CCFG=I2C_SP;
-        
-        return I2CDATA;
-
-}
 
 
 /*********************************************************************
@@ -470,11 +344,11 @@ static void simpleProfileChangeCB( uint8 paramID );
 static void battPeriodicTask( void );
 static void battCB(uint8 event);
 
-static void adxl345Init(void);
-static void adxl345Loop(void);
+static void accInit(void);
+static void accLoop(void);
 
-static void adxl345GetIntData(void);
-static void adxl345GetAccData(void);
+static void accGetIntData(void);
+static void accGetAccData(void);
 
 static void eepromWriteStep(uint8 type);
 static void eepromReadStep(void);
@@ -544,10 +418,8 @@ void SimpleBLEPeripheral_Init( uint8 task_id )
     // Debug_init(simpleBLEPeripheral_TaskID);
 
     //xp code
-    adxl345Init();
+    accInit();
     //xp code
-
-    //DebugWrite("Status OK");
 
     // use low 6 bytes mac address of ti2541 to be our sn
     char hex[] = "0123456789ABCDEF";
@@ -569,8 +441,6 @@ void SimpleBLEPeripheral_Init( uint8 task_id )
     // rewrite device name
     osal_memcpy(&scanRspData[12], sn, sizeof(sn));
     osal_memcpy(&attDeviceName[10], sn, sizeof(sn));
-
-    //DebugWrite(attDeviceName);
 
     // Setup the GAP
     VOID GAP_SetParamValue( TGAP_CONN_PAUSE_PERIPHERAL, DEFAULT_CONN_PAUSE_PERIPHERAL );
@@ -720,7 +590,7 @@ void SimpleBLEPeripheral_Init( uint8 task_id )
 
 #endif // defined ( DC_DC_P0_7 )
 
-    osal_set_event( simpleBLEPeripheral_TaskID, ADXL345_PERIODIC_EVT );
+    osal_set_event( simpleBLEPeripheral_TaskID, ACC_PERIODIC_EVT );
 
     // Setup a delayed profile startup
     osal_set_event( simpleBLEPeripheral_TaskID, SBP_START_DEVICE_EVT );
@@ -779,15 +649,38 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
         return ( events ^ SBP_START_DEVICE_EVT );
     }
 
-    if ( events & ADXL345_PERIODIC_EVT )
+    if ( events & ACC_PERIODIC_EVT )
     {
 
-        adxl345Loop();
+        accLoop();
+
+        // uint8 addr, val;
+
+        // for(;;){
+
+        //     addr = F_STATUS;
+        //     HalMotionI2CWrite(1, &addr);
+        //     HalMotionI2CRead(1, &val);
+
+        //     val &= ~(BV(6)|BV(7));
+
+        //     if (val)
+        //     {
+        //         accLoop();
+        //         // addr = F_STATUS;
+        //         // HalMotionI2CWrite(1, &addr);
+        //         // HalMotionI2CRead(1, &val);
+        //         LED3_PI0 = !LED3_PI0;
+        //     }else{
+        //         break;
+        //     }
+        // }
 
         // restart timer
-        osal_start_timerEx( simpleBLEPeripheral_TaskID, ADXL345_PERIODIC_EVT, 100 );
+        osal_start_timerEx( simpleBLEPeripheral_TaskID, ACC_PERIODIC_EVT, 100 );
+        //osal_start_timerEx( simpleBLEPeripheral_TaskID, ACC_PERIODIC_EVT, 600 );
 
-        return (events ^ ADXL345_PERIODIC_EVT);
+        return (events ^ ACC_PERIODIC_EVT);
     }
 
 
@@ -1515,15 +1408,15 @@ static void babyMove(void){
 }
 
 /*********************************************************************
- * @fn      adxl345Init
+ * @fn      accInit
  *
  * @param   none
  *
  * @return  none
  */
-static void adxl345Init( void )
+static void accInit( void )
 {
-    HalI2CInit(ADXL345_ADDRESS, I2C_CLOCK_RATE);
+    HalI2CInit(ACC_ADDRESS, I2C_CLOCK_RATE);
 
     uint8 pBuf[2], n;
 
@@ -1531,169 +1424,63 @@ static void adxl345Init( void )
     pBuf[1] = RST_MASK;
     HalI2CWrite(2, pBuf);
 
-    //I2CSend(CTRL_REG2, RST_MASK);
-
+    // make sure reset is ok
     do {
       pBuf[0] = CTRL_REG2;
       HalMotionI2CWrite(1, pBuf);
       HalMotionI2CRead(1, &pBuf[1]);
       n = pBuf[1];
 
-    // n = I2CRead(CTRL_REG2);
-
     } while (n & RST_MASK);
-
-    pBuf[0] = CTRL_REG1;
-    pBuf[1] = ASLP_RATE_20MS + DATA_RATE_5MS;
-    HalI2CWrite(2, pBuf);
 
     pBuf[0] = XYZ_DATA_CFG;
     pBuf[1] = FULL_SCALE_8G;
+    HalI2CWrite(2, pBuf);    
+
+    pBuf[0] = PULSE_CFG;
+    pBuf[1] = 0x3F;
+    HalI2CWrite(2, pBuf);
+
+    pBuf[0] = PULSE_LTCY;
+    pBuf[1] = 0x01;
+    HalI2CWrite(2, pBuf);
+
+    //use fifo
+    // pBuf[0] = F_SETUP;
+    // pBuf[1] = 0x40;
+    // HalI2CWrite(2, pBuf);
+
+    // 50hz + low power mode, 15ua
+    // put acc to active
+    pBuf[0] = CTRL_REG2;
+    pBuf[1] = SMOD_LOW_POWER | MOD_LOW_POWER | SLPE_MASK;
     HalI2CWrite(2, pBuf);
 
     pBuf[0] = CTRL_REG1;
-    pBuf[1] = (ASLP_RATE_12_5HZ + DATA_RATE_12_5HZ) | ACTIVE_MASK;
+    pBuf[1] = (ASLP_RATE_50HZ + DATA_RATE_50HZ) | ACTIVE_MASK;
     HalI2CWrite(2, pBuf);
-
-    
-
-    // pBuf[0] = F_SETUP;
-    // pBuf[1] = 0x00;
-    // HalMotionI2CWrite(2, pBuf);
-
-    // pBuf[0] = TRIG_CFG;
-    // pBuf[1] = 0x00;
-    // HalMotionI2CWrite(2, pBuf);
-
-    // // high pass filter enabled, +-8g
-    // pBuf[0] = XYZ_DATA_CFG;
-    // pBuf[1] = 0012;
-    // HalMotionI2CWrite(2, pBuf);
-
-    // pBuf[0] = CTRL_REG1;
-    // pBuf[1] = 0x01;
-    // HalMotionI2CWrite(2, pBuf);
-
-    // pBuf[0] = F_SETUP;
-    // pBuf[1] = 0x00;
-    // HalMotionI2CWrite(2, pBuf);
-
-    // pBuf[0] = TRIG_CFG;
-    // pBuf[1] = 0x00;
-    // HalMotionI2CWrite(2, pBuf);
-
-    // pBuf[0] = F_SETUP;
-    // pBuf[1] = 0x00;
-    // HalMotionI2CWrite(2, pBuf);
-
-    // pBuf[0] = TRIG_CFG;
-    // pBuf[1] = 0x00;
-    // HalMotionI2CWrite(2, pBuf);
-
-
-    // pBuf[0] = Reg_thresh_tap;
-    // pBuf[1] = 0x30;
-    // HalMotionI2CWrite(2, pBuf);
-
-    // pBuf[0] = Reg_DUR;
-    // pBuf[1] = 0x30;
-    // HalMotionI2CWrite(2, pBuf);
-
-    // pBuf[0] = Reg_LATENT;
-    // pBuf[1] = 0xC0;
-    // HalMotionI2CWrite(2, pBuf);
-
-    // pBuf[0] = Reg_WINDOW;
-    // pBuf[1] = 0xF0;
-    // HalMotionI2CWrite(2, pBuf);
-
-    // pBuf[0] = Reg_OFSX;
-    // pBuf[1] = 0;
-    // HalMotionI2CWrite(2, pBuf);
-
-    // pBuf[0] = Reg_OFSY;
-    // pBuf[1] = 0;
-    // HalMotionI2CWrite(2, pBuf);
-
-    // pBuf[0] = Reg_OFSZ;
-    // pBuf[1] = 0;
-    // HalMotionI2CWrite(2, pBuf);
-
-    // pBuf[0] = Reg_THRESH_ACT;
-    // pBuf[1] = 10;
-    // HalMotionI2CWrite(2, pBuf);
-
-    // pBuf[0] = Reg_THRESH_INACT;
-    // pBuf[1] = 5;
-    // HalMotionI2CWrite(2, pBuf);
-
-    // pBuf[0] = Reg_TIME_INACT;
-    // pBuf[1] = 1;
-    // HalMotionI2CWrite(2, pBuf);
-
-    // pBuf[0] = Reg_ACT_INACT_CTL;
-    // pBuf[1] = 0xff;
-    // HalMotionI2CWrite(2, pBuf);
-
-    // pBuf[0] = Reg_THRESH_FF;
-    // pBuf[1] = 10;
-    // HalMotionI2CWrite(2, pBuf);
-
-    // pBuf[0] = Reg_TIME_FF;
-    // pBuf[1] = 10;
-    // HalMotionI2CWrite(2, pBuf);
-
-    // pBuf[0] = Reg_TAP_AXES;
-    // pBuf[1] = 0x0f;
-    // // pBuf[1] = 0x09;
-    // HalMotionI2CWrite(2, pBuf);
-
-    // pBuf[0] = Reg_BW_RATE;
-    // // pBuf[1] = 0x17;
-    // pBuf[1] = 0x0A;
-    // HalMotionI2CWrite(2, pBuf);
-
-    // pBuf[0] = Reg_POWER_CTL;
-    // pBuf[1] = 8;
-    // HalMotionI2CWrite(2, pBuf);
-
-    // pBuf[0] = Reg_INT_ENABLE;
-    // pBuf[1] = 0x60;
-    // HalMotionI2CWrite(2, pBuf);
-
-    // pBuf[0] = Reg_INT_MAP;
-    // pBuf[1] = 0x00;
-    // HalMotionI2CWrite(2, pBuf);
-
-    // pBuf[0] = Reg_DATA_FORMAT;
-    // pBuf[1] = 0x0b;
-    // HalMotionI2CWrite(2, pBuf);
-
-    // pBuf[0] = Reg_FIFO_CTL;
-    // pBuf[1] = 0;
-    // HalMotionI2CWrite(2, pBuf);
 
 }
 
-static void adxl345Loop(void)
+static void accLoop(void)
 {
 
     
 
-    adxl345GetAccData();
+    accGetAccData();
 
     //todo
     X_out = X_out >> 6;
     Y_out = Y_out >> 6;
     Z_out = Z_out >> 6;
 
-    uint8 d[8];
+    // uint8 d[8];
 
-    osal_memcpy(&d[0], &X_out, sizeof(int16));
-    osal_memcpy(&d[2], &Y_out, sizeof(int16));
-    osal_memcpy(&d[4], &Z_out, sizeof(int16));
+    // osal_memcpy(&d[0], &X_out, sizeof(int16));
+    // osal_memcpy(&d[2], &Y_out, sizeof(int16));
+    // osal_memcpy(&d[4], &Z_out, sizeof(int16));
 
-    SimpleProfile_SetParameter( HEALTH_SYNC, sizeof ( d ), d );
+    // SimpleProfile_SetParameter( HEALTH_SYNC, sizeof ( d ), d );
 
 
     ACC_CUR = X_out * X_out + Y_out * Y_out + Z_out * Z_out - 4096;
@@ -1730,7 +1517,6 @@ static void adxl345Loop(void)
                     pace_count = pace_count + 1;
 
                     LED0_PI0 = !LED0_PI0;
-                    LED1_PI0 = !LED1_PI0;
 
                     // osal_start_timerEx( simpleBLEPeripheral_TaskID, LED_CYCLE_EVT, 10 );
 
@@ -1787,9 +1573,9 @@ static void adxl345Loop(void)
         if (ACC_CUR < PACE_BOTTOM) PACE_BOTTOM = ACC_CUR;
     }
 
-    adxl345GetIntData();//read INT registers
+    accGetIntData();//read INT registers
 
-    if (INT_STATUS & 0x20)
+    if (INT_STATUS & BV(3))
     {
         //tap happened
         // Serial.print("TAP\r\n");
@@ -1801,7 +1587,16 @@ static void adxl345Loop(void)
         //     i--;
         // }
 
-        eepromWriteStep(TAP_DATA_TYPE);
+        // eepromWriteStep(TAP_DATA_TYPE);
+
+        uint8 pBuf[2];
+
+        //read INT
+        pBuf[0] = PULSE_SRC;
+        HalMotionI2CWrite(1, pBuf);
+        HalMotionI2CRead(1, &pBuf[1]);
+
+        LED6_PI0 = !LED6_PI0;
 
         // P0_3 = 0;
 
@@ -1811,32 +1606,11 @@ static void adxl345Loop(void)
 }
 
 
-static void adxl345GetAccData(void)
+static void accGetAccData(void)
 {
-    HalI2CInit(ADXL345_ADDRESS, I2C_CLOCK_RATE);
+    HalI2CInit(ACC_ADDRESS, I2C_CLOCK_RATE);
 
     uint8 pBuf[2];
-
-    // uint8 d[8];
-
-    // pBuf[0] = WHO_AM_I;
-    // HalMotionI2CWrite(1, pBuf);
-    // HalMotionI2CRead(1, &pBuf[1]);
-
-    // d[0] = pBuf[1];
-
-    // SimpleProfile_SetParameter( HEALTH_SYNC, sizeof ( d ), d );
-
-    //read X_acc
-    // pBuf[0] = Reg_DX0;
-    // HalMotionI2CWrite(1, pBuf);
-    // HalMotionI2CRead(1, &pBuf[1]);
-    // X0 = pBuf[1];
-
-    // pBuf[0] = Reg_DX1;
-    // HalMotionI2CWrite(1, pBuf);
-    // HalMotionI2CRead(1, &pBuf[1]);
-    // X1 = pBuf[1];
 
     pBuf[0] = OUT_X_LSB;
     HalMotionI2CWrite(1, pBuf);
@@ -1850,17 +1624,6 @@ static void adxl345GetAccData(void)
 
     X_out = (int16)((X1 << 8) | X0);
 
-    //read Y_acc
-    // pBuf[0] = Reg_DY0;
-    // HalMotionI2CWrite(1, pBuf);
-    // HalMotionI2CRead(1, &pBuf[1]);
-    // Y0 = pBuf[1];
-
-    // pBuf[0] = Reg_DY1;
-    // HalMotionI2CWrite(1, pBuf);
-    // HalMotionI2CRead(1, &pBuf[1]);
-    // Y1 = pBuf[1];
-
     pBuf[0] = OUT_Y_LSB;
     HalMotionI2CWrite(1, pBuf);
     HalMotionI2CRead(1, &pBuf[1]);
@@ -1872,17 +1635,6 @@ static void adxl345GetAccData(void)
     Y1 = pBuf[1];
 
     Y_out = (int16)((Y1 << 8) | Y0);
-
-    //read Z_acc
-    // pBuf[0] = Reg_DZ0;
-    // HalMotionI2CWrite(1, pBuf);
-    // HalMotionI2CRead(1, &pBuf[1]);
-    // Z0 = pBuf[1];
-
-    // pBuf[0] = Reg_DZ1;
-    // HalMotionI2CWrite(1, pBuf);
-    // HalMotionI2CRead(1, &pBuf[1]);
-    // Z1 = pBuf[1];
 
     pBuf[0] = OUT_Z_LSB;
     HalMotionI2CWrite(1, pBuf);
@@ -1897,9 +1649,9 @@ static void adxl345GetAccData(void)
     Z_out = (int16)((Z1 << 8) | Z0);
 }
 
-static void adxl345GetIntData(void)
+static void accGetIntData(void)
 {
-    HalI2CInit(ADXL345_ADDRESS, I2C_CLOCK_RATE);
+    HalI2CInit(ACC_ADDRESS, I2C_CLOCK_RATE);
 
     uint8 pBuf[2];
 

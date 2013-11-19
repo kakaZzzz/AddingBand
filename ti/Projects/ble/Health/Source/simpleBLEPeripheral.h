@@ -59,7 +59,7 @@ extern "C"
 #define SBP_PERIODIC_EVT                                  0x0002
 #define SBP_ADV_IN_CONNECTION_EVT                         0x0004
 #define BATT_PERIODIC_EVT                                 0x0008
-#define ADXL345_PERIODIC_EVT                              0x0010
+#define ACC_PERIODIC_EVT                                  0x0010
 #define LED_CYCLE_EVT                                     0x0020
 #define CLOSE_ALL_EVT                                     0x0040
 #define SLIP_TIMEOUT_EVT                                  0x0080
