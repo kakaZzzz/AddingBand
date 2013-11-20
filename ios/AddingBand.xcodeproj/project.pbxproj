@@ -46,6 +46,7 @@
 		723F0EF6183CC0D3005F1921 /* refresh_btn_sel@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 723F0EF2183CC0D3005F1921 /* refresh_btn_sel@2x.png */; };
 		723F0EF7183CC0D3005F1921 /* refresh_btn.png in Resources */ = {isa = PBXBuildFile; fileRef = 723F0EF3183CC0D3005F1921 /* refresh_btn.png */; };
 		723F0EF8183CC0D3005F1921 /* refresh_btn@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 723F0EF4183CC0D3005F1921 /* refresh_btn@2x.png */; };
+		723F0EFC183CD796005F1921 /* DDIndicator.m in Sources */ = {isa = PBXBuildFile; fileRef = 723F0EFB183CD796005F1921 /* DDIndicator.m */; };
 		723F248E18308791001F27DA /* BTGuideViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 723F248D18308791001F27DA /* BTGuideViewController.m */; };
 		723F24A018308925001F27DA /* 1.png in Resources */ = {isa = PBXBuildFile; fileRef = 723F249018308925001F27DA /* 1.png */; };
 		723F24A118308925001F27DA /* 1@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 723F249118308925001F27DA /* 1@2x.png */; };
@@ -233,6 +234,8 @@
 		723F0EF2183CC0D3005F1921 /* refresh_btn_sel@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "refresh_btn_sel@2x.png"; sourceTree = "<group>"; };
 		723F0EF3183CC0D3005F1921 /* refresh_btn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = refresh_btn.png; sourceTree = "<group>"; };
 		723F0EF4183CC0D3005F1921 /* refresh_btn@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "refresh_btn@2x.png"; sourceTree = "<group>"; };
+		723F0EFA183CD796005F1921 /* DDIndicator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDIndicator.h; sourceTree = "<group>"; };
+		723F0EFB183CD796005F1921 /* DDIndicator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDIndicator.m; sourceTree = "<group>"; };
 		723F248C18308791001F27DA /* BTGuideViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTGuideViewController.h; sourceTree = "<group>"; };
 		723F248D18308791001F27DA /* BTGuideViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTGuideViewController.m; sourceTree = "<group>"; };
 		723F249018308925001F27DA /* 1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 1.png; sourceTree = "<group>"; };
@@ -549,6 +552,15 @@
 			name = Sync;
 			sourceTree = "<group>";
 		};
+		723F0EF9183CD77D005F1921 /* loadingIndicator */ = {
+			isa = PBXGroup;
+			children = (
+				723F0EFA183CD796005F1921 /* DDIndicator.h */,
+				723F0EFB183CD796005F1921 /* DDIndicator.m */,
+			);
+			name = loadingIndicator;
+			sourceTree = "<group>";
+		};
 		723F248B1830875C001F27DA /* BTGuideViewController */ = {
 			isa = PBXGroup;
 			children = (
@@ -685,6 +697,7 @@
 		727F1938182B37EE00CAD11A /* Library */ = {
 			isa = PBXGroup;
 			children = (
+				723F0EF9183CD77D005F1921 /* loadingIndicator */,
 				72B67AB4183A42C200294A08 /* IQKeyBoardManager */,
 				72B67AAA183A339A00294A08 /* Check Version  */,
 				72B67A8A183A335800294A08 /* MKNetworkKit */,
@@ -1146,6 +1159,7 @@
 				722ECE2B182914F100129E6A /* UIViewSizeShortcuts.m in Sources */,
 				72CB9C3E182B595200C0DAF0 /* BTUtils.m in Sources */,
 				72B418CB18238BCA002EAD35 /* BTAppDelegate.m in Sources */,
+				723F0EFC183CD796005F1921 /* DDIndicator.m in Sources */,
 				7236B7BE18332CC6002E4FA8 /* BTRegisterViewController.m in Sources */,
 				72B67AB9183A42C200294A08 /* IQKeyBoardManager.m in Sources */,
 				722EDEB21829E7CD006B25EE /* BTPhysicQuickeningViewController.m in Sources */,

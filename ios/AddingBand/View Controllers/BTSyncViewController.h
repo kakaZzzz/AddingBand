@@ -10,6 +10,7 @@
 #import "BTBandCentral.h"
 @class BTSyncTwoViewController;
 @class BTPastLinkViewController;
+@class DDIndicator;
 @interface BTSyncViewController : UITableViewController<UIAlertViewDelegate>
 //存放外设备
 @property (strong, nonatomic) NSMutableArray *peripheralArray;
@@ -18,7 +19,7 @@
 //中央设备 即您的iPhone
 @property(strong, nonatomic) BTBandCentral* bc;
 //正在连接指示条
-@property(strong, nonatomic) UIActivityIndicatorView * indicator;
+//@property(strong, nonatomic) UIActivityIndicatorView * indicator;
 //断开操作标示符
 @property(assign, nonatomic) BOOL isBreak;
 //上次同步时间
@@ -31,4 +32,5 @@
 @property(nonatomic,assign)int selectedRow;//选择的设备行数
 @property(nonatomic,strong)NSManagedObjectContext *context;
 
+@property(nonatomic,strong)DDIndicator *indicator;//加载指示图
 @end

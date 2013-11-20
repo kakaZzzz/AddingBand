@@ -16,6 +16,7 @@
 #import "BTGetData.h"
 #import "BTUserData.h"
 #import "BTSettingSectionCell.h"
+#import "DDIndicator.h"
 @interface BTSyncViewController ()
 
 @end
@@ -52,10 +53,14 @@
        //self.tableView.allowsSelection = NO;
         self.tableView.rowHeight = kBluetoothConnectedHeight;
         //
-        self.indicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-        _indicator.frame = CGRectMake(100, 100, 100, 100);
+//        self.indicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+//        _indicator.frame = CGRectMake(100, 100, 100, 100);
+//        [self.view addSubview:_indicator];
+        self.indicator = [[DDIndicator alloc] initWithFrame:CGRectMake(120, 150, 60, 60)];
         [self.view addSubview:_indicator];
-      
+        
+       // [_indicator startAnimating];
+
 
         //数据
         //存放外部蓝牙设备
@@ -65,7 +70,7 @@
         
         //启动计时器 监控上次更新时间   反复调用会不会出现什么意外情况？？？
         [self observeLastSyncTime];
-        [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(observeLastSyncTime) userInfo:nil repeats:YES];
+    //    [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(observeLastSyncTime) userInfo:nil repeats:YES];
         //
         self.g.bleListCount += 0;
         
@@ -169,6 +174,7 @@
     
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:(UIView *)_syncButton];
 }
+#pragma mark - 断开连接
 //导航栏上的断开按钮触发断开事件  断开时将syncTwoVC.view从父视图上移除  导航栏上按钮隐藏,当再次连接的时候再显示出来
 - (void)breakConnect
 {
@@ -187,7 +193,7 @@
 {
     
     
-    
+    [self.indicator startAnimating];
     
     if (alertView.tag == 100) {
         if (buttonIndex == 0) {
@@ -205,6 +211,7 @@
             NSEnumerator * enumeratorValue = [self.bc.allPeripherals objectEnumerator];
             BTBandPeripheral* bp = [[enumeratorValue allObjects] objectAtIndex:i];
 
+            //如果是正在连接的设备就断开连接
             if (bp.isConnected) {
                 [self.bc togglePeripheralByIndex:i];
                 [self.indicator startAnimating];//加载动画
@@ -212,8 +219,6 @@
                 //[self.navigationItem.rightBarButtonItem setEnabled:NO];
                 [self.syncTwoVC.view removeFromSuperview];
                 [self.pastVC.view removeFromSuperview];
-                
-
             }
             
             
@@ -268,6 +273,8 @@
         }
     }
     }
+    
+    
 }
 
 - (void)didReceiveMemoryWarning
