@@ -8,8 +8,11 @@
 
 #import "BTBluetoothLinkCell.h"
 
-@interface BTBluetoothFindCell : BTBluetoothLinkCell
+@interface BTBluetoothFindCell : UITableViewCell
 @property(nonatomic,strong)UIButton *toConnect;//立即连接按钮
-
+@property(nonatomic,strong)UILabel *titleLabel;
+@property(nonatomic,strong)UIImageView *indicateImage;
+@property(nonatomic,strong)UIImageView *lineImage;
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier tatget:(id)target;
+
 @end

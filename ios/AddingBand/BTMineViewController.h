@@ -7,9 +7,15 @@
 //
 
 #import <UIKit/UIKit.h>
-
-@interface BTMineViewController : UITableViewController
+#import "FlatDatePicker.h"
+@interface BTMineViewController : UITableViewController<FlatDatePickerDelegate,UITextFieldDelegate>
 @property(nonatomic,strong)NSArray *titleArray;//标题数组
 
 @property(nonatomic,strong)NSArray *contentArray;//标题数组
+
+@property (nonatomic, strong) FlatDatePicker *flatDatePicker;//输入选择器
+@property (nonatomic, strong) UILabel *pickerLabel;//输入选择器
+
+@property (nonatomic, strong) NSManagedObjectContext *context;//上下文
+
 @end

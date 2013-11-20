@@ -42,6 +42,7 @@
 #define kbreakConnectWidth  200
 #define kbreakConnectHeight 60
 
+
 //BTBluetoothConnectedCell的高度
 #define kBluetoothConnectedHeight (kbreakConnectY + kbreakConnectHeight + 10)
 
@@ -52,7 +53,7 @@
 #define kBluetoothNotFindHeight (kBluetoothNameY + kBluetoothNameHeight + 10)
 //通知中心发出得各个通知
 #define UPDATACIRCULARPROGRESSNOTICE @"updateCircleProgressNotice"//更新圆形进度条通知
-
+#define DATEPICKERDISMISSNOTICE @"datePickerDismissNotice"//时间选择器将要消失的时候的通知
 //体征页面 布局宏定义
 #define kPhysicalImageX 35
 #define kPhysicalImageY 0
@@ -61,4 +62,9 @@
 
 //颜色转换
 #define UIColorFromRGB(rgbValue) [UIColor colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 green:((float)((rgbValue & 0xFF00) >> 8))/255.0 blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0] 
+
+//系统所用到的颜色
+#define kBarColor @"EE4966"
+
+//
 #endif

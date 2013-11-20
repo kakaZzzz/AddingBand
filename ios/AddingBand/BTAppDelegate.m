@@ -10,6 +10,10 @@
 #import "BTCustomTabBarController.h"
 //程序引导页面
 #import "BTGuideViewController.h"
+//同步页面
+#import "BTSyncTwoViewController.h"
+#import "BTGetData.h"
+#import "BTUserData.h"
 @implementation BTAppDelegate
 
 @synthesize managedObjectContext = _managedObjectContext;
@@ -20,7 +24,9 @@
 {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
-   
+   //同步页面
+    
+    [BTSyncTwoViewController shareSyncTwoview];
     //增加标识，用于判断是否是第一次启动应用...
     if (![[NSUserDefaults standardUserDefaults] boolForKey:@"everLaunched"]) {
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"everLaunched"];
@@ -37,6 +43,23 @@
         [BTGuideViewController show];
     }
     
+    //测试用 默认给一些用户信息
+    NSManagedObjectContext *context =[(BTAppDelegate *) [UIApplication sharedApplication].delegate managedObjectContext];
+    
+    //往context中插入一个对象
+    
+      NSArray *data = [BTGetData getFromCoreDataWithPredicate:nil entityName:@"BTUserData" sortKey:nil];
+    if (data.count == 0) {
+        BTUserData *userData = [NSEntityDescription insertNewObjectForEntityForName:@"BTUserData" inManagedObjectContext:context];
+        userData.birthday = @"2012.12.24";
+        userData.dueDate =  @"2013.12.24";
+        userData.pregnancy =@"高血压";
+       // self.contentArray = [NSArray arrayWithObjects:@"",@"13466668888",@"yitu@126.com",@"修改密码",@"",userData.birthday,userData.dueDate,userData.pregnancy,@"",@"",@"",@"", nil];
+        [context save:nil];
+    }
+
+    
+
 
     return YES;
 }

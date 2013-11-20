@@ -10,4 +10,5 @@
 
 @interface BTGetData : NSObject
 + (NSArray *)getFromCoreDataWithPredicate:(NSPredicate *)predicate entityName:(NSString *)entityName sortKey:(NSString *)sortKey;
++ (NSManagedObjectContext *)getAppContex;
 @end

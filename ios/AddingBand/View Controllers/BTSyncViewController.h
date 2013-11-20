@@ -8,8 +8,9 @@
 
 #import <UIKit/UIKit.h>
 #import "BTBandCentral.h"
-
-@interface BTSyncViewController : UITableViewController
+@class BTSyncTwoViewController;
+@class BTPastLinkViewController;
+@interface BTSyncViewController : UITableViewController<UIAlertViewDelegate>
 //存放外设备
 @property (strong, nonatomic) NSMutableArray *peripheralArray;
 //全局变量
@@ -22,4 +23,12 @@
 @property(assign, nonatomic) BOOL isBreak;
 //上次同步时间
 @property(nonatomic,strong)NSString *lastSyncTime;
+
+@property(nonatomic,strong)BTSyncTwoViewController *syncTwoVC;//连接完成之后的视图控制器
+@property(nonatomic,strong)BTPastLinkViewController *pastVC;//发现历史设备但是没有连接的视图控制器
+@property(nonatomic,strong)UIButton *syncButton;
+
+@property(nonatomic,assign)int selectedRow;//选择的设备行数
+@property(nonatomic,strong)NSManagedObjectContext *context;
+
 @end

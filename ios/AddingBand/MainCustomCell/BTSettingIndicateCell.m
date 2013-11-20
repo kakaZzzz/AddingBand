@@ -10,19 +10,19 @@
 #import "BTColor.h"
 
 #define titleLabelX 20
-#define titleLabelY 5
+#define titleLabelY 7
 #define titleLabelWidth 100
 #define titleLabelHeight 30
 
 
 
 #define lineImageX 20
-#define lineImageY 40
+#define lineImageY 43
 #define lineImageWidth 300
 #define lineImageHeight 1
 
 #define indicateX  300
-#define indicateY  12
+#define indicateY  16
 #define indicateWidth  10
 #define indicateHeight 10
 

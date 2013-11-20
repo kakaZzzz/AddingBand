@@ -42,4 +42,9 @@
     return raw ;
 }
 
++ (NSManagedObjectContext *)getAppContex
+{
+    NSManagedObjectContext *context =[(BTAppDelegate *) [UIApplication sharedApplication].delegate managedObjectContext];
+    return context;
+}
 @end

@@ -24,7 +24,9 @@
 
 //手环总数
 @property(assign, nonatomic) NSInteger bleListCount;
- 
+
+//手环行数
+@property(assign, nonatomic) NSInteger selectedRow;
 +(BTGlobals*)sharedGlobals;
 -(void)applicationWillResignActive:(NSNotification*) notification;
 

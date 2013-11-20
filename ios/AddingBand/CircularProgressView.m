@@ -61,7 +61,7 @@
         arcLayer.strokeColor=self.progressColor.CGColor;
         //圆的填充颜色为透明色
         arcLayer.fillColor = [UIColor clearColor].CGColor;
-        arcLayer.lineWidth=self.lineWidth;
+        arcLayer.lineWidth=self.lineWidth + 0.5;
 
         arcLayer.path = progressCircle.CGPath;
         [self.layer addSublayer:arcLayer];

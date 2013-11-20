@@ -11,17 +11,17 @@
 #import "BTColor.h"
 
 #define titleLabelX 20
-#define titleLabelY 5
+#define titleLabelY 7
 #define titleLabelWidth 100
 #define titleLabelHeight 30
 
-#define contentLabelX 165
-#define contentLabelY 5
-#define contentLabelWidth 150
+#define contentLabelX 5
+#define contentLabelY 7
+#define contentLabelWidth 310
 #define contentLabelHeight 30
 
 #define lineImageX 20
-#define lineImageY 40
+#define lineImageY 43
 #define lineImageWidth 300
 #define lineImageHeight 1
 
@@ -60,6 +60,15 @@
     [self.contentView addSubview:_contentLabel];
     
     
+//    self.contenTextField = [[UITextField alloc] initWithFrame:CGRectMake(contentLabelX, contentLabelY, contentLabelWidth, contentLabelHeight)];
+//    _contenTextField.font = [UIFont systemFontOfSize:16.0f];
+//    _contenTextField.textAlignment = NSTextAlignmentRight;
+//    _contenTextField.textColor = [BTColor getColor:contentLabelColor];
+//    _contenTextField.backgroundColor = [UIColor clearColor];
+//    _contenTextField.opaque = NO;
+//    _contenTextField.delegate = self;
+//    [self.contentView addSubview:_contenTextField];
+
     self.lineImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"sep_line.png"]];
     _lineImage.frame = CGRectMake(lineImageX, lineImageY, lineImageWidth, lineImageHeight);
      [self.contentView addSubview:_lineImage];

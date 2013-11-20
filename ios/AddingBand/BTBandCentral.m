@@ -38,6 +38,7 @@
 //central改变状态后的回调
 -(void)centralManagerDidUpdateState:(CBCentralManager *)central{
     
+    NSLog(@"调用了搜索蓝牙设备........");
     switch (central.state) {
         case CBCentralManagerStatePoweredOn:
             
@@ -238,7 +239,6 @@
     //代理peripheral
     [peripheral setDelegate:self];
     [peripheral discoverServices:nil];
-    
     NSLog(@"hello：%@", _allPeripherals);
 }
 
@@ -570,7 +570,7 @@
 -(void)centralManager:(CBCentralManager *)central didDisconnectPeripheral:(CBPeripheral *)peripheral error:(NSError *)error{
     
     NSLog(@"dis:%@ err:%@", peripheral, error);
-    
+    NSLog(@"突然断开连接........");
     //从缓存中移除
     [_allPeripherals removeObjectForKey:peripheral.name];
     
@@ -615,6 +615,7 @@
     
     //断开连接后自动重新搜索
     
+    NSLog(@"停止搜索 并调用搜索。。。。。。");
     [central stopScan];
     
     _scanTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(doScan:) userInfo:nil repeats:NO];
