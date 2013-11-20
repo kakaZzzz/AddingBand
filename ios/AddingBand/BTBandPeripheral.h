@@ -19,6 +19,8 @@
 
 @property(strong, nonatomic) NSString* name;
 @property(assign, nonatomic) int lastSync;
+@property(assign, nonatomic) int setupDate;
+
 @property(strong, nonatomic) NSNumber* batteryLevel;
 
 @property(assign, nonatomic) Boolean isConnected;

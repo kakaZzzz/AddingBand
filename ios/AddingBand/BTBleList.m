@@ -2,7 +2,7 @@
 //  BTBleList.m
 //  AddingBand
 //
-//  Created by kaka' on 13-11-7.
+//  Created by kaka' on 13-11-20.
 //  Copyright (c) 2013年 kaka'. All rights reserved.
 //
 
@@ -13,5 +13,6 @@
 
 @dynamic lastSync;
 @dynamic name;
+@dynamic setupDate;
 
 @end

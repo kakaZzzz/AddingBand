@@ -48,5 +48,7 @@
 
 -(Boolean)isConnectedByModel:(NSString*)model;
 
+-(void)restartScan;
+
 @end
  

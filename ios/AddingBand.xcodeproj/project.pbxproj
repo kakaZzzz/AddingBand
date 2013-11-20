@@ -102,6 +102,7 @@
 		729293F61838B2E6007B09A7 /* settingcell_bg.png in Resources */ = {isa = PBXBuildFile; fileRef = 729293F01838B2E6007B09A7 /* settingcell_bg.png */; };
 		729293F71838B2E6007B09A7 /* settingcell_bg@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 729293F11838B2E6007B09A7 /* settingcell_bg@2x.png */; };
 		729293F91838D149007B09A7 /* 透明.png in Resources */ = {isa = PBXBuildFile; fileRef = 729293F81838D149007B09A7 /* 透明.png */; };
+		72AF9BA7183CD9F600BCC6F6 /* BTBleList.m in Sources */ = {isa = PBXBuildFile; fileRef = 72AF9BA6183CD9F600BCC6F6 /* BTBleList.m */; };
 		72B418B918238BCA002EAD35 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72B418B818238BCA002EAD35 /* Foundation.framework */; };
 		72B418BB18238BCA002EAD35 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72B418BA18238BCA002EAD35 /* CoreGraphics.framework */; };
 		72B418BD18238BCA002EAD35 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72B418BC18238BCA002EAD35 /* UIKit.framework */; };
@@ -152,7 +153,6 @@
 		72CB9C3D182B595200C0DAF0 /* BTGlobals.m in Sources */ = {isa = PBXBuildFile; fileRef = 72CB9C39182B595200C0DAF0 /* BTGlobals.m */; };
 		72CB9C3E182B595200C0DAF0 /* BTUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 72CB9C3B182B595200C0DAF0 /* BTUtils.m */; };
 		72CB9C41182B599E00C0DAF0 /* BTEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 72CB9C40182B599E00C0DAF0 /* BTEntity.m */; };
-		72CB9C44182B599F00C0DAF0 /* BTBleList.m in Sources */ = {isa = PBXBuildFile; fileRef = 72CB9C43182B599F00C0DAF0 /* BTBleList.m */; };
 		72CB9C47182B599F00C0DAF0 /* BTRawData.m in Sources */ = {isa = PBXBuildFile; fileRef = 72CB9C46182B599F00C0DAF0 /* BTRawData.m */; };
 		72CB9C49182B59D100C0DAF0 /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72CB9C48182B59D100C0DAF0 /* CoreBluetooth.framework */; };
 		72E3E50A182B8C040062DA3D /* BTBluetoothConnectedCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 72E3E509182B8C040062DA3D /* BTBluetoothConnectedCell.m */; };
@@ -302,6 +302,8 @@
 		729293F01838B2E6007B09A7 /* settingcell_bg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = settingcell_bg.png; sourceTree = "<group>"; };
 		729293F11838B2E6007B09A7 /* settingcell_bg@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "settingcell_bg@2x.png"; sourceTree = "<group>"; };
 		729293F81838D149007B09A7 /* 透明.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "透明.png"; sourceTree = "<group>"; };
+		72AF9BA5183CD9F600BCC6F6 /* BTBleList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BTBleList.h; path = AddingBand/BTBleList.h; sourceTree = "<group>"; };
+		72AF9BA6183CD9F600BCC6F6 /* BTBleList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BTBleList.m; path = AddingBand/BTBleList.m; sourceTree = "<group>"; };
 		72B418B518238BCA002EAD35 /* AddingBand.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AddingBand.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		72B418B818238BCA002EAD35 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		72B418BA18238BCA002EAD35 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -387,8 +389,6 @@
 		72CB9C3B182B595200C0DAF0 /* BTUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTUtils.m; sourceTree = "<group>"; };
 		72CB9C3F182B599E00C0DAF0 /* BTEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BTEntity.h; path = AddingBand/BTEntity.h; sourceTree = "<group>"; };
 		72CB9C40182B599E00C0DAF0 /* BTEntity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BTEntity.m; path = AddingBand/BTEntity.m; sourceTree = "<group>"; };
-		72CB9C42182B599F00C0DAF0 /* BTBleList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BTBleList.h; path = AddingBand/BTBleList.h; sourceTree = "<group>"; };
-		72CB9C43182B599F00C0DAF0 /* BTBleList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BTBleList.m; path = AddingBand/BTBleList.m; sourceTree = "<group>"; };
 		72CB9C45182B599F00C0DAF0 /* BTRawData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BTRawData.h; path = AddingBand/BTRawData.h; sourceTree = "<group>"; };
 		72CB9C46182B599F00C0DAF0 /* BTRawData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BTRawData.m; path = AddingBand/BTRawData.m; sourceTree = "<group>"; };
 		72CB9C48182B59D100C0DAF0 /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
@@ -947,14 +947,14 @@
 				72CB9C33182B592500C0DAF0 /* Model.xcdatamodeld */,
 				72CB9C45182B599F00C0DAF0 /* BTRawData.h */,
 				72CB9C46182B599F00C0DAF0 /* BTRawData.m */,
-				72CB9C42182B599F00C0DAF0 /* BTBleList.h */,
-				72CB9C43182B599F00C0DAF0 /* BTBleList.m */,
 				72CB9C3F182B599E00C0DAF0 /* BTEntity.h */,
 				72CB9C40182B599E00C0DAF0 /* BTEntity.m */,
 				7266B61318374C0100B1452A /* BTPhsicalData.h */,
 				7266B61418374C0100B1452A /* BTPhsicalData.m */,
 				723F0EEB183C952E005F1921 /* BTUserData.h */,
 				723F0EEC183C952E005F1921 /* BTUserData.m */,
+				72AF9BA5183CD9F600BCC6F6 /* BTBleList.h */,
+				72AF9BA6183CD9F600BCC6F6 /* BTBleList.m */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -1137,7 +1137,6 @@
 				722ECE26182914F100129E6A /* BarChartView.m in Sources */,
 				728ECC0318239AB0005053FE /* BTNavicationController.m in Sources */,
 				72B67AA4183A335800294A08 /* NSString+MKNetworkKitAdditions.m in Sources */,
-				72CB9C44182B599F00C0DAF0 /* BTBleList.m in Sources */,
 				722ECE27182914F100129E6A /* BarLabel.m in Sources */,
 				72B67AAE183A33C400294A08 /* BTCheckVersion.m in Sources */,
 				722ECE2C182914F100129E6A /* XMLElement.m in Sources */,
@@ -1168,6 +1167,7 @@
 				72B67A6F1839BEBD00294A08 /* PCLineChartView.m in Sources */,
 				7232135B1824D52100C17EDC /* BTImageCell.m in Sources */,
 				72B67AA3183A335800294A08 /* NSDictionary+RequestEncoding.m in Sources */,
+				72AF9BA7183CD9F600BCC6F6 /* BTBleList.m in Sources */,
 				72414665182758CC008B05C5 /* BTChartViewController.m in Sources */,
 				72CB9C35182B592500C0DAF0 /* Model.xcdatamodeld in Sources */,
 				722ECE2E182914F100129E6A /* XMLParserDelegate.m in Sources */,

@@ -63,6 +63,8 @@
                 
                 new.name = old.name;
                 new.lastSync = [old.lastSync intValue];
+                new.setupDate = [old.setupDate intValue];
+                
                 new.batteryLevel = 0;
                 
                 new.isConnected = NO;
@@ -228,6 +230,9 @@
         
         first.name = find.name;
         first.lastSync = 0;
+        
+        //记录设备绑定时间
+        first.setupDate = [NSNumber numberWithInt:[[NSDate date] timeIntervalSince1970]];
         
         //及时保存
         NSError* error;
@@ -593,7 +598,9 @@
             BTBandPeripheral* new = [[BTBandPeripheral alloc] init];
             
             new.name = peripheral.name;
-            new.lastSync = 0;
+            new.lastSync = [old.lastSync intValue];
+            new.setupDate = [old.setupDate intValue];
+            
             new.isConnected = NO;
             new.batteryLevel = 0;
             new.isFinded = NO;
@@ -616,9 +623,8 @@
     //断开连接后自动重新搜索
     
     NSLog(@"停止搜索 并调用搜索。。。。。。");
-    [central stopScan];
     
-    _scanTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(doScan:) userInfo:nil repeats:NO];
+    [self restartScan];
 }
 
 
@@ -861,4 +867,10 @@
     }
 }
 
+-(void)restartScan{
+    
+    [_cm stopScan];
+    
+    _scanTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(doScan:) userInfo:nil repeats:NO];
+}
 @end
