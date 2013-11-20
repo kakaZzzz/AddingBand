@@ -65,18 +65,18 @@
 #define LO_UINT32(x)                          ((x) & 0xffff)
 
 // define LEDs
-#define LED0_PI0                              P0_2
-#define LED1_PI0                              P0_3
-#define LED2_PI0                              P0_1
-#define LED3_PI0                              P0_4
-#define LED4_PI0                              P0_5
-#define LED5_PI0                              P0_6
-#define LED6_PI0                              P1_0
-#define LED7_PI0                              P1_6
-#define LED8_PI0                              P1_7
-#define LED9_PI0                              P2_1
-#define LED10_PI0                             P2_2
-#define LED11_PI0                             P2_0
+#define LED0_PIO                              P0_2
+#define LED1_PIO                              P0_3
+#define LED2_PIO                              P0_1
+#define LED3_PIO                              P0_4
+#define LED4_PIO                              P0_5
+#define LED5_PIO                              P0_6
+#define LED6_PIO                              P1_0
+#define LED7_PIO                              P1_6
+#define LED8_PIO                              P1_7
+#define LED9_PIO                              P2_1
+#define LED10_PIO                             P2_2
+#define LED11_PIO                             P2_0
 
 #define MOTOR_PIO                             P0_0
 
@@ -670,7 +670,7 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
         //         // addr = F_STATUS;
         //         // HalMotionI2CWrite(1, &addr);
         //         // HalMotionI2CRead(1, &val);
-        //         LED3_PI0 = !LED3_PI0;
+        //         LED3_PIO = !LED3_PIO;
         //     }else{
         //         break;
         //     }
@@ -948,6 +948,7 @@ static void simpleBLEPeripheral_ProcessOSALMsg( osal_event_hdr_t *pMsg )
         if (slipWaitFor == 3)
         {
             babyMove();
+            eepromWriteStep(TAP_DATA_TYPE);
 
             slipFrom = 0;
             slipWaitFor = 0;
@@ -1308,40 +1309,40 @@ static void toggleLEDWithTime(uint8 num, uint8 io){
 
     switch(num){
         case 1:
-            LED1_PI0 = io;
+            LED1_PIO = io;
             break;
         case 2:
-            LED2_PI0 = io;
+            LED2_PIO = io;
             break;
         case 3:
-            LED3_PI0 = io;
+            LED3_PIO = io;
             break;
         case 4:
-            LED4_PI0 = io;
+            LED4_PIO = io;
             break;
         case 5:
-            LED5_PI0 = io;
+            LED5_PIO = io;
             break;
         case 6:
-            LED6_PI0 = io;
+            LED6_PIO = io;
             break;
         case 7:
-            LED7_PI0 = io;
+            LED7_PIO = io;
             break;
         case 8:
-            LED8_PI0 = io;
+            LED8_PIO = io;
             break;
         case 9:
-            LED9_PI0 = io;
+            LED9_PIO = io;
             break;
         case 10:
-            LED10_PI0 = io;
+            LED10_PIO = io;
             break;
         case 11:
-            LED11_PI0 = io;
+            LED11_PIO = io;
             break;
         case 0:
-            LED0_PI0 = io;
+            LED0_PIO = io;
             break;
         default:
             break; 
@@ -1437,13 +1438,13 @@ static void accInit( void )
     pBuf[1] = FULL_SCALE_8G;
     HalI2CWrite(2, pBuf);    
 
-    pBuf[0] = PULSE_CFG;
-    pBuf[1] = 0x3F;
-    HalI2CWrite(2, pBuf);
+    // pBuf[0] = PULSE_CFG;
+    // pBuf[1] = 0x3F;
+    // HalI2CWrite(2, pBuf);
 
-    pBuf[0] = PULSE_LTCY;
-    pBuf[1] = 0x01;
-    HalI2CWrite(2, pBuf);
+    // pBuf[0] = PULSE_LTCY;
+    // pBuf[1] = 0x01;
+    // HalI2CWrite(2, pBuf);
 
     //use fifo
     // pBuf[0] = F_SETUP;
@@ -1516,9 +1517,12 @@ static void accLoop(void)
                     // add one step
                     pace_count = pace_count + 1;
 
-                    LED0_PI0 = !LED0_PI0;
+                    LED0_PIO = OPEN_PIO;
+                    LED3_PIO = OPEN_PIO;
+                    LED6_PIO = OPEN_PIO;
+                    LED9_PIO = OPEN_PIO;
 
-                    // osal_start_timerEx( simpleBLEPeripheral_TaskID, LED_CYCLE_EVT, 10 );
+                    osal_start_timerEx( simpleBLEPeripheral_TaskID, CLOSE_ALL_EVT, 300 );
 
                     // P0_0 = 0;
                     // P0_1 = 0;
@@ -1573,35 +1577,36 @@ static void accLoop(void)
         if (ACC_CUR < PACE_BOTTOM) PACE_BOTTOM = ACC_CUR;
     }
 
-    accGetIntData();//read INT registers
+    // accGetIntData();//read INT registers
 
-    if (INT_STATUS & BV(3))
-    {
-        //tap happened
-        // Serial.print("TAP\r\n");
+    // if (INT_STATUS & BV(3))
+    // {
+    //     //tap happened
+    //     // Serial.print("TAP\r\n");
 
-        // int i = 10000;
+    //     // int i = 10000;
 
-        // while (i)
-        // {
-        //     i--;
-        // }
+    //     // while (i)
+    //     // {
+    //     //     i--;
+    //     // }
 
-        // eepromWriteStep(TAP_DATA_TYPE);
+    //     // eepromWriteStep(TAP_DATA_TYPE);
 
-        uint8 pBuf[2];
+    //     uint8 pBuf[2];
 
-        //read INT
-        pBuf[0] = PULSE_SRC;
-        HalMotionI2CWrite(1, pBuf);
-        HalMotionI2CRead(1, &pBuf[1]);
+    //     //read INT
+    //     pBuf[0] = PULSE_SRC;
+    //     HalMotionI2CWrite(1, pBuf);
+    //     HalMotionI2CRead(1, &pBuf[1]);
 
-        LED6_PI0 = !LED6_PI0;
+    //     LED6_PIO = !LED6_PIO;
 
-        // P0_3 = 0;
+    //     // P0_3 = 0;
 
-        // osal_start_timerEx( simpleBLEPeripheral_TaskID, SBP_LED_STOP_EVT, 1000 );
-    }
+    //     // osal_start_timerEx( simpleBLEPeripheral_TaskID, SBP_LED_STOP_EVT, 1000 );
+    // }
+
     time_count++;
 }
 
