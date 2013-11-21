@@ -40,9 +40,13 @@
 
 -(void)togglePeripheralByIndex:(NSUInteger)index;
 
+-(void)connectPeripheralByName:(NSString*)name;
+-(void)removePeripheralByModel:(NSString*)model;
+
 -(void)sync:(NSString*)model;
 -(NSString*)getLastSyncDesc:(NSString*)model;
 
+-(BTBandPeripheral*)getBpByName:(NSString*)name;
 -(BTBandPeripheral*)getBpByModel:(NSString*)model;
 -(BTBandPeripheral*)getBpByIndex:(NSInteger)row;
 

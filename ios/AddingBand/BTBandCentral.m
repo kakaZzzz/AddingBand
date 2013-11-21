@@ -10,6 +10,7 @@
 
 @implementation BTBandCentral
 
+#pragma mark - 初始化
 -(id)init{
     self = [super init];
     
@@ -35,7 +36,7 @@
     return self;
 }
 
-//central改变状态后的回调
+#pragma mark - central改变状态后的回调
 -(void)centralManagerDidUpdateState:(CBCentralManager *)central{
     
     NSLog(@"调用了搜索蓝牙设备........");
@@ -98,7 +99,7 @@
     }
 }
 
-//发现peripheral后的回调
+#pragma mark - 发现peripheral后的回调
 -(void)centralManager:(CBCentralManager *)central didDiscoverPeripheral:(CBPeripheral *)peripheral advertisementData:(NSDictionary *)advertisementData RSSI:(NSNumber *)RSSI{
     
     NSLog(@"Discover Peripheral: %@", peripheral);
@@ -181,7 +182,7 @@
     }
 }
 
-//连接peripheral后的回调
+#pragma mark - 连接peripheral后的回调
 -(void)centralManager:(CBCentralManager *)central didConnectPeripheral:(CBPeripheral *)peripheral{
     
     NSLog(@"Connect Peripheral: %@", peripheral);
@@ -247,7 +248,7 @@
     NSLog(@"hello：%@", _allPeripherals);
 }
 
-//发现所有service后的回调
+#pragma mark - 发现service后的回调
 -(void)peripheral:(CBPeripheral *)peripheral didDiscoverServices:(NSError *)error{
     if (error) {
         NSLog(@"DiscoverServices error: %@", error.localizedDescription);
@@ -264,7 +265,7 @@
     
 }
 
-//发现所有characteristic后的回调
+#pragma mark - 发现characteristic后的回调
 -(void)peripheral:(CBPeripheral *)peripheral didDiscoverCharacteristicsForService:(CBService *)service error:(NSError *)error{
     
     if (error) {
@@ -330,7 +331,7 @@
     }
 }
 
-//注册update value后的回调
+#pragma mark - 注册update value后的回调
 -(void)peripheral:(CBPeripheral *)peripheral didUpdateNotificationStateForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error{
     
     if (error) {
@@ -356,7 +357,7 @@
     }
 }
 
-//收到周边设备的数据更新
+#pragma mark - 收到周边设备的数据更新
 -(void)peripheral:(CBPeripheral *)peripheral didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error{
     
     if (error) {
@@ -562,7 +563,7 @@
     [bp.allCallback removeObjectForKey:characteristic.UUID];
 }
 
-//写数据完成后的回调
+#pragma mark - 写数据完成后的回调
 -(void)peripheral:(CBPeripheral *)peripheral didWriteValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error{
     if (error) {
         NSLog(@"WriteValueForCharacteristic error: %@", error.localizedDescription);
@@ -571,7 +572,7 @@
     
 }
 
-//某个peripheral断开连接
+#pragma mark - peripheral断开连接
 -(void)centralManager:(CBCentralManager *)central didDisconnectPeripheral:(CBPeripheral *)peripheral error:(NSError *)error{
     
     NSLog(@"dis:%@ err:%@", peripheral, error);
@@ -628,16 +629,10 @@
 }
 
 
-/*
- 对外接口
- */
 
+#pragma mark - 下面都是对外暴露的接口
 
--(void)doScan:(NSTimer *)theTimer{
-    [self scan];
-}
-
-//向所有peripheral写数据
+#pragma mark - 向所有peripheral写数据
 -(void)writeAll:(NSData*)value withUUID:(CBUUID*)cuuid{
     
     NSEnumerator * enumeratorValue = [_allPeripherals objectEnumerator];
@@ -652,7 +647,7 @@
 }
 
 
-//读取所有peripheral里某个characteristic
+#pragma mark - 读取所有peripheral里某个characteristic
 -(void)readAll:(CBUUID*)cuuid withBlock:(void (^)(NSData* value, CBCharacteristic* characteristic, CBPeripheral* peripheral))block{
     
     //遍历所有的peripheral
@@ -677,7 +672,7 @@
 }
 
 
-//把丫做成单例
+#pragma mark - 把丫做成单例
 +(BTBandCentral *)sharedBandCentral
 {
     static BTBandCentral *sharedBandCentralInstance = nil;
@@ -688,7 +683,7 @@
     return sharedBandCentralInstance;
 }
 
-//主动重新搜索
+#pragma mark - 扫描指定的蓝牙服务
 -(void)scan{
     
     [_cm scanForPeripheralsWithServices:@[[CBUUID UUIDWithString:UUID_HEALTH_SERVICE]] options:nil];
@@ -696,7 +691,7 @@
     NSLog(@"scan ForPeripherals");
 }
 
-//连接选中的peripheral
+#pragma mark - 根据缓存中的序号，连接或断开蓝牙周边
 -(void)togglePeripheralByIndex:(NSUInteger)index{
     
     //根据index找到对应的peripheral
@@ -739,6 +734,62 @@
     
 }
 
+#pragma mark - 通过设备名连接蓝牙周边
+-(void)connectPeripheralByName:(NSString*)name{
+    
+    BTBandPeripheral* bp = [self getBpByName:name];
+    
+    if (bp && !bp.isConnected && !bp.isConnecting && bp.isFinded) {
+        
+        [_cm connectPeripheral:bp.handle options:Nil];
+        
+        NSLog(@"try to connect %@", name);
+    }
+    
+}
+
+#pragma mark - 通过设备型号断开蓝牙周边
+-(void)removePeripheralByModel:(NSString*)model{
+    
+    //先删除coredata里的数据
+    
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"BTBleList" inManagedObjectContext:_context];
+    
+    NSFetchRequest* request = [[NSFetchRequest alloc] init];
+    [request setEntity:entity];
+    
+    NSError* error;
+    _localBleLIst = [_context executeFetchRequest:request error:&error];
+    
+    for (BTBleList* old in _localBleLIst) {
+        if ([[BTUtils getModel:old.name] isEqualToString:model]){
+            
+            [_context deleteObject:old];
+            NSLog(@"find model %@ in coredata, then delete it", model);
+        }
+    }
+    
+    //及时保存
+    NSError* err;
+    if(![_context save:&err]){
+        NSLog(@"%@", [err localizedDescription]);
+    }
+    
+    //刷新列表
+    self.globals.bleListCount += 0;
+
+    //如果设备正在连接，则断开
+    BTBandPeripheral* bp = [self getBpByModel:model];
+    
+    if (bp && bp.isConnected) {
+        [_cm cancelPeripheralConnection:bp.handle];
+        
+        NSLog(@"try to cancel connect model %@", model);
+    }
+    
+}
+
+#pragma mark - 通过设备型号发起同步操作
 -(void)sync:(NSString*)model{
     
     if (!_syncLocker) {
@@ -767,6 +818,7 @@
     
 }
 
+#pragma mark - 获得同步时间的文字描述
 -(NSString*)getLastSyncDesc:(NSString*)model{
     
     NSString* syncWords;
@@ -834,6 +886,7 @@
     
 }
 
+#pragma mark - 通过设备型号获得BTBandPeripheral对象
 -(BTBandPeripheral*)getBpByModel:(NSString*)model{
     
     //遍历所有的peripheral
@@ -851,11 +904,31 @@
     return Nil;
 }
 
+#pragma mark - 通过设备名获得BTBandPeripheral对象
+-(BTBandPeripheral*)getBpByName:(NSString*)name{
+    
+    //遍历所有的peripheral
+    NSEnumerator * enumeratorValue = [_allPeripherals objectEnumerator];
+    
+    for (BTBandPeripheral* bp in enumeratorValue) {
+        
+        if ([name isEqual:bp.name]) {
+            
+            return bp;
+        }
+        
+    }
+    
+    return Nil;
+}
+
+#pragma mark - 通过缓存中的序号获得BTBandPeripheral对象
 -(BTBandPeripheral*)getBpByIndex:(NSInteger)row{
     NSArray * ev = [[_allPeripherals objectEnumerator] allObjects];
     return [ev objectAtIndex:row];
 }
 
+#pragma mark - 检查某个型号的设备是否连接上
 -(Boolean)isConnectedByModel:(NSString*)model{
     
     NSNumber* b = [_connectedList objectForKey:model];
@@ -867,10 +940,16 @@
     }
 }
 
+#pragma mark - 停止当前扫描，并在1秒后重新开始扫描
 -(void)restartScan{
     
     [_cm stopScan];
     
     _scanTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(doScan:) userInfo:nil repeats:NO];
+}
+
+#pragma mark - 定时器调用
+-(void)doScan:(NSTimer *)theTimer{
+    [self scan];
 }
 @end
