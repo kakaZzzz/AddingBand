@@ -13,6 +13,7 @@
 #import "CircularProgressView.h"
 #import "PCLineChartView.h"
 #import "BTGetData.h"
+#import "BarChartView.h"
 @interface BTPhysicalViewController ()
 @property(nonatomic,strong)UIScrollView *aScrollView;
 
@@ -25,6 +26,9 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
+        
+        self.barYValue = [self getResentOneWeekSteps];
+        
     }
     return self;
 }
@@ -36,6 +40,7 @@
     [super viewDidLoad];
     //加载滚动视图
     [self addSubViews];
+    
     //加载折线图
    // [self drawLineChartView];
     // Do any additional setup after loading the view.
@@ -121,6 +126,108 @@
     
     
 }
+
+#pragma mark - loadBarChart  加载柱形图
+- (void)loadBarChartUsingArray {
+    //Generate properly formatted data to give to the bar chart
+    //横坐标元素
+    /*   在此传入横坐标名称  柱子表示的数值  柱子颜色  以及label中字体颜色 */
+    
+    _barChart = [[BarChartView alloc] initWithFrame:CGRectMake(60, 250, 200, 100)];//柱形图背景大小
+    _barChart.backgroundColor = [UIColor clearColor];
+    [self.aScrollView addSubview:_barChart];
+    
+    NSArray *array = [_barChart createChartDataWithTitles:_barXValue
+                                                   values:_barYValue
+                                                   colors:_barColors
+                                              labelColors:_barLabelColors];
+    
+    
+    //Set the Shape of the Bars (Rounded or Squared) - Rounded is default
+    //柱形形状  分圆角型和直角型
+    [_barChart setupBarViewShape:BarShapeSquared];
+    
+    //Set the Style of the Bars (Glossy, Matte, or Flat) - Glossy is default
+    //柱形样式  分有光泽的  无光泽的  扁平的
+    [_barChart setupBarViewStyle:BarStyleFlat];
+    
+    //Set the Drop Shadow of the Bars (Light, Heavy, or None) - Light is default
+    //柱形阴影   分 轻 重 无 三种
+    [_barChart setupBarViewShadow:BarShadowNone];
+    
+    //Generate the bar chart using the formatted data
+    [_barChart setDataWithArray:array
+                       showAxis:DisplayBothAxes
+                      withColor:[UIColor clearColor]//指示坐标颜色
+        shouldPlotVerticalLines:YES];
+}
+#pragma mark - 读取最近一周每天的运动量 并配置绘制柱形图所需参数
+- (NSArray *)getResentOneWeekSteps
+{
+    
+    self.barColors = [NSMutableArray arrayWithObjects:@"87E317",@"87E317",@"87E317",@"87E317",@"87E317",@"87E317",@"87E317", nil];
+    self.barLabelColors = [NSMutableArray arrayWithObjects:@"87E317",@"87E317",@"87E317",@"87E317",@"87E317",@"87E317",@"87E317", nil];
+    
+    //设置数据类型
+    int type = 1;
+    //读取当前时间
+    NSDate* date = [NSDate date];
+    NSTimeZone *zone = [NSTimeZone systemTimeZone];
+    NSInteger interval = [zone secondsFromGMTForDate: date];
+    NSDate *localeDate = [date  dateByAddingTimeInterval: interval];
+    
+    NSLog(@"localeDate==%@", localeDate);
+    //分割出年 月 日 小时
+    NSNumber* year = [BTUtils getYear:localeDate];
+//    NSNumber* month = [BTUtils getMonth:localeDate];
+//    NSNumber* day = [BTUtils getDay:localeDate];
+    NSNumber* minute = [BTUtils getMinutes:date];
+    NSNumber* hour = [BTUtils getHour:localeDate];
+    //设置查询条件
+    //按月查询
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"year == %@ AND hour == %@ AND type == %@",year,hour ,[NSNumber numberWithInt:type]];
+    NSArray *array = [BTGetData getFromCoreDataWithPredicate:predicate entityName:@"BTRawData" sortKey:nil];
+    
+    NSMutableArray *arrayStep = [NSMutableArray arrayWithCapacity:1];
+    NSMutableArray *arrayDate = [NSMutableArray arrayWithCapacity:1];
+    for (BTRawData* one in array) {
+        [arrayStep addObject:[NSString stringWithFormat:@"%@",one.count]];
+        [arrayDate addObject:[NSString stringWithFormat:@"%@分",one.minute]];//测试用小时 实际上线时 用天
+        
+    }
+    
+    //最近七天的一个范围
+    NSArray *resultArray;
+    //如果数据大于七天
+    if (arrayStep.count >= 7) {
+        NSRange theRange;
+        theRange.location = arrayStep.count - 7;//range的起点
+        theRange.length = 7;//range的长度
+        resultArray = [arrayStep subarrayWithRange:theRange];
+        self.barXValue = [arrayDate subarrayWithRange:theRange];
+        
+    }
+    //如果数据少于七天
+    else{
+        resultArray = arrayStep;
+        //横坐标值
+        self.barXValue = arrayDate;
+        
+        NSRange theRange;
+        theRange.location = arrayStep.count ;//range的起点
+        theRange.length = 7 - arrayStep.count;//range的长度
+        
+        //柱子颜色
+        [self.barColors removeObjectsInRange:theRange];
+        [self.barLabelColors removeObjectsInRange:theRange];
+        
+    }
+    NSLog(@"最近一周的运动量是 %@",resultArray);
+    return resultArray;
+    
+    
+}
+
 #pragma mark - 点击label进入详情
 - (void)enterDetai
 {
@@ -151,13 +258,15 @@
         self.gradeLabel.text = [NSString stringWithFormat:@"今日圆满完成目标，妈妈真棒"];
     }
    
-    
+    self.barYValue = [self getResentOneWeekSteps];
+    [self loadBarChartUsingArray];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
     [self.circularGrade removeFromSuperview];
     [self.circularSport removeFromSuperview];
+    [self.barChart removeFromSuperview];
 }
 - (void)updateUIWithStepDaily:(int)stepDaily totalStep:(int)totalStep
 {

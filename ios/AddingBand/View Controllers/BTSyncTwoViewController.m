@@ -66,6 +66,7 @@ static BTSyncTwoViewController *syncTwoVC = nil;
     [self addSubviews];
   	// Do any additional setup after loading the view.
 }
+#pragma mark - 同步数据
 - (void)shuchu
 {
     NSLog(@"点击了测试按钮");

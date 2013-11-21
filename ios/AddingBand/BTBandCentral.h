@@ -44,7 +44,7 @@
 
 -(void)togglePeripheralByIndex:(NSUInteger)index;
 
--(void)connectPeripheralByName:(NSString*)name timeoutAndHappe:(void(^)(void))block;
+-(void)connectPeripheralByName:(NSString*)name;
 -(void)removePeripheralByModel:(NSString*)model;
 
 -(void)sync:(NSString*)model;

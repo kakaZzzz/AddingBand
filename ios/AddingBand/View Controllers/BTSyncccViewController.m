@@ -36,6 +36,15 @@
         self.g = [BTGlobals sharedGlobals];
         self.bc = [BTBandCentral sharedBandCentral];
         
+        __weak BTSyncccViewController *syncVC = self;
+        self.bc.timeoutBlock = ^(void){
+            
+            UIAlertView *timeoutAlart = [[UIAlertView alloc] initWithTitle:@"连接超时" message:@"妈妈，请删除此设备，我们将为您重新扫描" delegate:syncVC cancelButtonTitle:@"好的" otherButtonTitles:nil, nil];
+            timeoutAlart.tag = 102;
+            [timeoutAlart show];
+            
+        };
+        
         //监听设备变化
         [self.g addObserver:self forKeyPath:@"bleListCount" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:NULL];
         
@@ -332,7 +341,62 @@
     }
     
     
+    if (alertView.tag == 102) {
+        
+        self.bc = [BTBandCentral sharedBandCentral];
+        NSEnumerator * enumeratorValue = [self.bc.allPeripherals objectEnumerator];
+        BTBandPeripheral* bp = [[enumeratorValue allObjects] objectAtIndex:0];
+
+            //以下为删除设备
+            //往coredata里面存放选择的设备行数
+            
+            //根据index找到对应的peripheral
+            self.bc = [BTBandCentral sharedBandCentral];
+            
+            //删除coredata里的这条数据
+            _context = [BTGetData getAppContex];
+            NSEntityDescription *entity = [NSEntityDescription entityForName:@"BTBleList" inManagedObjectContext:_context];
+            
+            NSFetchRequest* request = [[NSFetchRequest alloc] init];
+            [request setEntity:entity];
+            
+            NSError* error;
+            
+            NSArray *resultArray = [_context executeFetchRequest:request error:&error];
+            
+            for (BTBleList* old in resultArray) {
+                NSLog(@"设备名称%@",bp.name);
+                if ([[BTUtils getModel:old.name] isEqualToString:@"A1"]){
+                    [self.bc.allPeripherals removeObjectForKey:bp.name];
+                    [_context deleteObject:old];
+                    NSLog(@"!!!2222222");
+                }
+                
+                
+                //及时保存
+                NSError* err;
+                if(![_context save:&err]){
+                    NSLog(@"%@", [err localizedDescription]);
+                }
+                
+                //设备总数减少
+                self.g.bleListCount = [self.bc.allPeripherals count];
+                [self.bc.allPeripherals removeObjectForKey:bp.name];
+            }
+            
+            //移除页面
+            [self.pastVC.view removeFromSuperview];
+            _syncButton.hidden = YES;
+            [[NSNotificationCenter defaultCenter]postNotificationName:@"reloadData" object:nil];
+            // [self.bc scan];
+            
+            
+        }
+    
+
 }
+
+
 
 - (void)didReceiveMemoryWarning
 {
@@ -560,11 +624,12 @@
         [_context save:nil];
     }
     
+  BTBandPeripheral *bp =  [self.bc getBpByIndex:indexPath.row];
+    [self.bc connectPeripheralByName:bp.name];
     
-    
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        [self.bc togglePeripheralByIndex:[indexPath row]];
-    });
+//    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+//        [self.bc togglePeripheralByIndex:[indexPath row]];
+//    });
     
     
 }
