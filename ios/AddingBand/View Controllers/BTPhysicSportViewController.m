@@ -187,7 +187,7 @@ static int dailyStep = 0;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.view.backgroundColor = [UIColor grayColor];
+    self.view.backgroundColor = [UIColor colorWithRed:255.0/255.0 green:153.0/255.0 blue:153.0/255.0 alpha:1.0];;
     self.navigationItem.title = @"MAMA运动";
     //添加圆形进度条 和 Label
     [self addCircleProgress];
@@ -337,15 +337,16 @@ static int dailyStep = 0;
 }
 - (void)updateUIWithStepDaily:(int)stepDaily totalStep:(int)totalStep
 {
-    [self.circularProgressView updateProgressCircle:stepDaily withTotal:totalStep];
+    [self.circularProgressView updateProgressCircle:stepDaily withTotal:100];
 }
 #pragma mark - add circle progress
 - (void)addCircleProgress
 {
     //set backcolor & progresscolor
     UIColor *backColor = [UIColor colorWithRed:255.0/255.0 green:255.0/255.0 blue:255.0/255.0 alpha:1.0];
-    UIColor *progressColor = [UIColor colorWithRed:255.0/255.0 green:153.0/255.0 blue:153.0/255.0 alpha:1.0];
+ //   UIColor *progressColor = [UIColor colorWithRed:255.0/255.0 green:153.0/255.0 blue:153.0/255.0 alpha:1.0];
     
+    UIColor *progressColor = [UIColor yellowColor];
     //alloc CircularProgressView instance
     self.circularProgressView = [[CircularProgressView alloc] initWithFrame:CGRectMake(25, 77, 270, 270) backColor:backColor progressColor:progressColor lineWidth:11];
     
@@ -358,7 +359,7 @@ static int dailyStep = 0;
     _totalStep.text = @"9506";
     _totalStep.textAlignment =  NSTextAlignmentCenter;
     _totalStep.backgroundColor = [UIColor redColor];
-    [self.view addSubview:_totalStep];
+  //  [self.view addSubview:_totalStep];
     
     self.realStep = [[UILabel alloc] initWithFrame:CGRectMake(stepLabelX, stepLabelY + 170, stepLabelWidth, stepLabelHeight)];
     _realStep.text = @"100";
@@ -390,7 +391,7 @@ static int dailyStep = 0;
     //横坐标元素
     /*   在此传入横坐标名称  柱子表示的数值  柱子颜色  以及label中字体颜色 */
     
-    _barChart = [[BarChartView alloc] initWithFrame:CGRectMake(60, 160, 200, 100)];//柱形图背景大小
+    _barChart = [[BarChartView alloc] initWithFrame:CGRectMake(60, 190, 200, 100)];//柱形图背景大小
     _barChart.backgroundColor = [UIColor clearColor];
     [self.view addSubview:_barChart];
     

@@ -58,20 +58,20 @@ static NSString *textStr = nil;
      return 10;
 }
 
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
-
-{
-    NSLog(@"titleForHeaderInSection");
-    if (section == 0) {
-        return nil;
-    }
-    else
-    return @"哈哈哈哈哈哈哈哈哈哈哈";
-}
+//- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+//
+//{
+//    NSLog(@"titleForHeaderInSection");
+//    if (section == 0) {
+//        return nil;
+//    }
+//    else
+//    return @"哈哈哈哈哈哈哈哈哈哈哈";
+//}
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == 0)
-     return 150.0;
+     return 130.0;
     else
     {
     NSLog(@"%f........",[BTUndoCell cellHeight:textStr]);

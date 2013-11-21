@@ -37,7 +37,7 @@
     //注册通知 监控键盘的状态
     [IQKeyBoardManager enableKeyboardManger];
 
-    self.view.backgroundColor = [UIColor yellowColor];
+    self.view.backgroundColor = [UIColor whiteColor];
     [self createSubviews];
 	// Do any additional setup after loading the view.
 }

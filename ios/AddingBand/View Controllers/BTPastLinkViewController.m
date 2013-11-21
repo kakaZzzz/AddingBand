@@ -20,6 +20,9 @@
 #define kIconImageY (kImageBgHeight - 75)/2
 #define kIconImageWidth 75
 #define kIconImageHeight 75
+
+#define iPhone5 ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? CGSizeEqualToSize(CGSizeMake(640, 1136), [[UIScreen mainScreen] currentMode].size) : NO)
+
 static BTPastLinkViewController *pastLinkVC = nil;
 @interface BTPastLinkViewController ()
 
@@ -53,11 +56,17 @@ static BTPastLinkViewController *pastLinkVC = nil;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.view.backgroundColor = [UIColor yellowColor];
+    self.view.backgroundColor = [UIColor whiteColor];
     self.refreshButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     [_refreshButton setTitle:@"重新连接" forState:UIControlStateNormal];
-    _refreshButton.frame = CGRectMake((320 - 200)/2, 300, 200, 50);
-    
+    if (iPhone5) {
+        _refreshButton.frame = CGRectMake((320 - 200)/2, self.view.frame.size.height - 200, 200, 50);
+
+    }
+    else
+    {
+    _refreshButton.frame = CGRectMake((320 - 200)/2, self.view.frame.size.height - 150, 200, 50);
+    }
     [_refreshButton setBackgroundImage:[UIImage imageNamed:@"refresh_btn.png"] forState:UIControlStateNormal];
     [_refreshButton setBackgroundImage:[UIImage imageNamed:@"refresh_btn_sel.png"] forState:UIControlStateHighlighted];
 
@@ -71,7 +80,13 @@ static BTPastLinkViewController *pastLinkVC = nil;
 - (void)addSubviews
 {
     //背景粉红图
-    self.aImageView = [[UIImageView alloc] initWithFrame:CGRectMake(kImageBgX, kImageBgY, kImageBgWidth, kImageBgHeight)];
+    if (iPhone5) {
+        self.aImageView = [[UIImageView alloc] initWithFrame:CGRectMake(kImageBgX, kImageBgY, kImageBgWidth, kImageBgHeight + 50)];
+    }
+    else
+    {
+        self.aImageView = [[UIImageView alloc] initWithFrame:CGRectMake(kImageBgX, kImageBgY, kImageBgWidth, kImageBgHeight)];
+    }
     _aImageView.image = [UIImage imageNamed:@"red_bg.png"];
     [self.view addSubview:_aImageView];
     //手环icon
@@ -88,7 +103,7 @@ static BTPastLinkViewController *pastLinkVC = nil;
     _lastSyncTime.backgroundColor = [UIColor clearColor];
     _lastSyncTime.font = [UIFont systemFontOfSize:16];
     _lastSyncTime.textColor = [UIColor whiteColor];
-    _lastSyncTime.textAlignment = NSTextAlignmentLeft;
+    _lastSyncTime.textAlignment = NSTextAlignmentCenter;
     _lastSyncTime.lineBreakMode = NSLineBreakByTruncatingTail;
     _lastSyncTime.numberOfLines= 0;
     [self.asynctimeImage addSubview:_lastSyncTime];
@@ -129,20 +144,49 @@ static BTPastLinkViewController *pastLinkVC = nil;
     _linkLabel.numberOfLines= 0;
     [self.view addSubview:_linkLabel];
     
+    //设备使用时间背景
+    self.useTimeImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, _aImageView.frame.size.height - 50, 320, 50)];
+    _useTimeImage.image = [UIImage imageNamed:@"uestime_bg.png"];
+    [_aImageView addSubview:_useTimeImage];
     
-//    //同步按钮
-//    self.testButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-//    // [_testButton setTitle:@"测试按钮" forState:UIControlStateNormal];
-//    _testButton.frame = CGRectMake((self.view.frame.size.width - 95)/2, self.view.frame.size.height - 210, 95, 120);
-//    [_testButton setBackgroundImage:[UIImage imageNamed:@"sync_btn.png"] forState:UIControlStateNormal];
-//    [_testButton setBackgroundImage:[UIImage imageNamed:@"sync_btn_sel.png"] forState:UIControlStateHighlighted];
-//    [_testButton addTarget:self action:@selector(shuchu) forControlEvents:UIControlEventTouchUpInside];
-//    [self.view addSubview:_testButton];
-//    
-//    //同步旋转图标
-//    self.syncIcon = [[UIImageView alloc] initWithFrame:CGRectMake(29, 20, 40, 34)];
-//    _syncIcon.image = [UIImage imageNamed:@"sync_icon.png"];
-//    [_testButton addSubview:_syncIcon];
+    //使用时间标签
+    self.useTimeLabel = [[UILabel alloc] initWithFrame:CGRectMake(5, 0, 200, _useTimeImage.frame.size.height)];
+    _useTimeLabel.backgroundColor = [UIColor clearColor];
+    _useTimeLabel.text = @"使用时间:---";
+    _useTimeLabel.textColor = [UIColor whiteColor];
+    [_useTimeImage addSubview:_useTimeLabel];
+    
+    self.label1 = [[UILabel alloc]initWithFrame:CGRectMake( 5, _aImageView.frame.origin.y + _aImageView.frame.size.height + 10,250,30)];
+    _label1.backgroundColor = [UIColor clearColor];
+    _label1.font = [UIFont systemFontOfSize:15];
+    _label1.textColor = [UIColor grayColor];
+    _label1.text = @"1.将手机放在距离设备近一些的地方";
+    _label1.textAlignment = NSTextAlignmentLeft;
+    _label1.lineBreakMode = NSLineBreakByTruncatingTail;
+    _label1.numberOfLines= 0;
+    [self.view addSubview:_label1];
+
+    self.label2 = [[UILabel alloc]initWithFrame:CGRectMake( 5, _label1.frame.origin.y + _label1.frame.size.height ,200,30)];
+    _label2.backgroundColor = [UIColor clearColor];
+    _label2.font = [UIFont systemFontOfSize:15];
+    _label2.textColor = [UIColor grayColor];
+    _label2.text = @"2.打开设备上的按钮";
+    _label2.textAlignment = NSTextAlignmentLeft;
+    _label2.lineBreakMode = NSLineBreakByTruncatingTail;
+    _label2.numberOfLines= 0;
+    [self.view addSubview:_label2];
+    
+    
+    self.label3 = [[UILabel alloc]initWithFrame:CGRectMake( 5, _label2.frame.origin.y + _label2.frame.size.height ,200,30)];
+    _label3.backgroundColor = [UIColor clearColor];
+    _label3.font = [UIFont systemFontOfSize:15];
+    _label3.textColor = [UIColor grayColor];
+    _label3.text = @"3.打开手机上的蓝牙";
+    _label3.textAlignment = NSTextAlignmentLeft;
+    _label3.lineBreakMode = NSLineBreakByTruncatingTail;
+    _label3.numberOfLines= 0;
+    [self.view addSubview:_label3];
+    
     
 }
 
@@ -150,7 +194,13 @@ static BTPastLinkViewController *pastLinkVC = nil;
 {
     NSLog(@"尝试连接");
     
-    
+    [self.bc restartScan];
+    [NSThread sleepForTimeInterval:2.0];
+    //弹出提醒框
+    UIAlertView *bLart = [[UIAlertView alloc] initWithTitle:@"无法连接设备" message:@"请删除此设备绑定，以便我们重新为你搜索" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+    bLart.tag = 101;
+    [bLart show];
+
  
     
 }

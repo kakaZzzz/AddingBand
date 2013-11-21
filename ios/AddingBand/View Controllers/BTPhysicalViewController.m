@@ -37,7 +37,7 @@
     //加载滚动视图
     [self addSubViews];
     //加载折线图
-    [self drawLineChartView];
+   // [self drawLineChartView];
     // Do any additional setup after loading the view.
 }
 - (void)addSubViews
@@ -65,24 +65,34 @@
     
    //整体分数进度条
     //alloc CircularProgressView instance
-    self.circularGrade = [[CircularProgressView alloc] initWithFrame:CGRectMake(100, 40, 120, 120) backColor:backColor progressColor:progressColor lineWidth:13];
-    [self.circularGrade updateProgressCircle: 50 withTotal:100];
+    self.circularGrade = [[CircularProgressView alloc] initWithFrame:CGRectMake(60, 40, 200, 200) backColor:backColor progressColor:progressColor lineWidth:13];
+   // [self.circularGrade updateProgressCircle: 50 withTotal:100];
 
     //add CircularProgressView
     [self.aScrollView addSubview:_circularGrade];
     //分数标签
-    self.gradeLabel = [[UILabel alloc] initWithFrame:CGRectMake(_circularGrade.frame.origin.x, _circularGrade.frame.origin.y +40, 70, 50)];
+    self.gradeLabel = [[UILabel alloc] initWithFrame:CGRectMake(_circularGrade.frame.origin.x, _circularGrade.frame.origin.y +40, 140, 70)];
     _gradeLabel.center = _circularGrade.center;//利用center快速定位
+    //自动换行
+    [_gradeLabel setNumberOfLines:0];
+    _gradeLabel.lineBreakMode = UILineBreakModeWordWrap;
+    
     _gradeLabel.textAlignment = NSTextAlignmentCenter;
-    _gradeLabel.backgroundColor = [UIColor redColor];
+    _gradeLabel.textColor = [UIColor whiteColor];
+    _gradeLabel.backgroundColor = [UIColor colorWithRed:255.0/255.0 green:153.0/255.0 blue:153.0/255.0 alpha:1.0];
     [_aScrollView addSubview:_gradeLabel];
+    
+    //点击进入运动详情
+    _gradeLabel.userInteractionEnabled = YES;
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(enterDetai)];
+    [_gradeLabel addGestureRecognizer:tap];
     
     //创建运动量圆形进度条
     self.circularSport = [[CircularProgressView alloc] initWithFrame:CGRectMake(200, 180, 90, 120) backColor:backColor progressColor:progressColor lineWidth:13];
     //[self.circularSport updateProgressCircle: 50 withTotal:100];
     
     //add CircularProgressView
-    [self.aScrollView addSubview:_circularSport];
+ //   [self.aScrollView addSubview:_circularSport];
     
     //运动量标签
     self.sportLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 55, 30)];
@@ -90,7 +100,7 @@
     _sportLabel.textAlignment = NSTextAlignmentCenter;
     _sportLabel.text = @"100";
     _sportLabel.backgroundColor = [UIColor redColor];
-    [_aScrollView addSubview:_sportLabel];
+ //   [_aScrollView addSubview:_sportLabel];
 
     
       
@@ -111,6 +121,12 @@
     
     
 }
+#pragma mark - 点击label进入详情
+- (void)enterDetai
+{
+    BTPhysicSportViewController *sportVC = [[BTPhysicSportViewController alloc] init];
+   // [self.navigationController pushViewController:sportVC animated:YES];
+}
 #pragma mark - 更新圆形进度条
 
 #pragma mark - 视图将要出现的时候更新进度条
@@ -121,8 +137,20 @@
     NSLog(@"视图出现出现出现.....");
     //在视图出现的时候加载进度条 然后再视图消失的时候移除进度条  这样可以保证进度条进度动态的出现
     [self addCircleProgress];
-    [self updateUIWithStepDaily:[self getDailyStep] totalStep:100];//100为每日目标
+    int i = [self getDailyStep];
+    [self updateUIWithStepDaily:i totalStep:10000];//100为每日目标
+    if (i == 0) {
+    self.gradeLabel.text = [NSString stringWithFormat:@"今日还未开始运动,妈妈要努力啊"];
+    }
+
+    if (i < 10000 && i > 0) {
+         self.gradeLabel.text = [NSString stringWithFormat:@"今日已完成%d步,继续努力啊",i];
+    }
     
+    if (i >= 10000) {
+        self.gradeLabel.text = [NSString stringWithFormat:@"今日圆满完成目标，妈妈真棒"];
+    }
+   
     
 }
 
@@ -133,7 +161,8 @@
 }
 - (void)updateUIWithStepDaily:(int)stepDaily totalStep:(int)totalStep
 {
-    [self.circularSport updateProgressCircle:stepDaily withTotal:totalStep];
+    
+    [self.circularGrade updateProgressCircle:stepDaily withTotal:totalStep];
 }
 #pragma mark - 绘制折线图
 - (void)drawLineChartView

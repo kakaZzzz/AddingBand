@@ -19,6 +19,9 @@
 #define kIconImageY (kImageBgHeight - 75)/2
 #define kIconImageWidth 75
 #define kIconImageHeight 75
+
+#define iPhone5 ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? CGSizeEqualToSize(CGSizeMake(640, 1136), [[UIScreen mainScreen] currentMode].size) : NO)
+
 static BTSyncTwoViewController *syncTwoVC = nil;
 @interface BTSyncTwoViewController ()
 
@@ -75,7 +78,13 @@ static BTSyncTwoViewController *syncTwoVC = nil;
 - (void)addSubviews
 {
     //背景粉红图
+    if (iPhone5) {
+         self.aImageView = [[UIImageView alloc] initWithFrame:CGRectMake(kImageBgX, kImageBgY, kImageBgWidth, kImageBgHeight + 50)];
+    }
+    else
+    {
     self.aImageView = [[UIImageView alloc] initWithFrame:CGRectMake(kImageBgX, kImageBgY, kImageBgWidth, kImageBgHeight)];
+    }
     _aImageView.image = [UIImage imageNamed:@"red_bg.png"];
     [self.view addSubview:_aImageView];
     //手环icon
@@ -92,7 +101,7 @@ static BTSyncTwoViewController *syncTwoVC = nil;
     _lastSyncTime.backgroundColor = [UIColor clearColor];
     _lastSyncTime.font = [UIFont systemFontOfSize:16];
     _lastSyncTime.textColor = [UIColor whiteColor];
-    _lastSyncTime.textAlignment = NSTextAlignmentLeft;
+    _lastSyncTime.textAlignment = NSTextAlignmentCenter;
     _lastSyncTime.lineBreakMode = NSLineBreakByTruncatingTail;
     _lastSyncTime.numberOfLines= 0;
     [self.asynctimeImage addSubview:_lastSyncTime];
@@ -133,11 +142,27 @@ static BTSyncTwoViewController *syncTwoVC = nil;
     _linkLabel.numberOfLines= 0;
     [self.view addSubview:_linkLabel];
 
+    //设备使用时间背景
+  
+    self.useTimeImage = [[UIImageView alloc] initWithFrame:CGRectMake(0,_aImageView.frame.size.height - 50, 320, 50)];
+    _useTimeImage.image = [UIImage imageNamed:@"uestime_bg.png"];
+
+     [_aImageView   addSubview:_useTimeImage];
     
+
+    //使用时间标签
+    self.useTimeLabel = [[UILabel alloc] initWithFrame:CGRectMake(5, 0, 200, _useTimeImage.frame.size.height)];
+    _useTimeLabel.backgroundColor = [UIColor clearColor];
+    _useTimeLabel.text = @"使用时间:---";
+    _useTimeLabel.textColor = [UIColor whiteColor];
+    [_useTimeImage addSubview:_useTimeLabel];
     //同步按钮
     self.testButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
    // [_testButton setTitle:@"测试按钮" forState:UIControlStateNormal];
     _testButton.frame = CGRectMake((self.view.frame.size.width - 95)/2, self.view.frame.size.height - 210, 95, 120);
+    if (iPhone5) {
+        _testButton.frame = CGRectMake((self.view.frame.size.width - 95)/2, self.view.frame.size.height - 260, 95, 120);
+    }
     [_testButton setBackgroundImage:[UIImage imageNamed:@"sync_btn.png"] forState:UIControlStateNormal];
     [_testButton setBackgroundImage:[UIImage imageNamed:@"sync_btn_sel.png"] forState:UIControlStateHighlighted];
     [_testButton addTarget:self action:@selector(shuchu) forControlEvents:UIControlEventTouchUpInside];
@@ -212,6 +237,10 @@ static BTSyncTwoViewController *syncTwoVC = nil;
     }
 }
 
+- (void)viewDidAppear:(BOOL)animated
+{
+   
+}
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];

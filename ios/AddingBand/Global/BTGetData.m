@@ -47,4 +47,47 @@
     NSManagedObjectContext *context =[(BTAppDelegate *) [UIApplication sharedApplication].delegate managedObjectContext];
     return context;
 }
+
++ (NSString *)getBLEuseTime:(long)usetime
+{
+    //  NSDate *confromTimesp = [NSDate dateWithTimeIntervalSince1970:usetime];
+    
+      NSString *str = nil;
+      NSDate *datenow = [NSDate date];//现在时间,你可以输出来看下是什么格式
+//      NSTimeZone *zone = [NSTimeZone systemTimeZone];
+//      NSInteger interval = [zone secondsFromGMTForDate:datenow];
+//      NSDate *localeDate = [datenow  dateByAddingTimeInterval: interval];
+      long time1 = [datenow timeIntervalSince1970];
+      long i = time1 - usetime;
+    
+    if (i == 0) {
+         str = [NSString stringWithFormat:@"设备还未使用"];
+        return str;
+    }
+    
+    else if( i > 0 && i < 24 * 60 *60)
+    {
+        int k = i/(60);
+        str = [NSString stringWithFormat:@"已使用%d分钟",k];
+        return str;
+
+    }
+    
+   else if (i >= 24 * 60 *60) {
+        int k = i/(24 * 60 *60);
+        str = [NSString stringWithFormat:@"已使用%d天",k];
+        return str;
+       
+    }
+    
+    else
+    {
+        int k = i/(60 * 60);
+        str = [NSString stringWithFormat:@"已使用%d小时",k];
+        return str;
+
+    }
+       // return i/(60 * 60);
+    
+}
 @end

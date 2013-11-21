@@ -27,7 +27,7 @@
  
      //显示外部设备名字和电量
     self.bluetoothName = [[UILabel alloc]initWithFrame:CGRectMake(kBluetoothNameX, kBluetoothNameY, kBluetoothNameWidth, kBluetoothNameHeight)];
-     _bluetoothName.backgroundColor = [UIColor redColor];
+     _bluetoothName.backgroundColor = [UIColor clearColor];
     _bluetoothName.font = [UIFont systemFontOfSize:20];
     _bluetoothName.textColor = [UIColor whiteColor];
     _bluetoothName.textAlignment = NSTextAlignmentLeft;

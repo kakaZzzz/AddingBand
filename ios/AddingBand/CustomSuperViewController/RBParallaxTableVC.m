@@ -56,10 +56,10 @@ static CGFloat ImageHeight  = 300.0;
         [self.view addSubview:_imageScroller];
         [self.view addSubview:_tableView];
         
-        //创建自定义分区头
-        self.headTitle = [[UILabel alloc]initWithFrame:CGRectMake(HEAD_TITILE_LEFT, HEAD_TITILE_TOP, HEAD_TITILE_WIDTH, HEAD_TITILE_HEIGHT)];
-        _headTitle.backgroundColor = [UIColor redColor];
-        [self.tableView addSubview:_headTitle];
+//        //创建自定义分区头
+//        self.headTitle = [[UILabel alloc]initWithFrame:CGRectMake(HEAD_TITILE_LEFT, HEAD_TITILE_TOP, HEAD_TITILE_WIDTH, HEAD_TITILE_HEIGHT)];
+//        _headTitle.backgroundColor = [UIColor redColor];
+//        [self.tableView addSubview:_headTitle];
 
     }
     return self;
@@ -101,7 +101,7 @@ static CGFloat ImageHeight  = 300.0;
     _imageScroller.frame        = CGRectMake(0.0, 0.0, bounds.size.width, bounds.size.height);
     _tableView.backgroundView   = nil;
  //   _tableView.frame            = bounds;
-      _tableView.frame            = CGRectMake(0, 64, bounds.size.width, bounds.size.height - 64);
+      _tableView.frame            = CGRectMake(0, 0, bounds.size.width, bounds.size.height);
     [self layoutImage];
     [self updateOffsets];
 }

@@ -15,7 +15,7 @@
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
         // Initialization code
-        [self initSubControls];
+       // [self initSubControls];
     }
     return self;
 }
@@ -33,7 +33,7 @@
     _lastSyncTime.textAlignment = NSTextAlignmentLeft;
     _lastSyncTime.lineBreakMode = NSLineBreakByTruncatingTail;
     _lastSyncTime.numberOfLines= 0;
-    [self addSubview:_lastSyncTime];
+   // [self addSubview:_lastSyncTime];
     
     //    self.testButton =[UIButton buttonWithType:UIButtonTypeRoundedRect];
     //    _testButton.frame = CGRectMake(200, 10, 100, 50);
@@ -46,18 +46,18 @@
 {
     self =  [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
-        [self initSubControls];
-        self.toSync =[UIButton buttonWithType:UIButtonTypeRoundedRect];
-        _toSync.frame = CGRectMake(kToSyncX, kToSyncY, kToSyncWidth, kToSyncHeight);
-        [_toSync setTitle:@"立即同步" forState:UIControlStateNormal];
-        [_toSync addTarget:target action:@selector(toSync:event:) forControlEvents:UIControlEventTouchUpInside];
-        [self addSubview:_toSync];
-        
-        self.breakConnect =[UIButton buttonWithType:UIButtonTypeRoundedRect];
-        _breakConnect.frame = CGRectMake(kbreakConnectX, kbreakConnectY, kbreakConnectWidth, kbreakConnectHeight);
-        [_breakConnect setTitle:@"立即断开" forState:UIControlStateNormal];
-        [_breakConnect addTarget:target action:@selector(breakConnect:event:) forControlEvents:UIControlEventTouchUpInside];
-        [self addSubview:_breakConnect];
+//        [self initSubControls];
+//        self.toSync =[UIButton buttonWithType:UIButtonTypeRoundedRect];
+//        _toSync.frame = CGRectMake(kToSyncX, kToSyncY, kToSyncWidth, kToSyncHeight);
+//        [_toSync setTitle:@"立即同步" forState:UIControlStateNormal];
+//        [_toSync addTarget:target action:@selector(toSync:event:) forControlEvents:UIControlEventTouchUpInside];
+//        [self addSubview:_toSync];
+//        
+//        self.breakConnect =[UIButton buttonWithType:UIButtonTypeRoundedRect];
+//        _breakConnect.frame = CGRectMake(kbreakConnectX, kbreakConnectY, kbreakConnectWidth, kbreakConnectHeight);
+//        [_breakConnect setTitle:@"立即断开" forState:UIControlStateNormal];
+//        [_breakConnect addTarget:target action:@selector(breakConnect:event:) forControlEvents:UIControlEventTouchUpInside];
+//        [self addSubview:_breakConnect];
         
     }
     return self;

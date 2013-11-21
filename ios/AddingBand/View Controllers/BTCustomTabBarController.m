@@ -69,6 +69,7 @@
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
     if (iOS7) {
         self.tabBar.barStyle = UIBarStyleBlack;
+        self.tabBar.translucent = YES;
     }
 #endif
      self.tabBar.selectionIndicatorImage = [UIImage imageNamed:@"tabbar_sel.png"];

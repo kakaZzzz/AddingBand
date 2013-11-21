@@ -30,6 +30,9 @@
 @property(nonatomic,strong)UILabel *batteryLabel;//电量
 @property(nonatomic,strong)UILabel *nameLabel;//设备名称
 @property(nonatomic,strong)UILabel *linkLabel;//连接状态
+
+@property(strong, nonatomic) UIImageView * useTimeImage;//上次同步时间背景图片
+@property(strong, nonatomic) UILabel * useTimeLabel;//上次同步时间背景图片
 //单例描述
 + (BTSyncTwoViewController *)shareSyncTwoview;
 @end
