@@ -187,6 +187,13 @@
     
     NSLog(@"Connect Peripheral: %@", peripheral);
     
+    //清除连接超时的timer
+    if (_timeoutTimer) {
+        [_timeoutTimer invalidate];
+    }
+    
+    _timeoutBlock = Nil;
+    
     //清除其他同型号设备的缓存
     NSMutableArray* others = [[NSMutableArray alloc] init];
     
@@ -735,7 +742,7 @@
 }
 
 #pragma mark - 通过设备名连接蓝牙周边
--(void)connectPeripheralByName:(NSString*)name{
+-(void)connectPeripheralByName:(NSString*)name timeoutAndHappe:(void (^)(void))block{
     
     BTBandPeripheral* bp = [self getBpByName:name];
     
@@ -746,6 +753,10 @@
         NSLog(@"try to connect %@", name);
     }
     
+    //缓存block
+    _timeoutBlock = block;
+    
+    _timeoutTimer = [NSTimer scheduledTimerWithTimeInterval:CONNECT_PERIPHERAL_TIMEOUT target:self selector:@selector(timeout:) userInfo:nil repeats:NO];
 }
 
 #pragma mark - 通过设备型号断开蓝牙周边
@@ -951,5 +962,10 @@
 #pragma mark - 定时器调用
 -(void)doScan:(NSTimer *)theTimer{
     [self scan];
+}
+
+#pragma mark - 连接设备超时触发事件
+-(void)timeout:(NSTimer *)theTimer{
+    _timeoutBlock();
 }
 @end

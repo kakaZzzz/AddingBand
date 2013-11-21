@@ -29,7 +29,11 @@
 @property(strong, nonatomic) NSMutableDictionary* connectedList;
 
 @property(strong, nonatomic) NSTimer* scanTimer;
+@property(strong, nonatomic) NSTimer* timeoutTimer;
+
 @property(assign, nonatomic) Boolean syncLocker;
+
+@property(strong, nonatomic) void(^timeoutBlock)(void);
 
 +(BTBandCentral*)sharedBandCentral;
 
@@ -40,7 +44,7 @@
 
 -(void)togglePeripheralByIndex:(NSUInteger)index;
 
--(void)connectPeripheralByName:(NSString*)name;
+-(void)connectPeripheralByName:(NSString*)name timeoutAndHappe:(void(^)(void))block;
 -(void)removePeripheralByModel:(NSString*)model;
 
 -(void)sync:(NSString*)model;

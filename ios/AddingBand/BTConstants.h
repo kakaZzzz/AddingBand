@@ -63,9 +63,11 @@
 #define UUID_BATTERY_SERVICE            @"180F"
 #define UUID_BATTERY_LEVEL              @"2A19"
 
-
+//同步标志，和设备中的一致
 #define SYNC_CODE                       22
 
+//周边连接超时
+#define CONNECT_PERIPHERAL_TIMEOUT      10.0
 
 //蓝牙延时传输间隔
 #define BLUETOOTH_DELAY                 0.5
