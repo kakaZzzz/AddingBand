@@ -50,7 +50,7 @@
     [physicalNav.tabBarItem setFinishedSelectedImage:[UIImage imageNamed:@"physical_selected.png"] withFinishedUnselectedImage:[UIImage imageNamed:@"physical_unselected.png"]];
     
     
-    BTSyncViewController *syncVC = [[BTSyncViewController alloc] init];
+    BTSyncccViewController *syncVC = [[BTSyncccViewController alloc] init];
     BTNavicationController *syncNav = [[BTNavicationController alloc] initWithRootViewController:syncVC];
    // syncNav.tabBarItem.title = @"同步";
     syncVC.navigationItem.title = @"同步";

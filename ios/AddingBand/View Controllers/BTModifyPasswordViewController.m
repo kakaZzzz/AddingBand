@@ -10,10 +10,12 @@
 #import "BTColor.h"
 #import "IQKeyBoardManager.h"//键盘管理类
 
-#define kLeft 6.5
-#define kTop 50
-#define kWidth 80
-#define kHeight 20
+#define kLeft 0
+#define kTop 100
+#define kWidth 320
+#define kHeight 50
+
+#define kTitleLabelWidth 80//原密码 新密码 重复密码等Lable
 @interface BTModifyPasswordViewController ()
 
 @end
@@ -36,29 +38,32 @@
     [IQKeyBoardManager installKeyboardManager];
     //注册通知 监控键盘的状态
     [IQKeyBoardManager enableKeyboardManger];
-
+    self.navigationItem.title = @"修改密码";//导航栏标题
+    
     self.view.backgroundColor = [UIColor whiteColor];
     [self createSubviews];
 	// Do any additional setup after loading the view.
 }
+//创建子视图
 - (void)createSubviews
 {
     
     
-    UILabel *Lable1 = [[UILabel alloc] initWithFrame:CGRectMake(kLeft, kTop, kWidth, kHeight)];
-    Lable1.text = @" 原来密码";
-    Lable1.backgroundColor = [UIColor clearColor];
-    Lable1.textColor = [BTColor getColor:@"797978"];;
-    Lable1.font = [UIFont boldSystemFontOfSize:17];
-    [self.view addSubview:Lable1];
     
-    
-    UIImageView *imageView2 = [[UIImageView alloc] initWithFrame:CGRectMake(6.5,kTop + kHeight + 5, 306.5, 46)];
-    imageView2.image = [UIImage imageNamed:@"zhuceshur.png"];
+    UIImageView *imageView2 = [[UIImageView alloc] initWithFrame:CGRectMake(kLeft,kTop , kWidth, kHeight)];
+    imageView2.image = [UIImage imageNamed:@"settingcell_bg.png"];
     imageView2.userInteractionEnabled = YES;
     [self.view  addSubview:imageView2];
     
-    self.oldPassordTextField = [[UITextField alloc] initWithFrame:CGRectMake(8,0, 306.5-8, 46)];
+    UILabel *Lable1 = [[UILabel alloc] initWithFrame:CGRectMake(kLeft + 10 , 0, kTitleLabelWidth, kHeight)];
+    Lable1.text = @"原密码";
+    Lable1.backgroundColor = [UIColor clearColor];
+    Lable1.textColor = [BTColor getColor:@"797978"];;
+    Lable1.font = [UIFont boldSystemFontOfSize:17];
+    [imageView2 addSubview:Lable1];
+    
+    
+    self.oldPassordTextField = [[UITextField alloc] initWithFrame:CGRectMake(Lable1.frame.origin.x + Lable1.frame.size.width,0, 320 - _oldPassordTextField.frame.origin.x, kHeight)];
     _oldPassordTextField .font = [UIFont systemFontOfSize:14.0];
     _oldPassordTextField.textColor = [BTColor getColor:@"C0BFBE"];
     _oldPassordTextField.placeholder = @" 6~16位数字或字母,区分大小写";
@@ -68,26 +73,29 @@
     //_userTf.text = [dic objectForKey:USER_NAME];
     _oldPassordTextField.returnKeyType = UIReturnKeyDone;
     [_oldPassordTextField addPreviousNextDoneOnKeyboardWithTarget:self previousAction:@selector(previousClicked:) nextAction:@selector(nextClicked:) doneAction:@selector(doneClicked:)];
-
+    //让这个输入框成为第一响应者
+    [_oldPassordTextField becomeFirstResponder];
     [imageView2 addSubview:_oldPassordTextField];
     
     
-    UILabel *Lable2 = [[UILabel alloc] initWithFrame:CGRectMake(kLeft, imageView2.frame.origin.y + imageView2.frame.size.height + 10, kWidth, kHeight)];
-    Lable2.text = @" 新密码";
-    Lable2.backgroundColor = [UIColor clearColor];
-    Lable2.textColor = [BTColor getColor:@"797978"];
-    Lable2.font = [UIFont boldSystemFontOfSize:17];
-    [self.view addSubview:Lable2];
-   
     
     
-    UIImageView *imageView3 = [[UIImageView alloc] initWithFrame:CGRectMake(kLeft,Lable2.frame.origin.y +Lable2.frame.size.height + 10, 306.5, 46)];
-    imageView3.image = [UIImage imageNamed:@"zhuceshur.png"];
+    
+    UIImageView *imageView3 = [[UIImageView alloc] initWithFrame:CGRectMake(kLeft, imageView2.frame.origin.y + imageView2.frame.size.height , kWidth, kHeight)];
+    imageView3.image = [UIImage imageNamed:@"settingcell_bg.png"];
     imageView3.userInteractionEnabled = YES;
     [self.view addSubview:imageView3];
     
+    UILabel *Lable2 = [[UILabel alloc] initWithFrame:CGRectMake(kLeft + 10 , 0, kTitleLabelWidth, kHeight)];
+    Lable2.text = @"新密码";
+    Lable2.backgroundColor = [UIColor clearColor];
+    Lable2.textColor = [BTColor getColor:@"797978"];
+    Lable2.font = [UIFont boldSystemFontOfSize:17];
+    [imageView3 addSubview:Lable2];
     
-    self.passordTextField = [[UITextField alloc] initWithFrame:CGRectMake(8,0, 306.5-8, 46)];
+    
+    
+    self.passordTextField = [[UITextField alloc] initWithFrame:CGRectMake(Lable2.frame.origin.x + Lable2.frame.size.width,0, 320 - _oldPassordTextField.frame.origin.x, kHeight)];
     _passordTextField.font = [UIFont systemFontOfSize:14.0];
     _passordTextField.textColor = [BTColor getColor:@"C0BFBE"];
     _passordTextField.placeholder = @" 6~16位数字或字母,区分大小写";
@@ -97,25 +105,26 @@
     [_passordTextField setSecureTextEntry:YES];
     _passordTextField.returnKeyType = UIReturnKeyDone;
     [_passordTextField addPreviousNextDoneOnKeyboardWithTarget:self previousAction:@selector(previousClicked:) nextAction:@selector(nextClicked:) doneAction:@selector(doneClicked:)];
-
     [imageView3 addSubview:_passordTextField];
     
     
     
-    UILabel *Lable3 = [[UILabel alloc] initWithFrame:CGRectMake(6.5, imageView3.frame.origin.y+imageView3.frame.size.height+9, 150, 17)];
-    Lable3.text = @" 再次输入密码";
+    
+    UIImageView *imageView4 = [[UIImageView alloc] initWithFrame:CGRectMake(kLeft, imageView3.frame.origin.y + imageView3.frame.size.height, kWidth, kHeight)];
+    imageView4.image = [UIImage imageNamed:@"settingcell_bg"];
+    imageView4.userInteractionEnabled = YES;
+    [self.view addSubview:imageView4];
+    
+    UILabel *Lable3 = [[UILabel alloc] initWithFrame:CGRectMake(kLeft + 10 , 0, kTitleLabelWidth, kHeight)];
+    Lable3.text = @"确认密码";
     Lable3.backgroundColor = [UIColor clearColor];
     Lable3.textColor = [BTColor getColor:@"797978"];
     Lable3.font = [UIFont boldSystemFontOfSize:17];
-    [self.view addSubview:Lable3];
+    [imageView4 addSubview:Lable3];
     
-    UIImageView *imageView4 = [[UIImageView alloc] initWithFrame:CGRectMake(6.5,imageView3.frame.origin.y+imageView3.frame.size.height+33, 306.5, 46)];
-    imageView4.image = [UIImage imageNamed:@"zhuceshur.png"];
-    imageView4.userInteractionEnabled = YES;
-    [self.view addSubview:imageView4];
-
     
-    self.confirmPassordTextField = [[UITextField alloc] initWithFrame:CGRectMake(8,0, 306.5-8, 46)];
+    
+    self.confirmPassordTextField = [[UITextField alloc] initWithFrame:CGRectMake(Lable3.frame.origin.x + Lable3.frame.size.width,0, 320 - _oldPassordTextField.frame.origin.x, kHeight)];
     _confirmPassordTextField.font = [UIFont systemFontOfSize:14.0];
     _confirmPassordTextField.textColor = [BTColor getColor:@"C0BFBE"];
     _confirmPassordTextField.placeholder = @" 6~16位数字或字母,区分大小写";
@@ -127,6 +136,7 @@
     _confirmPassordTextField.returnKeyType = UIReturnKeyDone;
     [_confirmPassordTextField addPreviousNextDoneOnKeyboardWithTarget:self previousAction:@selector(previousClicked:) nextAction:@selector(nextClicked:) doneAction:@selector(doneClicked:)];
     [imageView4 addSubview:_confirmPassordTextField];
+    
 
 
 }

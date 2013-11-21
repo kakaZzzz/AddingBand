@@ -10,11 +10,8 @@
 #import "BTBandCentral.h"
 @class BTSyncTwoViewController;
 @class BTPastLinkViewController;
-@interface BTSyncccViewController : UIViewController<UITableViewDataSource,UITableViewDelegate>
-
-
-
-@property(nonatomic,strong)UITableView *tableView;
+@class DDIndicator;
+@interface BTSyncccViewController : UIViewController<UIAlertViewDelegate,UITableViewDataSource,UITableViewDelegate>
 //存放外设备
 @property (strong, nonatomic) NSMutableArray *peripheralArray;
 //全局变量
@@ -22,7 +19,7 @@
 //中央设备 即您的iPhone
 @property(strong, nonatomic) BTBandCentral* bc;
 //正在连接指示条
-@property(strong, nonatomic) UIActivityIndicatorView * indicator;
+//@property(strong, nonatomic) UIActivityIndicatorView * indicator;
 //断开操作标示符
 @property(assign, nonatomic) BOOL isBreak;
 //上次同步时间
@@ -34,4 +31,17 @@
 
 @property(nonatomic,assign)int selectedRow;//选择的设备行数
 @property(nonatomic,strong)NSManagedObjectContext *context;
+
+@property(nonatomic,strong)DDIndicator *indicator;//加载指示图
+@property(nonatomic,strong)UITableView *tableView;//
+@property(nonatomic,strong)UIScrollView *aScrollView;//背景视图要是一个可以滚动的视图
+
+
+//提示语句
+@property(nonatomic,strong)UILabel *label1;//
+@property(nonatomic,strong)UILabel *label2;//
+@property(nonatomic,strong)UILabel *label3;//
+//可连接设备label
+@property(nonatomic,strong)UILabel *labelSection;//
+
 @end

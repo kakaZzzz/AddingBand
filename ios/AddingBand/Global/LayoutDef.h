@@ -65,6 +65,7 @@
 
 //系统所用到的颜色
 #define kBarColor @"EE4966"
-
+#define titleLabelColor @"333333"
+#define contentLabelColor @"999999"
 //
 #endif
