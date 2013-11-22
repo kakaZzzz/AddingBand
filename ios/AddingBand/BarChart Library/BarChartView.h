@@ -24,7 +24,7 @@
 //
 
 #define MAX_BAR_WIDTH 20.0f//柱子宽度
-#define STEP_AXIS_Y 20.0f
+#define STEP_AXIS_Y 5.0f
 #define STROKE_AXIS_Y_SCALE 85
 #define FONT_SIZE 12.0f
 #define PLOT_PADDING_TOP 100.0f

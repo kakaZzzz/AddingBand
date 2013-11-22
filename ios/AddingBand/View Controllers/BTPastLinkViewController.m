@@ -59,6 +59,7 @@ static BTPastLinkViewController *pastLinkVC = nil;
     self.view.backgroundColor = [UIColor whiteColor];
     self.refreshButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     [_refreshButton setTitle:@"重新连接" forState:UIControlStateNormal];
+    [_refreshButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     if (iPhone5) {
         _refreshButton.frame = CGRectMake((320 - 200)/2, self.view.frame.size.height - 200, 200, 50);
 
@@ -195,7 +196,6 @@ static BTPastLinkViewController *pastLinkVC = nil;
     NSLog(@"尝试连接");
     
     [self.bc restartScan];
-    [NSThread sleepForTimeInterval:2.0];
     //弹出提醒框
     UIAlertView *bLart = [[UIAlertView alloc] initWithTitle:@"无法连接设备" message:@"请删除此设备绑定，以便我们重新为你搜索" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
     bLart.tag = 101;

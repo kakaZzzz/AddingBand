@@ -36,18 +36,20 @@
         self.g = [BTGlobals sharedGlobals];
         self.bc = [BTBandCentral sharedBandCentral];
         
+        //连接超时的block回调
         __weak BTSyncccViewController *syncVC = self;
         self.bc.timeoutBlock = ^(void){
             
-            UIAlertView *timeoutAlart = [[UIAlertView alloc] initWithTitle:@"连接超时" message:@"妈妈，请删除此设备，我们将为您重新扫描" delegate:syncVC cancelButtonTitle:@"好的" otherButtonTitles:nil, nil];
-            timeoutAlart.tag = 102;
-            [timeoutAlart show];
+//            UIAlertView *timeoutAlart = [[UIAlertView alloc] initWithTitle:@"连接超时" message:@"妈妈，请删除此设备，我们将为您重新扫描" delegate:syncVC cancelButtonTitle:@"好的" otherButtonTitles:nil, nil];
+//            timeoutAlart.tag = 102;
+//            [timeoutAlart show];
             
         };
         
         //监听设备变化
         [self.g addObserver:self forKeyPath:@"bleListCount" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:NULL];
         
+        //菊花
         self.indicator = [[DDIndicator alloc] initWithFrame:CGRectMake(120, 150, 60, 60)];
         [self.view addSubview:_indicator];
         _indicator.hidden = YES;
@@ -181,7 +183,7 @@
     NSString *str = [BTGetData getBLEuseTime:k];//得到外围设备使用时间
     self.syncTwoVC.useTimeLabel.text = [NSString stringWithFormat:@"%@",str];
     self.pastVC.useTimeLabel.text = [NSString stringWithFormat:@"%@",str];
-    [self.tableView reloadData];
+ //   [self.tableView reloadData];
     
 }
 //监控参数，更新显示  当连接  断开的时候也会调用此方法
@@ -203,7 +205,7 @@
         }
         if (self.g.bleListCount > 0) {
             
-            //   [self.indicator stopAnimating];
+            [self.indicator stopAnimating];
             //reloaddata的条件还得加以判断
             [self.tableView reloadData];
         }
@@ -275,12 +277,12 @@
             //如果是正在连接的设备就断开连接
             if (bp.isConnected) {
                 [self.bc togglePeripheralByIndex:i];
-                // [self.indicator startAnimating];//加载动画
+                //
                 _syncButton.hidden = YES;
                 //[self.navigationItem.rightBarButtonItem setEnabled:NO];
                 [self.syncTwoVC.view removeFromSuperview];
                 [self.pastVC.view removeFromSuperview];
-                
+                [self.indicator startAnimating];//加载动画
                 //设备总数减少
                 //                self.g.bleListCount = [self.bc.allPeripherals count];
                 //
@@ -333,6 +335,9 @@
                 [self.pastVC.view removeFromSuperview];
                 _syncButton.hidden = YES;
                 [[NSNotificationCenter defaultCenter]postNotificationName:@"reloadData" object:nil];
+                //菊花开始做动画
+                [self.indicator startAnimating];
+
                 // [self.bc scan];
                 
                 
@@ -615,6 +620,10 @@
 #pragma mark - tabelview delegate
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    
+    BTBluetoothFindCell *findCell = (BTBluetoothFindCell *)[self tableView:tableView cellForRowAtIndexPath:indexPath];
+    findCell.backgroundColor = [UIColor grayColor];
+    findCell.contentView.backgroundColor =  [UIColor blueColor];
     //往coredata里面存放选择的设备行数
     self.context =[BTGetData getAppContex];
     NSArray *data = [BTGetData getFromCoreDataWithPredicate:nil entityName:@"BTUserData" sortKey:nil];

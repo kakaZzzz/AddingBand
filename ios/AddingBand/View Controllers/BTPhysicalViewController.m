@@ -63,6 +63,14 @@
 #pragma mark - add circle progress
 - (void)addCircleProgress
 {
+    UILabel *label1 = [[UILabel alloc] initWithFrame:CGRectMake(10, 20, 120, 50)];
+    label1.text = @"妈妈运动量:";
+    label1.textColor =[UIColor blueColor];
+    [self.aScrollView addSubview:label1];
+
+    
+    
+    
     //set backcolor & progresscolor
   //  UIColor *progressColor = [UIColor colorWithRed:255.0/255.0 green:255.0/255.0 blue:255.0/255.0 alpha:1.0];
     UIColor *progressColor = [UIColor yellowColor];
@@ -124,7 +132,10 @@
 //    _realStep.textAlignment =  NSTextAlignmentCenter;
 //    [self.view addSubview:_realStep];
     
-    
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(10, 230, 100, 50)];
+    label.text = @"宝宝胎动：";
+    label.textColor =[UIColor blueColor];
+    [self.aScrollView addSubview:label];
 }
 
 #pragma mark - loadBarChart  加载柱形图
@@ -133,7 +144,7 @@
     //横坐标元素
     /*   在此传入横坐标名称  柱子表示的数值  柱子颜色  以及label中字体颜色 */
     
-    _barChart = [[BarChartView alloc] initWithFrame:CGRectMake(60, 250, 200, 100)];//柱形图背景大小
+    _barChart = [[BarChartView alloc] initWithFrame:CGRectMake(60, 280, 250, 100)];//柱形图背景大小
     _barChart.backgroundColor = [UIColor clearColor];
     [self.aScrollView addSubview:_barChart];
     
@@ -158,7 +169,7 @@
     //Generate the bar chart using the formatted data
     [_barChart setDataWithArray:array
                        showAxis:DisplayBothAxes
-                      withColor:[UIColor clearColor]//指示坐标颜色
+                      withColor:[UIColor whiteColor]//指示坐标颜色
         shouldPlotVerticalLines:YES];
 }
 #pragma mark - 读取最近一周每天的运动量 并配置绘制柱形图所需参数
@@ -195,6 +206,7 @@
         [arrayDate addObject:[NSString stringWithFormat:@"%@分",one.minute]];//测试用小时 实际上线时 用天
         
     }
+    
     
     //最近七天的一个范围
     NSArray *resultArray;
@@ -237,24 +249,24 @@
 #pragma mark - 更新圆形进度条
 
 #pragma mark - 视图将要出现的时候更新进度条
-- (void)viewDidAppear:(BOOL)animated
+- (void)viewWillAppear:(BOOL)animated
 
 {
-    [super viewDidAppear:animated];
+    [super viewWillAppear:animated];
     NSLog(@"视图出现出现出现.....");
     //在视图出现的时候加载进度条 然后再视图消失的时候移除进度条  这样可以保证进度条进度动态的出现
     [self addCircleProgress];
     int i = [self getDailyStep];
-    [self updateUIWithStepDaily:i totalStep:10000];//100为每日目标
+    [self updateUIWithStepDaily:i totalStep:2000];//100为每日目标
     if (i == 0) {
     self.gradeLabel.text = [NSString stringWithFormat:@"今日还未开始运动,妈妈要努力啊"];
     }
 
-    if (i < 10000 && i > 0) {
+    if (i < 2000 && i > 0) {
          self.gradeLabel.text = [NSString stringWithFormat:@"今日已完成%d步,继续努力啊",i];
     }
     
-    if (i >= 10000) {
+    if (i >= 2000) {
         self.gradeLabel.text = [NSString stringWithFormat:@"今日圆满完成目标，妈妈真棒"];
     }
    
