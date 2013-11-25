@@ -333,6 +333,8 @@ uint8 slipWaitFor = 0, slipFrom = 0, lockSlip = 0;
 
 uint8 blinkPIO = 0, blinkMinutes = 13;
 
+uint8 onTheKey = 0;
+
 /*********************************************************************
  * LOCAL FUNCTIONS
  */
@@ -795,6 +797,17 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
         return (events ^ CLOSE_ALL_EVT);
     }
 
+    if ( events & LONG_PRESS_EVT )
+    {
+
+        if (onTheKey)
+        {
+            babyMove();
+        }
+
+        return (events ^ LONG_PRESS_EVT);
+    }
+
 #if defined ( PLUS_BROADCASTER )
     if ( events & SBP_ADV_IN_CONNECTION_EVT )
     {
@@ -888,6 +901,16 @@ static void simpleBLEPeripheral_ProcessOSALMsg( osal_event_hdr_t *pMsg )
     case KEY_CHANGE:
 
     {
+      
+      onTheKey = !onTheKey;
+
+      if (onTheKey)
+      {
+          osal_start_timerEx( simpleBLEPeripheral_TaskID, LONG_PRESS_EVT , 2000 );
+      }else{
+        osal_stop_timerEx( simpleBLEPeripheral_TaskID, LONG_PRESS_EVT );
+      }
+
       if (lockSlip)
       {
           break;
@@ -1517,12 +1540,12 @@ static void accLoop(void)
                     // add one step
                     pace_count = pace_count + 1;
 
-                    LED0_PIO = OPEN_PIO;
-                    LED3_PIO = OPEN_PIO;
-                    LED6_PIO = OPEN_PIO;
-                    LED9_PIO = OPEN_PIO;
+                    // LED0_PIO = OPEN_PIO;
+                    // LED3_PIO = OPEN_PIO;
+                    // LED6_PIO = OPEN_PIO;
+                    // LED9_PIO = OPEN_PIO;
 
-                    osal_start_timerEx( simpleBLEPeripheral_TaskID, CLOSE_ALL_EVT, 300 );
+                    // osal_start_timerEx( simpleBLEPeripheral_TaskID, CLOSE_ALL_EVT, 300 );
 
                     // P0_0 = 0;
                     // P0_1 = 0;
