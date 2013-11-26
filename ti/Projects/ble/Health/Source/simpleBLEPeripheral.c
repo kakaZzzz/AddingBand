@@ -361,6 +361,8 @@ static void babyMove(void);
 static void toggleLEDWithTime(uint8 num, uint8 io);
 static void blinkLED(void);
 
+static void toggleAdvert(uint8 status);
+
 #if (defined HAL_LCD) && (HAL_LCD == TRUE)
 static char *bdAddr2Str ( uint8 *pAddr );
 #endif // (defined HAL_LCD) && (HAL_LCD == TRUE)
@@ -640,6 +642,8 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
 
         // Start Bond Manager
         VOID GAPBondMgr_Register( &simpleBLEPeripheral_BondMgrCBs );
+
+        toggleAdvert(TRUE);
 
         // Set timer for first periodic event
         osal_start_timerEx( simpleBLEPeripheral_TaskID, SBP_PERIODIC_EVT, SBP_PERIODIC_EVT_PERIOD );
@@ -1428,6 +1432,12 @@ static void babyMove(void){
     osal_set_event( simpleBLEPeripheral_TaskID, LED_CYCLE_EVT );
 
     shock();
+}
+
+static void toggleAdvert(uint8 status){
+
+    uint8 turnOnAdv = status;
+    GAPRole_SetParameter(GAPROLE_ADVERT_ENABLED, sizeof( uint8 ), &turnOnAdv);
 }
 
 /*********************************************************************
