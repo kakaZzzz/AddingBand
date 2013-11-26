@@ -902,11 +902,15 @@ static void simpleBLEPeripheral_ProcessOSALMsg( osal_event_hdr_t *pMsg )
 
     {
       
-      onTheKey = !onTheKey;
+      // press > 0
+      // release == 0
+      uint8 keys = ((keyChange_t *)pMsg)->keys;
+
+      onTheKey = keys ? 1 : 0;
 
       if (onTheKey)
       {
-          osal_start_timerEx( simpleBLEPeripheral_TaskID, LONG_PRESS_EVT , 2000 );
+          osal_start_timerEx( simpleBLEPeripheral_TaskID, LONG_PRESS_EVT , 1000 );
       }else{
         osal_stop_timerEx( simpleBLEPeripheral_TaskID, LONG_PRESS_EVT );
       }
@@ -915,8 +919,6 @@ static void simpleBLEPeripheral_ProcessOSALMsg( osal_event_hdr_t *pMsg )
       {
           break;
       }
-
-      uint8 keys = ((keyChange_t *)pMsg)->keys;
 
       // 1
       if ( keys & HAL_KEY_SW_1 )
