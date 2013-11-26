@@ -57,10 +57,6 @@
  * CONSTANTS
  */
 
-#define B(A)    ( (((bool)(A&0X10000000UL))<<7) | (((bool)(A&0X01000000UL))<<6) | (((bool)(A&0X00100000UL))<<5) \
-                | (((bool)(A&0X00010000UL))<<4) | (((bool)(A&0X00001000UL))<<3) | (((bool)(A&0X00000100UL))<<2) \
-                | (((bool)(A&0X00000010UL))<<1) | (((bool)(A&0X00000001UL))<<0) )
-
 #define HI_UINT32(x)                          (((x) >> 16) & 0xffff)
 #define LO_UINT32(x)                          ((x) & 0xffff)
 
@@ -1302,6 +1298,7 @@ static void closeAllPIO(void){
 
     P0 = 0xFF;
     P1 = 0xC1;
+    // P1 = 0xC3;
     P2 = 0x07;
 }
 
@@ -1483,7 +1480,7 @@ static void accInit( void )
     HalI2CWrite(2, pBuf);
 
     pBuf[0] = CTRL_REG1;
-    pBuf[1] = (ASLP_RATE_50HZ + DATA_RATE_50HZ) | ACTIVE_MASK;
+    pBuf[1] = (ASLP_RATE_12_5HZ + DATA_RATE_12_5HZ) | ACTIVE_MASK;
     HalI2CWrite(2, pBuf);
 
 }
@@ -1500,13 +1497,13 @@ static void accLoop(void)
     Y_out = Y_out >> 6;
     Z_out = Z_out >> 6;
 
-    // uint8 d[8];
+    uint8 d[8];
 
-    // osal_memcpy(&d[0], &X_out, sizeof(int16));
-    // osal_memcpy(&d[2], &Y_out, sizeof(int16));
-    // osal_memcpy(&d[4], &Z_out, sizeof(int16));
+    osal_memcpy(&d[0], &X_out, sizeof(int16));
+    osal_memcpy(&d[2], &Y_out, sizeof(int16));
+    osal_memcpy(&d[4], &Z_out, sizeof(int16));
 
-    // SimpleProfile_SetParameter( HEALTH_SYNC, sizeof ( d ), d );
+    SimpleProfile_SetParameter( HEALTH_SYNC, sizeof ( d ), d );
 
 
     ACC_CUR = X_out * X_out + Y_out * Y_out + Z_out * Z_out - 4096;
