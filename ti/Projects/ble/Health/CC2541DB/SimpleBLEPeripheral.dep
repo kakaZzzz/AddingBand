@@ -156,7 +156,7 @@
       <file>$PROJ_DIR$\..\..\common\cc2540\ti_51ew_cc2540b.xcl</file>
       <file>$PROJ_DIR$\CC2541\Obj\hal_i2c.pbi</file>
       <file>$PROJ_DIR$\CC2541\Obj\gatt_uuid.r51</file>
-      <file>$PROJ_DIR$\..\..\..\..\Components\osal\include\osal_cbtimer.h</file>
+      <file>$PROJ_DIR$\..\..\..\..\Components\osal\include\osal_cbTimer.h</file>
       <file>$PROJ_DIR$\CC2541\Obj\hal_crc.pbi</file>
       <file>$PROJ_DIR$\CC2541\Obj\debug.r51</file>
       <file>$PROJ_DIR$\CC2541\Exe\SimpleBLEPeripheral.hex</file>
@@ -479,10 +479,6 @@
         </tool>
       </outputs>
       <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 173 80 15 74 161 166 75 129 105 171 90 3 19 72 119 43 45 123 118 116 131 183 37 121 134 132 137 136 139 44 49 51 185 53 55 48 133 141 36 40</file>
-        </tool>
         <tool>
           <name>ICC8051</name>
           <file> 0 1 173 80 15 74 161 166 75 129 105 171 90 3 19 72 119 43 45 123 118 116 131 183 37 121 134 132 137 136 139 44 49 51 185 53 55 48 133 141 36 40</file>
@@ -1210,7 +1206,7 @@
       <file>$PROJ_DIR$\..\..\..\..\Components\ble\controller\include\ll.h</file>
       <file>$PROJ_DIR$\..\..\common\npi\npi_np\npi.h</file>
       <file>$PROJ_DIR$\..\..\..\..\Components\ble\include\sm.h</file>
-      <file>$PROJ_DIR$\..\..\..\..\Components\osal\include\osal_cbtimer.h</file>
+      <file>$PROJ_DIR$\..\..\..\..\Components\osal\include\osal_cbTimer.h</file>
       <file>$PROJ_DIR$\..\..\..\..\Components\osal\include\osal_snv.h</file>
       <file>$PROJ_DIR$\..\..\..\..\Components\ble\controller\include\ll_sleep.h</file>
       <file>$PROJ_DIR$\..\..\..\..\Components\osal\include\OSAL.h</file>
