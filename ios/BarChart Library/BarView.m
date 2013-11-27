@@ -77,8 +77,7 @@
 		}
 	}	
 }
-#pragma mark - 点击柱形图
-//点击柱形图触发事件
+
 //- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
 //	if (popTipView != nil)  {
 //		[popTipView dismissAnimated:true];
@@ -86,10 +85,10 @@
 //		return;
 //	}
 //	
-//	NSString *contentMessage = [NSString stringWithFormat:@"%.1f", barValue];
+//	NSString *contentMessage = [NSString stringWithFormat:@"%d", (int)barValue];
 //	popTipView = [[CMPopTipView alloc] initWithMessage:contentMessage];
 //	popTipView.backgroundColor = buttonColor;
-//	popTipView.textColor = [UIColor clearColor];
+//	popTipView.textColor = [UIColor whiteColor];
 //	popTipView.animation = arc4random() % 2;
 //	[popTipView presentPointingAtView:self inView:owner animated:YES];
 //	
@@ -130,8 +129,7 @@
         CGContextAddLineToPoint(context, CGRectGetMinX(currentBounds) + cornerRadius, CGRectGetMinY(currentBounds));
         CGContextClosePath(context);
         CGContextClip(context);
-    }
-    else if (barViewShape == BarShapeRounded) {
+    } else if (barViewShape == BarShapeRounded) {
         //Draw bars with rounded edges
         CGContextSetFillColorWithColor(context, [buttonColor CGColor]);
         CGContextBeginPath(context);

@@ -10,6 +10,7 @@
 @class CircularProgressView;
 @class PCLineChartView;
 @class BarChartView;
+@class PICircularProgressView;
 @interface BTPhysicalViewController : UIViewController<UIScrollViewDelegate>
 @property (strong, nonatomic) CircularProgressView *circularGrade;//总分数进度条
 @property (strong, nonatomic) CircularProgressView *circularSport;//运动量进度条
@@ -29,5 +30,12 @@
 //柱形图下横坐标颜色
 @property(strong, nonatomic) NSMutableArray *barLabelColors;
 
-
+//视图布局
+@property(strong, nonatomic) UIImageView * aImageView;//粉红色背景图片
+@property(strong, nonatomic) UIImageView * useTimeImage;//上次同步时间背景图片
+@property(strong, nonatomic) UILabel * useTimeLabel;//上次同步时间背景图片
+//分数圆圈
+@property (strong, nonatomic)PICircularProgressView *progressView;
+@property (strong, nonatomic)NSTimer *timer;
+@property(nonatomic,assign)float progress;
 @end

@@ -19,12 +19,14 @@
 #import "BTTextfieldCell.h"
 #import "BTGetData.h"
 #import "BTUserData.h"
-
+#import "BTAccountCell.h"
 static int selected = 0;//选择行数
 static NSString *birthday = nil;//生日
 static NSString *duedate = nil;//预产期
 static NSString *pregnancy = nil;//怀孕症状
 @interface BTMineViewController ()
+//@property(nonatomic,strong)UIScrollView *aScrollView;
+//@property(nonatomic,strong)UITableView *tableView;
 
 @end
 
@@ -41,7 +43,9 @@ static NSString *pregnancy = nil;//怀孕症状
         self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
         self.tableView.separatorColor = [UIColor clearColor];
         self.tableView.showsVerticalScrollIndicator = NO;
-        //
+        self.tableView.dataSource = self;
+        self.tableView.delegate = self;
+
         birthday = @"2013.12.25";
         duedate = @"2013.12.25";
         pregnancy = @"高血压";
@@ -76,10 +80,19 @@ static NSString *pregnancy = nil;//怀孕症状
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    //  self.view.backgroundColor = [UIColor blueColor];
-    NSLog(@"==================%@",NSStringFromCGRect(self.view.frame));
+ 
+    //加载scrollview
+//    self.aScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
+//    _aScrollView.contentSize = CGSizeMake(self.view.frame.size.width, self.view.frame.size.height + 100);
+//    _aScrollView.backgroundColor = [UIColor whiteColor];
+//    _aScrollView.showsVerticalScrollIndicator = NO;
+//    [self.view addSubview:_aScrollView];
+    //加载tableview
+//    self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width,self.view.frame.size.height)];
+//     [self.view addSubview:_tableView];
 	// Do any additional setup after loading the view.
-}
+    
+  }
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -93,7 +106,7 @@ static NSString *pregnancy = nil;//怀孕症状
     
     //刚开始没有连接上设备的时候 每个设备下面只有一行  显示“立即连接” ;当连接上的时候 设备下面变成两行 显示“上次同步时间” “立即同步”
     //当同步完的时候 怎么做？？？
-    return 12;
+    return 13;
 }
 
 ////分区头 所要显示的文字
@@ -117,10 +130,16 @@ static NSString *pregnancy = nil;//怀孕症状
 //}
 //
 
-////动态改变每一行的高度
-//- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-//
-//}
+//动态改变每一行的高度
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+
+    if (indexPath.row == 12)
+    {
+        return 130;
+    }
+    else
+        return 44;
+}
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -163,6 +182,22 @@ static NSString *pregnancy = nil;//怀孕症状
         textCell.contenTextField.delegate = self;
         return textCell;
     }
+    
+    else if(indexPath.row ==  12)
+    {
+        BTAccountCell *cellAccount = [[BTAccountCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
+        // cellAccount.textLabel.text = @"你好您好";
+        cellAccount.selectionStyle = UITableViewCellSelectionStyleNone;//选中无效果
+        cellAccount.chooseAccountBlock = ^(NSString *account){
+            
+            //获得账号  然后将账号发给服务器 验证 登录
+            
+            NSLog(@"选择的账号是%@",account);
+            
+        };
+        return cellAccount;
+    }
+
     //带Label的Cell
     else{
         if (cell == nil) {

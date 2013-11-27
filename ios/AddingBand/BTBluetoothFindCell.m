@@ -41,25 +41,12 @@
     return self;
 }
 
-//- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier tatget:(id)target
-//{
-//    self =  [super initWithStyle:style reuseIdentifier:reuseIdentifier];
-//    if (self) {
-////        self.toConnect =[UIButton buttonWithType:UIButtonTypeRoundedRect];
-////        _toConnect.frame = CGRectMake(kLastSyncTimeX, kLastSyncTimeY, kLastSyncTimeWidth, kLastSyncTimeHeight);
-////        [_toConnect setTitle:@"立即连接" forState:UIControlStateNormal];
-////        [_toConnect addTarget:target action:@selector(toConnect:event:) forControlEvents:UIControlEventTouchUpInside];
-////        [self addSubview:_toConnect];
-//        
-//    }
-//    return self;
-//    
-//}
 //配置cell内容
 - (void)createCustomCell
 {
     // self.contentView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"settingcell_bg.png"]];
     
+    //title
     self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(titleLabelX,titleLabelY, titleLabelWidth, titleLabelHeight)];
     _titleLabel.font = [UIFont systemFontOfSize:16.0f];
     _titleLabel.textColor = [BTColor getColor:titleLabelColor];
@@ -68,26 +55,24 @@
     [self.contentView addSubview:_titleLabel];
     
     
-    
+    //分割线
     self.lineImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"sep_line.png"]];
     _lineImage.frame = CGRectMake(lineImageX, lineImageY, lineImageWidth, lineImageHeight);
     [self.contentView addSubview:_lineImage];
-    
+    //指示图标
     self.indicateImage = [[UIImageView alloc] initWithFrame:CGRectMake(indicateX, indicateY, indicateWidth, indicateHeight)];
     _indicateImage.image = [UIImage imageNamed:@"indicate.png"];
     [self.contentView addSubview:_indicateImage];
     
-     
-    
 }
 
 /*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect
-{
-    // Drawing code
-}
-*/
+ // Only override drawRect: if you perform custom drawing.
+ // An empty implementation adversely affects performance during animation.
+ - (void)drawRect:(CGRect)rect
+ {
+ // Drawing code
+ }
+ */
 
 @end

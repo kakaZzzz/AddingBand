@@ -24,12 +24,8 @@
 //
 
 #import "BarChartView.h"
-//#define CHANGE_BARX 51.0f  //自己写得
-//#define CHANGE_BARY 45.0f  //自己写得
 
-#define CHANGE_BARX (-5.0f)  //自己写得
-#define CHANGE_BARY (-110.0f)  //自己写得
-@interface BarChartView()
+@interface BarChartView() 
 - (void)codeSetUp;
 - (void)interfaceSetUp;
 - (void)setUpChart;
@@ -68,7 +64,6 @@
 }
 
 - (void)interfaceSetUp {
-    //蛋疼的柱状图样式
 	plotChart = [[PlotChartView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, self.width, self.height - fontSize)];
 	plotChart.stepValueAxisY = STEP_AXIS_Y;
 	plotChart.fontSize = FONT_SIZE;
@@ -98,11 +93,13 @@
 	plotChart.paddingTop = PLOT_PADDING_TOP;
 	plotChart.paddingBotom = PLOT_PADDING_BOTTOM;
 	plotChart.stepWidthAxisY = self.width/STROKE_AXIS_Y_SCALE;
+ //   plotChart.backgroundColor = [UIColor redColor];
+    NSLog(@"坐标坐标坐标坐标坐标坐标坐标%@",NSStringFromCGRect(plotChart.frame));
 	[self addSubview:plotChart];
 	
 	plotView = [[UIView alloc] initWithFrame:CGRectZero];
 	//plotView.backgroundColor = [UIColor colorWithRed:220/255 green:220/255 blue:220/255 alpha:0.5];
-	plotView.backgroundColor = [UIColor clearColor];//背景颜色
+	plotView.backgroundColor = [UIColor whiteColor];//图表背景颜色
 	plotView.clipsToBounds = true;
 	plotView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin;
 	[plotChart addSubview:plotView];
@@ -127,19 +124,20 @@
         bar.barViewShape = self.barViewShape;
         bar.barViewDisplayStyle = self.barViewDisplayStyle;
         bar.barViewShadow = self.barViewShadow;
-		bar.backgroundColor = [UIColor grayColor];
+		bar.backgroundColor = [UIColor clearColor];
 		bar.buttonColor = [barInfo objectForKey:@"color"];
 		[plotView addSubview:bar];
 		[barViews addObject:bar];
 		
 		if (showAxisX) {
 			BarLabel *barLabel = [[BarLabel alloc] initWithFrame:CGRectMake(roundf(plotView.left + _index*barFullWidth), plotChart.bottom - PLOT_PADDING_BOTTOM,roundf(barFullWidth), fontSize + PLOT_PADDING_BOTTOM)];
-       
 			barLabel.textColor = [barInfo objectForKey:@"labelColor"];
 			barLabel.text =  [barInfo objectForKey:@"label"];
 			barLabel.font = [UIFont systemFontOfSize:fontSize];
-			barLabel.textAlignment = UITextAlignmentCenter;
-			barLabel.clipsToBounds = false;
+           
+            barLabel.textAlignment = UITextAlignmentCenter;
+           
+            barLabel.clipsToBounds = false;
 			barLabel.backgroundColor = [UIColor clearColor];
 			[barLabels addObject:barLabel];
 			[self addSubview:barLabel];
@@ -194,7 +192,7 @@
 //		
 //		if (showAxisX) {
 //			BarLabel *barLabel = [barLabels objectAtIndex:index];
-//			barLabel.frame = CGRectMake(roundf(plotView.left + index*barFullWidth + CHANGE_BARX),
+//			barLabel.frame = CGRectMake(roundf(plotView.left + index*barFullWidth),
 //                                        plotChart.bottom - PLOT_PADDING_BOTTOM,
 //                                        barFullWidth, fontSize + PLOT_PADDING_BOTTOM);
 //            
@@ -203,13 +201,13 @@
 //		index++;
 //	}
 }
-//动态创建bar
+
 - (void)animateBars {
 	for (BarView *bar in barViews)  {
 		bar.bottom += bar.height;
 	}
 	
-	[UIView animateWithDuration:1.0 animations:^{
+	[UIView animateWithDuration:0.8 animations:^{
 		NSUInteger index = 0;
 		for (NSDictionary *barInfo in chartDataArray)  {
 			BarView *bar = [barViews objectAtIndex:index];
@@ -217,14 +215,6 @@
                                    plotView.height - roundf([[barInfo objectForKey:@"value"] floatValue]*barHeightRatio),
                                    barWidth,
                                    roundf([[barInfo objectForKey:@"value"] floatValue]*barHeightRatio));
-            
-            if (showAxisX) {
-                BarLabel *barLabel = [barLabels objectAtIndex:index];
-                barLabel.frame = CGRectMake(roundf(plotView.left + index*barFullWidth + CHANGE_BARX),
-                                            plotChart.bottom - PLOT_PADDING_BOTTOM,
-                                            barFullWidth, fontSize + PLOT_PADDING_BOTTOM);
-            }
-
 			index++;
 		}
 	}];
@@ -397,11 +387,7 @@
 	CGSize maxStringSize = [[NSString stringWithFormat:@"%i", (int)maxValue] sizeWithFont:[UIFont systemFontOfSize:FONT_SIZE]];
 	
     //Setup plot chart area
-	//plotChart.frame = CGRectMake(0.0f, 0.0f, self.width, self.height - fontSize);
-    
-    plotChart.frame = CGRectMake(CHANGE_BARX, CHANGE_BARY, 200,200);//调节柱形图大小
-    
-    
+	plotChart.frame = CGRectMake(0.0f, 0.0f, self.width, self.height - fontSize);
 	plotChart.fontSize = FONT_SIZE;
 	plotChart.stepCountAxisX = chartDataArray.count;
 	plotChart.stepWidthAxisY = self.width/STROKE_AXIS_Y_SCALE;

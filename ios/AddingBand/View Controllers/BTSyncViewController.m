@@ -402,7 +402,7 @@
     Boolean isConnected = bp.isConnected;
     
     //是否正在连接中
-    BOOL isConnecting = bp.isConnecting;
+  //  BOOL isConnecting = bp.isConnecting;
     //设备名称
     NSString* name = bp.name;
     
@@ -420,13 +420,11 @@
     static NSString *CellIdentifierFind = @"CellFind";
     static NSString *CellIdentifierConnect = @"CellConnect";
     static NSString *CellIdentifierNoFind = @"CellNoFind";
-    static NSString *CellSection = @"CellSecton";
     
     BTBluetoothFindCell *cellFind = [tableView dequeueReusableCellWithIdentifier:CellIdentifierFind];
     BTBluetoothConnectedCell *cellConnet = [tableView dequeueReusableCellWithIdentifier:CellIdentifierConnect];
     BTBluetoothLinkCell *cellNofind = [tableView dequeueReusableCellWithIdentifier:CellIdentifierNoFind];
-    BTSettingSectionCell *cellSection = [tableView dequeueReusableCellWithIdentifier:CellSection];
-    NSLog(@" %d  %d",isFinded,isConnected);
+      NSLog(@" %d  %d",isFinded,isConnected);
     NSLog(@"外围设备名称是 %@",name);
 //    if (indexPath.row == 0) {
 //        if (cellSection == nil) {

@@ -21,5 +21,5 @@
 @property (strong, readwrite) UIFont *font;
 
 + (PBFlatSettings *)sharedInstance;
-- (void)navigationBarApperance;
+//- (void)navigationBarApperance;
 @end

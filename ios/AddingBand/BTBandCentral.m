@@ -186,7 +186,7 @@
 #pragma mark - 连接peripheral后的回调
 -(void)centralManager:(CBCentralManager *)central didConnectPeripheral:(CBPeripheral *)peripheral{
     
-    NSLog(@"Connect Peripheral: %@", peripheral);
+    NSLog(@"Connect Peripheral11: %@", peripheral);
     
     //清除连接超时的timer
     if (_timeoutTimer) {
@@ -206,16 +206,20 @@
             [others addObject:bp.name];
         }
         
+        else{
+            // [_allPeripherals setObject:peripheral forKey:peripheral.name];//
+        }
     }
     
-    NSLog(@"%@", others);
+    NSLog(@"others::%@", others);
     
     for (NSString* deleteName in others) {
         [_allPeripherals removeObjectForKey:deleteName];
     }
     
+   
     BTBandPeripheral* find = [_allPeripherals objectForKey:peripheral.name];
-    
+    NSLog(@"发现的连接设备%@",find.name);
     //缓存中变更连接状态
     find.isConnecting = YES;//改了
     
@@ -240,6 +244,8 @@
         
         //记录设备绑定时间
         first.setupDate = [NSNumber numberWithInt:[[NSDate date] timeIntervalSince1970]];
+        
+        find.setupDate = [first.setupDate intValue];//时间
         
         //及时保存
         NSError* error;
@@ -912,6 +918,8 @@
     for (BTBandPeripheral* bp in enumeratorValue) {
         
         if ([model isEqual:[BTUtils getModel:bp.name]]) {
+            
+            NSLog(@"------%@",bp);
             
             return bp;
         }

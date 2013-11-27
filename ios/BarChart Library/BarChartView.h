@@ -24,11 +24,11 @@
 //
 
 #define MAX_BAR_WIDTH 20.0f//柱子宽度
-#define STEP_AXIS_Y 5.0f
+#define STEP_AXIS_Y 1.0f
 #define STROKE_AXIS_Y_SCALE 85
 #define FONT_SIZE 12.0f
-#define PLOT_PADDING_TOP 100.0f
-#define PLOT_PADDING_BOTTOM 10.0f
+#define PLOT_PADDING_TOP 10.0f//距上距离
+#define PLOT_PADDING_BOTTOM 10.0f//距下距离
 
 #import <UIKit/UIKit.h>
 #import "PlotChartView.h"

@@ -22,8 +22,6 @@
 #define lineImageWidth 320
 #define lineImageHeight 1
 
-#define titleLabelColor @"999999"
-
 @implementation BTSettingSectionCell
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier

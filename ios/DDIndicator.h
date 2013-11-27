@@ -10,7 +10,7 @@
 
 @interface DDIndicator : UIView
 
-
+@property(nonatomic,strong)UILabel *contentLabel;
 -(void) startAnimating;
 -(void) stopAnimating;
 

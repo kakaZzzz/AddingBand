@@ -14,6 +14,12 @@
 #import "PCLineChartView.h"
 #import "BTGetData.h"
 #import "BarChartView.h"
+#import "PICircularProgressView.h"
+
+#define kImageBgX 0
+#define kImageBgY 0
+#define kImageBgWidth 320
+#define kImageBgHeight 200
 @interface BTPhysicalViewController ()
 @property(nonatomic,strong)UIScrollView *aScrollView;
 
@@ -39,17 +45,19 @@
    
     [super viewDidLoad];
     //加载滚动视图
-    [self addSubViews];
+    [self addSubviews];
     
     //加载折线图
    // [self drawLineChartView];
     // Do any additional setup after loading the view.
 }
-- (void)addSubViews
+#pragma mark - 开始配置背景色
+- (void)addSubviews
 {
+    
     //添加滚动视图
     self.aScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
-     _aScrollView.delegate = self;
+    _aScrollView.delegate = self;
     _aScrollView.contentSize = CGSizeMake(self.view.frame.size.width, self.view.frame.size.height + 50);
     _aScrollView.showsVerticalScrollIndicator = NO;
     _aScrollView.backgroundColor = [UIColor whiteColor];
@@ -57,16 +65,87 @@
     
     //配置图片 传得参数为图片数量
     //[self addImageViewByNumber:5];
+
+    //背景粉红图
+    if (iPhone5) {
+        self.aImageView = [[UIImageView alloc] initWithFrame:CGRectMake(kImageBgX, kImageBgY, kImageBgWidth, kImageBgHeight)];
+    }
+    else
+    {
+        self.aImageView = [[UIImageView alloc] initWithFrame:CGRectMake(kImageBgX, kImageBgY, kImageBgWidth, kImageBgHeight)];
+    }
+    _aImageView.image = [UIImage imageNamed:@"red_bg.png"];
+    [_aScrollView addSubview:_aImageView];
     
+    //设备使用时间背景
+    
+    self.useTimeImage = [[UIImageView alloc] initWithFrame:CGRectMake(0,_aImageView.frame.size.height - 50, 320, 50)];
+    _useTimeImage.image = [UIImage imageNamed:@"uestime_bg.png"];
+    
+   // [_aImageView addSubview:_useTimeImage];
+    
+    
+    //使用时间标签
+    self.useTimeLabel = [[UILabel alloc] initWithFrame:CGRectMake(5, 0, 200, _useTimeImage.frame.size.height)];
+    _useTimeLabel.backgroundColor = [UIColor clearColor];
+    _useTimeLabel.text = @"使用时间:---";
+    _useTimeLabel.textColor = [UIColor whiteColor];
+   // [_useTimeImage addSubview:_useTimeLabel];
+
+}
+
+#pragma mark - 添加弧形的进度条
+- (void)addGradeCircular
+{
+    self.progressView = [[PICircularProgressView alloc] initWithFrame:CGRectMake((320 - 160)/2, 20, 160, 160)];
+    
+    //  self.progressView.progress = 0.8;
+    self.progressView.thicknessRatio =0.2;//圆圈宽度
+    self.progressView.showText = YES;//圆圈中间是否显示进度数字标签
+    // self.progressView.innerBackgroundColor = [UIColor blueColor];
+    self.progressView.textColor = [UIColor whiteColor];//字体颜色
+    self.progressView.outerBackgroundColor = [UIColor colorWithRed:255.0/255.0 green:153.0/255.0 blue:153.0/255.0 alpha:1.0];;//状态条背部颜色
+    
+    self.progressView.progressFillColor = [UIColor whiteColor];//状态条 里面填充色
+    
+    self.progressView.showShadow = NO;//背部圆圈是否有阴影
+    
+    //带阴影效果
+//    [self.progressView setProgressTopGradientColor:[UIColor colorWithRed:15.0/255.0 green:97.0/255.0 blue:189.0/255.0 alpha:1.0]];
+//    [self.progressView setProgressBottomGradientColor:[UIColor colorWithRed:114.0/255.0 green:174.0/255.0 blue:235.0/255.0 alpha:1.0]];
+    
+    [_aScrollView addSubview:_progressView];
+	// Do any additional setup after loading the view.
+    
+    //加入计时器 动态绘制出进度
+    _timer =  [NSTimer scheduledTimerWithTimeInterval:0.05 target:self selector:@selector(progressChange) userInfo:nil repeats:YES];
     
 }
+- (void)progressChange
+{
+
+    if (_progressView.progress >= _progress) {
+        NSLog(@"--------");
+        [_timer invalidate];
+        
+    }
+    else
+    {
+        _progressView.progress += 0.001;
+    }
+    
+}
+
+
+
 #pragma mark - add circle progress
 - (void)addCircleProgress
 {
+    //妈妈运动量标签
     UILabel *label1 = [[UILabel alloc] initWithFrame:CGRectMake(10, 20, 120, 50)];
     label1.text = @"妈妈运动量:";
     label1.textColor =[UIColor blueColor];
-    [self.aScrollView addSubview:label1];
+ //   [self.aScrollView addSubview:label1];
 
     
     
@@ -132,7 +211,7 @@
 //    _realStep.textAlignment =  NSTextAlignmentCenter;
 //    [self.view addSubview:_realStep];
     
-    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(10, 230, 100, 50)];
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(10, 200, 100, 50)];
     label.text = @"宝宝胎动：";
     label.textColor =[UIColor blueColor];
     [self.aScrollView addSubview:label];
@@ -144,7 +223,7 @@
     //横坐标元素
     /*   在此传入横坐标名称  柱子表示的数值  柱子颜色  以及label中字体颜色 */
     
-    _barChart = [[BarChartView alloc] initWithFrame:CGRectMake(60, 280, 250, 100)];//柱形图背景大小
+    _barChart = [[BarChartView alloc] initWithFrame:CGRectMake(30, 260, 250, 100)];//柱形图背景大小
     _barChart.backgroundColor = [UIColor clearColor];
     [self.aScrollView addSubview:_barChart];
     
@@ -169,7 +248,7 @@
     //Generate the bar chart using the formatted data
     [_barChart setDataWithArray:array
                        showAxis:DisplayBothAxes
-                      withColor:[UIColor whiteColor]//指示坐标颜色
+                      withColor:[UIColor blueColor]//指示坐标颜色 Y轴颜色
         shouldPlotVerticalLines:YES];
 }
 #pragma mark - 读取最近一周每天的运动量 并配置绘制柱形图所需参数
@@ -192,7 +271,7 @@
     NSNumber* year = [BTUtils getYear:localeDate];
 //    NSNumber* month = [BTUtils getMonth:localeDate];
 //    NSNumber* day = [BTUtils getDay:localeDate];
-    NSNumber* minute = [BTUtils getMinutes:date];
+//    NSNumber* minute = [BTUtils getMinutes:date];
     NSNumber* hour = [BTUtils getHour:localeDate];
     //设置查询条件
     //按月查询
@@ -243,7 +322,7 @@
 #pragma mark - 点击label进入详情
 - (void)enterDetai
 {
-    BTPhysicSportViewController *sportVC = [[BTPhysicSportViewController alloc] init];
+   // BTPhysicSportViewController *sportVC = [[BTPhysicSportViewController alloc] init];
    // [self.navigationController pushViewController:sportVC animated:YES];
 }
 #pragma mark - 更新圆形进度条
@@ -254,21 +333,29 @@
 {
     [super viewWillAppear:animated];
     NSLog(@"视图出现出现出现.....");
-    //在视图出现的时候加载进度条 然后再视图消失的时候移除进度条  这样可以保证进度条进度动态的出现
-    [self addCircleProgress];
-    int i = [self getDailyStep];
-    [self updateUIWithStepDaily:i totalStep:2000];//100为每日目标
-    if (i == 0) {
-    self.gradeLabel.text = [NSString stringWithFormat:@"今日还未开始运动,妈妈要努力啊"];
-    }
-
-    if (i < 2000 && i > 0) {
-         self.gradeLabel.text = [NSString stringWithFormat:@"今日已完成%d步,继续努力啊",i];
-    }
+//    //在视图出现的时候加载进度条 然后再视图消失的时候移除进度条  这样可以保证进度条进度动态的出现
+//    [self addCircleProgress];
+//    int i = [self getDailyStep];
+//    [self updateUIWithStepDaily:i totalStep:2000];//100为每日目标
+//    if (i == 0) {
+//    self.gradeLabel.text = [NSString stringWithFormat:@"今日还未开始运动,妈妈要努力啊"];
+//    }
+//
+//    if (i < 2000 && i > 0) {
+//         self.gradeLabel.text = [NSString stringWithFormat:@"今日已完成%d步,继续努力啊",i];
+//    }
+//    
+//    if (i >= 2000) {
+//        self.gradeLabel.text = [NSString stringWithFormat:@"今日圆满完成目标，妈妈真棒"];
+//    }
     
-    if (i >= 2000) {
-        self.gradeLabel.text = [NSString stringWithFormat:@"今日圆满完成目标，妈妈真棒"];
-    }
+    
+    [self addGradeCircular];
+    int i = [self getDailyStep];
+    NSLog(@"走了多少步%d",i);
+    _progress =(float) i/1000;//此处1000是目标值 记得改 另外改了之后也要改柱状图内部
+    NSLog(@"进度是%f",_progress);
+ //   [self updateUIWithStepDaily:i totalStep:2000];//100为每日目标
    
     self.barYValue = [self getResentOneWeekSteps];
     [self loadBarChartUsingArray];
@@ -276,8 +363,10 @@
 
 - (void)viewWillDisappear:(BOOL)animated
 {
-    [self.circularGrade removeFromSuperview];
-    [self.circularSport removeFromSuperview];
+//    [self.circularGrade removeFromSuperview];
+//    [self.circularSport removeFromSuperview];
+    
+    [self.progressView removeFromSuperview];
     [self.barChart removeFromSuperview];
 }
 - (void)updateUIWithStepDaily:(int)stepDaily totalStep:(int)totalStep
@@ -337,7 +426,7 @@
         [components addObject:component];
     }
     [_lineChartView setComponents:components];
-    [_lineChartView setXLabels:[NSArray arrayWithObjects:@"1月",@"2月",@"3月",@"4月",@"5月", nil]];
+    [_lineChartView setXLabels:[NSMutableArray arrayWithObjects:@"1月",@"2月",@"3月",@"4月",@"5月", nil]];
 }
 
 

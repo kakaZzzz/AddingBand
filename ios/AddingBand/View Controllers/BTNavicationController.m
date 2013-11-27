@@ -31,16 +31,16 @@
 //设置NavigationBar
 - (void)setNavigationBarStyle
 {
-    // Set Navigation Bar style
-    CGRect rect = CGRectMake(0.0f, 0.0f, 320, 44.0f);
-    UIGraphicsBeginImageContext(rect.size);
-    CGContextRef context = UIGraphicsGetCurrentContext();
-    CGContextSetFillColorWithColor(context, [[BTColor getColor:kBarColor] CGColor]);
-    CGContextFillRect(context, rect);
-    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    
-    [[UINavigationBar appearance] setBackgroundImage:image forBarMetrics: UIBarMetricsDefault];
+    // Set Navigation Bar style  高级设置方法
+//    CGRect rect = CGRectMake(0.0f, 0.0f, 320, 44.0f);
+//    UIGraphicsBeginImageContext(rect.size);
+//    CGContextRef context = UIGraphicsGetCurrentContext();
+//    CGContextSetFillColorWithColor(context, [[BTColor getColor:kBarColor] CGColor]);
+//    CGContextFillRect(context, rect);
+//    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+//    UIGraphicsEndImageContext();
+//    
+//    [[UINavigationBar appearance] setBackgroundImage:image forBarMetrics: UIBarMetricsDefault];
     
  
   //  [[UINavigationBar appearance] setTintColor: [UIColor redColor]];
@@ -58,6 +58,22 @@
 //                                                            UITextAttributeTextShadowColor: shadowColor,
 //                                                            UITextAttributeTextShadowOffset: [NSValue valueWithCGSize: CGSizeMake(0.0, 1.0)]}];
     
+    /*简单的处理颜色*/
+    if (iOS7) {
+        [[UINavigationBar appearance] setBarTintColor:[BTColor getColor:kBarColor]];
+     }
+    else{
+            CGRect rect = CGRectMake(0.0f, 0.0f, 320, 44.0f);
+            UIGraphicsBeginImageContext(rect.size);
+            CGContextRef context = UIGraphicsGetCurrentContext();
+            CGContextSetFillColorWithColor(context, [[BTColor getColor:kBarColor] CGColor]);
+            CGContextFillRect(context, rect);
+            UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+            UIGraphicsEndImageContext();
+        
+            [[UINavigationBar appearance] setBackgroundImage:image forBarMetrics: UIBarMetricsDefault];
+    }
+      //
     [[UINavigationBar appearance] setTitleTextAttributes: @{UITextAttributeTextColor: titleColor,
                                      UITextAttributeFont: [UIFont systemFontOfSize:20.0]}];
    

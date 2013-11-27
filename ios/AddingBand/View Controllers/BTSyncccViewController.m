@@ -18,6 +18,21 @@
 #import "BTSettingSectionCell.h"
 #import "DDIndicator.h"
 #import "BTColor.h"
+
+#define kTitleX 10
+#define kTitleY 20
+#define kTitleWidth 250
+#define kTitleHeight 50
+
+#define kTableViewX 0
+#define kTableViewY 70
+#define kTableViewWidth 320
+#define kTableViewHeight 200
+
+#define kWarningLableX 10
+#define kWarningLableY (kTableViewHeight + 50)
+#define kWarningLableWidth 250
+#define kWarningLableHeight 30
 @interface BTSyncccViewController ()
 
 @end
@@ -37,12 +52,12 @@
         self.bc = [BTBandCentral sharedBandCentral];
         
         //连接超时的block回调
-        __weak BTSyncccViewController *syncVC = self;
+        // __weak BTSyncccViewController *syncVC = self;
         self.bc.timeoutBlock = ^(void){
             
-//            UIAlertView *timeoutAlart = [[UIAlertView alloc] initWithTitle:@"连接超时" message:@"妈妈，请删除此设备，我们将为您重新扫描" delegate:syncVC cancelButtonTitle:@"好的" otherButtonTitles:nil, nil];
-//            timeoutAlart.tag = 102;
-//            [timeoutAlart show];
+            //            UIAlertView *timeoutAlart = [[UIAlertView alloc] initWithTitle:@"连接超时" message:@"妈妈，请删除此设备，我们将为您重新扫描" delegate:syncVC cancelButtonTitle:@"好的" otherButtonTitles:nil, nil];
+            //            timeoutAlart.tag = 102;
+            //            [timeoutAlart show];
             
         };
         
@@ -50,7 +65,7 @@
         [self.g addObserver:self forKeyPath:@"bleListCount" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:NULL];
         
         //菊花
-        self.indicator = [[DDIndicator alloc] initWithFrame:CGRectMake(120, 150, 60, 60)];
+        self.indicator = [[DDIndicator alloc] initWithFrame:CGRectMake((self.view.frame.size.width - _indicator.frame.size.width - 50)/2 , 150, 50, 50)];
         [self.view addSubview:_indicator];
         _indicator.hidden = YES;
         // [_indicator startAnimating];
@@ -83,7 +98,7 @@
     _aScrollView.showsVerticalScrollIndicator = NO;
     [self.view addSubview:_aScrollView];
     //加载tableview
-    self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 70, 320,200)];
+    self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(kTableViewX, kTableViewY, kTableViewWidth,kTableViewHeight)];
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     _tableView.dataSource = self;
     _tableView.delegate = self;
@@ -96,10 +111,10 @@
     [self configureNavigationbar];
 	// Do any additional setup after loading the view.
 }
-#pragma mark - 连接蓝牙设备提示语句
+#pragma mark - 连接蓝牙设备提示语句 “可连接设备”
 - (void)addLinkBLELabel
 {
-    self.labelSection = [[UILabel alloc]initWithFrame:CGRectMake(10, 20 ,250,50)];
+    self.labelSection = [[UILabel alloc]initWithFrame:CGRectMake(kTitleX, kTitleY ,kTitleWidth,kTitleHeight)];
     // _labelSection.backgroundColor = [UIColor blueColor];
     _labelSection.font = [UIFont systemFontOfSize:20];
     _labelSection.textColor = [BTColor getColor:titleLabelColor];
@@ -115,7 +130,7 @@
     
     
     
-    self.label1 = [[UILabel alloc]initWithFrame:CGRectMake( 10, _tableView.frame.size.height + 50,250,30)];
+    self.label1 = [[UILabel alloc]initWithFrame:CGRectMake( kWarningLableX, kWarningLableY,kWarningLableWidth,kWarningLableHeight)];
     _label1.backgroundColor = [UIColor clearColor];
     _label1.font = [UIFont systemFontOfSize:15];
     _label1.textColor = [BTColor getColor:contentLabelColor];
@@ -125,7 +140,7 @@
     _label1.numberOfLines= 0;
     [self.aScrollView addSubview:_label1];
     
-    self.label2 = [[UILabel alloc]initWithFrame:CGRectMake( 10, _label1.frame.origin.y + _label1.frame.size.height ,200,30)];
+    self.label2 = [[UILabel alloc]initWithFrame:CGRectMake( kWarningLableX, _label1.frame.origin.y + _label1.frame.size.height ,kWarningLableWidth,kWarningLableHeight)];
     _label2.backgroundColor = [UIColor clearColor];
     _label2.font = [UIFont systemFontOfSize:15];
     _label2.textColor = [BTColor getColor:contentLabelColor];
@@ -136,7 +151,7 @@
     [self.aScrollView addSubview:_label2];
     
     
-    self.label3 = [[UILabel alloc]initWithFrame:CGRectMake( 10, _label2.frame.origin.y + _label2.frame.size.height ,200,30)];
+    self.label3 = [[UILabel alloc]initWithFrame:CGRectMake( kWarningLableX, _label2.frame.origin.y + _label2.frame.size.height ,kWarningLableWidth,kWarningLableHeight)];
     _label3.backgroundColor = [UIColor clearColor];
     _label3.font = [UIFont systemFontOfSize:15];
     _label3.textColor = [BTColor getColor:contentLabelColor];
@@ -180,10 +195,11 @@
     self.pastVC.lastSyncTime.text = _lastSyncTime;
     //计算使用时间
     int k = [[self.bc getBpByModel:MAM_BAND_MODEL] setupDate];
+    NSLog(@"使用了多少秒%d",k);
     NSString *str = [BTGetData getBLEuseTime:k];//得到外围设备使用时间
     self.syncTwoVC.useTimeLabel.text = [NSString stringWithFormat:@"%@",str];
     self.pastVC.useTimeLabel.text = [NSString stringWithFormat:@"%@",str];
- //   [self.tableView reloadData];
+    [self.tableView reloadData];
     
 }
 //监控参数，更新显示  当连接  断开的时候也会调用此方法
@@ -245,7 +261,7 @@
     
     //弹出提醒框
     UIAlertView *aLart = [[UIAlertView alloc] initWithTitle:@"删除此设备" message:@"您确定要删除此设备吗？" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:@"取消", nil];
-    aLart.tag = 100;
+    aLart.tag = BREAK_CONNECT_ALERT;
     [aLart show];
     
     
@@ -258,7 +274,7 @@
     
     //  [self.indicator startAnimating];
     
-    if (alertView.tag == 100) {
+    if (alertView.tag == BREAK_CONNECT_ALERT) {
         if (buttonIndex == 0) {
             
             //断开连接
@@ -282,6 +298,8 @@
                 //[self.navigationItem.rightBarButtonItem setEnabled:NO];
                 [self.syncTwoVC.view removeFromSuperview];
                 [self.pastVC.view removeFromSuperview];
+                //菊花显示
+                self.indicator.contentLabel.text = @"正在搜索设备";
                 [self.indicator startAnimating];//加载动画
                 //设备总数减少
                 //                self.g.bleListCount = [self.bc.allPeripherals count];
@@ -291,7 +309,7 @@
             
             
             
-            
+            //在设备因为意外情况断开的情况下删除设备时 走介个方法
             else{
                 
                 //以下为删除设备
@@ -336,8 +354,10 @@
                 _syncButton.hidden = YES;
                 [[NSNotificationCenter defaultCenter]postNotificationName:@"reloadData" object:nil];
                 //菊花开始做动画
+                //菊花显示
+                self.indicator.contentLabel.text = @"正在搜索设备";
                 [self.indicator startAnimating];
-
+                
                 // [self.bc scan];
                 
                 
@@ -345,60 +365,60 @@
         }
     }
     
-    
+    //在设备连接超时 删除设备走介个方法
     if (alertView.tag == 102) {
         
         self.bc = [BTBandCentral sharedBandCentral];
         NSEnumerator * enumeratorValue = [self.bc.allPeripherals objectEnumerator];
         BTBandPeripheral* bp = [[enumeratorValue allObjects] objectAtIndex:0];
-
-            //以下为删除设备
-            //往coredata里面存放选择的设备行数
-            
-            //根据index找到对应的peripheral
-            self.bc = [BTBandCentral sharedBandCentral];
-            
-            //删除coredata里的这条数据
-            _context = [BTGetData getAppContex];
-            NSEntityDescription *entity = [NSEntityDescription entityForName:@"BTBleList" inManagedObjectContext:_context];
-            
-            NSFetchRequest* request = [[NSFetchRequest alloc] init];
-            [request setEntity:entity];
-            
-            NSError* error;
-            
-            NSArray *resultArray = [_context executeFetchRequest:request error:&error];
-            
-            for (BTBleList* old in resultArray) {
-                NSLog(@"设备名称%@",bp.name);
-                if ([[BTUtils getModel:old.name] isEqualToString:@"A1"]){
-                    [self.bc.allPeripherals removeObjectForKey:bp.name];
-                    [_context deleteObject:old];
-                    NSLog(@"!!!2222222");
-                }
-                
-                
-                //及时保存
-                NSError* err;
-                if(![_context save:&err]){
-                    NSLog(@"%@", [err localizedDescription]);
-                }
-                
-                //设备总数减少
-                self.g.bleListCount = [self.bc.allPeripherals count];
+        
+        //以下为删除设备
+        //往coredata里面存放选择的设备行数
+        
+        //根据index找到对应的peripheral
+        self.bc = [BTBandCentral sharedBandCentral];
+        
+        //删除coredata里的这条数据
+        _context = [BTGetData getAppContex];
+        NSEntityDescription *entity = [NSEntityDescription entityForName:@"BTBleList" inManagedObjectContext:_context];
+        
+        NSFetchRequest* request = [[NSFetchRequest alloc] init];
+        [request setEntity:entity];
+        
+        NSError* error;
+        
+        NSArray *resultArray = [_context executeFetchRequest:request error:&error];
+        
+        for (BTBleList* old in resultArray) {
+            NSLog(@"设备名称%@",bp.name);
+            if ([[BTUtils getModel:old.name] isEqualToString:@"A1"]){
                 [self.bc.allPeripherals removeObjectForKey:bp.name];
+                [_context deleteObject:old];
+                NSLog(@"!!!2222222");
             }
             
-            //移除页面
-            [self.pastVC.view removeFromSuperview];
-            _syncButton.hidden = YES;
-            [[NSNotificationCenter defaultCenter]postNotificationName:@"reloadData" object:nil];
-            // [self.bc scan];
             
+            //及时保存
+            NSError* err;
+            if(![_context save:&err]){
+                NSLog(@"%@", [err localizedDescription]);
+            }
             
+            //设备总数减少
+            self.g.bleListCount = [self.bc.allPeripherals count];
+            [self.bc.allPeripherals removeObjectForKey:bp.name];
         }
+        
+        //移除页面
+        [self.pastVC.view removeFromSuperview];
+        _syncButton.hidden = YES;
+        [[NSNotificationCenter defaultCenter]postNotificationName:@"reloadData" object:nil];
+        // [self.bc scan];
+        
+        
+    }
     
-
+    
 }
 
 
@@ -471,6 +491,7 @@
     //
     if (isConnecting && !isConnected) {
         NSLog(@"开始搜索动画");
+        self.indicator.contentLabel.text = @"正在连接设备";
         [self.indicator startAnimating];
     }
     if (isConnected && isConnecting) {
@@ -505,7 +526,7 @@
     Boolean isConnected = bp.isConnected;
     
     //是否正在连接中
-    BOOL isConnecting = bp.isConnecting;
+    // BOOL isConnecting = bp.isConnecting;
     //设备名称
     NSString* name = bp.name;
     
@@ -523,25 +544,13 @@
     static NSString *CellIdentifierFind = @"CellFind";
     static NSString *CellIdentifierConnect = @"CellConnect";
     static NSString *CellIdentifierNoFind = @"CellNoFind";
-    static NSString *CellSection = @"CellSecton";
+    
     
     BTBluetoothFindCell *cellFind = [tableView dequeueReusableCellWithIdentifier:CellIdentifierFind];
     BTBluetoothConnectedCell *cellConnet = [tableView dequeueReusableCellWithIdentifier:CellIdentifierConnect];
     BTBluetoothLinkCell *cellNofind = [tableView dequeueReusableCellWithIdentifier:CellIdentifierNoFind];
-    BTSettingSectionCell *cellSection = [tableView dequeueReusableCellWithIdentifier:CellSection];
     NSLog(@" %d  %d",isFinded,isConnected);
     NSLog(@"外围设备名称是 %@",name);
-    //    if (indexPath.row == 0) {
-    //        if (cellSection == nil) {
-    //            cellSection = [[BTSettingSectionCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellSection];
-    //        }
-    //        cellSection.titleLabel.text = @"可连接设备";
-    //          return cellSection;
-    //    }
-    //
-    //    }
-    
-    
     //发现设备 但是木有连接 新设备
     if (isFinded && !isConnected) {
         
@@ -581,7 +590,7 @@
         if (_pastVC.view) {
             [_syncTwoVC.view removeFromSuperview];
         }
-        
+        /*cell其实还存在  数据也在刷新 不过在此上面盖了一层view而已*/
         //加载连接成功后的视图
         [self addLinkSuccessfulView];
         
@@ -633,12 +642,12 @@
         [_context save:nil];
     }
     
-  BTBandPeripheral *bp =  [self.bc getBpByIndex:indexPath.row];
+    BTBandPeripheral *bp =  [self.bc getBpByIndex:indexPath.row];
     [self.bc connectPeripheralByName:bp.name];
     
-//    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-//        [self.bc togglePeripheralByIndex:[indexPath row]];
-//    });
+    //    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    //        [self.bc togglePeripheralByIndex:[indexPath row]];
+    //    });
     
     
 }
@@ -734,7 +743,7 @@
 - (void)addLinkSuccessfulView
 {
     self.syncTwoVC = [BTSyncTwoViewController shareSyncTwoview];
-    _syncTwoVC.view.frame = CGRectMake(0, -20, _syncTwoVC.view.frame.size.width, _syncTwoVC.view.frame.size.height);
+    _syncTwoVC.view.frame = CGRectMake(0, 0, _syncTwoVC.view.frame.size.width, _syncTwoVC.view.frame.size.height);
     [self.view addSubview:_syncTwoVC.view];
     _syncButton.hidden = NO;
 }
@@ -742,7 +751,7 @@
 - (void)addFindPastView
 {
     self.pastVC = [BTPastLinkViewController sharePastLinkview];
-    _pastVC.view.frame = CGRectMake(0, -20, _pastVC.view.frame.size.width, _pastVC.view.frame.size.height);
+    _pastVC.view.frame = CGRectMake(0, 0, _pastVC.view.frame.size.width, _pastVC.view.frame.size.height);
     [self.view addSubview:_pastVC.view];
     _syncButton.hidden = NO;
     

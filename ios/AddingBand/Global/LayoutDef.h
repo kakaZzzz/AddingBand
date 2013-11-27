@@ -11,13 +11,13 @@
 //首页头像 frame 宏定义
 #define kLeftMargin 10
 #define kTopMargin 10
-#define kHeightMargin 60
+#define kHeightMargin 50
 #define kWidthMargin 60
 
 //时间线 frame 宏定义
 #define kTimeLineX (kLeftMargin + kWidthMargin + 10)
 #define kTimeLineY  0
-#define kTimeLineWidth  5
+#define kTimeLineWidth  0.5
 #define kTimeLineHeirht  60
 
 
@@ -43,18 +43,18 @@
 #define kbreakConnectHeight 60
 
 
+/*以下为同步页面连接蓝牙设备时的cell高度*/
 //BTBluetoothConnectedCell的高度
 #define kBluetoothConnectedHeight (kbreakConnectY + kbreakConnectHeight + 10)
-
 //发现设备的cell的高度
 #define kBluetoothFindHeight (kLastSyncTimeY + kLastSyncTimeHeight + 10)
-
 //未发现设备的cell的高度
 #define kBluetoothNotFindHeight (kBluetoothNameY + kBluetoothNameHeight + 10)
 //通知中心发出得各个通知
 #define UPDATACIRCULARPROGRESSNOTICE @"updateCircleProgressNotice"//更新圆形进度条通知
 #define DATEPICKERDISMISSNOTICE @"datePickerDismissNotice"//时间选择器将要消失的时候的通知
-//体征页面 布局宏定义
+
+/*体征页面 布局宏定义*/
 #define kPhysicalImageX 35
 #define kPhysicalImageY 0
 #define kPhysicalImageWidth 100
@@ -63,9 +63,10 @@
 //颜色转换
 #define UIColorFromRGB(rgbValue) [UIColor colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 green:((float)((rgbValue & 0xFF00) >> 8))/255.0 blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0] 
 
-//系统所用到的颜色
+/*系统所用到的颜色*/
 #define kBarColor @"EE4966"
 #define titleLabelColor @"333333"
 #define contentLabelColor @"999999"
-//
+//程序中各种tag值
+#define BREAK_CONNECT_ALERT 100
 #endif

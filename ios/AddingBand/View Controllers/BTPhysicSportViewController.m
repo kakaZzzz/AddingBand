@@ -180,7 +180,7 @@ static int dailyStep = 0;
     
     //具体步数时间分布
     //index-小时，value-步数
-    _dailyData;
+   // _dailyData;
     
 }
 

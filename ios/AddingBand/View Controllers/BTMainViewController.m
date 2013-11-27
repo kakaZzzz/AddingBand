@@ -109,7 +109,7 @@ static NSString *textStr = nil;
         if (!cell) {
             cell = [[BTUndoCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellReuseIdentifier];
             cell.backgroundColor             = [UIColor whiteColor];
-            cell.contentLabel.text = @"Hello AddingHome ";
+            cell.contentLabel.text = @"Hello,AddingHome ";
             cell.contentView.backgroundColor = [UIColor whiteColor];
             cell.selectionStyle              = UITableViewCellSelectionStyleNone;
             tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;

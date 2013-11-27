@@ -24,8 +24,7 @@
 {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
-   //同步页面
-    
+    //同步页面
     [BTSyncTwoViewController shareSyncTwoview];
     //增加标识，用于判断是否是第一次启动应用...
     if (![[NSUserDefaults standardUserDefaults] boolForKey:@"everLaunched"]) {

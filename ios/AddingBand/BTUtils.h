@@ -24,4 +24,5 @@
 +(Boolean)isSameModel:(NSString*)one and:(NSString*)two;
 +(NSString*)getSN:(NSString*)name;
 
+
 @end

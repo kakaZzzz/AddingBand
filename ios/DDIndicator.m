@@ -22,6 +22,13 @@ static int stage = 0;
     if (self) {
         // Initialization code
         self.backgroundColor = [UIColor clearColor];
+        
+        self.contentLabel = [[UILabel alloc] initWithFrame:CGRectMake(-35, self.frame.size.height, 120, 20)];
+        _contentLabel.backgroundColor = [UIColor clearColor];
+        _contentLabel.textAlignment = NSTextAlignmentCenter;
+        _contentLabel.text = @"正在搜索设备";
+        [self addSubview:_contentLabel];
+
     }
     return self;
     

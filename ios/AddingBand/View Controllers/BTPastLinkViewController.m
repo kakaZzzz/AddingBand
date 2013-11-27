@@ -17,7 +17,7 @@
 #define kImageBgHeight 200
 
 #define kIconImageX 10
-#define kIconImageY (kImageBgHeight - 75)/2
+#define kIconImageY ((kImageBgHeight - 75)/2 - 20)
 #define kIconImageWidth 75
 #define kIconImageHeight 75
 
@@ -25,7 +25,7 @@
 
 static BTPastLinkViewController *pastLinkVC = nil;
 @interface BTPastLinkViewController ()
-
+@property(nonatomic,strong)UIScrollView *aScrollView;
 @end
 
 @implementation BTPastLinkViewController
@@ -60,19 +60,28 @@ static BTPastLinkViewController *pastLinkVC = nil;
     self.refreshButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     [_refreshButton setTitle:@"重新连接" forState:UIControlStateNormal];
     [_refreshButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    
+    //底图用scrollView滚动视图
+    self.aScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
+    
+    _aScrollView.contentSize = CGSizeMake(self.view.frame.size.width, self.view.frame.size.height + 20);
+    _aScrollView.showsVerticalScrollIndicator = NO;//不显示垂直条
+    _aScrollView.backgroundColor = [UIColor whiteColor];
+    [self.view addSubview:_aScrollView];
+    
     if (iPhone5) {
         _refreshButton.frame = CGRectMake((320 - 200)/2, self.view.frame.size.height - 200, 200, 50);
-
+        
     }
     else
     {
-    _refreshButton.frame = CGRectMake((320 - 200)/2, self.view.frame.size.height - 150, 200, 50);
+        _refreshButton.frame = CGRectMake((320 - 200)/2, self.view.frame.size.height - 150, 200, 50);
     }
     [_refreshButton setBackgroundImage:[UIImage imageNamed:@"refresh_btn.png"] forState:UIControlStateNormal];
     [_refreshButton setBackgroundImage:[UIImage imageNamed:@"refresh_btn_sel.png"] forState:UIControlStateHighlighted];
-
+    
     [_refreshButton addTarget:self action:@selector(refreshLink) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:_refreshButton];
+    [_aScrollView addSubview:_refreshButton];
     [self addSubviews];
 	// Do any additional setup after loading the view.
 }
@@ -89,13 +98,13 @@ static BTPastLinkViewController *pastLinkVC = nil;
         self.aImageView = [[UIImageView alloc] initWithFrame:CGRectMake(kImageBgX, kImageBgY, kImageBgWidth, kImageBgHeight)];
     }
     _aImageView.image = [UIImage imageNamed:@"red_bg.png"];
-    [self.view addSubview:_aImageView];
+    [_aScrollView addSubview:_aImageView];
     //手环icon
     self.aIconImage = [[UIImageView alloc] initWithFrame:CGRectMake(kIconImageX, kIconImageY, kIconImageWidth, kIconImageHeight)];
     _aIconImage.image = [UIImage imageNamed:@"家丁手环icon.png"];
     [_aImageView addSubview:_aIconImage];
     //上次同步时间背景图
-    self.asynctimeImage = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 140, (kImageBgHeight - 50)/2, 140, 50)];
+    self.asynctimeImage = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 140, ((kImageBgHeight - 50)/2 - 20), 140, 50)];
     _asynctimeImage.image = [UIImage imageNamed:@"透明层.png"];
     [_aImageView addSubview:_asynctimeImage];
     
@@ -120,7 +129,7 @@ static BTPastLinkViewController *pastLinkVC = nil;
     _batteryLabel.textAlignment = NSTextAlignmentCenter;
     _batteryLabel.lineBreakMode = NSLineBreakByTruncatingTail;
     _batteryLabel.numberOfLines= 0;
-    [self.view addSubview:_batteryLabel];
+    [_aScrollView addSubview:_batteryLabel];
     
     //设备名称
     
@@ -132,7 +141,7 @@ static BTPastLinkViewController *pastLinkVC = nil;
     _nameLabel.textAlignment = NSTextAlignmentCenter;
     _nameLabel.lineBreakMode = NSLineBreakByTruncatingTail;
     _nameLabel.numberOfLines= 0;
-    [self.view addSubview:_nameLabel];
+    [_aScrollView addSubview:_nameLabel];
     
     //连接状态
     self.linkLabel = [[UILabel alloc]initWithFrame:CGRectMake(_batteryLabel.frame.origin.x, _nameLabel.frame.origin.y + _nameLabel.frame.size.height,_nameLabel.frame.size.width,_nameLabel.frame.size.height)];
@@ -143,7 +152,7 @@ static BTPastLinkViewController *pastLinkVC = nil;
     _linkLabel.textAlignment = NSTextAlignmentCenter;
     _linkLabel.lineBreakMode = NSLineBreakByTruncatingTail;
     _linkLabel.numberOfLines= 0;
-    [self.view addSubview:_linkLabel];
+    [_aScrollView addSubview:_linkLabel];
     
     //设备使用时间背景
     self.useTimeImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, _aImageView.frame.size.height - 50, 320, 50)];
@@ -165,8 +174,8 @@ static BTPastLinkViewController *pastLinkVC = nil;
     _label1.textAlignment = NSTextAlignmentLeft;
     _label1.lineBreakMode = NSLineBreakByTruncatingTail;
     _label1.numberOfLines= 0;
-    [self.view addSubview:_label1];
-
+    [_aScrollView addSubview:_label1];
+    
     self.label2 = [[UILabel alloc]initWithFrame:CGRectMake( 5, _label1.frame.origin.y + _label1.frame.size.height ,200,30)];
     _label2.backgroundColor = [UIColor clearColor];
     _label2.font = [UIFont systemFontOfSize:15];
@@ -175,7 +184,7 @@ static BTPastLinkViewController *pastLinkVC = nil;
     _label2.textAlignment = NSTextAlignmentLeft;
     _label2.lineBreakMode = NSLineBreakByTruncatingTail;
     _label2.numberOfLines= 0;
-    [self.view addSubview:_label2];
+    [_aScrollView addSubview:_label2];
     
     
     self.label3 = [[UILabel alloc]initWithFrame:CGRectMake( 5, _label2.frame.origin.y + _label2.frame.size.height ,200,30)];
@@ -186,7 +195,7 @@ static BTPastLinkViewController *pastLinkVC = nil;
     _label3.textAlignment = NSTextAlignmentLeft;
     _label3.lineBreakMode = NSLineBreakByTruncatingTail;
     _label3.numberOfLines= 0;
-    [self.view addSubview:_label3];
+    [_aScrollView addSubview:_label3];
     
     
 }
