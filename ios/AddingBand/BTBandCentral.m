@@ -383,7 +383,7 @@
     //用来做调试的
     if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:UUID_HEALTH_SYNC]]) {
         
-//        NSLog(@"%@", characteristic.value);
+        NSLog(@"debug: %@", characteristic.value);
         
         // 调试每条记录用
 //        uint32_t hourSencodes;
@@ -399,7 +399,6 @@
         
         NSLog(@"x:%d y:%d z:%d", x,y,z);
 
-        
     }
     
     //接到电量的通知
@@ -896,7 +895,7 @@
             
         }
         
-        NSLog(@"%@", syncWords);
+//        NSLog(@"%@", syncWords);
         
     }
     

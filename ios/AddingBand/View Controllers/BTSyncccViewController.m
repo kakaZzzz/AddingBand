@@ -175,7 +175,7 @@
 {
     //读取一下对更新时间的描述
     _lastSyncTime = [self.bc getLastSyncDesc:MAM_BAND_MODEL];
-    NSLog(@"上次同步时间是：%@",_lastSyncTime);
+//    NSLog(@"上次同步时间是：%@",_lastSyncTime);
     self.syncTwoVC.lastSyncTime.text = _lastSyncTime;
     self.pastVC.lastSyncTime.text = _lastSyncTime;
     //计算使用时间
