@@ -123,14 +123,14 @@
 #define DEFAULT_BATT_PERIOD                   15000
 
 // Battery measurement period in ms
-#define DEFAULT_ACC_PERIOD                100
+#define DEFAULT_ACC_PERIOD                    100
 
 #if defined ( PLUS_BROADCASTER )
 #define ADV_IN_CONN_WAIT                      500 // delay 500 ms
 #endif
 
 // define i2c address
-#define ACC_ADDRESS                       0x1D
+#define ACC_ADDRESS                           0x1D
 
 #define EEPROM_ADDRESS                        0x50
 
@@ -191,8 +191,8 @@ uint8 X0, X1, Y0, Y1, Z1, Z0;
 int16 X_out, Y_out, Z_out;
 uint8 INT_STATUS;
 
-int16 PACE_DUR_MIN = 5; //0.3s
-int16 PACE_DUR_MAX = 10; //1.2s
+int16 PACE_DUR_MIN = 6; //0.3s
+int16 PACE_DUR_MAX = 12; //1.2s
 int16 ALT_MIN = 300;
 int16 DIR = 1; //12
 int16 first_pace = 1; //
@@ -346,7 +346,7 @@ static void accInit(void);
 static void accLoop(void);
 
 static void accGetIntData(void);
-static void accGetAccData(void);
+static void accGetAccData(uint8 count);
 
 static void eepromWriteStep(uint8 type);
 static void eepromReadStep(void);
@@ -654,33 +654,44 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
     if ( events & ACC_PERIODIC_EVT )
     {
 
-        accLoop();
+        // accLoop();
 
-        // uint8 addr, val;
+        HalI2CInit(ACC_ADDRESS, I2C_CLOCK_RATE);
+
+        uint8 addr, val;
 
         // for(;;){
 
-        //     addr = F_STATUS;
-        //     HalMotionI2CWrite(1, &addr);
-        //     HalMotionI2CRead(1, &val);
+            addr = F_STATUS;
+            HalMotionI2CWrite(1, &addr);
+            HalMotionI2CRead(1, &val);
 
-        //     val &= ~(BV(6)|BV(7));
+            val &= ~(BV(6)|BV(7));
 
-        //     if (val)
-        //     {
-        //         accLoop();
-        //         // addr = F_STATUS;
-        //         // HalMotionI2CWrite(1, &addr);
-        //         // HalMotionI2CRead(1, &val);
-        //         LED3_PIO = !LED3_PIO;
-        //     }else{
-        //         break;
-        //     }
+            if (val)
+            {
+                accGetAccData(val);
+
+                // LED3_PIO = !LED3_PIO;
+
+            // }else{
+            //     break;
+            }
+        // }
+
+        // {
+        //     uint8 d[8] = {val,0,0,0,0,0,0,0};
+
+        //     // osal_memcpy(&d[0], &X_out, sizeof(int16));
+        //     // osal_memcpy(&d[2], &Y_out, sizeof(int16));
+        //     // osal_memcpy(&d[4], &Z_out, sizeof(int16));
+
+        //     SimpleProfile_SetParameter( HEALTH_SYNC, 8, d );
         // }
 
         // restart timer
-        osal_start_timerEx( simpleBLEPeripheral_TaskID, ACC_PERIODIC_EVT, 100 );
-        //osal_start_timerEx( simpleBLEPeripheral_TaskID, ACC_PERIODIC_EVT, 600 );
+        // osal_start_timerEx( simpleBLEPeripheral_TaskID, ACC_PERIODIC_EVT, 100 );
+        osal_start_timerEx( simpleBLEPeripheral_TaskID, ACC_PERIODIC_EVT, 2500 );
 
         return (events ^ ACC_PERIODIC_EVT);
     }
@@ -1301,8 +1312,13 @@ char *bdAddr2Str( uint8 *pAddr )
 static void closeAllPIO(void){
 
     P0 = 0xFF;
+
+    // open
     P1 = 0xC1;
+
+    // close
     // P1 = 0xC3;
+
     P2 = 0x07;
 }
 
@@ -1479,9 +1495,9 @@ static void accInit( void )
     // HalI2CWrite(2, pBuf);
 
     //use fifo
-    // pBuf[0] = F_SETUP;
-    // pBuf[1] = 0x40;
-    // HalI2CWrite(2, pBuf);
+    pBuf[0] = F_SETUP;
+    pBuf[1] = 0x40;
+    HalI2CWrite(2, pBuf);
 
     // 50hz + low power mode, 15ua
     // put acc to active
@@ -1500,20 +1516,20 @@ static void accLoop(void)
 
     
 
-    accGetAccData();
+    // accGetAccData();
 
     //todo
     X_out = X_out >> 6;
     Y_out = Y_out >> 6;
     Z_out = Z_out >> 6;
 
-    uint8 d[8];
+    // uint8 d[8];
 
-    osal_memcpy(&d[0], &X_out, sizeof(int16));
-    osal_memcpy(&d[2], &Y_out, sizeof(int16));
-    osal_memcpy(&d[4], &Z_out, sizeof(int16));
+    // osal_memcpy(&d[0], &X_out, sizeof(int16));
+    // osal_memcpy(&d[2], &Y_out, sizeof(int16));
+    // osal_memcpy(&d[4], &Z_out, sizeof(int16));
 
-    SimpleProfile_SetParameter( HEALTH_SYNC, sizeof ( d ), d );
+    // SimpleProfile_SetParameter( HEALTH_SYNC, sizeof ( d ), d );
 
 
     ACC_CUR = X_out * X_out + Y_out * Y_out + Z_out * Z_out - 4096;
@@ -1643,47 +1659,61 @@ static void accLoop(void)
 }
 
 
-static void accGetAccData(void)
+static void accGetAccData(uint8 count)
 {
     HalI2CInit(ACC_ADDRESS, I2C_CLOCK_RATE);
 
-    uint8 pBuf[2];
+    // uint8 pBuf[2];
 
-    pBuf[0] = OUT_X_LSB;
-    HalMotionI2CWrite(1, pBuf);
-    HalMotionI2CRead(1, &pBuf[1]);
-    X0 = pBuf[1];
+    // pBuf[0] = OUT_X_LSB;
+    // HalMotionI2CWrite(1, pBuf);
+    // HalMotionI2CRead(1, &pBuf[1]);
+    // X0 = pBuf[1];
 
-    pBuf[0] = OUT_X_MSB;
-    HalMotionI2CWrite(1, pBuf);
-    HalMotionI2CRead(1, &pBuf[1]);
-    X1 = pBuf[1];
+    // pBuf[0] = OUT_X_MSB;
+    // HalMotionI2CWrite(1, pBuf);
+    // HalMotionI2CRead(1, &pBuf[1]);
+    // X1 = pBuf[1];
 
-    X_out = (int16)((X1 << 8) | X0);
+    // X_out = (int16)((X1 << 8) | X0);
 
-    pBuf[0] = OUT_Y_LSB;
-    HalMotionI2CWrite(1, pBuf);
-    HalMotionI2CRead(1, &pBuf[1]);
-    Y0 = pBuf[1];
+    // pBuf[0] = OUT_Y_LSB;
+    // HalMotionI2CWrite(1, pBuf);
+    // HalMotionI2CRead(1, &pBuf[1]);
+    // Y0 = pBuf[1];
 
-    pBuf[0] = OUT_Y_MSB;
-    HalMotionI2CWrite(1, pBuf);
-    HalMotionI2CRead(1, &pBuf[1]);
-    Y1 = pBuf[1];
+    // pBuf[0] = OUT_Y_MSB;
+    // HalMotionI2CWrite(1, pBuf);
+    // HalMotionI2CRead(1, &pBuf[1]);
+    // Y1 = pBuf[1];
 
-    Y_out = (int16)((Y1 << 8) | Y0);
+    // Y_out = (int16)((Y1 << 8) | Y0);
 
-    pBuf[0] = OUT_Z_LSB;
-    HalMotionI2CWrite(1, pBuf);
-    HalMotionI2CRead(1, &pBuf[1]);
-    Z0 = pBuf[1];
+    // pBuf[0] = OUT_Z_LSB;
+    // HalMotionI2CWrite(1, pBuf);
+    // HalMotionI2CRead(1, &pBuf[1]);
+    // Z0 = pBuf[1];
 
-    pBuf[0] = OUT_Z_MSB;
-    HalMotionI2CWrite(1, pBuf);
-    HalMotionI2CRead(1, &pBuf[1]);
-    Z1 = pBuf[1];
+    // pBuf[0] = OUT_Z_MSB;
+    // HalMotionI2CWrite(1, pBuf);
+    // HalMotionI2CRead(1, &pBuf[1]);
+    // Z1 = pBuf[1];
 
-    Z_out = (int16)((Z1 << 8) | Z0);
+    // Z_out = (int16)((Z1 << 8) | Z0);
+
+    uint8 addr = OUT_X_MSB, accBuf[192];
+
+    HalMotionI2CWrite(1, &addr);
+    HalMotionI2CRead(count * 6, accBuf);
+
+    for (int i = 0; i < count * 6; i += 6)
+    {
+        X_out = (int16)((accBuf[i] << 8) | accBuf[i+1]);
+        Y_out = (int16)((accBuf[i+2] << 8) | accBuf[i+3]);
+        Z_out = (int16)((accBuf[i+4] << 8) | accBuf[i+5]);
+
+        accLoop();
+    }
 }
 
 static void accGetIntData(void)
