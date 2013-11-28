@@ -99,7 +99,7 @@ static NSString *textStr = nil;
             cell.contentView.backgroundColor = [UIColor clearColor];
             cell.selectionStyle              = UITableViewCellSelectionStyleNone;
             tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-            //cell不可点击
+            //cell不可点击 取消交互
             cell.userInteractionEnabled = NO;
         }
         return cell;

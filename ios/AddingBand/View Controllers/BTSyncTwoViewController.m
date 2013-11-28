@@ -94,11 +94,11 @@ static BTSyncTwoViewController *syncTwoVC = nil;
     _aImageView.image = [UIImage imageNamed:@"red_bg.png"];
     [_aScrollView addSubview:_aImageView];
     //手环icon
-    self.aIconImage = [[UIImageView alloc] initWithFrame:CGRectMake(kIconImageX, kIconImageY, kIconImageWidth, kIconImageHeight)];
+    self.aIconImage = [[UIImageView alloc] initWithFrame:CGRectMake(kIconImageX, ((_aImageView.frame.size.height - 75)/2 - 20), kIconImageWidth, kIconImageHeight)];
     _aIconImage.image = [UIImage imageNamed:@"家丁手环icon.png"];
     [_aImageView addSubview:_aIconImage];
     //上次同步时间背景图
-    self.asynctimeImage = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 140, (kImageBgHeight - 50)/2 - 20, 140, 50)];
+    self.asynctimeImage = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 140, (_aImageView.frame.size.height - 50)/2 - 20, 140, 50)];
     _asynctimeImage.image = [UIImage imageNamed:@"透明层.png"];
     [_aImageView addSubview:_asynctimeImage];
     

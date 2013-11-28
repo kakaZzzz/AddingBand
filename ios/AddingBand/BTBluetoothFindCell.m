@@ -18,7 +18,7 @@
 
 
 #define lineImageX 0
-#define lineImageY 50
+#define lineImageY 49
 #define lineImageWidth 320
 #define lineImageHeight 1
 

@@ -198,7 +198,7 @@
     NSLog(@"使用了多少秒%d",k);
     NSString *str = [BTGetData getBLEuseTime:k];//得到外围设备使用时间
     self.syncTwoVC.useTimeLabel.text = [NSString stringWithFormat:@"%@",str];
-    self.pastVC.useTimeLabel.text = [NSString stringWithFormat:@"%@",str];
+   // self.pastVC.useTimeLabel.text = [NSString stringWithFormat:@"%@",str];
     [self.tableView reloadData];
     
 }

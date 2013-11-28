@@ -176,6 +176,11 @@
 		72CB9C49182B59D100C0DAF0 /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72CB9C48182B59D100C0DAF0 /* CoreBluetooth.framework */; };
 		72E3E50A182B8C040062DA3D /* BTBluetoothConnectedCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 72E3E509182B8C040062DA3D /* BTBluetoothConnectedCell.m */; };
 		72E3E50D182B9A360062DA3D /* BTBluetoothFindCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 72E3E50C182B9A360062DA3D /* BTBluetoothFindCell.m */; };
+		72EE54601846F9EB00093583 /* lace_bg@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 72EE545E1846F9EB00093583 /* lace_bg@2x.png */; };
+		72EE54671847035D00093583 /* test_bg@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 72EE54661847035D00093583 /* test_bg@2x.png */; };
+		72EE546A18470A0E00093583 /* icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 72EE546818470A0E00093583 /* icon@2x.png */; };
+		72EE546B18470A0E00093583 /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 72EE546918470A0E00093583 /* icon.png */; };
+		72EE546D18470A6600093583 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 72EE546C18470A6600093583 /* Default-568h@2x.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -437,6 +442,11 @@
 		72E3E509182B8C040062DA3D /* BTBluetoothConnectedCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BTBluetoothConnectedCell.m; path = MainCustomCell/BTBluetoothConnectedCell.m; sourceTree = "<group>"; };
 		72E3E50B182B9A360062DA3D /* BTBluetoothFindCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTBluetoothFindCell.h; sourceTree = "<group>"; };
 		72E3E50C182B9A360062DA3D /* BTBluetoothFindCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTBluetoothFindCell.m; sourceTree = "<group>"; };
+		72EE545E1846F9EB00093583 /* lace_bg@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "lace_bg@2x.png"; sourceTree = "<group>"; };
+		72EE54661847035D00093583 /* test_bg@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "test_bg@2x.png"; sourceTree = "<group>"; };
+		72EE546818470A0E00093583 /* icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon@2x.png"; sourceTree = "<group>"; };
+		72EE546918470A0E00093583 /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
+		72EE546C18470A6600093583 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -660,6 +670,7 @@
 		724544891838AD130070F700 /* UIImagess */ = {
 			isa = PBXGroup;
 			children = (
+				72EE545D1846F99D00093583 /* Phisical */,
 				723F0ECA183C5DFE005F1921 /* Sync */,
 				72B67AB2183A418B00294A08 /* zhuceshur.png */,
 				729293F81838D149007B09A7 /* 透明.png */,
@@ -875,6 +886,9 @@
 		72B418C118238BCA002EAD35 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				72EE546818470A0E00093583 /* icon@2x.png */,
+				72EE546C18470A6600093583 /* Default-568h@2x.png */,
+				72EE546918470A0E00093583 /* icon.png */,
 				72B418C218238BCA002EAD35 /* AddingBand-Info.plist */,
 				72B418C318238BCA002EAD35 /* InfoPlist.strings */,
 				72B418C618238BCA002EAD35 /* main.m */,
@@ -1058,6 +1072,15 @@
 			name = BTBluetoothLinkCell;
 			sourceTree = "<group>";
 		};
+		72EE545D1846F99D00093583 /* Phisical */ = {
+			isa = PBXGroup;
+			children = (
+				72EE54661847035D00093583 /* test_bg@2x.png */,
+				72EE545E1846F9EB00093583 /* lace_bg@2x.png */,
+			);
+			name = Phisical;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -1165,6 +1188,7 @@
 				729293F31838B2E6007B09A7 /* indicate@2x.png in Resources */,
 				729293DD1838A726007B09A7 /* home_unselected@2x.png in Resources */,
 				723F0ED5183C5E7F005F1921 /* red_bg.png in Resources */,
+				72EE546B18470A0E00093583 /* icon.png in Resources */,
 				723F0ED6183C5E7F005F1921 /* red_bg@2x.png in Resources */,
 				72B67A7E1839EE1900294A08 /* FlatDatePicker-Icon-Close.png in Resources */,
 				723F0EE6183C67D0005F1921 /* sync_btn@2x.png in Resources */,
@@ -1175,6 +1199,7 @@
 				729293E51838A726007B09A7 /* shezhi_unselected@2x.png in Resources */,
 				72774FE11844762F00CA034E /* sina_sel@2x.png in Resources */,
 				72269018183DAC2700D6405E /* uestime_bg@2x.png in Resources */,
+				72EE54671847035D00093583 /* test_bg@2x.png in Resources */,
 				72B67A7C1839EE1900294A08 /* FlatDatePicker-Icon-Check.png in Resources */,
 				729293DC1838A726007B09A7 /* home_unselected.png in Resources */,
 				72774FE31844762F00CA034E /* tecent_sel@2x.png in Resources */,
@@ -1189,11 +1214,13 @@
 				729293E01838A726007B09A7 /* physical_unselected.png in Resources */,
 				723F24A218308925001F27DA /* 2.png in Resources */,
 				723F24A418308925001F27DA /* 3.png in Resources */,
+				72EE54601846F9EB00093583 /* lace_bg@2x.png in Resources */,
 				729293E71838A726007B09A7 /* sync_selected@2x.png in Resources */,
 				724146771827B116008B05C5 /* 分割线@2x.png in Resources */,
 				72B67A7D1839EE1900294A08 /* FlatDatePicker-Icon-Check@2x.png in Resources */,
 				729293E31838A726007B09A7 /* shezhi_selected@2x.png in Resources */,
 				72B418D018238BCA002EAD35 /* Images.xcassets in Resources */,
+				72EE546A18470A0E00093583 /* icon@2x.png in Resources */,
 				723F24A718308925001F27DA /* 4@2x.png in Resources */,
 				723F0EE4183C67D0005F1921 /* sync_btn_sel@2x.png in Resources */,
 				72B67AB3183A418B00294A08 /* zhuceshur.png in Resources */,
@@ -1221,6 +1248,7 @@
 				723F0EF8183CC0D3005F1921 /* refresh_btn@2x.png in Resources */,
 				723F24A318308925001F27DA /* 2@2x.png in Resources */,
 				723F0EDD183C5FD7005F1921 /* 透明层.png in Resources */,
+				72EE546D18470A6600093583 /* Default-568h@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1432,7 +1460,6 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -1451,7 +1478,6 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;

@@ -15,6 +15,7 @@
 #import "BTGetData.h"
 #import "BarChartView.h"
 #import "PICircularProgressView.h"
+#import "BTColor.h"
 
 #define kImageBgX 0
 #define kImageBgY 0
@@ -46,7 +47,7 @@
     [super viewDidLoad];
     //加载滚动视图
     [self addSubviews];
-    
+    [self addBackgroundImage];
     //加载折线图
    // [self drawLineChartView];
     // Do any additional setup after loading the view.
@@ -131,7 +132,7 @@
     }
     else
     {
-        _progressView.progress += 0.001;
+        _progressView.progress += 0.0001;
     }
     
 }
@@ -216,14 +217,33 @@
     label.textColor =[UIColor blueColor];
     [self.aScrollView addSubview:label];
 }
-
+#pragma mark -添加演示用背景花边
+- (void)addBackgroundImage
+{
+    UIImageView *aImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, _aImageView.frame.origin.y + _aImageView.frame.size.height, self.view.frame.size.width, 131)];
+    aImageView.image = [UIImage imageNamed:@"lace_bg.png"];
+    [_aScrollView addSubview:aImageView];
+    
+    //胎动
+    UILabel *aLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 5, 100, 20)];
+    
+    aLabel.textAlignment = NSTextAlignmentLeft;
+    aLabel.text = @"胎动";
+    aLabel.backgroundColor = [UIColor clearColor];
+    [aImageView addSubview:aLabel];
+    
+    UIImageView *bImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, aImageView.frame.origin.y + aImageView.frame.size.height, self.view.frame.size.width, 121)];
+    bImageView.backgroundColor = [UIColor redColor];
+    bImageView.image = [UIImage imageNamed:@"test_bg.png"];
+    [_aScrollView addSubview:bImageView];
+}
 #pragma mark - loadBarChart  加载柱形图
 - (void)loadBarChartUsingArray {
     //Generate properly formatted data to give to the bar chart
     //横坐标元素
     /*   在此传入横坐标名称  柱子表示的数值  柱子颜色  以及label中字体颜色 */
     
-    _barChart = [[BarChartView alloc] initWithFrame:CGRectMake(30, 260, 250, 100)];//柱形图背景大小
+    _barChart = [[BarChartView alloc] initWithFrame:CGRectMake(30, 220, 250, 100)];//柱形图背景大小
     _barChart.backgroundColor = [UIColor clearColor];
     [self.aScrollView addSubview:_barChart];
     
@@ -248,7 +268,7 @@
     //Generate the bar chart using the formatted data
     [_barChart setDataWithArray:array
                        showAxis:DisplayBothAxes
-                      withColor:[UIColor blueColor]//指示坐标颜色 Y轴颜色
+                      withColor:[BTColor getColor:kBarColor]//指示坐标颜色 Y轴颜色
         shouldPlotVerticalLines:YES];
 }
 #pragma mark - 读取最近一周每天的运动量 并配置绘制柱形图所需参数
@@ -353,7 +373,13 @@
     [self addGradeCircular];
     int i = [self getDailyStep];
     NSLog(@"走了多少步%d",i);
-    _progress =(float) i/1000;//此处1000是目标值 记得改 另外改了之后也要改柱状图内部
+    if (i == 0) {
+        self.progressView.roundedHead = NO;
+    }
+    else{
+        self.progressView.roundedHead = YES;
+    }
+    _progress =(float) i/10000;//此处1000是目标值 记得改 另外改了之后也要改柱状图内部
     NSLog(@"进度是%f",_progress);
  //   [self updateUIWithStepDaily:i totalStep:2000];//100为每日目标
    

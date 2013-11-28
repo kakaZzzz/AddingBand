@@ -121,7 +121,7 @@
     
     if (_showText && _textColor)
     {
-        NSString *progressString = [NSString stringWithFormat:@"%.0f", _progress * 1000.0];
+        NSString *progressString = [NSString stringWithFormat:@"%.0f", _progress * 10000.0];
         
         CGFloat fontSize = radius;
      //   UIFont *font = [_font fontWithSize:fontSize];
@@ -192,7 +192,7 @@
                         radius:circleWidth/2
                     startAngle:DEGREES_TO_RADIANS(90)
                       endAngle:DEGREES_TO_RADIANS(-90)
-                     clockwise:NO];//这里改为YES 圆圈填充的时候就是两头都是弧形的 NO的时候 只有前面的头是弧形的
+                     clockwise:YES];//这里改为YES 圆圈填充的时候就是两头都是弧形的 NO的时候 只有前面的头是弧形的
     }
     
     [path closePath];

@@ -83,26 +83,26 @@
 //配置 tabBar
 - (void)configureTabBar
 {
-    BTMainViewController *mainVC = [[BTMainViewController alloc] init];
-    BTNavicationController *mainNav = [[BTNavicationController alloc] initWithRootViewController:mainVC];
-    mainVC.navigationItem.title = @"主线";
-    
-    
-    //ios7上这样用
-    if (iOS7) {
-        mainNav.tabBarItem.title = @"主页";
-        [mainNav.tabBarItem setFinishedSelectedImage:[UIImage imageNamed:@"home_selected1.png"] withFinishedUnselectedImage:[UIImage imageNamed:@"home_unselected1.png"]];
-        //5.0之后新特性
-        [mainNav.tabBarItem setTitleTextAttributes:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:[BTColor getColor:@"C9B9AD"], nil] forKeys:[NSArray arrayWithObjects:UITextAttributeTextColor, nil]] forState:UIControlStateNormal];
-        [mainNav.tabBarItem setTitleTextAttributes:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:[BTColor getColor:@"EE4966"], nil] forKeys:[NSArray arrayWithObjects:UITextAttributeTextColor,nil]] forState:UIControlStateSelected];
-        
-    }
-    
-    else
-    {
-        [mainNav.tabBarItem setFinishedSelectedImage:[UIImage imageNamed:@"home_selected.png"] withFinishedUnselectedImage:[UIImage imageNamed:@"home_unselected.png"]];
-        
-    }
+//    BTMainViewController *mainVC = [[BTMainViewController alloc] init];
+//    BTNavicationController *mainNav = [[BTNavicationController alloc] initWithRootViewController:mainVC];
+//    mainVC.navigationItem.title = @"主线";
+//    
+//    
+//    //ios7上这样用
+//    if (iOS7) {
+//        mainNav.tabBarItem.title = @"主页";
+//        [mainNav.tabBarItem setFinishedSelectedImage:[UIImage imageNamed:@"home_selected1.png"] withFinishedUnselectedImage:[UIImage imageNamed:@"home_unselected1.png"]];
+//        //5.0之后新特性
+//        [mainNav.tabBarItem setTitleTextAttributes:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:[BTColor getColor:@"C9B9AD"], nil] forKeys:[NSArray arrayWithObjects:UITextAttributeTextColor, nil]] forState:UIControlStateNormal];
+//        [mainNav.tabBarItem setTitleTextAttributes:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:[BTColor getColor:@"EE4966"], nil] forKeys:[NSArray arrayWithObjects:UITextAttributeTextColor,nil]] forState:UIControlStateSelected];
+//        
+//    }
+//    
+//    else
+//    {
+//        [mainNav.tabBarItem setFinishedSelectedImage:[UIImage imageNamed:@"home_selected.png"] withFinishedUnselectedImage:[UIImage imageNamed:@"home_unselected.png"]];
+//        
+//    }
     
     BTPhysicalViewController * physicalVC = [[BTPhysicalViewController alloc] init];
     BTNavicationController *physicalNav = [[BTNavicationController alloc] initWithRootViewController:physicalVC];
@@ -168,7 +168,9 @@
     
     
     
-    self.viewControllers = [NSArray arrayWithObjects:mainNav,physicalNav,syncNav,mineNav,nil];
+  //  self.viewControllers = [NSArray arrayWithObjects:mainNav,physicalNav,syncNav,mineNav,nil];
+    self.viewControllers = [NSArray arrayWithObjects:physicalNav,syncNav,mineNav,nil];
+
     //
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
     if (iOS7) {
@@ -176,7 +178,7 @@
         self.tabBar.translucent = NO;
     }
 #endif
-    self.tabBar.selectionIndicatorImage = [UIImage imageNamed:@"tabbar_sel.png"];
+  //  self.tabBar.selectionIndicatorImage = [UIImage imageNamed:@"tabbar_sel.png"];
     self.tabBar.backgroundImage =  [UIImage imageNamed:@"tabbar_bg.png"];
     
     

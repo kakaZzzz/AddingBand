@@ -37,10 +37,12 @@
     self.window.rootViewController = _tabBarController;
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
+    
+    /*程序启动引导页 我给注释掉了 */
     //如果是第一次启动 加载启动页面
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"firstLaunch"]) {
-        [BTGuideViewController show];
-    }
+//    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"firstLaunch"]) {
+//        [BTGuideViewController show];
+//    }
     
     //测试用 默认给一些用户信息
     NSManagedObjectContext *context =[(BTAppDelegate *) [UIApplication sharedApplication].delegate managedObjectContext];
