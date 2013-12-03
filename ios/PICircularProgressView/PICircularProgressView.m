@@ -121,7 +121,7 @@
     
     if (_showText && _textColor)
     {
-        NSString *progressString = [NSString stringWithFormat:@"%.0f", _progress * 10000.0];
+        NSString *progressString = [NSString stringWithFormat:@"%.0f", _progress * 500.0];
         
         CGFloat fontSize = radius;
      //   UIFont *font = [_font fontWithSize:fontSize];
