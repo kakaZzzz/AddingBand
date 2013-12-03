@@ -346,7 +346,7 @@ static void accInit(void);
 static void accLoop(void);
 
 static void accGetIntData(void);
-static void accGetAccData(uint8 count);
+static void accGetAccData(void);
 
 static void eepromWriteStep(uint8 type);
 static void eepromReadStep(void);
@@ -654,30 +654,30 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
     if ( events & ACC_PERIODIC_EVT )
     {
 
-        // accLoop();
+        accLoop();
 
-        HalI2CInit(ACC_ADDRESS, I2C_CLOCK_RATE);
+        // HalI2CInit(ACC_ADDRESS, I2C_CLOCK_RATE);
 
-        uint8 addr, val;
+        // uint8 addr, val;
 
-        // for(;;){
+        // // for(;;){
 
-            addr = F_STATUS;
-            HalMotionI2CWrite(1, &addr);
-            HalMotionI2CRead(1, &val);
+        //     addr = F_STATUS;
+        //     HalMotionI2CWrite(1, &addr);
+        //     HalMotionI2CRead(1, &val);
 
-            val &= ~(BV(6)|BV(7));
+        //     val &= ~(BV(6)|BV(7));
 
-            if (val)
-            {
-                accGetAccData(val);
+        //     if (val)
+        //     {
+        //         accGetAccData(val);
 
-                // LED3_PIO = !LED3_PIO;
+        //         // LED3_PIO = !LED3_PIO;
 
-            // }else{
-            //     break;
-            }
-        // }
+        //     // }else{
+        //     //     break;
+        //     }
+        // // }
 
         // {
         //     uint8 d[8] = {val,0,0,0,0,0,0,0};
@@ -690,8 +690,8 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
         // }
 
         // restart timer
-        // osal_start_timerEx( simpleBLEPeripheral_TaskID, ACC_PERIODIC_EVT, 100 );
-        osal_start_timerEx( simpleBLEPeripheral_TaskID, ACC_PERIODIC_EVT, 2500 );
+        osal_start_timerEx( simpleBLEPeripheral_TaskID, ACC_PERIODIC_EVT, 100 );
+        // osal_start_timerEx( simpleBLEPeripheral_TaskID, ACC_PERIODIC_EVT, 2500 );
 
         return (events ^ ACC_PERIODIC_EVT);
     }
@@ -1433,18 +1433,44 @@ static void accInit( void )
     pBuf[1] = FULL_SCALE_8G;
     HalI2CWrite(2, pBuf);    
 
-    // pBuf[0] = PULSE_CFG;
-    // pBuf[1] = 0x3F;
-    // HalI2CWrite(2, pBuf);
+    //tap config
 
-    // pBuf[0] = PULSE_LTCY;
-    // pBuf[1] = 0x01;
-    // HalI2CWrite(2, pBuf);
+    pBuf[0] = PULSE_CFG;
+    pBuf[1] = (DPA_MASK|PELE_MASK|ZDPEFE_MASK);
+    HalI2CWrite(2, pBuf);
+
+    pBuf[0] = PULSE_THSX;
+    pBuf[1] = 0x06;//0x01;//0x00;   
+    HalI2CWrite(2, pBuf); 
+
+    pBuf[0] = PULSE_THSY;
+    pBuf[1] = 0x06;//0x01;//0x00;   
+    HalI2CWrite(2, pBuf); 
+
+    pBuf[0] = PULSE_THSZ;
+    pBuf[1] = 0x08;//0x01;//0x00;   
+    HalI2CWrite(2, pBuf);
+
+    pBuf[0] = PULSE_TMLT;
+    pBuf[1] = 0x06;     //about 1 sec in 12.5Hz low power 
+    HalI2CWrite(2, pBuf);
+
+    pBuf[0] = PULSE_LTCY;
+    pBuf[1] = 0x06;//0x00;  
+    HalI2CWrite(2, pBuf);
+
+    pBuf[0] = PULSE_WIND;
+    pBuf[1] = 0x0C;     
+    HalI2CWrite(2, pBuf);     
+
+    pBuf[0] = HP_FILTER_CUTOFF_REG;
+    pBuf[1] = 0x00;     
+    HalI2CWrite(2, pBuf);   
 
     //use fifo
-    pBuf[0] = F_SETUP;
-    pBuf[1] = 0x40;
-    HalI2CWrite(2, pBuf);
+    // pBuf[0] = F_SETUP;
+    // pBuf[1] = 0x40;
+    // HalI2CWrite(2, pBuf);
 
     // 50hz + low power mode, 15ua
     // put acc to active
@@ -1453,7 +1479,7 @@ static void accInit( void )
     HalI2CWrite(2, pBuf);
 
     pBuf[0] = CTRL_REG1;
-    pBuf[1] = (ASLP_RATE_12_5HZ + DATA_RATE_12_5HZ) | ACTIVE_MASK;
+    pBuf[1] = (ASLP_RATE_50HZ + DATA_RATE_50HZ) | ACTIVE_MASK;
     HalI2CWrite(2, pBuf);
 
 }
@@ -1463,7 +1489,7 @@ static void accLoop(void)
 
     
 
-    // accGetAccData();
+    accGetAccData();
 
     //todo
     X_out = X_out >> 6;
@@ -1495,13 +1521,6 @@ static void accLoop(void)
                 time_count = 0;
                 PACE_PEAK = ACC_CUR;
                 PACE_BOTTOM = 0;
-                
-                // P0_0 = 1;
-                // P0_1 = 1;
-                // P0_2 = 1;
-
-                // P1_0 = 0;
-                // P1_1 = 0;
 
             }
             else if (cross_count == 2)
@@ -1518,14 +1537,6 @@ static void accLoop(void)
                     // LED9_PIO = OPEN_PIO;
 
                     // osal_start_timerEx( simpleBLEPeripheral_TaskID, CLOSE_ALL_EVT, 300 );
-
-                    // P0_0 = 0;
-                    // P0_1 = 0;
-                    // P0_2 = 0;
-                    // P1_0 = 1;
-                    // P1_1 = 1;
-
-                    // osal_start_timerEx( simpleBLEPeripheral_TaskID, SBP_LED_STOP_EVT, 500 );
 
                     cross_count = 0;
 
@@ -1572,95 +1583,45 @@ static void accLoop(void)
         if (ACC_CUR < PACE_BOTTOM) PACE_BOTTOM = ACC_CUR;
     }
 
-    // accGetIntData();//read INT registers
+    accGetIntData();//read INT registers
 
-    // if (INT_STATUS & BV(3))
-    // {
-    //     //tap happened
-    //     // Serial.print("TAP\r\n");
+    if (INT_STATUS & 0x80)
+    {
 
-    //     // int i = 10000;
+        time();
 
-    //     // while (i)
-    //     // {
-    //     //     i--;
-    //     // }
-
-    //     // eepromWriteStep(TAP_DATA_TYPE);
-
-    //     uint8 pBuf[2];
-
-    //     //read INT
-    //     pBuf[0] = PULSE_SRC;
-    //     HalMotionI2CWrite(1, pBuf);
-    //     HalMotionI2CRead(1, &pBuf[1]);
-
-    //     LED6_PIO = !LED6_PIO;
-
-    //     // P0_3 = 0;
-
-    //     // osal_start_timerEx( simpleBLEPeripheral_TaskID, SBP_LED_STOP_EVT, 1000 );
-    // }
+    }
 
     time_count++;
 }
 
 
-static void accGetAccData(uint8 count)
+static void accGetAccData(void)
 {
     HalI2CInit(ACC_ADDRESS, I2C_CLOCK_RATE);
 
-    // uint8 pBuf[2];
-
-    // pBuf[0] = OUT_X_LSB;
-    // HalMotionI2CWrite(1, pBuf);
-    // HalMotionI2CRead(1, &pBuf[1]);
-    // X0 = pBuf[1];
-
-    // pBuf[0] = OUT_X_MSB;
-    // HalMotionI2CWrite(1, pBuf);
-    // HalMotionI2CRead(1, &pBuf[1]);
-    // X1 = pBuf[1];
-
-    // X_out = (int16)((X1 << 8) | X0);
-
-    // pBuf[0] = OUT_Y_LSB;
-    // HalMotionI2CWrite(1, pBuf);
-    // HalMotionI2CRead(1, &pBuf[1]);
-    // Y0 = pBuf[1];
-
-    // pBuf[0] = OUT_Y_MSB;
-    // HalMotionI2CWrite(1, pBuf);
-    // HalMotionI2CRead(1, &pBuf[1]);
-    // Y1 = pBuf[1];
-
-    // Y_out = (int16)((Y1 << 8) | Y0);
-
-    // pBuf[0] = OUT_Z_LSB;
-    // HalMotionI2CWrite(1, pBuf);
-    // HalMotionI2CRead(1, &pBuf[1]);
-    // Z0 = pBuf[1];
-
-    // pBuf[0] = OUT_Z_MSB;
-    // HalMotionI2CWrite(1, pBuf);
-    // HalMotionI2CRead(1, &pBuf[1]);
-    // Z1 = pBuf[1];
-
-    // Z_out = (int16)((Z1 << 8) | Z0);
-
-    uint8 addr = OUT_X_MSB, accBuf[192];
+    uint8 addr = OUT_X_MSB, accBuf[6];
 
     HalMotionI2CWrite(1, &addr);
-    HalMotionI2CRead(count * 6, accBuf);
+    HalMotionI2CRead(6, accBuf);
 
-    for (int i = 0; i < count * 6; i += 6)
-    {
-        X_out = (int16)((accBuf[i] << 8) | accBuf[i+1]);
-        Y_out = (int16)((accBuf[i+2] << 8) | accBuf[i+3]);
-        Z_out = (int16)((accBuf[i+4] << 8) | accBuf[i+5]);
+    X_out = (int16)((accBuf[0] << 8) | accBuf[1]);
+    Y_out = (int16)((accBuf[2] << 8) | accBuf[3]);
+    Z_out = (int16)((accBuf[4] << 8) | accBuf[5]);
 
-        accLoop();
-    }
+    // uint8 addr = OUT_X_MSB, accBuf[192];
+
+    // HalMotionI2CWrite(1, &addr);
+    // HalMotionI2CRead(count * 6, accBuf);
+
+    // for (int i = 0; i < count * 6; i += 6)
+    // {
+    //     X_out = (int16)((accBuf[i] << 8) | accBuf[i+1]);
+    //     Y_out = (int16)((accBuf[i+2] << 8) | accBuf[i+3]);
+    //     Z_out = (int16)((accBuf[i+4] << 8) | accBuf[i+5]);
+
+    //     accLoop();
+    // }
 }
 
 static void accGetIntData(void)
@@ -1670,7 +1631,7 @@ static void accGetIntData(void)
     uint8 pBuf[2];
 
     //read INT
-    pBuf[0] = INT_SOURCE;
+    pBuf[0] = PULSE_SRC;
     HalMotionI2CWrite(1, pBuf);
     HalMotionI2CRead(1, &pBuf[1]);
     INT_STATUS = pBuf[1];
@@ -1682,6 +1643,8 @@ static void accGetIntData(void)
 
 static void eepromWriteStep(uint8 type){
 
+    toggleAdvert(TRUE);
+
     uint8 point = type - 1;
 
     UTCTime current;
@@ -1690,7 +1653,12 @@ static void eepromWriteStep(uint8 type){
     current = osal_getClock();
     osal_ConvertUTCTime(&currentTm, current);
 
-    // currentTm.minutes = 0;
+    // if there is step data, count it by hour
+    if (type == STEP_DATA_TYPE)
+    {
+        currentTm.minutes = 0;
+    }
+
     currentTm.seconds = 0;
 
     if (oneData[point].hourSeconds == 0)       // data is empty
