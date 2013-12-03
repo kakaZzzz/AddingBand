@@ -723,19 +723,32 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
     if ( events & SLIP_TIMEOUT_EVT )
     {
         
+        // if (slipWaitFor == 3)
+        // {
+        //     // babyMove();
+        // }
+
+        // if (slipWaitFor == 1)
+        // {
+
+        //     time();
+        // }
+
+        // slipWaitFor = 0;
+        // slipFrom = 0;
+
+        // if (slipWaitFor = 2)
+        // {
+        //     LED2_PIO = OPEN_PIO;
+        // }
+
         if (slipWaitFor == 3)
         {
-            // babyMove();
-        }
-
-        if (slipWaitFor == 1)
-        {
-
+            // LED2_PIO = !LED2_PIO;
             time();
         }
 
         slipWaitFor = 0;
-        slipFrom = 0;
 
         return (events ^ SLIP_TIMEOUT_EVT);
     }
@@ -878,65 +891,85 @@ static void simpleBLEPeripheral_ProcessOSALMsg( osal_event_hdr_t *pMsg )
           break;
       }
 
-      // 1
-      if ( keys & HAL_KEY_SW_1 )
-      { 
+      // // 1
+      // if ( keys & HAL_KEY_SW_1 )
+      // { 
 
-        if (slipWaitFor == 0)
-        {
-            slipFrom = 1;
-            slipWaitFor = 2;
-        }
+      //   if (slipWaitFor == 0)
+      //   {
+      //       slipFrom = 1;
+      //       slipWaitFor = 2;
+      //   }
 
-        if (slipWaitFor == 1)
-        {
+      //   if (slipWaitFor == 1)
+      //   {
 
-            time();
+      //       time();
 
-            slipFrom = 0;
-            slipWaitFor = 0;
-        }
+      //       slipFrom = 0;
+      //       slipWaitFor = 0;
+      //   }
 
-      }
+      // }
 
-      // 2
-      if ( keys & HAL_KEY_SW_2 )
+      // // 2
+      // if ( keys & HAL_KEY_SW_2 )
+      // {
+
+      //   if (slipWaitFor == 2)
+      //   {
+      //       if (slipFrom == 1)
+      //       {
+      //           slipWaitFor = 3;
+      //       }
+
+      //       if (slipFrom == 3)
+      //       {
+      //           slipWaitFor = 1;
+      //       }
+      //   }
+
+      // }
+
+      // // 3
+      // if ( keys & HAL_KEY_SW_3 )
+      // {
+
+      //   if (slipWaitFor == 0)
+      //   {
+      //       slipFrom = 3;
+      //       slipWaitFor = 2;
+      //   }
+
+      //   if (slipWaitFor == 3)
+      //   {
+      //       babyMove();
+      //       eepromWriteStep(TAP_DATA_TYPE);
+
+      //       slipFrom = 0;
+      //       slipWaitFor = 0;
+      //   }
+
+      // }
+
+      if (onTheKey)
       {
+          if (slipWaitFor == 0)
+          {
+              slipWaitFor = 2;
+          }else if (slipWaitFor == 2)
+          {
+              slipWaitFor = 3;
 
-        if (slipWaitFor == 2)
-        {
-            if (slipFrom == 1)
-            {
-                slipWaitFor = 3;
-            }
+              osal_stop_timerEx( simpleBLEPeripheral_TaskID, SLIP_TIMEOUT_EVT );
+          }else if (slipWaitFor == 3)
+          {
+              LED3_PIO = !LED3_PIO;
 
-            if (slipFrom == 3)
-            {
-                slipWaitFor = 1;
-            }
-        }
+              osal_stop_timerEx( simpleBLEPeripheral_TaskID, SLIP_TIMEOUT_EVT );
 
-      }
-
-      // 3
-      if ( keys & HAL_KEY_SW_3 )
-      {
-
-        if (slipWaitFor == 0)
-        {
-            slipFrom = 3;
-            slipWaitFor = 2;
-        }
-
-        if (slipWaitFor == 3)
-        {
-            babyMove();
-            eepromWriteStep(TAP_DATA_TYPE);
-
-            slipFrom = 0;
-            slipWaitFor = 0;
-        }
-
+              slipWaitFor = 0;
+          }
       }
 
       if (slipWaitFor != 0)
@@ -1588,7 +1621,7 @@ static void accLoop(void)
     if (INT_STATUS & 0x80)
     {
 
-        time();
+        // time();
 
     }
 
