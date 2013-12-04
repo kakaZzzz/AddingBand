@@ -214,12 +214,13 @@ int16 ACC_CUR = 0;
 #define EEPROM_POSITION_STEP_DATA_START     (EEPROM_ADDRESS_DATA_MAX)
 #define EEPROM_POSITION_STEP_DATA_STOP      (EEPROM_POSITION_STEP_DATA_START + 2)
 
-#define TAP_DATA_TYPE       1
-#define STEP_DATA_TYPE      2
+#define TAP_DATA_TYPE                       1
+#define STEP_DATA_TYPE                      2
+#define TAP_HOUR_START_TYPE                 3
 
-#define DATA_TYPE_COUNT     2
+#define DATA_TYPE_COUNT                     3
 
-#define SYNC_CODE           22
+#define SYNC_CODE                           22
 
 
 /*********************************************************************
@@ -346,10 +347,11 @@ static void accInit(void);
 static void accLoop(void);
 
 static void accGetIntData(void);
-static void accGetAccData(void);
+// static void accGetAccData(void);
+static void accGetAccData(uint8 count);
 
-static void eepromWriteStep(uint8 type);
-static void eepromReadStep(void);
+static void eepromWrite(uint8 type);
+static void eepromRead(void);
 
 static void closeAllPIO(void);
 
@@ -654,30 +656,22 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
     if ( events & ACC_PERIODIC_EVT )
     {
 
-        accLoop();
+        // accLoop();
 
-        // HalI2CInit(ACC_ADDRESS, I2C_CLOCK_RATE);
+        HalI2CInit(ACC_ADDRESS, I2C_CLOCK_RATE);
 
-        // uint8 addr, val;
+        uint8 addr, val;
 
-        // // for(;;){
+        addr = F_STATUS;
+        HalMotionI2CWrite(1, &addr);
+        HalMotionI2CRead(1, &val);
 
-        //     addr = F_STATUS;
-        //     HalMotionI2CWrite(1, &addr);
-        //     HalMotionI2CRead(1, &val);
+        val &= ~(BV(6)|BV(7));
 
-        //     val &= ~(BV(6)|BV(7));
-
-        //     if (val)
-        //     {
-        //         accGetAccData(val);
-
-        //         // LED3_PIO = !LED3_PIO;
-
-        //     // }else{
-        //     //     break;
-        //     }
-        // // }
+        if (val)
+        {
+            accGetAccData(val);
+        }
 
         // {
         //     uint8 d[8] = {val,0,0,0,0,0,0,0};
@@ -690,8 +684,8 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
         // }
 
         // restart timer
-        osal_start_timerEx( simpleBLEPeripheral_TaskID, ACC_PERIODIC_EVT, 100 );
-        // osal_start_timerEx( simpleBLEPeripheral_TaskID, ACC_PERIODIC_EVT, 2500 );
+        // osal_start_timerEx( simpleBLEPeripheral_TaskID, ACC_PERIODIC_EVT, 100 );
+        osal_start_timerEx( simpleBLEPeripheral_TaskID, ACC_PERIODIC_EVT, 2500 );
 
         return (events ^ ACC_PERIODIC_EVT);
     }
@@ -742,6 +736,7 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
         //     LED2_PIO = OPEN_PIO;
         // }
 
+        // double tap!!!
         if (slipWaitFor == 3)
         {
             // LED2_PIO = !LED2_PIO;
@@ -827,7 +822,7 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
         if (onTheKey)
         {
             babyMove();
-            eepromWriteStep(TAP_DATA_TYPE);
+            eepromWrite(TAP_DATA_TYPE);
         }
 
         return (events ^ LONG_PRESS_EVT);
@@ -944,7 +939,7 @@ static void simpleBLEPeripheral_ProcessOSALMsg( osal_event_hdr_t *pMsg )
       //   if (slipWaitFor == 3)
       //   {
       //       babyMove();
-      //       eepromWriteStep(TAP_DATA_TYPE);
+      //       eepromWrite(TAP_DATA_TYPE);
 
       //       slipFrom = 0;
       //       slipWaitFor = 0;
@@ -956,19 +951,23 @@ static void simpleBLEPeripheral_ProcessOSALMsg( osal_event_hdr_t *pMsg )
       {
           if (slipWaitFor == 0)
           {
-              slipWaitFor = 2;
-          }else if (slipWaitFor == 2)
-          {
-              slipWaitFor = 3;
+            slipWaitFor = 2;
 
-              osal_stop_timerEx( simpleBLEPeripheral_TaskID, SLIP_TIMEOUT_EVT );
-          }else if (slipWaitFor == 3)
-          {
-              LED3_PIO = !LED3_PIO;
+          }else if (slipWaitFor == 2){
 
-              osal_stop_timerEx( simpleBLEPeripheral_TaskID, SLIP_TIMEOUT_EVT );
+            slipWaitFor = 3;
 
-              slipWaitFor = 0;
+            osal_stop_timerEx( simpleBLEPeripheral_TaskID, SLIP_TIMEOUT_EVT );
+
+          }else if (slipWaitFor == 3){
+
+            // trible tap!!
+            eepromWrite(TAP_HOUR_START_TYPE);
+            babyMove();
+
+            osal_stop_timerEx( simpleBLEPeripheral_TaskID, SLIP_TIMEOUT_EVT );
+
+            slipWaitFor = 0;
           }
       }
 
@@ -1192,7 +1191,7 @@ static void simpleProfileChangeCB( uint8 paramID )
 
         if (newValue == SYNC_CODE)
         {
-            eepromReadStep();
+            eepromRead();
         }
 
 #if (defined HAL_LCD) && (HAL_LCD == TRUE)
@@ -1237,7 +1236,7 @@ static void simpleProfileChangeCB( uint8 paramID )
 
     case HEALTH_DATA_BODY:
 
-        // eepromReadStep();
+        // eepromRead();
 
         break;
 
@@ -1468,42 +1467,42 @@ static void accInit( void )
 
     //tap config
 
-    pBuf[0] = PULSE_CFG;
-    pBuf[1] = (DPA_MASK|PELE_MASK|ZDPEFE_MASK);
-    HalI2CWrite(2, pBuf);
+    // pBuf[0] = PULSE_CFG;
+    // pBuf[1] = (DPA_MASK|PELE_MASK|ZDPEFE_MASK);
+    // HalI2CWrite(2, pBuf);
 
-    pBuf[0] = PULSE_THSX;
-    pBuf[1] = 0x06;//0x01;//0x00;   
-    HalI2CWrite(2, pBuf); 
+    // pBuf[0] = PULSE_THSX;
+    // pBuf[1] = 0x06;//0x01;//0x00;   
+    // HalI2CWrite(2, pBuf); 
 
-    pBuf[0] = PULSE_THSY;
-    pBuf[1] = 0x06;//0x01;//0x00;   
-    HalI2CWrite(2, pBuf); 
+    // pBuf[0] = PULSE_THSY;
+    // pBuf[1] = 0x06;//0x01;//0x00;   
+    // HalI2CWrite(2, pBuf); 
 
-    pBuf[0] = PULSE_THSZ;
-    pBuf[1] = 0x08;//0x01;//0x00;   
-    HalI2CWrite(2, pBuf);
+    // pBuf[0] = PULSE_THSZ;
+    // pBuf[1] = 0x08;//0x01;//0x00;   
+    // HalI2CWrite(2, pBuf);
 
-    pBuf[0] = PULSE_TMLT;
-    pBuf[1] = 0x06;     //about 1 sec in 12.5Hz low power 
-    HalI2CWrite(2, pBuf);
+    // pBuf[0] = PULSE_TMLT;
+    // pBuf[1] = 0x06;     //about 1 sec in 12.5Hz low power 
+    // HalI2CWrite(2, pBuf);
 
-    pBuf[0] = PULSE_LTCY;
-    pBuf[1] = 0x06;//0x00;  
-    HalI2CWrite(2, pBuf);
+    // pBuf[0] = PULSE_LTCY;
+    // pBuf[1] = 0x06;//0x00;  
+    // HalI2CWrite(2, pBuf);
 
-    pBuf[0] = PULSE_WIND;
-    pBuf[1] = 0x0C;     
-    HalI2CWrite(2, pBuf);     
+    // pBuf[0] = PULSE_WIND;
+    // pBuf[1] = 0x0C;     
+    // HalI2CWrite(2, pBuf);     
 
-    pBuf[0] = HP_FILTER_CUTOFF_REG;
-    pBuf[1] = 0x00;     
-    HalI2CWrite(2, pBuf);   
+    // pBuf[0] = HP_FILTER_CUTOFF_REG;
+    // pBuf[1] = 0x00;     
+    // HalI2CWrite(2, pBuf);   
 
     //use fifo
-    // pBuf[0] = F_SETUP;
-    // pBuf[1] = 0x40;
-    // HalI2CWrite(2, pBuf);
+    pBuf[0] = F_SETUP;
+    pBuf[1] = 0x40;
+    HalI2CWrite(2, pBuf);
 
     // 50hz + low power mode, 15ua
     // put acc to active
@@ -1512,7 +1511,7 @@ static void accInit( void )
     HalI2CWrite(2, pBuf);
 
     pBuf[0] = CTRL_REG1;
-    pBuf[1] = (ASLP_RATE_50HZ + DATA_RATE_50HZ) | ACTIVE_MASK;
+    pBuf[1] = (ASLP_RATE_12_5HZ + DATA_RATE_12_5HZ) | ACTIVE_MASK;
     HalI2CWrite(2, pBuf);
 
 }
@@ -1522,7 +1521,7 @@ static void accLoop(void)
 
     
 
-    accGetAccData();
+    // accGetAccData();
 
     //todo
     X_out = X_out >> 6;
@@ -1579,7 +1578,7 @@ static void accLoop(void)
 
                     // SimpleProfile_SetParameter( HEALTH_SYNC, sizeof ( d ), d );
 
-                    eepromWriteStep(STEP_DATA_TYPE);
+                    eepromWrite(STEP_DATA_TYPE);
 
                 }
                 else
@@ -1616,45 +1615,46 @@ static void accLoop(void)
         if (ACC_CUR < PACE_BOTTOM) PACE_BOTTOM = ACC_CUR;
     }
 
-    accGetIntData();//read INT registers
+    // accGetIntData();//read INT registers
 
-    if (INT_STATUS & 0x80)
-    {
+    // if (INT_STATUS & 0x80)
+    // {
 
-        // time();
+    //     // time();
 
-    }
+    // }
 
     time_count++;
 }
 
 
-static void accGetAccData(void)
+// static void accGetAccData(void)
+static void accGetAccData(uint8 count)
 {
     HalI2CInit(ACC_ADDRESS, I2C_CLOCK_RATE);
 
-    uint8 addr = OUT_X_MSB, accBuf[6];
-
-    HalMotionI2CWrite(1, &addr);
-    HalMotionI2CRead(6, accBuf);
-
-    X_out = (int16)((accBuf[0] << 8) | accBuf[1]);
-    Y_out = (int16)((accBuf[2] << 8) | accBuf[3]);
-    Z_out = (int16)((accBuf[4] << 8) | accBuf[5]);
-
-    // uint8 addr = OUT_X_MSB, accBuf[192];
+    // uint8 addr = OUT_X_MSB, accBuf[6];
 
     // HalMotionI2CWrite(1, &addr);
-    // HalMotionI2CRead(count * 6, accBuf);
+    // HalMotionI2CRead(6, accBuf);
 
-    // for (int i = 0; i < count * 6; i += 6)
-    // {
-    //     X_out = (int16)((accBuf[i] << 8) | accBuf[i+1]);
-    //     Y_out = (int16)((accBuf[i+2] << 8) | accBuf[i+3]);
-    //     Z_out = (int16)((accBuf[i+4] << 8) | accBuf[i+5]);
+    // X_out = (int16)((accBuf[0] << 8) | accBuf[1]);
+    // Y_out = (int16)((accBuf[2] << 8) | accBuf[3]);
+    // Z_out = (int16)((accBuf[4] << 8) | accBuf[5]);
 
-    //     accLoop();
-    // }
+    uint8 addr = OUT_X_MSB, accBuf[192];
+
+    HalMotionI2CWrite(1, &addr);
+    HalMotionI2CRead(count * 6, accBuf);
+
+    for (int i = 0; i < count * 6; i += 6)
+    {
+        X_out = (int16)((accBuf[i] << 8) | accBuf[i+1]);
+        Y_out = (int16)((accBuf[i+2] << 8) | accBuf[i+3]);
+        Z_out = (int16)((accBuf[i+4] << 8) | accBuf[i+5]);
+
+        accLoop();
+    }
 }
 
 static void accGetIntData(void)
@@ -1674,142 +1674,9 @@ static void accGetIntData(void)
 
 // for memcpy
 
-static void eepromWriteStep(uint8 type){
+// static void eepromWrite(uint8 type){
 
-    toggleAdvert(TRUE);
-
-    uint8 point = type - 1;
-
-    UTCTime current;
-    UTCTimeStruct currentTm;
-
-    current = osal_getClock();
-    osal_ConvertUTCTime(&currentTm, current);
-
-    // if there is step data, count it by hour
-    if (type == STEP_DATA_TYPE)
-    {
-        currentTm.minutes = 0;
-    }
-
-    currentTm.seconds = 0;
-
-    if (oneData[point].hourSeconds == 0)       // data is empty
-    {
-        oneData[point].tm = currentTm;
-        oneData[point].hourSeconds = osal_ConvertUTCSecs(&oneData[point].tm);
-
-        oneData[point].count = 1;
-        oneData[point].type = type;
-
-    }else if(oneData[point].tm.year != currentTm.year ||
-             oneData[point].tm.month != currentTm.month ||
-             oneData[point].tm.day != currentTm.day ||
-             oneData[point].tm.minutes != currentTm.minutes ||         // for test, one minutes
-             oneData[point].tm.hour != currentTm.hour){                // pass a hour, need to write
-
-        // uint8 aBuf[2];
-        uint8 dBuf[8] = {
-            LO_UINT16(LO_UINT32(oneData[point].hourSeconds)),
-            HI_UINT16(LO_UINT32(oneData[point].hourSeconds)),
-            LO_UINT16(HI_UINT32(oneData[point].hourSeconds)),
-            HI_UINT16(HI_UINT32(oneData[point].hourSeconds)),
-            LO_UINT16(oneData[point].count),
-            HI_UINT16(oneData[point].count),
-            oneData[point].type,
-            0
-        };
-
-        osal_memcpy(&db[stepDataStop], &dBuf[0], 8);
-
-        stepDataStop += 8;
-
-        // arrive maxsize
-        if (stepDataStop >= EEPROM_ADDRESS_DATA_MAX)
-        {
-            stepDataStop = 0;
-        }
-
-        // space is full
-        if (stepDataStop == stepDataStart)
-        {
-            stepDataStart += 8;
-        }
-
-        uint16 length = ((stepDataStop - stepDataStart) / 8) + DATA_TYPE_COUNT;
-
-        // SimpleProfile_SetParameter( HEALTH_DATA_HEADER, 2,  &stepDataStop);
-        SimpleProfile_SetParameter( HEALTH_DATA_HEADER, 2,  &length);
-        SimpleProfile_SetParameter( HEALTH_SYNC, 8, dBuf);
-
-        // refresh oneData[point]
-        oneData[point].tm = currentTm;
-        oneData[point].hourSeconds = osal_ConvertUTCSecs(&oneData[point].tm);
-
-        oneData[point].count = 1;
-
-    }else{      // in same hour
-
-        oneData[point].count ++;
-    }
-
-}
-
-static void eepromReadStep(void){
-
-    while(stepDataStart != stepDataStop){
-        uint8 dBuf[8];
-
-        osal_memcpy(&dBuf[0], &db[stepDataStart], 8);
-
-        stepDataStart += 8;
-
-        // arrive maxsize
-        if (stepDataStart >= EEPROM_ADDRESS_DATA_MAX)
-        {
-            stepDataStart = 0;
-        }
-
-        SimpleProfile_SetParameter( HEALTH_DATA_BODY, 8,  dBuf);
-        SimpleProfile_SetParameter( HEALTH_SYNC, 8, dBuf);
-    }
-
-    if (stepDataStart == stepDataStop)
-    {
-        
-        int i;
-
-        for (i = 0; i < DATA_TYPE_COUNT; i++)
-        {
-            uint8 dBuf[8] = {
-                LO_UINT16(LO_UINT32(oneData[i].hourSeconds)),
-                HI_UINT16(LO_UINT32(oneData[i].hourSeconds)),
-                LO_UINT16(HI_UINT32(oneData[i].hourSeconds)),
-                HI_UINT16(HI_UINT32(oneData[i].hourSeconds)),
-                LO_UINT16(oneData[i].count),
-                HI_UINT16(oneData[i].count),
-                oneData[i].type,
-                0
-            };
-
-            SimpleProfile_SetParameter( HEALTH_DATA_BODY, 8,  dBuf);
-
-            oneData[i].count = 0;
-        }
-    }
-
-    uint16 length = DATA_TYPE_COUNT;
-    SimpleProfile_SetParameter( HEALTH_DATA_HEADER, 2,  &length);
-}
-
-
-
-
-
-
-// for eeprom
-
-// static void eepromWriteStep(uint8 type){
+//     toggleAdvert(TRUE);
 
 //     uint8 point = type - 1;
 
@@ -1819,7 +1686,12 @@ static void eepromReadStep(void){
 //     current = osal_getClock();
 //     osal_ConvertUTCTime(&currentTm, current);
 
-//     // currentTm.minutes = 0;
+//     // if there is step data, count it by hour
+//     if (type == STEP_DATA_TYPE)
+//     {
+//         currentTm.minutes = 0;
+//     }
+
 //     currentTm.seconds = 0;
 
 //     if (oneData[point].hourSeconds == 0)       // data is empty
@@ -1836,13 +1708,8 @@ static void eepromReadStep(void){
 //              oneData[point].tm.minutes != currentTm.minutes ||         // for test, one minutes
 //              oneData[point].tm.hour != currentTm.hour){                // pass a hour, need to write
 
-//         // write to eeprom
-//         HalI2CInit(EEPROM_ADDRESS, I2C_CLOCK_RATE);
-
 //         // uint8 aBuf[2];
-//         uint8 dBuf[10] = {
-//             LO_UINT16(stepDataStop),
-//             HI_UINT16(stepDataStop),
+//         uint8 dBuf[8] = {
 //             LO_UINT16(LO_UINT32(oneData[point].hourSeconds)),
 //             HI_UINT16(LO_UINT32(oneData[point].hourSeconds)),
 //             LO_UINT16(HI_UINT32(oneData[point].hourSeconds)),
@@ -1853,8 +1720,7 @@ static void eepromReadStep(void){
 //             0
 //         };
 
-//         HalI2CWrite(sizeof(dBuf), dBuf);
-//         HalI2CAckPolling();
+//         osal_memcpy(&db[stepDataStop], &dBuf[0], 8);
 
 //         stepDataStop += 8;
 
@@ -1876,7 +1742,6 @@ static void eepromReadStep(void){
 //         SimpleProfile_SetParameter( HEALTH_DATA_HEADER, 2,  &length);
 //         SimpleProfile_SetParameter( HEALTH_SYNC, 8, dBuf);
 
-
 //         // refresh oneData[point]
 //         oneData[point].tm = currentTm;
 //         oneData[point].hourSeconds = osal_ConvertUTCSecs(&oneData[point].tm);
@@ -1890,19 +1755,12 @@ static void eepromReadStep(void){
 
 // }
 
-// static void eepromReadStep(void){
-
-//     HalI2CInit(EEPROM_ADDRESS, I2C_CLOCK_RATE);
+// static void eepromRead(void){
 
 //     while(stepDataStart != stepDataStop){
+//         uint8 dBuf[8];
 
-//         uint8 dBuf[8], addr[2] = {
-//             LO_UINT16(stepDataStart),
-//             HI_UINT16(stepDataStart)
-//         };
-
-//         HalI2CWrite(sizeof(addr), addr);
-//         HalI2CRead(sizeof(dBuf), dBuf);
+//         osal_memcpy(&dBuf[0], &db[stepDataStart], 8);
 
 //         stepDataStart += 8;
 
@@ -1916,7 +1774,6 @@ static void eepromReadStep(void){
 //         SimpleProfile_SetParameter( HEALTH_SYNC, 8, dBuf);
 //     }
 
-//     // read no-saved data
 //     if (stepDataStart == stepDataStop)
 //     {
         
@@ -1944,6 +1801,153 @@ static void eepromReadStep(void){
 //     uint16 length = DATA_TYPE_COUNT;
 //     SimpleProfile_SetParameter( HEALTH_DATA_HEADER, 2,  &length);
 // }
+
+
+
+
+
+
+// for eeprom
+
+static void eepromWrite(uint8 type){
+
+    uint8 point = type - 1;
+
+    UTCTime current;
+    UTCTimeStruct currentTm;
+
+    current = osal_getClock();
+    osal_ConvertUTCTime(&currentTm, current);
+
+    if (type == STEP_DATA_TYPE)
+    {
+        currentTm.minutes = 0;
+    }
+
+    currentTm.seconds = 0;
+
+    if (oneData[point].hourSeconds == 0)       // data is empty
+    {
+        oneData[point].tm = currentTm;
+        oneData[point].hourSeconds = osal_ConvertUTCSecs(&oneData[point].tm);
+
+        oneData[point].count = 1;
+        oneData[point].type = type;
+
+    }else if(oneData[point].tm.year != currentTm.year ||
+             oneData[point].tm.month != currentTm.month ||
+             oneData[point].tm.day != currentTm.day ||
+             oneData[point].tm.minutes != currentTm.minutes ||         // for test, one minutes
+             oneData[point].tm.hour != currentTm.hour){                // pass a hour, need to write
+
+        // write to eeprom
+        HalI2CInit(EEPROM_ADDRESS, I2C_CLOCK_RATE);
+
+        // uint8 aBuf[2];
+        uint8 dBuf[10] = {
+            LO_UINT16(stepDataStop),
+            HI_UINT16(stepDataStop),
+            LO_UINT16(LO_UINT32(oneData[point].hourSeconds)),
+            HI_UINT16(LO_UINT32(oneData[point].hourSeconds)),
+            LO_UINT16(HI_UINT32(oneData[point].hourSeconds)),
+            HI_UINT16(HI_UINT32(oneData[point].hourSeconds)),
+            LO_UINT16(oneData[point].count),
+            HI_UINT16(oneData[point].count),
+            oneData[point].type,
+            0
+        };
+
+        HalI2CWrite(sizeof(dBuf), dBuf);
+        HalI2CAckPolling();
+
+        stepDataStop += 8;
+
+        // arrive maxsize
+        if (stepDataStop >= EEPROM_ADDRESS_DATA_MAX)
+        {
+            stepDataStop = 0;
+        }
+
+        // space is full
+        if (stepDataStop == stepDataStart)
+        {
+            stepDataStart += 8;
+        }
+
+        uint16 length = ((stepDataStop - stepDataStart) / 8) + DATA_TYPE_COUNT;
+
+        // SimpleProfile_SetParameter( HEALTH_DATA_HEADER, 2,  &stepDataStop);
+        SimpleProfile_SetParameter( HEALTH_DATA_HEADER, 2,  &length);
+        SimpleProfile_SetParameter( HEALTH_SYNC, 8, dBuf);
+
+
+        // refresh oneData[point]
+        oneData[point].tm = currentTm;
+        oneData[point].hourSeconds = osal_ConvertUTCSecs(&oneData[point].tm);
+
+        oneData[point].count = 1;
+
+    }else{      // in same hour
+
+        oneData[point].count ++;
+    }
+
+}
+
+static void eepromRead(void){
+
+    HalI2CInit(EEPROM_ADDRESS, I2C_CLOCK_RATE);
+
+    while(stepDataStart != stepDataStop){
+
+        uint8 dBuf[8], addr[2] = {
+            LO_UINT16(stepDataStart),
+            HI_UINT16(stepDataStart)
+        };
+
+        HalI2CWrite(sizeof(addr), addr);
+        HalI2CRead(sizeof(dBuf), dBuf);
+
+        stepDataStart += 8;
+
+        // arrive maxsize
+        if (stepDataStart >= EEPROM_ADDRESS_DATA_MAX)
+        {
+            stepDataStart = 0;
+        }
+
+        SimpleProfile_SetParameter( HEALTH_DATA_BODY, 8,  dBuf);
+        SimpleProfile_SetParameter( HEALTH_SYNC, 8, dBuf);
+    }
+
+    // read no-saved data
+    if (stepDataStart == stepDataStop)
+    {
+        
+        int i;
+
+        for (i = 0; i < DATA_TYPE_COUNT; i++)
+        {
+            uint8 dBuf[8] = {
+                LO_UINT16(LO_UINT32(oneData[i].hourSeconds)),
+                HI_UINT16(LO_UINT32(oneData[i].hourSeconds)),
+                LO_UINT16(HI_UINT32(oneData[i].hourSeconds)),
+                HI_UINT16(HI_UINT32(oneData[i].hourSeconds)),
+                LO_UINT16(oneData[i].count),
+                HI_UINT16(oneData[i].count),
+                oneData[i].type,
+                0
+            };
+
+            SimpleProfile_SetParameter( HEALTH_DATA_BODY, 8,  dBuf);
+
+            oneData[i].count = 0;
+        }
+    }
+
+    uint16 length = DATA_TYPE_COUNT;
+    SimpleProfile_SetParameter( HEALTH_DATA_HEADER, 2,  &length);
+}
 
 /*********************************************************************
 *********************************************************************/
