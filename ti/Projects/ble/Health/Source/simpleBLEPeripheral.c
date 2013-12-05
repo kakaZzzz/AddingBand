@@ -13,9 +13,6 @@
 #include "hal_adc.h"
 #include "hal_led.h"
 #include "hal_key.h"
-#if (defined HAL_LCD) && (HAL_LCD == TRUE)
-  #include "hal_lcd.h"
-#endif
 
 #include "hal_i2c.h"
 
@@ -32,11 +29,7 @@
 #include "devinfoservice.h"
 #include "health_profile.h"
 
-#if defined ( PLUS_BROADCASTER )
-#include "peripheralBroadcaster.h"
-#else
 #include "peripheral.h"
-#endif
 
 #include "gapbondmgr.h"
 
@@ -125,10 +118,6 @@
 // Battery measurement period in ms
 #define DEFAULT_ACC_PERIOD                    100
 
-#if defined ( PLUS_BROADCASTER )
-#define ADV_IN_CONN_WAIT                      500 // delay 500 ms
-#endif
-
 // define i2c address
 #define ACC_ADDRESS                           0x1D
 
@@ -206,7 +195,7 @@ int16 ACC_CUR = 0;
 
 // define for eeprom
 #define EEPROM_ADDRESS_BLOCK_SIZE           8
-#define EEPROM_ADDRESS_BLOCK_COUNT          50
+#define EEPROM_ADDRESS_BLOCK_COUNT          4000
 
 #define EEPROM_ADDRESS_RESERVE_MAX          32768
 #define EEPROM_ADDRESS_DATA_MAX             (EEPROM_ADDRESS_BLOCK_SIZE * EEPROM_ADDRESS_BLOCK_COUNT)
@@ -322,15 +311,10 @@ typedef struct
 one_data_t oneData[DATA_TYPE_COUNT];
 
 // RAM DB
-uint8 db[EEPROM_ADDRESS_DATA_MAX];
+// uint8 db[EEPROM_ADDRESS_DATA_MAX];
 
-int ledCycleCount = 0;
-
-uint8 slipWaitFor = 0, slipFrom = 0, lockSlip = 0;
-
-uint8 blinkPIO = 0, blinkMinutes = 13;
-
-uint8 onTheKey = 0;
+// define for keys
+uint8 slipWaitFor = 0, lockSlip = 0, blinkPIO = 0, blinkMinutes = 13, onTheKey = 0, ledCycleCount = 0;
 
 /*********************************************************************
  * LOCAL FUNCTIONS
@@ -346,7 +330,7 @@ static void battCB(uint8 event);
 static void accInit(void);
 static void accLoop(void);
 
-static void accGetIntData(void);
+// static void accGetIntData(void);
 // static void accGetAccData(void);
 static void accGetAccData(uint8 count);
 
@@ -364,11 +348,6 @@ static void toggleLEDWithTime(uint8 num, uint8 io);
 static void blinkLED(void);
 
 static void toggleAdvert(uint8 status);
-
-#if (defined HAL_LCD) && (HAL_LCD == TRUE)
-static char *bdAddr2Str ( uint8 *pAddr );
-#endif // (defined HAL_LCD) && (HAL_LCD == TRUE)
-
 
 
 /*********************************************************************
@@ -560,20 +539,6 @@ void SimpleBLEPeripheral_Init( uint8 task_id )
 
     // MOTOR_PIO = OPEN_PIO;
 
-#if (defined HAL_LCD) && (HAL_LCD == TRUE)
-
-#if defined FEATURE_OAD
-#if defined (HAL_IMAGE_A)
-    HalLcdWriteStringValue( "BLE Peri-A", OAD_VER_NUM( _imgHdr.ver ), 16, HAL_LCD_LINE_1 );
-#else
-    HalLcdWriteStringValue( "BLE Peri-B", OAD_VER_NUM( _imgHdr.ver ), 16, HAL_LCD_LINE_1 );
-#endif // HAL_IMAGE_A
-#else
-    HalLcdWriteString( "BLE Peripheral", HAL_LCD_LINE_1 );
-#endif // FEATURE_OAD
-
-#endif // (defined HAL_LCD) && (HAL_LCD == TRUE)
-
     // Register callback with SimpleGATTprofile
     VOID SimpleProfile_RegisterAppCBs( &simpleBLEPeripheral_SimpleProfileCBs );
 
@@ -716,30 +681,10 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
 
     if ( events & SLIP_TIMEOUT_EVT )
     {
-        
-        // if (slipWaitFor == 3)
-        // {
-        //     // babyMove();
-        // }
-
-        // if (slipWaitFor == 1)
-        // {
-
-        //     time();
-        // }
-
-        // slipWaitFor = 0;
-        // slipFrom = 0;
-
-        // if (slipWaitFor = 2)
-        // {
-        //     LED2_PIO = OPEN_PIO;
-        // }
 
         // double tap!!!
         if (slipWaitFor == 3)
         {
-            // LED2_PIO = !LED2_PIO;
             time();
         }
 
@@ -828,17 +773,6 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
         return (events ^ LONG_PRESS_EVT);
     }
 
-#if defined ( PLUS_BROADCASTER )
-    if ( events & SBP_ADV_IN_CONNECTION_EVT )
-    {
-        uint8 turnOnAdv = TRUE;
-        // Turn on advertising while in a connection
-        GAPRole_SetParameter( GAPROLE_ADVERT_ENABLED, sizeof( uint8 ), &turnOnAdv );
-
-        return (events ^ SBP_ADV_IN_CONNECTION_EVT);
-    }
-#endif // PLUS_BROADCASTER
-
     //debug usage - eeprom test
     if ( events & EEPROM_TEST_EVT )
     {
@@ -874,78 +808,17 @@ static void simpleBLEPeripheral_ProcessOSALMsg( osal_event_hdr_t *pMsg )
 
       onTheKey = keys ? 1 : 0;
 
+      if (lockSlip)
+      {
+          break;
+      }
+
       if (onTheKey)
       {
           osal_start_timerEx( simpleBLEPeripheral_TaskID, LONG_PRESS_EVT , 1000 );
       }else{
         osal_stop_timerEx( simpleBLEPeripheral_TaskID, LONG_PRESS_EVT );
       }
-
-      if (lockSlip)
-      {
-          break;
-      }
-
-      // // 1
-      // if ( keys & HAL_KEY_SW_1 )
-      // { 
-
-      //   if (slipWaitFor == 0)
-      //   {
-      //       slipFrom = 1;
-      //       slipWaitFor = 2;
-      //   }
-
-      //   if (slipWaitFor == 1)
-      //   {
-
-      //       time();
-
-      //       slipFrom = 0;
-      //       slipWaitFor = 0;
-      //   }
-
-      // }
-
-      // // 2
-      // if ( keys & HAL_KEY_SW_2 )
-      // {
-
-      //   if (slipWaitFor == 2)
-      //   {
-      //       if (slipFrom == 1)
-      //       {
-      //           slipWaitFor = 3;
-      //       }
-
-      //       if (slipFrom == 3)
-      //       {
-      //           slipWaitFor = 1;
-      //       }
-      //   }
-
-      // }
-
-      // // 3
-      // if ( keys & HAL_KEY_SW_3 )
-      // {
-
-      //   if (slipWaitFor == 0)
-      //   {
-      //       slipFrom = 3;
-      //       slipWaitFor = 2;
-      //   }
-
-      //   if (slipWaitFor == 3)
-      //   {
-      //       babyMove();
-      //       eepromWrite(TAP_DATA_TYPE);
-
-      //       slipFrom = 0;
-      //       slipWaitFor = 0;
-      //   }
-
-      // }
 
       if (onTheKey)
       {
@@ -997,6 +870,9 @@ static void simpleBLEPeripheral_ProcessOSALMsg( osal_event_hdr_t *pMsg )
  */
 static void peripheralStateNotificationCB( gaprole_States_t newState )
 {
+    
+    closeAllPIO();
+
     switch ( newState )
     {
     case GAPROLE_STARTED:
@@ -1023,59 +899,44 @@ static void peripheralStateNotificationCB( gaprole_States_t newState )
 
         DevInfo_SetParameter(DEVINFO_SYSTEM_ID, DEVINFO_SYSTEM_ID_LEN, systemId);
 
-#if (defined HAL_LCD) && (HAL_LCD == TRUE)
-        // Display device address
-        HalLcdWriteString( bdAddr2Str( ownAddress ),  HAL_LCD_LINE_2 );
-        HalLcdWriteString( "Initialized",  HAL_LCD_LINE_3 );
-#endif // (defined HAL_LCD) && (HAL_LCD == TRUE)
+        LED1_PIO = OPEN_PIO;
+        
     }
     break;
 
     case GAPROLE_ADVERTISING:
     {
-#if (defined HAL_LCD) && (HAL_LCD == TRUE)
-        HalLcdWriteString( "Advertising",  HAL_LCD_LINE_3 );
-#endif // (defined HAL_LCD) && (HAL_LCD == TRUE)
+        LED2_PIO = OPEN_PIO;
     }
     break;
 
     case GAPROLE_CONNECTED:
     {
-#if (defined HAL_LCD) && (HAL_LCD == TRUE)
-        HalLcdWriteString( "Connected",  HAL_LCD_LINE_3 );
-#endif // (defined HAL_LCD) && (HAL_LCD == TRUE)
+        LED3_PIO = OPEN_PIO;
     }
     break;
 
     case GAPROLE_WAITING:
     {
-#if (defined HAL_LCD) && (HAL_LCD == TRUE)
-        HalLcdWriteString( "Disconnected",  HAL_LCD_LINE_3 );
-#endif // (defined HAL_LCD) && (HAL_LCD == TRUE)
+        LED4_PIO = OPEN_PIO;
     }
     break;
 
     case GAPROLE_WAITING_AFTER_TIMEOUT:
     {
-#if (defined HAL_LCD) && (HAL_LCD == TRUE)
-        HalLcdWriteString( "Timed Out",  HAL_LCD_LINE_3 );
-#endif // (defined HAL_LCD) && (HAL_LCD == TRUE)
+        LED5_PIO = OPEN_PIO;
     }
     break;
 
     case GAPROLE_ERROR:
     {
-#if (defined HAL_LCD) && (HAL_LCD == TRUE)
-        HalLcdWriteString( "Error",  HAL_LCD_LINE_3 );
-#endif // (defined HAL_LCD) && (HAL_LCD == TRUE)
+        LED6_PIO = OPEN_PIO;
     }
     break;
 
     default:
     {
-#if (defined HAL_LCD) && (HAL_LCD == TRUE)
-        HalLcdWriteString( "",  HAL_LCD_LINE_3 );
-#endif // (defined HAL_LCD) && (HAL_LCD == TRUE)
+
     }
     break;
 
@@ -1194,10 +1055,6 @@ static void simpleProfileChangeCB( uint8 paramID )
             eepromRead();
         }
 
-#if (defined HAL_LCD) && (HAL_LCD == TRUE)
-        HalLcdWriteStringValue( "Char 1:", (uint16)(newValue), 10,  HAL_LCD_LINE_3 );
-#endif // (defined HAL_LCD) && (HAL_LCD == TRUE)
-
         break;
 
     case HEALTH_CLOCK:
@@ -1223,15 +1080,6 @@ static void simpleProfileChangeCB( uint8 paramID )
         //     SimpleProfile_SetParameter( HEALTH_SYNC, 8, d );
         // }
 
-
-#if (defined HAL_LCD) && (HAL_LCD == TRUE)
-        HalLcdWriteStringValue( "year:", date.year, 10,  HAL_LCD_LINE_4 );
-        HalLcdWriteStringValue( "month:", date.month + 1, 10,  HAL_LCD_LINE_5 );
-        HalLcdWriteStringValue( "day:", date.day + 1, 10,  HAL_LCD_LINE_6 );
-        HalLcdWriteStringValue( "hour:", date.hour, 10,  HAL_LCD_LINE_7 );
-        HalLcdWriteStringValue( "minutes:", date.minutes, 10,  HAL_LCD_LINE_8 );
-#endif // (defined HAL_LCD) && (HAL_LCD == TRUE)
-
         break;
 
     case HEALTH_DATA_BODY:
@@ -1245,40 +1093,6 @@ static void simpleProfileChangeCB( uint8 paramID )
         break;
     }
 }
-
-#if (defined HAL_LCD) && (HAL_LCD == TRUE)
-/*********************************************************************
- * @fn      bdAddr2Str
- *
- * @brief   Convert Bluetooth address to string. Only needed when
- *          LCD display is used.
- *
- * @return  none
- */
-char *bdAddr2Str( uint8 *pAddr )
-{
-    uint8       i;
-    char        hex[] = "0123456789ABCDEF";
-    static char str[B_ADDR_STR_LEN];
-    char        *pStr = str;
-
-    *pStr++ = '0';
-    *pStr++ = 'x';
-
-    // Start from end of addr
-    pAddr += B_ADDR_LEN;
-
-    for ( i = B_ADDR_LEN; i > 0; i-- )
-    {
-        *pStr++ = hex[*--pAddr >> 4];
-        *pStr++ = hex[*pAddr & 0x0F];
-    }
-
-    *pStr = 0;
-
-    return str;
-}
-#endif // (defined HAL_LCD) && (HAL_LCD == TRUE)
 
 /*********************************************************************
  * @fn      closeAllPIO
@@ -1423,6 +1237,8 @@ static void time(void){
 }
 
 static void babyMove(void){
+
+    lockSlip = 1;
 
     osal_set_event( simpleBLEPeripheral_TaskID, LED_CYCLE_EVT );
 
@@ -1657,20 +1473,20 @@ static void accGetAccData(uint8 count)
     }
 }
 
-static void accGetIntData(void)
-{
-    HalI2CInit(ACC_ADDRESS, I2C_CLOCK_RATE);
+// static void accGetIntData(void)
+// {
+//     HalI2CInit(ACC_ADDRESS, I2C_CLOCK_RATE);
 
-    uint8 pBuf[2];
+//     uint8 pBuf[2];
 
-    //read INT
-    pBuf[0] = PULSE_SRC;
-    HalMotionI2CWrite(1, pBuf);
-    HalMotionI2CRead(1, &pBuf[1]);
-    INT_STATUS = pBuf[1];
+//     //read INT
+//     pBuf[0] = PULSE_SRC;
+//     HalMotionI2CWrite(1, pBuf);
+//     HalMotionI2CRead(1, &pBuf[1]);
+//     INT_STATUS = pBuf[1];
 
-    //DebugValue(INT_STATUS);
-}
+//     //DebugValue(INT_STATUS);
+// }
 
 // for memcpy
 
@@ -1837,16 +1653,15 @@ static void eepromWrite(uint8 type){
     }else if(oneData[point].tm.year != currentTm.year ||
              oneData[point].tm.month != currentTm.month ||
              oneData[point].tm.day != currentTm.day ||
-             oneData[point].tm.minutes != currentTm.minutes ||         // for test, one minutes
-             oneData[point].tm.hour != currentTm.hour){                // pass a hour, need to write
+             oneData[point].tm.minutes != currentTm.minutes ||         
+             oneData[point].tm.hour != currentTm.hour){                // pass a hour or a minute, need to write
 
         // write to eeprom
         HalI2CInit(EEPROM_ADDRESS, I2C_CLOCK_RATE);
 
-        // uint8 aBuf[2];
         uint8 dBuf[10] = {
-            LO_UINT16(stepDataStop),
-            HI_UINT16(stepDataStop),
+            LO_UINT16(stepDataStop),    // address
+            HI_UINT16(stepDataStop),    // address
             LO_UINT16(LO_UINT32(oneData[point].hourSeconds)),
             HI_UINT16(LO_UINT32(oneData[point].hourSeconds)),
             LO_UINT16(HI_UINT32(oneData[point].hourSeconds)),
