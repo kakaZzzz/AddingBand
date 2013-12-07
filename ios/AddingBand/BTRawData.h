@@ -2,7 +2,7 @@
 //  BTRawData.h
 //  AddingBand
 //
-//  Created by kaka' on 13-11-7.
+//  Created by wangpeng on 13-12-4.
 //  Copyright (c) 2013年 kaka'. All rights reserved.
 //
 
@@ -20,6 +20,6 @@
 @property (nonatomic, retain) NSNumber * month;
 @property (nonatomic, retain) NSNumber * type;
 @property (nonatomic, retain) NSNumber * year;
+@property (nonatomic, retain) NSNumber * seconds1970;
 
 @end
-  

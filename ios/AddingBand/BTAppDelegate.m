@@ -35,6 +35,7 @@
       //将tabBarController设置为根视图
     self.tabBarController = [[BTCustomTabBarController alloc] init];
     self.window.rootViewController = _tabBarController;
+   
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
     

@@ -8,6 +8,9 @@
 
 #ifndef AddingBand_LayoutDef_h
 #define AddingBand_LayoutDef_h
+//整体布局数据
+#define SCREEN_WIDTH ([UIScreen mainScreen].bounds.size.width)
+
 //首页头像 frame 宏定义
 #define kLeftMargin 10
 #define kTopMargin 10
@@ -53,6 +56,8 @@
 //通知中心发出得各个通知
 #define UPDATACIRCULARPROGRESSNOTICE @"updateCircleProgressNotice"//更新圆形进度条通知
 #define DATEPICKERDISMISSNOTICE @"datePickerDismissNotice"//时间选择器将要消失的时候的通知
+#define FETALVIEWUPDATENOTICE @"fetalViewUpdate"//胎动详情页面刷新数据
+
 
 /*体征页面 布局宏定义*/
 #define kPhysicalImageX 35
@@ -69,4 +74,17 @@
 #define contentLabelColor @"999999"
 //程序中各种tag值
 #define BREAK_CONNECT_ALERT 100
+#define TIME_OUT_ALERT 101
+//刷新小雨滴
+#define POINT_X 40 //小雨滴距离X轴的距离
+#define POINT_LARGE 12.0f //小雨滴大小
+#define POINT_TOP 90 //小雨滴距离上边的距离
+
+//RAW数据类型
+#define DEVICE_FETAL_TYPE 1
+#define DEVICE_SPORT_TYPE 2
+#define DEVICE_START_TIME_TYPE 3
+
+#define PHONE_FETAL_TYPE 11
+#define PHONE_START_TIME_TYPE 13
 #endif

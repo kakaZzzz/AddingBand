@@ -2,8 +2,8 @@
 //  FlatDatePicker.h
 //  FlatDatePicker
 //
-//  Created by Christopher Ney on 25/05/13.
-//  Copyright (c) 2013 Christopher Ney. All rights reserved.
+//  Created by wangpeng on 25/10/13.
+//  Copyright (c) 2013  wangpeng. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
@@ -19,7 +19,7 @@
 
 typedef NS_ENUM(NSInteger, FlatDatePickerMode) {
     FlatDatePickerModeWeight,           // 30 | .5kg
-    FlatDatePickerModeDate,           // Displays month, day, and year depending on the locale setting (e.g. November | 15 | 2007)
+    FlatDatePickerModeDate,           // Displays month, day, and year depending on the locale setting (e.g. 2013 | November | 15)
     FlatDatePickerModeTemperature    // 36 | .8℃
 };
 

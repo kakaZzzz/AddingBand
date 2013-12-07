@@ -46,7 +46,7 @@
 
 -(void)connectPeripheralByName:(NSString*)name;
 -(void)removePeripheralByModel:(NSString*)model;
-
+-(void)removePeripheralByName:(NSString*)name;
 -(void)sync:(NSString*)model;
 -(NSString*)getLastSyncDesc:(NSString*)model;
 

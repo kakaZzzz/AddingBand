@@ -25,6 +25,7 @@
 //
 
 #import "RBParallaxTableVC.h"
+#import "SRRefreshView.h"
 
 #define HEAD_TITILE_LEFT 5
 #define HEAD_TITILE_TOP 110
@@ -102,6 +103,21 @@ static CGFloat ImageHeight  = 300.0;
     _tableView.backgroundView   = nil;
  //   _tableView.frame            = bounds;
       _tableView.frame            = CGRectMake(0, 0, bounds.size.width, bounds.size.height);
+    
+    //以下 添加小圆圈刷新
+    /*SRRefreshView是背后 背景图*/
+    _slimeView = [[SRRefreshView alloc] init];
+    // _slimeView.backgroundColor = [UIColor redColor];
+    _slimeView.delegate = self;
+    _slimeView.upInset = 44;
+    _slimeView.slimeMissWhenGoingBack = YES;
+    _slimeView.slime.bodyColor = [UIColor grayColor];//圆圈水滴填充颜色
+    _slimeView.slime.skinColor = [UIColor whiteColor];//外边勾勒颜色
+    _slimeView.slime.lineWith = 3;//外边勾勒宽度
+    //  _slimeView.slime.shadowBlur = 4;//阴影宽度
+    //  _slimeView.slime.shadowColor = [UIColor blackColor];
+    [_tableView addSubview:_slimeView];
+
     [self layoutImage];
     [self updateOffsets];
 }
@@ -157,9 +173,28 @@ static CGFloat ImageHeight  = 300.0;
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     [self updateOffsets];
+    
+    [_slimeView scrollViewDidScroll];//小雨滴刷新的代理方法
+
     //调整title 的位置 保持不动
     self.headTitle.frame = CGRectMake(HEAD_TITILE_LEFT, HEAD_TITILE_TOP + self.tableView.contentOffset.y, HEAD_TITILE_WIDTH, HEAD_TITILE_HEIGHT);
 
+}
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
+{
+    [_slimeView scrollViewDidEndDraging];//小雨滴刷新的代理方法
+}
+#pragma mark - slimeRefresh delegate
+
+- (void)slimeRefreshStartRefresh:(SRRefreshView *)refreshView
+{
+    
+    NSLog(@"拉断了");
+    //更新数据在这个方法里面写
+    //更新完了之后 调用endRefresh方法停止菊花转动
+    [_slimeView performSelector:@selector(endRefresh)
+                     withObject:nil afterDelay:2
+                        inModes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
 }
 
 

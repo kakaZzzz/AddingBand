@@ -1,9 +1,9 @@
 //
-//  CircularProgressView.m
+//  CircularProgressView.h
 //  CircularProgressView
 //
-//  Created by nijino saki on 13-3-2.
-//  Copyright (c) 2013年 nijino. All rights reserved.
+//  Created by wangpeng on 13-11-3.
+//  Copyright (c) 2013年 wangpeng. All rights reserved.
 //
 
 #import "CircularProgressView.h"

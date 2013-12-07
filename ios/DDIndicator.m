@@ -1,9 +1,9 @@
 //
-//  DDIndicator.m
+//  DDIndicator.h
 //  loading
 //
-//  Created by Or Ron on 4/6/13.
-//  Copyright (c) 2013 Or Ron. All rights reserved.
+//  Created by wangpeng on 1/11/13.
+//  Copyright (c) 2013 wangpeng. All rights reserved.
 //
 
 #import "DDIndicator.h"
@@ -26,7 +26,7 @@ static int stage = 0;
         self.contentLabel = [[UILabel alloc] initWithFrame:CGRectMake(-35, self.frame.size.height, 120, 20)];
         _contentLabel.backgroundColor = [UIColor clearColor];
         _contentLabel.textAlignment = NSTextAlignmentCenter;
-        _contentLabel.text = @"正在搜索设备";
+        _contentLabel.text = @"正在搜索设备";//默认值 可灵活改变
         [self addSubview:_contentLabel];
 
     }
@@ -40,6 +40,7 @@ static int stage = 0;
 }
 -(void) startAnimating
 {
+    self.superview.userInteractionEnabled = NO;//父视图交互关闭  也可以在背后加一个灰色的view遮挡
     if (!self.timer.isValid) {
         self.timer =[NSTimer timerWithTimeInterval:0.1 target:self selector:@selector(setNeedsDisplay) userInfo:nil repeats:YES];
         [[NSRunLoop currentRunLoop] addTimer:self.timer forMode:NSRunLoopCommonModes];
@@ -52,6 +53,8 @@ static int stage = 0;
 }
 -(void) stopAnimating
 {
+    self.superview.userInteractionEnabled = YES;//父视图交互打开
+
     self.hidden = YES;
     [self.timer invalidate];
 }

@@ -1,10 +1,7 @@
 //
 //  PICircularProgressView.h
 //  PICircularProgressView
-//
-//  Created by Dominik Alexander on 11.06.13.
-//  Copyright (c) 2013 Dominik Alexander. All rights reserved.
-//
+
 
 #import <UIKit/UIKit.h>
 

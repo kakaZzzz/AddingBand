@@ -24,15 +24,15 @@
 //  SOFTWARE.
 //
 
-
-@interface RBParallaxTableVC : UIViewController <UITableViewDataSource, UITableViewDelegate> {
+#import "SRRefreshView.h"
+@interface RBParallaxTableVC : UIViewController <UITableViewDataSource, UITableViewDelegate,SRRefreshDelegate> {
     UIImageView     *_imageView;
     UIScrollView    *_imageScroller;
     //UITableView     *_tableView;
 }
 @property(nonatomic,strong)UITableView *tableView;
 @property(nonatomic,strong)UILabel *headTitle;//自定义分区头
-
+@property(nonatomic,strong)SRRefreshView *slimeView;//小圆圈刷新
 - (id)initWithImage:(UIImage *)image;
 
 @end

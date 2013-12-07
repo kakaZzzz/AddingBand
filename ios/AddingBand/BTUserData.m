@@ -2,7 +2,7 @@
 //  BTUserData.m
 //  AddingBand
 //
-//  Created by kaka' on 13-11-20.
+//  Created by wangpeng on 13-12-5.
 //  Copyright (c) 2013年 kaka'. All rights reserved.
 //
 
@@ -17,6 +17,6 @@
 @dynamic passWord;
 @dynamic phoneNumber;
 @dynamic pregnancy;
-@dynamic selectedRow;
+@dynamic selectedName;
 
 @end

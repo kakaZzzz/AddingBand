@@ -2,8 +2,8 @@
 //  VersionConstant.h
 //  TestNetwork
 //
-//  Created by kaka' on 13-11-14.
-//  Copyright (c) 2013年 kaka'. All rights reserved.
+//  Created by wang peng on 13-11-14.
+//  Copyright (c) 2013年 wang peng rights reserved.
 //
 
 
@@ -15,7 +15,7 @@
 static BOOL harpyForceUpdate = NO;
 
 // 2. Your AppID (found in iTunes Connect)
-#define kHarpyAppID                 @"707973933"
+#define kHarpyAppID                 @"707973933"//APPID
 
 // 3. Customize the alert title and action buttons
 #define kHarpyAlertViewTitle        @"Update Available"

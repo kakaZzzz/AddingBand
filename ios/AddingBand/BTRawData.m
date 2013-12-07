@@ -2,7 +2,7 @@
 //  BTRawData.m
 //  AddingBand
 //
-//  Created by kaka' on 13-11-7.
+//  Created by wangpeng on 13-12-4.
 //  Copyright (c) 2013年 kaka'. All rights reserved.
 //
 
@@ -19,5 +19,6 @@
 @dynamic month;
 @dynamic type;
 @dynamic year;
+@dynamic seconds1970;
 
 @end

@@ -33,7 +33,7 @@
     _bluetoothName.textAlignment = NSTextAlignmentLeft;
     _bluetoothName.lineBreakMode = NSLineBreakByTruncatingTail;
     _bluetoothName.numberOfLines= 0;
-    [self addSubview:_bluetoothName];
+  //  [self addSubview:_bluetoothName];
     
 //    self.testButton =[UIButton buttonWithType:UIButtonTypeRoundedRect];
 //    _testButton.frame = CGRectMake(200, 10, 100, 50);

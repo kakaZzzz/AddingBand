@@ -35,7 +35,8 @@ static NSString *textStr = nil;
     [super viewDidLoad];
     textStr = [NSString stringWithFormat:@"Hello AddingHome   "];
     NSLog(@"11111111111111%@",NSStringFromCGRect(self.view.frame));
-   
+
+  
 	// Do any additional setup after loading the view.
 }
 

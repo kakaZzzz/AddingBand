@@ -20,6 +20,8 @@
 		7236B7BE18332CC6002E4FA8 /* BTRegisterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7236B7BD18332CC6002E4FA8 /* BTRegisterViewController.m */; };
 		723CD15F183B45EE007C486D /* BTSyncTwoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 723CD15E183B45EE007C486D /* BTSyncTwoViewController.m */; };
 		723CD162183B72DA007C486D /* BTPastLinkViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 723CD161183B72DA007C486D /* BTPastLinkViewController.m */; };
+		723D643B184C765F008618D7 /* BTFetalViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 723D643A184C765F008618D7 /* BTFetalViewController.m */; };
+		723D6486184CC96B008618D7 /* BTRecordFetalView.m in Sources */ = {isa = PBXBuildFile; fileRef = 723D6485184CC96B008618D7 /* BTRecordFetalView.m */; };
 		723ECAED1845F9D300D47DFA /* PICircularProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = 723ECAEC1845F9D300D47DFA /* PICircularProgressView.m */; };
 		723ECAF1184625FD00D47DFA /* demo1@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 723ECAF0184625FD00D47DFA /* demo1@2x.png */; };
 		723F0ED3183C5E7F005F1921 /* 家丁手环icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 723F0ECB183C5E7F005F1921 /* 家丁手环icon.png */; };
@@ -34,7 +36,6 @@
 		723F0EE6183C67D0005F1921 /* sync_btn@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 723F0EE2183C67D0005F1921 /* sync_btn@2x.png */; };
 		723F0EE9183C7C82005F1921 /* sync_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 723F0EE7183C7C82005F1921 /* sync_icon.png */; };
 		723F0EEA183C7C82005F1921 /* sync_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 723F0EE8183C7C82005F1921 /* sync_icon@2x.png */; };
-		723F0EED183C952E005F1921 /* BTUserData.m in Sources */ = {isa = PBXBuildFile; fileRef = 723F0EEC183C952E005F1921 /* BTUserData.m */; };
 		723F0EF0183CB640005F1921 /* BTSyncccViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 723F0EEF183CB640005F1921 /* BTSyncccViewController.m */; };
 		723F0EF5183CC0D3005F1921 /* refresh_btn_sel.png in Resources */ = {isa = PBXBuildFile; fileRef = 723F0EF1183CC0D3005F1921 /* refresh_btn_sel.png */; };
 		723F0EF6183CC0D3005F1921 /* refresh_btn_sel@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 723F0EF2183CC0D3005F1921 /* refresh_btn_sel@2x.png */; };
@@ -66,6 +67,10 @@
 		723F9C46183F3DA400732359 /* shezhi_unselected1@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 723F9C3E183F3DA400732359 /* shezhi_unselected1@2x.png */; };
 		723F9C47183F3DA400732359 /* sync_selected1@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 723F9C3F183F3DA400732359 /* sync_selected1@2x.png */; };
 		723F9C48183F3DA400732359 /* sync_unselected1@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 723F9C40183F3DA400732359 /* sync_unselected1@2x.png */; };
+		724075E318488E000033BB90 /* sr_refresh.png in Resources */ = {isa = PBXBuildFile; fileRef = 724075DC18488E000033BB90 /* sr_refresh.png */; };
+		724075E418488E000033BB90 /* sr_refresh@2X.png in Resources */ = {isa = PBXBuildFile; fileRef = 724075DD18488E000033BB90 /* sr_refresh@2X.png */; };
+		724075E518488E000033BB90 /* SRRefreshView.m in Sources */ = {isa = PBXBuildFile; fileRef = 724075E018488E000033BB90 /* SRRefreshView.m */; };
+		724075E618488E000033BB90 /* SRSlimeView.m in Sources */ = {isa = PBXBuildFile; fileRef = 724075E218488E000033BB90 /* SRSlimeView.m */; };
 		7241465C18274581008B05C5 /* BTMainSuperCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7241465B18274581008B05C5 /* BTMainSuperCell.m */; };
 		72414665182758CC008B05C5 /* BTChartViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 72414664182758CC008B05C5 /* BTChartViewController.m */; };
 		7241467018277A67008B05C5 /* BTSyncViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7241466F18277A67008B05C5 /* BTSyncViewController.m */; };
@@ -74,7 +79,26 @@
 		724544921838B8F50070F700 /* BTSettingSectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 724544911838B8F50070F700 /* BTSettingSectionCell.m */; };
 		724544951838C3110070F700 /* BTColor.m in Sources */ = {isa = PBXBuildFile; fileRef = 724544941838C3110070F700 /* BTColor.m */; };
 		7245449B1838C43D0070F700 /* BTSettingIndicateCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7245449A1838C43D0070F700 /* BTSettingIndicateCell.m */; };
+		72486934185020BF008FD8FA /* BTUserData.m in Sources */ = {isa = PBXBuildFile; fileRef = 72486933185020BF008FD8FA /* BTUserData.m */; };
+		7248694318518255008FD8FA /* BTBabyWeightViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7248694218518255008FD8FA /* BTBabyWeightViewController.m */; };
+		724869461851827A008FD8FA /* BTBabyFetalViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 724869451851827A008FD8FA /* BTBabyFetalViewController.m */; };
+		724F1CEB184F093300342DF7 /* BTRawData.m in Sources */ = {isa = PBXBuildFile; fileRef = 724F1CEA184F093300342DF7 /* BTRawData.m */; };
+		724F1CF0184F3AF800342DF7 /* MHTabBarActiveTab.png in Resources */ = {isa = PBXBuildFile; fileRef = 724F1CED184F3AF800342DF7 /* MHTabBarActiveTab.png */; };
+		724F1CF1184F3AF800342DF7 /* MHTabBarInactiveTab.png in Resources */ = {isa = PBXBuildFile; fileRef = 724F1CEE184F3AF800342DF7 /* MHTabBarInactiveTab.png */; };
+		724F1CF2184F3AF800342DF7 /* MHTabBarIndicator.png in Resources */ = {isa = PBXBuildFile; fileRef = 724F1CEF184F3AF800342DF7 /* MHTabBarIndicator.png */; };
 		725E018D182CDF0B00022A15 /* BTGetData.m in Sources */ = {isa = PBXBuildFile; fileRef = 725E018C182CDF0B00022A15 /* BTGetData.m */; };
+		7262FAC4184DB08D005F3B67 /* BTWeightViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7262FAC3184DB08D005F3B67 /* BTWeightViewController.m */; };
+		7262FAC7184DB105005F3B67 /* BTHeightViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7262FAC6184DB105005F3B67 /* BTHeightViewController.m */; };
+		7262FACA184DB134005F3B67 /* BTGirthViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7262FAC9184DB134005F3B67 /* BTGirthViewController.m */; };
+		7262FACD184DB15F005F3B67 /* BTGluViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7262FACC184DB15F005F3B67 /* BTGluViewController.m */; };
+		7262FAD0184DB189005F3B67 /* BTBPViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7262FACF184DB189005F3B67 /* BTBPViewController.m */; };
+		7262FAD3184DB1B3005F3B67 /* MHTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7262FAD2184DB1B3005F3B67 /* MHTabBarController.m */; };
+		7262FB1E184DD833005F3B67 /* BTMamaDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7262FB1D184DD833005F3B67 /* BTMamaDetailViewController.m */; };
+		7262FB2C184E0FC3005F3B67 /* PNBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 7262FB21184E0FC3005F3B67 /* PNBar.m */; };
+		7262FB2D184E0FC3005F3B67 /* PNBarChart.m in Sources */ = {isa = PBXBuildFile; fileRef = 7262FB23184E0FC3005F3B67 /* PNBarChart.m */; };
+		7262FB2E184E0FC3005F3B67 /* PNChart.m in Sources */ = {isa = PBXBuildFile; fileRef = 7262FB25184E0FC3005F3B67 /* PNChart.m */; };
+		7262FB2F184E0FC3005F3B67 /* PNChartLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 7262FB27184E0FC3005F3B67 /* PNChartLabel.m */; };
+		7262FB31184E0FC3005F3B67 /* PNLineChart.m in Sources */ = {isa = PBXBuildFile; fileRef = 7262FB2B184E0FC3005F3B67 /* PNLineChart.m */; };
 		7266B61518374C0100B1452A /* BTPhsicalData.m in Sources */ = {isa = PBXBuildFile; fileRef = 7266B61418374C0100B1452A /* BTPhsicalData.m */; };
 		72774F4F1844517800CA034E /* BTAccountCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 72774F4E1844517800CA034E /* BTAccountCell.m */; };
 		72774FE11844762F00CA034E /* sina_sel@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 72774FDB1844762F00CA034E /* sina_sel@2x.png */; };
@@ -165,6 +189,7 @@
 		72B67AB3183A418B00294A08 /* zhuceshur.png in Resources */ = {isa = PBXBuildFile; fileRef = 72B67AB2183A418B00294A08 /* zhuceshur.png */; };
 		72B67AB9183A42C200294A08 /* IQKeyBoardManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 72B67AB6183A42C200294A08 /* IQKeyBoardManager.m */; };
 		72B67ABA183A42C200294A08 /* IQSegmentedNextPrevious.m in Sources */ = {isa = PBXBuildFile; fileRef = 72B67AB8183A42C200294A08 /* IQSegmentedNextPrevious.m */; };
+		72CB79F51852EDB50027664E /* BTTimerLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 72CB79F41852EDB50027664E /* BTTimerLabel.m */; };
 		72CB9C31182B590500C0DAF0 /* BTBandCentral.m in Sources */ = {isa = PBXBuildFile; fileRef = 72CB9C2E182B590500C0DAF0 /* BTBandCentral.m */; };
 		72CB9C32182B590500C0DAF0 /* BTBandPeripheral.m in Sources */ = {isa = PBXBuildFile; fileRef = 72CB9C30182B590500C0DAF0 /* BTBandPeripheral.m */; };
 		72CB9C35182B592500C0DAF0 /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 72CB9C33182B592500C0DAF0 /* Model.xcdatamodeld */; };
@@ -172,7 +197,6 @@
 		72CB9C3D182B595200C0DAF0 /* BTGlobals.m in Sources */ = {isa = PBXBuildFile; fileRef = 72CB9C39182B595200C0DAF0 /* BTGlobals.m */; };
 		72CB9C3E182B595200C0DAF0 /* BTUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 72CB9C3B182B595200C0DAF0 /* BTUtils.m */; };
 		72CB9C41182B599E00C0DAF0 /* BTEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 72CB9C40182B599E00C0DAF0 /* BTEntity.m */; };
-		72CB9C47182B599F00C0DAF0 /* BTRawData.m in Sources */ = {isa = PBXBuildFile; fileRef = 72CB9C46182B599F00C0DAF0 /* BTRawData.m */; };
 		72CB9C49182B59D100C0DAF0 /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72CB9C48182B59D100C0DAF0 /* CoreBluetooth.framework */; };
 		72E3E50A182B8C040062DA3D /* BTBluetoothConnectedCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 72E3E509182B8C040062DA3D /* BTBluetoothConnectedCell.m */; };
 		72E3E50D182B9A360062DA3D /* BTBluetoothFindCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 72E3E50C182B9A360062DA3D /* BTBluetoothFindCell.m */; };
@@ -218,6 +242,10 @@
 		723CD15E183B45EE007C486D /* BTSyncTwoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BTSyncTwoViewController.m; path = "View Controllers/BTSyncTwoViewController.m"; sourceTree = "<group>"; };
 		723CD160183B72DA007C486D /* BTPastLinkViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BTPastLinkViewController.h; path = "View Controllers/BTPastLinkViewController.h"; sourceTree = "<group>"; };
 		723CD161183B72DA007C486D /* BTPastLinkViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BTPastLinkViewController.m; path = "View Controllers/BTPastLinkViewController.m"; sourceTree = "<group>"; };
+		723D6439184C765F008618D7 /* BTFetalViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTFetalViewController.h; sourceTree = "<group>"; };
+		723D643A184C765F008618D7 /* BTFetalViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTFetalViewController.m; sourceTree = "<group>"; };
+		723D6484184CC96B008618D7 /* BTRecordFetalView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTRecordFetalView.h; sourceTree = "<group>"; };
+		723D6485184CC96B008618D7 /* BTRecordFetalView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTRecordFetalView.m; sourceTree = "<group>"; };
 		723ECAEB1845F9D300D47DFA /* PICircularProgressView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PICircularProgressView.h; sourceTree = "<group>"; };
 		723ECAEC1845F9D300D47DFA /* PICircularProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PICircularProgressView.m; sourceTree = "<group>"; };
 		723ECAF0184625FD00D47DFA /* demo1@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "demo1@2x.png"; sourceTree = "<group>"; };
@@ -233,8 +261,6 @@
 		723F0EE2183C67D0005F1921 /* sync_btn@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sync_btn@2x.png"; sourceTree = "<group>"; };
 		723F0EE7183C7C82005F1921 /* sync_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sync_icon.png; sourceTree = "<group>"; };
 		723F0EE8183C7C82005F1921 /* sync_icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sync_icon@2x.png"; sourceTree = "<group>"; };
-		723F0EEB183C952E005F1921 /* BTUserData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BTUserData.h; path = AddingBand/BTUserData.h; sourceTree = "<group>"; };
-		723F0EEC183C952E005F1921 /* BTUserData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BTUserData.m; path = AddingBand/BTUserData.m; sourceTree = "<group>"; };
 		723F0EEE183CB640005F1921 /* BTSyncccViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BTSyncccViewController.h; path = "View Controllers/BTSyncccViewController.h"; sourceTree = "<group>"; };
 		723F0EEF183CB640005F1921 /* BTSyncccViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BTSyncccViewController.m; path = "View Controllers/BTSyncccViewController.m"; sourceTree = "<group>"; };
 		723F0EF1183CC0D3005F1921 /* refresh_btn_sel.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = refresh_btn_sel.png; sourceTree = "<group>"; };
@@ -269,6 +295,13 @@
 		723F9C3E183F3DA400732359 /* shezhi_unselected1@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shezhi_unselected1@2x.png"; sourceTree = "<group>"; };
 		723F9C3F183F3DA400732359 /* sync_selected1@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sync_selected1@2x.png"; sourceTree = "<group>"; };
 		723F9C40183F3DA400732359 /* sync_unselected1@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sync_unselected1@2x.png"; sourceTree = "<group>"; };
+		724075DC18488E000033BB90 /* sr_refresh.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sr_refresh.png; sourceTree = "<group>"; };
+		724075DD18488E000033BB90 /* sr_refresh@2X.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sr_refresh@2X.png"; sourceTree = "<group>"; };
+		724075DE18488E000033BB90 /* SRDefine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SRDefine.h; sourceTree = "<group>"; };
+		724075DF18488E000033BB90 /* SRRefreshView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SRRefreshView.h; sourceTree = "<group>"; };
+		724075E018488E000033BB90 /* SRRefreshView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SRRefreshView.m; sourceTree = "<group>"; };
+		724075E118488E000033BB90 /* SRSlimeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SRSlimeView.h; sourceTree = "<group>"; };
+		724075E218488E000033BB90 /* SRSlimeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SRSlimeView.m; sourceTree = "<group>"; };
 		7241465A18274581008B05C5 /* BTMainSuperCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BTMainSuperCell.h; path = MainCustomCell/BTMainSuperCell.h; sourceTree = "<group>"; };
 		7241465B18274581008B05C5 /* BTMainSuperCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BTMainSuperCell.m; path = MainCustomCell/BTMainSuperCell.m; sourceTree = "<group>"; };
 		72414662182757C3008B05C5 /* LayoutDef.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LayoutDef.h; path = Global/LayoutDef.h; sourceTree = "<group>"; };
@@ -285,8 +318,43 @@
 		724544941838C3110070F700 /* BTColor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BTColor.m; path = Global/BTColor.m; sourceTree = "<group>"; };
 		724544991838C43D0070F700 /* BTSettingIndicateCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BTSettingIndicateCell.h; path = MainCustomCell/BTSettingIndicateCell.h; sourceTree = "<group>"; };
 		7245449A1838C43D0070F700 /* BTSettingIndicateCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BTSettingIndicateCell.m; path = MainCustomCell/BTSettingIndicateCell.m; sourceTree = "<group>"; };
+		72486932185020BF008FD8FA /* BTUserData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BTUserData.h; path = AddingBand/BTUserData.h; sourceTree = "<group>"; };
+		72486933185020BF008FD8FA /* BTUserData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BTUserData.m; path = AddingBand/BTUserData.m; sourceTree = "<group>"; };
+		7248694118518255008FD8FA /* BTBabyWeightViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BTBabyWeightViewController.h; path = "View Controllers/BTBabyWeightViewController.h"; sourceTree = "<group>"; };
+		7248694218518255008FD8FA /* BTBabyWeightViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BTBabyWeightViewController.m; path = "View Controllers/BTBabyWeightViewController.m"; sourceTree = "<group>"; };
+		724869441851827A008FD8FA /* BTBabyFetalViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BTBabyFetalViewController.h; path = "View Controllers/BTBabyFetalViewController.h"; sourceTree = "<group>"; };
+		724869451851827A008FD8FA /* BTBabyFetalViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BTBabyFetalViewController.m; path = "View Controllers/BTBabyFetalViewController.m"; sourceTree = "<group>"; };
+		724F1CE9184F093300342DF7 /* BTRawData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BTRawData.h; path = AddingBand/BTRawData.h; sourceTree = "<group>"; };
+		724F1CEA184F093300342DF7 /* BTRawData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BTRawData.m; path = AddingBand/BTRawData.m; sourceTree = "<group>"; };
+		724F1CED184F3AF800342DF7 /* MHTabBarActiveTab.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = MHTabBarActiveTab.png; sourceTree = "<group>"; };
+		724F1CEE184F3AF800342DF7 /* MHTabBarInactiveTab.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = MHTabBarInactiveTab.png; sourceTree = "<group>"; };
+		724F1CEF184F3AF800342DF7 /* MHTabBarIndicator.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = MHTabBarIndicator.png; sourceTree = "<group>"; };
 		725E018B182CDF0B00022A15 /* BTGetData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BTGetData.h; path = Global/BTGetData.h; sourceTree = "<group>"; };
 		725E018C182CDF0B00022A15 /* BTGetData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BTGetData.m; path = Global/BTGetData.m; sourceTree = "<group>"; };
+		7262FAC2184DB08D005F3B67 /* BTWeightViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BTWeightViewController.h; path = "View Controllers/BTWeightViewController.h"; sourceTree = "<group>"; };
+		7262FAC3184DB08D005F3B67 /* BTWeightViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BTWeightViewController.m; path = "View Controllers/BTWeightViewController.m"; sourceTree = "<group>"; };
+		7262FAC5184DB105005F3B67 /* BTHeightViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BTHeightViewController.h; path = "View Controllers/BTHeightViewController.h"; sourceTree = "<group>"; };
+		7262FAC6184DB105005F3B67 /* BTHeightViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BTHeightViewController.m; path = "View Controllers/BTHeightViewController.m"; sourceTree = "<group>"; };
+		7262FAC8184DB134005F3B67 /* BTGirthViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BTGirthViewController.h; path = "View Controllers/BTGirthViewController.h"; sourceTree = "<group>"; };
+		7262FAC9184DB134005F3B67 /* BTGirthViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BTGirthViewController.m; path = "View Controllers/BTGirthViewController.m"; sourceTree = "<group>"; };
+		7262FACB184DB15F005F3B67 /* BTGluViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BTGluViewController.h; path = "View Controllers/BTGluViewController.h"; sourceTree = "<group>"; };
+		7262FACC184DB15F005F3B67 /* BTGluViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BTGluViewController.m; path = "View Controllers/BTGluViewController.m"; sourceTree = "<group>"; };
+		7262FACE184DB189005F3B67 /* BTBPViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BTBPViewController.h; path = "View Controllers/BTBPViewController.h"; sourceTree = "<group>"; };
+		7262FACF184DB189005F3B67 /* BTBPViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BTBPViewController.m; path = "View Controllers/BTBPViewController.m"; sourceTree = "<group>"; };
+		7262FAD1184DB1B3005F3B67 /* MHTabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MHTabBarController.h; sourceTree = "<group>"; };
+		7262FAD2184DB1B3005F3B67 /* MHTabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MHTabBarController.m; sourceTree = "<group>"; };
+		7262FB1C184DD833005F3B67 /* BTMamaDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BTMamaDetailViewController.h; path = "View Controllers/BTMamaDetailViewController.h"; sourceTree = "<group>"; };
+		7262FB1D184DD833005F3B67 /* BTMamaDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BTMamaDetailViewController.m; path = "View Controllers/BTMamaDetailViewController.m"; sourceTree = "<group>"; };
+		7262FB20184E0FC3005F3B67 /* PNBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNBar.h; sourceTree = "<group>"; };
+		7262FB21184E0FC3005F3B67 /* PNBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNBar.m; sourceTree = "<group>"; };
+		7262FB22184E0FC3005F3B67 /* PNBarChart.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNBarChart.h; sourceTree = "<group>"; };
+		7262FB23184E0FC3005F3B67 /* PNBarChart.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNBarChart.m; sourceTree = "<group>"; };
+		7262FB24184E0FC3005F3B67 /* PNChart.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNChart.h; sourceTree = "<group>"; };
+		7262FB25184E0FC3005F3B67 /* PNChart.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNChart.m; sourceTree = "<group>"; };
+		7262FB26184E0FC3005F3B67 /* PNChartLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNChartLabel.h; sourceTree = "<group>"; };
+		7262FB27184E0FC3005F3B67 /* PNChartLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNChartLabel.m; sourceTree = "<group>"; };
+		7262FB2A184E0FC3005F3B67 /* PNLineChart.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNLineChart.h; sourceTree = "<group>"; };
+		7262FB2B184E0FC3005F3B67 /* PNLineChart.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PNLineChart.m; sourceTree = "<group>"; };
 		7266B61318374C0100B1452A /* BTPhsicalData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTPhsicalData.h; sourceTree = "<group>"; };
 		7266B61418374C0100B1452A /* BTPhsicalData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTPhsicalData.m; sourceTree = "<group>"; };
 		72774F4D1844517800CA034E /* BTAccountCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTAccountCell.h; sourceTree = "<group>"; };
@@ -422,6 +490,8 @@
 		72B67AB6183A42C200294A08 /* IQKeyBoardManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQKeyBoardManager.m; sourceTree = "<group>"; };
 		72B67AB7183A42C200294A08 /* IQSegmentedNextPrevious.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQSegmentedNextPrevious.h; sourceTree = "<group>"; };
 		72B67AB8183A42C200294A08 /* IQSegmentedNextPrevious.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQSegmentedNextPrevious.m; sourceTree = "<group>"; };
+		72CB79F31852EDB50027664E /* BTTimerLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTTimerLabel.h; sourceTree = "<group>"; };
+		72CB79F41852EDB50027664E /* BTTimerLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTTimerLabel.m; sourceTree = "<group>"; };
 		72CB9C2D182B590500C0DAF0 /* BTBandCentral.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTBandCentral.h; sourceTree = "<group>"; };
 		72CB9C2E182B590500C0DAF0 /* BTBandCentral.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTBandCentral.m; sourceTree = "<group>"; };
 		72CB9C2F182B590500C0DAF0 /* BTBandPeripheral.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTBandPeripheral.h; sourceTree = "<group>"; };
@@ -435,8 +505,6 @@
 		72CB9C3B182B595200C0DAF0 /* BTUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTUtils.m; sourceTree = "<group>"; };
 		72CB9C3F182B599E00C0DAF0 /* BTEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BTEntity.h; path = AddingBand/BTEntity.h; sourceTree = "<group>"; };
 		72CB9C40182B599E00C0DAF0 /* BTEntity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BTEntity.m; path = AddingBand/BTEntity.m; sourceTree = "<group>"; };
-		72CB9C45182B599F00C0DAF0 /* BTRawData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BTRawData.h; path = AddingBand/BTRawData.h; sourceTree = "<group>"; };
-		72CB9C46182B599F00C0DAF0 /* BTRawData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BTRawData.m; path = AddingBand/BTRawData.m; sourceTree = "<group>"; };
 		72CB9C48182B59D100C0DAF0 /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
 		72E3E508182B8C040062DA3D /* BTBluetoothConnectedCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BTBluetoothConnectedCell.h; path = MainCustomCell/BTBluetoothConnectedCell.h; sourceTree = "<group>"; };
 		72E3E509182B8C040062DA3D /* BTBluetoothConnectedCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BTBluetoothConnectedCell.m; path = MainCustomCell/BTBluetoothConnectedCell.m; sourceTree = "<group>"; };
@@ -607,6 +675,20 @@
 			name = "新图片";
 			sourceTree = "<group>";
 		};
+		724075DB18488E000033BB90 /* SlimeRefresh */ = {
+			isa = PBXGroup;
+			children = (
+				724075DC18488E000033BB90 /* sr_refresh.png */,
+				724075DD18488E000033BB90 /* sr_refresh@2X.png */,
+				724075DE18488E000033BB90 /* SRDefine.h */,
+				724075DF18488E000033BB90 /* SRRefreshView.h */,
+				724075E018488E000033BB90 /* SRRefreshView.m */,
+				724075E118488E000033BB90 /* SRSlimeView.h */,
+				724075E218488E000033BB90 /* SRSlimeView.m */,
+			);
+			path = SlimeRefresh;
+			sourceTree = "<group>";
+		};
 		7241465918274520008B05C5 /* MainCustomCell */ = {
 			isa = PBXGroup;
 			children = (
@@ -631,6 +713,7 @@
 		72414666182758D9008B05C5 /* 一级页面 */ = {
 			isa = PBXGroup;
 			children = (
+				7262FAC1184DB02E005F3B67 /* 妈妈体征页面 */,
 				72B418F418238DC9002EAD35 /* BTMainViewController.h */,
 				72B418F518238DC9002EAD35 /* BTMainViewController.m */,
 				72B418F718238E2A002EAD35 /* BTPhysicalViewController.h */,
@@ -652,6 +735,9 @@
 		72414668182758FB008B05C5 /* 二级页面 */ = {
 			isa = PBXGroup;
 			children = (
+				72486940185181F9008FD8FA /* 胎心监护 */,
+				7248693F185181CC008FD8FA /* 胎儿体重 */,
+				7248693B18516F1B008FD8FA /* 胎动详情 */,
 				723CD163183B7310007C486D /* 同步页面 */,
 				72414663182758CC008B05C5 /* BTChartViewController.h */,
 				72414664182758CC008B05C5 /* BTChartViewController.m */,
@@ -716,9 +802,97 @@
 			name = Setting;
 			sourceTree = "<group>";
 		};
+		7248693B18516F1B008FD8FA /* 胎动详情 */ = {
+			isa = PBXGroup;
+			children = (
+				723D6439184C765F008618D7 /* BTFetalViewController.h */,
+				723D643A184C765F008618D7 /* BTFetalViewController.m */,
+				723D6484184CC96B008618D7 /* BTRecordFetalView.h */,
+				723D6485184CC96B008618D7 /* BTRecordFetalView.m */,
+			);
+			name = "胎动详情";
+			sourceTree = "<group>";
+		};
+		7248693F185181CC008FD8FA /* 胎儿体重 */ = {
+			isa = PBXGroup;
+			children = (
+				7248694118518255008FD8FA /* BTBabyWeightViewController.h */,
+				7248694218518255008FD8FA /* BTBabyWeightViewController.m */,
+			);
+			name = "胎儿体重";
+			sourceTree = "<group>";
+		};
+		72486940185181F9008FD8FA /* 胎心监护 */ = {
+			isa = PBXGroup;
+			children = (
+				724869441851827A008FD8FA /* BTBabyFetalViewController.h */,
+				724869451851827A008FD8FA /* BTBabyFetalViewController.m */,
+			);
+			name = "胎心监护";
+			sourceTree = "<group>";
+		};
+		724F1CEC184F3AF800342DF7 /* Images */ = {
+			isa = PBXGroup;
+			children = (
+				724F1CED184F3AF800342DF7 /* MHTabBarActiveTab.png */,
+				724F1CEE184F3AF800342DF7 /* MHTabBarInactiveTab.png */,
+				724F1CEF184F3AF800342DF7 /* MHTabBarIndicator.png */,
+			);
+			path = Images;
+			sourceTree = "<group>";
+		};
+		7262FAC1184DB02E005F3B67 /* 妈妈体征页面 */ = {
+			isa = PBXGroup;
+			children = (
+				724F1CEC184F3AF800342DF7 /* Images */,
+				7262FAD1184DB1B3005F3B67 /* MHTabBarController.h */,
+				7262FAD2184DB1B3005F3B67 /* MHTabBarController.m */,
+				7262FAC2184DB08D005F3B67 /* BTWeightViewController.h */,
+				7262FAC3184DB08D005F3B67 /* BTWeightViewController.m */,
+				7262FAC5184DB105005F3B67 /* BTHeightViewController.h */,
+				7262FAC6184DB105005F3B67 /* BTHeightViewController.m */,
+				7262FAC8184DB134005F3B67 /* BTGirthViewController.h */,
+				7262FAC9184DB134005F3B67 /* BTGirthViewController.m */,
+				7262FACB184DB15F005F3B67 /* BTGluViewController.h */,
+				7262FACC184DB15F005F3B67 /* BTGluViewController.m */,
+				7262FACE184DB189005F3B67 /* BTBPViewController.h */,
+				7262FACF184DB189005F3B67 /* BTBPViewController.m */,
+				7262FB1C184DD833005F3B67 /* BTMamaDetailViewController.h */,
+				7262FB1D184DD833005F3B67 /* BTMamaDetailViewController.m */,
+			);
+			name = "妈妈体征页面";
+			sourceTree = "<group>";
+		};
+		7262FB1B184DD80F005F3B67 /* 三级页面 */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = "三级页面";
+			sourceTree = "<group>";
+		};
+		7262FB1F184E0FC3005F3B67 /* PNChart */ = {
+			isa = PBXGroup;
+			children = (
+				7262FB20184E0FC3005F3B67 /* PNBar.h */,
+				7262FB21184E0FC3005F3B67 /* PNBar.m */,
+				7262FB22184E0FC3005F3B67 /* PNBarChart.h */,
+				7262FB23184E0FC3005F3B67 /* PNBarChart.m */,
+				7262FB24184E0FC3005F3B67 /* PNChart.h */,
+				7262FB25184E0FC3005F3B67 /* PNChart.m */,
+				7262FB26184E0FC3005F3B67 /* PNChartLabel.h */,
+				7262FB27184E0FC3005F3B67 /* PNChartLabel.m */,
+				7262FB2A184E0FC3005F3B67 /* PNLineChart.h */,
+				7262FB2B184E0FC3005F3B67 /* PNLineChart.m */,
+			);
+			path = PNChart;
+			sourceTree = "<group>";
+		};
 		727F1938182B37EE00CAD11A /* Library */ = {
 			isa = PBXGroup;
 			children = (
+				72CB79F21852EDB50027664E /* BTTimerLabel */,
+				7262FB1F184E0FC3005F3B67 /* PNChart */,
+				724075DB18488E000033BB90 /* SlimeRefresh */,
 				723ECAEA1845F9D300D47DFA /* PICircularProgressView */,
 				72AFBA3D18431995004F0350 /* BarChart Library */,
 				723F0EF9183CD77D005F1921 /* loadingIndicator */,
@@ -918,6 +1092,7 @@
 		72B418ED18238C15002EAD35 /* View Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				7262FB1B184DD80F005F3B67 /* 三级页面 */,
 				7236B7BB18332A7C002E4FA8 /* 注册和登录 */,
 				72414668182758FB008B05C5 /* 二级页面 */,
 				72414666182758D9008B05C5 /* 一级页面 */,
@@ -1030,6 +1205,15 @@
 			path = IQKeyBoardManager;
 			sourceTree = "<group>";
 		};
+		72CB79F21852EDB50027664E /* BTTimerLabel */ = {
+			isa = PBXGroup;
+			children = (
+				72CB79F31852EDB50027664E /* BTTimerLabel.h */,
+				72CB79F41852EDB50027664E /* BTTimerLabel.m */,
+			);
+			path = BTTimerLabel;
+			sourceTree = "<group>";
+		};
 		72CB9C2B182B58B900C0DAF0 /* BLE */ = {
 			isa = PBXGroup;
 			children = (
@@ -1045,14 +1229,14 @@
 			isa = PBXGroup;
 			children = (
 				72CB9C33182B592500C0DAF0 /* Model.xcdatamodeld */,
-				72CB9C45182B599F00C0DAF0 /* BTRawData.h */,
-				72CB9C46182B599F00C0DAF0 /* BTRawData.m */,
+				72486932185020BF008FD8FA /* BTUserData.h */,
+				72486933185020BF008FD8FA /* BTUserData.m */,
+				724F1CE9184F093300342DF7 /* BTRawData.h */,
+				724F1CEA184F093300342DF7 /* BTRawData.m */,
 				72CB9C3F182B599E00C0DAF0 /* BTEntity.h */,
 				72CB9C40182B599E00C0DAF0 /* BTEntity.m */,
 				7266B61318374C0100B1452A /* BTPhsicalData.h */,
 				7266B61418374C0100B1452A /* BTPhsicalData.m */,
-				723F0EEB183C952E005F1921 /* BTUserData.h */,
-				723F0EEC183C952E005F1921 /* BTUserData.m */,
 				72AF9BA5183CD9F600BCC6F6 /* BTBleList.h */,
 				72AF9BA6183CD9F600BCC6F6 /* BTBleList.m */,
 			);
@@ -1176,9 +1360,11 @@
 				729293E91838A726007B09A7 /* sync_unselected@2x.png in Resources */,
 				723F24AC18308925001F27DA /* checkBox_blankCheck.png in Resources */,
 				723F0ED3183C5E7F005F1921 /* 家丁手环icon.png in Resources */,
+				724075E418488E000033BB90 /* sr_refresh@2X.png in Resources */,
 				729293F41838B2E6007B09A7 /* sep_line.png in Resources */,
 				72B418C518238BCA002EAD35 /* InfoPlist.strings in Resources */,
 				723F0ED4183C5E7F005F1921 /* 家丁手环icon@2x.png in Resources */,
+				724F1CF0184F3AF800342DF7 /* MHTabBarActiveTab.png in Resources */,
 				723F24AF18308925001F27DA /* checkBox_selectCheck@2x.png in Resources */,
 				72774FE21844762F00CA034E /* sina@2x.png in Resources */,
 				723F9C42183F3DA400732359 /* home_unselected1@2x.png in Resources */,
@@ -1234,6 +1420,7 @@
 				723F24AA18308925001F27DA /* btn_press.png in Resources */,
 				723F9C44183F3DA400732359 /* physical_unselected1@2x.png in Resources */,
 				729293E81838A726007B09A7 /* sync_unselected.png in Resources */,
+				724F1CF2184F3AF800342DF7 /* MHTabBarIndicator.png in Resources */,
 				729293DF1838A726007B09A7 /* physical_selected@2x.png in Resources */,
 				723F24AB18308925001F27DA /* btn_press@2x.png in Resources */,
 				723F24AD18308925001F27DA /* checkBox_blankCheck@2x.png in Resources */,
@@ -1242,9 +1429,11 @@
 				723F24AE18308925001F27DA /* checkBox_selectCheck.png in Resources */,
 				723F24A018308925001F27DA /* 1.png in Resources */,
 				729293EA1838A726007B09A7 /* tabbar_bg@2x.png in Resources */,
+				724075E318488E000033BB90 /* sr_refresh.png in Resources */,
 				72774FE61844762F00CA034E /* weizhi@2x.png in Resources */,
 				723F0EF7183CC0D3005F1921 /* refresh_btn.png in Resources */,
 				729293F61838B2E6007B09A7 /* settingcell_bg.png in Resources */,
+				724F1CF1184F3AF800342DF7 /* MHTabBarInactiveTab.png in Resources */,
 				723F0EF8183CC0D3005F1921 /* refresh_btn@2x.png in Resources */,
 				723F24A318308925001F27DA /* 2@2x.png in Resources */,
 				723F0EDD183C5FD7005F1921 /* 透明层.png in Resources */,
@@ -1268,7 +1457,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				728ECC0318239AB0005053FE /* BTNavicationController.m in Sources */,
+				7262FACD184DB15F005F3B67 /* BTGluViewController.m in Sources */,
+				7262FAC7184DB105005F3B67 /* BTHeightViewController.m in Sources */,
 				72B67AA4183A335800294A08 /* NSString+MKNetworkKitAdditions.m in Sources */,
+				7262FB2E184E0FC3005F3B67 /* PNChart.m in Sources */,
 				72B67AAE183A33C400294A08 /* BTCheckVersion.m in Sources */,
 				72CB9C32182B590500C0DAF0 /* BTBandPeripheral.m in Sources */,
 				723F248E18308791001F27DA /* BTGuideViewController.m in Sources */,
@@ -1277,6 +1469,7 @@
 				72B418CB18238BCA002EAD35 /* BTAppDelegate.m in Sources */,
 				723F0EFC183CD796005F1921 /* DDIndicator.m in Sources */,
 				7236B7BE18332CC6002E4FA8 /* BTRegisterViewController.m in Sources */,
+				724869461851827A008FD8FA /* BTBabyFetalViewController.m in Sources */,
 				72B67AB9183A42C200294A08 /* IQKeyBoardManager.m in Sources */,
 				722EDEB21829E7CD006B25EE /* BTPhysicQuickeningViewController.m in Sources */,
 				72AFBA5B18431995004F0350 /* UIColor+i7HexColor.m in Sources */,
@@ -1284,30 +1477,39 @@
 				72E3E50A182B8C040062DA3D /* BTBluetoothConnectedCell.m in Sources */,
 				72B67AA7183A335800294A08 /* MKNetworkEngine.m in Sources */,
 				72B67AB1183A352900294A08 /* BTTextfieldCell.m in Sources */,
+				7262FAD0184DB189005F3B67 /* BTBPViewController.m in Sources */,
 				7241465C18274581008B05C5 /* BTMainSuperCell.m in Sources */,
 				72CB9C31182B590500C0DAF0 /* BTBandCentral.m in Sources */,
 				723213551824D4E600C17EDC /* BTUndoCell.m in Sources */,
 				72B418F618238DC9002EAD35 /* BTMainViewController.m in Sources */,
+				7248694318518255008FD8FA /* BTBabyWeightViewController.m in Sources */,
 				72774F4F1844517800CA034E /* BTAccountCell.m in Sources */,
 				72AFBA5A18431995004F0350 /* CMPopTipView.m in Sources */,
 				72B418FC18238E3E002EAD35 /* BTPhysicSportViewController.m in Sources */,
 				72AFBA5918431995004F0350 /* BarView.m in Sources */,
 				72B67AA2183A335800294A08 /* NSDate+RFC1123.m in Sources */,
+				7262FB2F184E0FC3005F3B67 /* PNChartLabel.m in Sources */,
 				723213581824D50100C17EDC /* BTFinishedCell.m in Sources */,
 				72B67AA6183A335800294A08 /* UIImageView+MKNetworkKitAdditions.m in Sources */,
 				72CB9C3D182B595200C0DAF0 /* BTGlobals.m in Sources */,
 				72B67A6F1839BEBD00294A08 /* PCLineChartView.m in Sources */,
+				7262FB1E184DD833005F3B67 /* BTMamaDetailViewController.m in Sources */,
 				7232135B1824D52100C17EDC /* BTImageCell.m in Sources */,
 				72B67AA3183A335800294A08 /* NSDictionary+RequestEncoding.m in Sources */,
+				72486934185020BF008FD8FA /* BTUserData.m in Sources */,
 				72AF9BA7183CD9F600BCC6F6 /* BTBleList.m in Sources */,
 				72414665182758CC008B05C5 /* BTChartViewController.m in Sources */,
 				72CB9C35182B592500C0DAF0 /* Model.xcdatamodeld in Sources */,
-				72CB9C47182B599F00C0DAF0 /* BTRawData.m in Sources */,
+				7262FAC4184DB08D005F3B67 /* BTWeightViewController.m in Sources */,
 				72AFBA5818431995004F0350 /* BarLabel.m in Sources */,
+				7262FB2C184E0FC3005F3B67 /* PNBar.m in Sources */,
+				724075E518488E000033BB90 /* SRRefreshView.m in Sources */,
 				723ECAED1845F9D300D47DFA /* PICircularProgressView.m in Sources */,
 				72AFBA5C18431995004F0350 /* UIViewSizeShortcuts.m in Sources */,
 				72B418C718238BCA002EAD35 /* main.m in Sources */,
+				724075E618488E000033BB90 /* SRSlimeView.m in Sources */,
 				72B67A89183A2FC200294A08 /* BTModifyPasswordViewController.m in Sources */,
+				724F1CEB184F093300342DF7 /* BTRawData.m in Sources */,
 				72CB9C41182B599E00C0DAF0 /* BTEntity.m in Sources */,
 				72B418F918238E2A002EAD35 /* BTPhysicalViewController.m in Sources */,
 				72AFBA5E18431995004F0350 /* XMLParser.m in Sources */,
@@ -1316,13 +1518,18 @@
 				72B419041823904B002EAD35 /* BTCustomTabBarController.m in Sources */,
 				728ECC0B1823B64F005053FE /* RBParallaxTableVC.m in Sources */,
 				725E018D182CDF0B00022A15 /* BTGetData.m in Sources */,
+				723D643B184C765F008618D7 /* BTFetalViewController.m in Sources */,
 				72B67AA8183A335800294A08 /* MKNetworkOperation.m in Sources */,
+				7262FACA184DB134005F3B67 /* BTGirthViewController.m in Sources */,
+				7262FB2D184E0FC3005F3B67 /* PNBarChart.m in Sources */,
 				722EDEF9182A3D43006B25EE /* BTBluetoothLinkCell.m in Sources */,
 				722EDF0B182A5200006B25EE /* PBFlatSettings.m in Sources */,
 				72CB9C3C182B595200C0DAF0 /* BTConstants.m in Sources */,
+				7262FB31184E0FC3005F3B67 /* PNLineChart.m in Sources */,
 				72E3E50D182B9A360062DA3D /* BTBluetoothFindCell.m in Sources */,
 				72AFBA5F18431995004F0350 /* XMLParserDelegate.m in Sources */,
 				72AFBA5D18431995004F0350 /* XMLElement.m in Sources */,
+				72CB79F51852EDB50027664E /* BTTimerLabel.m in Sources */,
 				72B67AA5183A335800294A08 /* UIAlertView+MKNetworkKitAdditions.m in Sources */,
 				72B67AA9183A335800294A08 /* Reachability.m in Sources */,
 				72B418FF18238E53002EAD35 /* BTMineViewController.m in Sources */,
@@ -1334,10 +1541,11 @@
 				723CD162183B72DA007C486D /* BTPastLinkViewController.m in Sources */,
 				723F0EF0183CB640005F1921 /* BTSyncccViewController.m in Sources */,
 				724544921838B8F50070F700 /* BTSettingSectionCell.m in Sources */,
-				723F0EED183C952E005F1921 /* BTUserData.m in Sources */,
+				7262FAD3184DB1B3005F3B67 /* MHTabBarController.m in Sources */,
 				72B67ABA183A42C200294A08 /* IQSegmentedNextPrevious.m in Sources */,
 				72B67A86183A2DD700294A08 /* BTAboutViewController.m in Sources */,
 				72AFBA5718431995004F0350 /* BarChartView.m in Sources */,
+				723D6486184CC96B008618D7 /* BTRecordFetalView.m in Sources */,
 				724544951838C3110070F700 /* BTColor.m in Sources */,
 				7245449B1838C43D0070F700 /* BTSettingIndicateCell.m in Sources */,
 			);
@@ -1465,7 +1673,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "AddingBand/AddingBand-Prefix.pch";
 				INFOPLIST_FILE = "AddingBand/AddingBand-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
@@ -1483,7 +1691,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "AddingBand/AddingBand-Prefix.pch";
 				INFOPLIST_FILE = "AddingBand/AddingBand-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";

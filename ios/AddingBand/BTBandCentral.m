@@ -55,7 +55,7 @@
             
             NSError* error;
             _localBleLIst = [_context executeFetchRequest:request error:&error];
-            
+            NSLog(@"8888888888 %d",[_localBleLIst count]);
             for (BTBleList* old in _localBleLIst) {
                 
                 //如果coredata里有数据，建一个缓存
@@ -467,6 +467,8 @@
             NSNumber* day = [BTUtils getDay:date];
             NSNumber* hour = [BTUtils getHour:date];
             NSNumber* minute = [BTUtils getMinutes:date];
+            
+            NSNumber *second1970 = [NSNumber numberWithDouble:[date timeIntervalSince1970]];//距离1970年的秒数
             NSLog(@"%@ %@ %@ %@ %@",year,month,day,hour,minute);
             //设置coredataye
             NSEntityDescription *entity = [NSEntityDescription entityForName:@"BTRawData" inManagedObjectContext:_context];
@@ -516,7 +518,7 @@
                 new.type = [NSNumber numberWithInt:type];
                 new.count = [NSNumber numberWithInt:count];
                 new.from = peripheral.name;
-                
+                new.seconds1970 = second1970;//存个秒数
             }
             
             [_context save:&error];
@@ -783,7 +785,7 @@
     
     NSError* error;
     _localBleLIst = [_context executeFetchRequest:request error:&error];
-    
+    //因为 BTBleList只存放连接上的设备 其元素个数为1
     for (BTBleList* old in _localBleLIst) {
         if ([[BTUtils getModel:old.name] isEqualToString:model]){
             
@@ -808,6 +810,46 @@
         [_cm cancelPeripheralConnection:bp.handle];
         
         NSLog(@"try to cancel connect model %@", model);
+    }
+    
+}
+#pragma mark - 通过设备名称断开蓝牙周边
+-(void)removePeripheralByName:(NSString*)name{
+    
+    //先删除coredata里的数据
+    NSLog(@"设备数组是数组是%@",_allPeripherals);
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"BTBleList" inManagedObjectContext:_context];
+    
+    NSFetchRequest* request = [[NSFetchRequest alloc] init];
+    [request setEntity:entity];
+    
+    NSError* error;
+    _localBleLIst = [_context executeFetchRequest:request error:&error];
+    
+    for (BTBleList* old in _localBleLIst) {
+        if ([old.name isEqualToString:name]){
+            
+            [_context deleteObject:old];
+            NSLog(@"find model %@ in coredata, then delete it", name);
+        }
+    }
+    
+    //及时保存
+    NSError* err;
+    if(![_context save:&err]){
+        NSLog(@"%@", [err localizedDescription]);
+    }
+    
+    //刷新列表
+    self.globals.bleListCount += 0;
+    
+    //如果设备正在连接，则断开
+    BTBandPeripheral* bp = [self getBpByName:name];
+    
+    if (bp && bp.isConnected) {
+        [_cm cancelPeripheralConnection:bp.handle];
+        
+        NSLog(@"try to cancel connect model %@", name);
     }
     
 }

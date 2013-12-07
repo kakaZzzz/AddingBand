@@ -27,8 +27,7 @@
 {
     self = [super initWithStyle:style];
     if (self) {
-        //
-        _isBreak = NO;
+        
         //初始化
         self.g = [BTGlobals sharedGlobals];
         self.bc = [BTBandCentral sharedBandCentral];
@@ -36,11 +35,7 @@
         //监听设备变化
         [self.g addObserver:self forKeyPath:@"bleListCount" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:NULL];
         
-        //设置tableview类型 为UITableViewStyleGrouped
-      //  self.tableView = [[UITableView alloc] initWithFrame:self.tableView.frame style:UITableViewStyleGrouped];
-        
-        //设置背景颜色
-        //不可滚动
+         //不可滚动
         self.tableView.scrollEnabled = NO;
         UIView *_backgroundview = [[UIView alloc] initWithFrame:self.view.bounds];
         [_backgroundview setBackgroundColor:[UIColor whiteColor]];
@@ -61,11 +56,6 @@
         _indicator.hidden = YES;
        // [_indicator startAnimating];
 
-
-        //数据
-        //存放外部蓝牙设备
-        //self.peripheralArray = @[MAM_BAND_MODEL];
-        self.peripheralArray = [NSMutableArray arrayWithCapacity:1];
         
         
         //启动计时器 监控上次更新时间   反复调用会不会出现什么意外情况？？？
@@ -198,98 +188,98 @@
     
 }
 
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-    
-    
-  //  [self.indicator startAnimating];
-    
-    if (alertView.tag == 100) {
-        if (buttonIndex == 0) {
-            
-            //断开连接
-            
-            int i = 0;
-            self.context =[BTGetData getAppContex];
-            NSArray *data1 = [BTGetData getFromCoreDataWithPredicate:nil entityName:@"BTUserData" sortKey:nil];
-            if (data1.count > 0) {
-                BTUserData *userData = [data1 objectAtIndex:0];
-                i = [userData.selectedRow intValue];
-            }
-            self.bc = [BTBandCentral sharedBandCentral];
-            NSEnumerator * enumeratorValue = [self.bc.allPeripherals objectEnumerator];
-            BTBandPeripheral* bp = [[enumeratorValue allObjects] objectAtIndex:0];
-
-            //如果是正在连接的设备就断开连接
-            if (bp.isConnected) {
-                [self.bc togglePeripheralByIndex:0];
-               // [self.indicator startAnimating];//加载动画
-                _syncButton.hidden = YES;
-                //[self.navigationItem.rightBarButtonItem setEnabled:NO];
-                [self.syncTwoVC.view removeFromSuperview];
-                [self.pastVC.view removeFromSuperview];
-                
-                //设备总数减少
-//                self.g.bleListCount = [self.bc.allPeripherals count];
+//- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+//{
+//    
+//    
+//  //  [self.indicator startAnimating];
+//    
+//    if (alertView.tag == 100) {
+//        if (buttonIndex == 0) {
+//            
+//            //断开连接
+//            
+//            int i = 0;
+//            self.context =[BTGetData getAppContex];
+//            NSArray *data1 = [BTGetData getFromCoreDataWithPredicate:nil entityName:@"BTUserData" sortKey:nil];
+//            if (data1.count > 0) {
+//                BTUserData *userData = [data1 objectAtIndex:0];
+//                i = [userData.selectedRow intValue];
+//            }
+//            self.bc = [BTBandCentral sharedBandCentral];
+//            NSEnumerator * enumeratorValue = [self.bc.allPeripherals objectEnumerator];
+//            BTBandPeripheral* bp = [[enumeratorValue allObjects] objectAtIndex:0];
+//
+//            //如果是正在连接的设备就断开连接
+//            if (bp.isConnected) {
+//                [self.bc togglePeripheralByIndex:0];
+//               // [self.indicator startAnimating];//加载动画
+//                _syncButton.hidden = YES;
+//                //[self.navigationItem.rightBarButtonItem setEnabled:NO];
+//                [self.syncTwoVC.view removeFromSuperview];
+//                [self.pastVC.view removeFromSuperview];
 //                
+//                //设备总数减少
+////                self.g.bleListCount = [self.bc.allPeripherals count];
+////                
+////                [self.bc.allPeripherals removeObjectForKey:bp.name];
+//            }
+//            
+//            
+//            
+//            
+//            else{
+//            
+//                //以下为删除设备
+//                //往coredata里面存放选择的设备行数
+//                
+//                //根据index找到对应的peripheral
+//                self.bc = [BTBandCentral sharedBandCentral];
+//                
+//                //删除coredata里的这条数据
+//                _context = [BTGetData getAppContex];
+//                NSEntityDescription *entity = [NSEntityDescription entityForName:@"BTBleList" inManagedObjectContext:_context];
+//                
+//                NSFetchRequest* request = [[NSFetchRequest alloc] init];
+//                [request setEntity:entity];
+//                
+//                NSError* error;
+//                
+//                NSArray *resultArray = [_context executeFetchRequest:request error:&error];
+//                
+//                for (BTBleList* old in resultArray) {
+//                    NSLog(@"设备名称%@",bp.name);
+//                    if ([[BTUtils getModel:old.name] isEqualToString:@"A1"]){
+//                        [self.bc.allPeripherals removeObjectForKey:bp.name];
+//                        [_context deleteObject:old];
+//                        NSLog(@"!!!2222222");
+//                    }
+//                    
+//                    
+//                    //及时保存
+//                    NSError* err;
+//                    if(![_context save:&err]){
+//                        NSLog(@"%@", [err localizedDescription]);
+//                    }
+//                    
+//                    //设备总数减少
+//                    self.g.bleListCount = [self.bc.allPeripherals count];
 //                [self.bc.allPeripherals removeObjectForKey:bp.name];
-            }
-            
-            
-            
-            
-            else{
-            
-                //以下为删除设备
-                //往coredata里面存放选择的设备行数
-                
-                //根据index找到对应的peripheral
-                self.bc = [BTBandCentral sharedBandCentral];
-                
-                //删除coredata里的这条数据
-                _context = [BTGetData getAppContex];
-                NSEntityDescription *entity = [NSEntityDescription entityForName:@"BTBleList" inManagedObjectContext:_context];
-                
-                NSFetchRequest* request = [[NSFetchRequest alloc] init];
-                [request setEntity:entity];
-                
-                NSError* error;
-                
-                NSArray *resultArray = [_context executeFetchRequest:request error:&error];
-                
-                for (BTBleList* old in resultArray) {
-                    NSLog(@"设备名称%@",bp.name);
-                    if ([[BTUtils getModel:old.name] isEqualToString:@"A1"]){
-                        [self.bc.allPeripherals removeObjectForKey:bp.name];
-                        [_context deleteObject:old];
-                        NSLog(@"!!!2222222");
-                    }
-                    
-                    
-                    //及时保存
-                    NSError* err;
-                    if(![_context save:&err]){
-                        NSLog(@"%@", [err localizedDescription]);
-                    }
-                    
-                    //设备总数减少
-                    self.g.bleListCount = [self.bc.allPeripherals count];
-                [self.bc.allPeripherals removeObjectForKey:bp.name];
-            }
-            
-            //移除页面
-            [self.pastVC.view removeFromSuperview];
-                _syncButton.hidden = YES;
-            [[NSNotificationCenter defaultCenter]postNotificationName:@"reloadData" object:nil];
-           // [self.bc scan];
-            
-            
-        }
-    }
-    }
-    
-    
-}
+//            }
+//            
+//            //移除页面
+//            [self.pastVC.view removeFromSuperview];
+//                _syncButton.hidden = YES;
+//            [[NSNotificationCenter defaultCenter]postNotificationName:@"reloadData" object:nil];
+//           // [self.bc scan];
+//            
+//            
+//        }
+//    }
+//    }
+//    
+//    
+//}
 
 - (void)didReceiveMemoryWarning
 {
@@ -311,22 +301,13 @@
 
 - (void)stopIndicatorAnimation
 {
-//    self.indicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-//    _indicator.frame = CGRectMake(100, 100, 100, 100);
-//    
-//    BTAppDelegate *appDelegate = (BTAppDelegate *)[[UIApplication sharedApplication] delegate];
-//    
-//    [appDelegate.window addSubview:_indicator];
-//    [_indicator startAnimating];
-    [self.indicator removeFromSuperview];
+    [self.indicator stopAnimating];
 }
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     
-    // Return the number of sections.
-    //    return [self.peripheralArray count];
     return 1;
 }
 
@@ -518,11 +499,11 @@
     //往coredata里面存放选择的设备行数
     self.context =[BTGetData getAppContex];
     NSArray *data = [BTGetData getFromCoreDataWithPredicate:nil entityName:@"BTUserData" sortKey:nil];
-    if (data.count > 0) {
-        BTUserData *userData = [data objectAtIndex:0];
-        userData.selectedRow = [NSNumber numberWithInt:indexPath.row];
-        [_context save:nil];
-    }
+//    if (data.count > 0) {
+//        BTUserData *userData = [data objectAtIndex:0];
+//        userData.selectedRow = [NSNumber numberWithInt:indexPath.row];
+//        [_context save:nil];
+//    }
     
     
     
@@ -577,16 +558,15 @@
     //点击完之后让按钮不可点击 否则就会crash
     button.userInteractionEnabled = NO;
     self.g.selectedRow = indexPath.row;//记录选择的设备是第几行
-    
-    
+
     //往coredata里面存放选择的设备行数
     self.context =[BTGetData getAppContex];
     NSArray *data = [BTGetData getFromCoreDataWithPredicate:nil entityName:@"BTUserData" sortKey:nil];
-    if (data.count > 0) {
-        BTUserData *userData = [data objectAtIndex:0];
-        userData.selectedRow = [NSNumber numberWithInt:indexPath.row];
-        [_context save:nil];
-    }
+//    if (data.count > 0) {
+//        BTUserData *userData = [data objectAtIndex:0];
+//        userData.selectedRow = [NSNumber numberWithInt:indexPath.row];
+//        [_context save:nil];
+//    }
 
     
     
@@ -595,24 +575,6 @@
     });
     
     
-}
-
-//立即断开的时候 屏幕会闪动 在此时究竟发生了什么？？？
-//reason:以只有一个外围设备为例 当断开的时候  外围设备数量变为零  所以导致表视图空白  然后中心设备会再次搜索发现外围设备 刷新视图
-//measure:设定一个判断是否进行断开操作的标识符  isBreak
-- (void)breakConnect:(UIButton *)button event:(id)event
-{
-    //连接或者断开断开
-    NSSet *touches = [event allTouches];
-    UITouch *touch = [touches anyObject];
-    CGPoint currentTouchPosition = [touch locationInView:self.tableView];
-    NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:currentTouchPosition];
-    _isBreak = YES;
-    //点击完之后让按钮不可点击 否则就会crash
-    button.userInteractionEnabled = NO;
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        [self.bc togglePeripheralByIndex:[indexPath row]];
-    });
 }
 
 #pragma mark - viewControllers

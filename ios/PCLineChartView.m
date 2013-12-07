@@ -61,7 +61,7 @@
 		_numYIntervals = 5;
 		_numXIntervals = 1;
 		_yLabelAlignment = NSTextAlignmentRight;
-	}
+    }
 	return self;
 }
 

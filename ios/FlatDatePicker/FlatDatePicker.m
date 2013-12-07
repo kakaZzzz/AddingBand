@@ -1,9 +1,9 @@
 //
-//  FlatDatePicker.m
+//  FlatDatePicker.h
 //  FlatDatePicker
 //
-//  Created by Christopher Ney on 25/05/13.
-//  Copyright (c) 2013 Christopher Ney. All rights reserved.
+//  Created by wang peng on 25/10/13.
+//  Copyright (c) 2013 Christopher wang peng All rights reserved.
 //
 
 #import "FlatDatePicker.h"

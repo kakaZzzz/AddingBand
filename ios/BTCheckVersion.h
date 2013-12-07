@@ -2,8 +2,8 @@
 //  BTCheckVersion.h
 //  TestNetwork
 //
-//  Created by kaka' on 13-11-14.
-//  Copyright (c) 2013年 kaka'. All rights reserved.
+//  Created by wangpeng on 13-11-14.
+//  Copyright (c) 2013年 wangpeng. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>

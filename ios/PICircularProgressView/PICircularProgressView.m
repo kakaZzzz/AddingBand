@@ -2,9 +2,6 @@
 //  PICircularProgressView.m
 //  PICircularProgressView
 //
-//  Created by Dominik Alexander on 11.06.13.
-//  Copyright (c) 2013 Dominik Alexander. All rights reserved.
-//
 
 #import "PICircularProgressView.h"
 
@@ -18,9 +15,9 @@
     {
         id appearance = [self appearance];
         
-        [appearance setShowText:YES];
-        [appearance setRoundedHead:YES];
-        [appearance setShowShadow:YES];
+        [appearance setShowText:1];
+        [appearance setRoundedHead:1];
+        [appearance setShowShadow:1];
         
         [appearance setThicknessRatio:0.37f];
         
@@ -121,7 +118,7 @@
     
     if (_showText && _textColor)
     {
-        NSString *progressString = [NSString stringWithFormat:@"%.0f", _progress * 10000.0];
+        NSString *progressString = [NSString stringWithFormat:@"%.0f", _progress * 10000.0];//显示label
         
         CGFloat fontSize = radius;
      //   UIFont *font = [_font fontWithSize:fontSize];

@@ -7,16 +7,21 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "MHTabBarController.h"
 @class CircularProgressView;
-@class PCLineChartView;
 @class BarChartView;
 @class PICircularProgressView;
-@interface BTPhysicalViewController : UIViewController<UIScrollViewDelegate>
+
+@interface BTPhysicalViewController : UIViewController<UIScrollViewDelegate,
+MHTabBarControllerDelegate,
+UITableViewDataSource,
+UITableViewDelegate>
+
 @property (strong, nonatomic) CircularProgressView *circularGrade;//总分数进度条
 @property (strong, nonatomic) CircularProgressView *circularSport;//运动量进度条
 @property (strong, nonatomic) UILabel *gradeLabel;//总分数Label
 @property (strong, nonatomic) UILabel *sportLabel;//运动量Label
-@property (nonatomic, strong) PCLineChartView *lineChartView;//折线图
+
 
 
 //演示用柱形图
@@ -38,4 +43,9 @@
 @property (strong, nonatomic)PICircularProgressView *progressView;
 @property (strong, nonatomic)NSTimer *timer;
 @property(nonatomic,assign)float progress;
+
+@property(nonatomic,strong)MHTabBarController *tabBarController;//一定要用属性，不然就dealloc了
+@property(nonatomic,strong)UITableView *tableView;//一定要用属性，不然就dealloc了
+
+
 @end
