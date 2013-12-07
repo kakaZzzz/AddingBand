@@ -147,7 +147,7 @@
     }
     else
     {
-        _progressView.progress += 0.0001;
+        _progressView.progress += 0.01;
     }
     
 }
@@ -578,7 +578,7 @@
     else{
         self.progressView.roundedHead = YES;
     }
-    _progress =(float) i/10000;//此处1000是目标值 记得改 另外改了之后也要改柱状图内部
+    _progress =(float) i/500;//此处1000是目标值 记得改 另外改了之后也要改柱状图内部
     NSLog(@"进度是%f",_progress);
  //   [self updateUIWithStepDaily:i totalStep:2000];//100为每日目标
    
