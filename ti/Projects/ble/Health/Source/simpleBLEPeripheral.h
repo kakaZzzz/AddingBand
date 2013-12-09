@@ -66,8 +66,7 @@ extern "C"
 #define MOTOR_STOP_EVT                                    0x0100
 #define BLINK_LED_EVT                                     0x0200
 #define TIME_STOP_EVT                                     0x0400
-#define EEPROM_TEST_EVT                                   0x0800
-#define LONG_PRESS_EVT                                    0x1000
+#define LONG_PRESS_EVT                                    0x0800
 
 /*********************************************************************
  * MACROS

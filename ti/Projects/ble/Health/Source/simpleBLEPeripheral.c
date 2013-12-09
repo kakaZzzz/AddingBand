@@ -1,5 +1,3 @@
-
-
 /*********************************************************************
  * INCLUDES
  */
@@ -73,7 +71,7 @@
 #define CLOSE_PIO                             1
 
 // How often to perform periodic event
-#define SBP_PERIODIC_EVT_PERIOD               5000
+#define SBP_PERIODIC_EVT_PERIOD               0
 
 // What is the advertising interval when device is discoverable (units of 625us, 160=100ms)
 #define DEFAULT_ADVERTISING_INTERVAL          160
@@ -118,13 +116,11 @@
 // Battery measurement period in ms
 #define DEFAULT_ACC_PERIOD                    100
 
+
+
+
 // define i2c address
 #define ACC_ADDRESS                           0x1D
-
-#define EEPROM_ADDRESS                        0x50
-
-//define i2c clock rate
-#define I2C_CLOCK_RATE                        i2cClock_33KHZ
 
 //define registers for MMA8652FC
 #define F_STATUS                    0x00
@@ -193,6 +189,11 @@ int16 cross_count = 0; //0
 int16 ACC_CUR = 0;
 
 
+#define EEPROM_ADDRESS                      0x50
+
+//define i2c clock rate
+#define I2C_CLOCK_RATE                      i2cClock_33KHZ
+
 // define for eeprom
 #define EEPROM_ADDRESS_BLOCK_SIZE           8
 #define EEPROM_ADDRESS_BLOCK_COUNT          4000
@@ -200,8 +201,7 @@ int16 ACC_CUR = 0;
 #define EEPROM_ADDRESS_RESERVE_MAX          32768
 #define EEPROM_ADDRESS_DATA_MAX             (EEPROM_ADDRESS_BLOCK_SIZE * EEPROM_ADDRESS_BLOCK_COUNT)
 
-#define EEPROM_POSITION_STEP_DATA_START     (EEPROM_ADDRESS_DATA_MAX)
-#define EEPROM_POSITION_STEP_DATA_STOP      (EEPROM_POSITION_STEP_DATA_START + 2)
+#define EEPROM_POSITION_STEP_DATA           (EEPROM_ADDRESS_DATA_MAX)
 
 #define TAP_DATA_TYPE                       1
 #define STEP_DATA_TYPE                      2
@@ -210,6 +210,13 @@ int16 ACC_CUR = 0;
 #define DATA_TYPE_COUNT                     3
 
 #define SYNC_CODE                           22
+
+#define LONG_PRESS_INTERVAL                 1000
+#define DOUBLE_PRESS_INTERVAL               500
+#define ACC_LOAD_INTERVAL                   2500    // 80MS * 30
+#define LED_CYCLE_INTERVAL                  100
+#define BLINK_LED_INTERVAL                  500
+#define TIME_DISPLAY_INTERVAL               5000
 
 
 /*********************************************************************
@@ -348,6 +355,9 @@ static void toggleLEDWithTime(uint8 num, uint8 io);
 static void blinkLED(void);
 
 static void toggleAdvert(uint8 status);
+
+static void saveStepData();
+static void loadStepData();
 
 
 /*********************************************************************
@@ -490,6 +500,7 @@ void SimpleBLEPeripheral_Init( uint8 task_id )
     // DevInfo_AddService();                           // Device Information Service
     SimpleProfile_AddService( GATT_ALL_SERVICES );  // Simple GATT Profile
     Batt_AddService();
+
 #if defined FEATURE_OAD
     VOID OADTarget_AddService();                    // OAD Profile
 #endif
@@ -559,13 +570,14 @@ void SimpleBLEPeripheral_Init( uint8 task_id )
 
     osal_set_event( simpleBLEPeripheral_TaskID, ACC_PERIODIC_EVT );
 
+    // load step data from eeprom
+    loadStepData();
+
+    uint16 length = ((stepDataStop - stepDataStart) / 8) + DATA_TYPE_COUNT;
+    SimpleProfile_SetParameter( HEALTH_DATA_HEADER, 2,  &length);
+
     // Setup a delayed profile startup
     osal_set_event( simpleBLEPeripheral_TaskID, SBP_START_DEVICE_EVT );
-
-    //Setup a eeprom test
-    osal_set_event( simpleBLEPeripheral_TaskID, EEPROM_TEST_EVT );
-
-
 }
 
 /*********************************************************************
@@ -650,7 +662,7 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
 
         // restart timer
         // osal_start_timerEx( simpleBLEPeripheral_TaskID, ACC_PERIODIC_EVT, 100 );
-        osal_start_timerEx( simpleBLEPeripheral_TaskID, ACC_PERIODIC_EVT, 2500 );
+        osal_start_timerEx( simpleBLEPeripheral_TaskID, ACC_PERIODIC_EVT, ACC_LOAD_INTERVAL );
 
         return (events ^ ACC_PERIODIC_EVT);
     }
@@ -741,12 +753,11 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
         
         if (ledCycleCount < 8)
         {
-            osal_start_timerEx( simpleBLEPeripheral_TaskID, LED_CYCLE_EVT, 100 );
+            osal_start_timerEx( simpleBLEPeripheral_TaskID, LED_CYCLE_EVT, LED_CYCLE_INTERVAL );
 
         }else{
 
             ledCycleCount = 0;
-
             lockSlip = 0;
         }
 
@@ -771,13 +782,6 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
         }
 
         return (events ^ LONG_PRESS_EVT);
-    }
-
-    //debug usage - eeprom test
-    if ( events & EEPROM_TEST_EVT )
-    {
-        
-        return (events ^ EEPROM_TEST_EVT);
     }
 
     // Discard unknown events
@@ -815,7 +819,7 @@ static void simpleBLEPeripheral_ProcessOSALMsg( osal_event_hdr_t *pMsg )
 
       if (onTheKey)
       {
-          osal_start_timerEx( simpleBLEPeripheral_TaskID, LONG_PRESS_EVT , 1000 );
+          osal_start_timerEx( simpleBLEPeripheral_TaskID, LONG_PRESS_EVT , LONG_PRESS_INTERVAL );
       }else{
         osal_stop_timerEx( simpleBLEPeripheral_TaskID, LONG_PRESS_EVT );
       }
@@ -846,7 +850,7 @@ static void simpleBLEPeripheral_ProcessOSALMsg( osal_event_hdr_t *pMsg )
 
       if (slipWaitFor != 0)
       {
-          osal_start_timerEx( simpleBLEPeripheral_TaskID, SLIP_TIMEOUT_EVT , 500 );
+          osal_start_timerEx( simpleBLEPeripheral_TaskID, SLIP_TIMEOUT_EVT , DOUBLE_PRESS_INTERVAL );
       }
 
     }
@@ -1013,22 +1017,7 @@ static void battPeriodicTask( void )
  */
 static void performPeriodicTask( void )
 {
-    // uint8 valueToCopy;
-    // uint8 stat;
-
-    // // Call to retrieve the value of the third characteristic in the profile
-    // stat = SimpleProfile_GetParameter( HEALTH_DATA_HEADER, &valueToCopy);
-
-    // if ( stat == SUCCESS )
-    // {
-        
-    //      * Call to set that value of the fourth characteristic in the profile. Note
-    //      * that if notifications of the fourth characteristic have been enabled by
-    //      * a GATT client device, then a notification will be sent every time this
-    //      * function is called.
-         
-    //     SimpleProfile_SetParameter( HEALTH_DATA_BODY, sizeof(uint8), &valueToCopy);
-    // }
+    // loadStepData();
 }
 
 /*********************************************************************
@@ -1190,7 +1179,7 @@ static void blinkLED(void){
 
     toggleLEDWithTime(blinkMinutes, blinkPIO);
 
-    osal_start_timerEx( simpleBLEPeripheral_TaskID, BLINK_LED_EVT, 500 );
+    osal_start_timerEx( simpleBLEPeripheral_TaskID, BLINK_LED_EVT, BLINK_LED_INTERVAL );
 }
 
 static void time(void){
@@ -1232,7 +1221,7 @@ static void time(void){
     blinkLED();
 
     // stop time
-    osal_start_timerEx( simpleBLEPeripheral_TaskID, TIME_STOP_EVT, 5000 );
+    osal_start_timerEx( simpleBLEPeripheral_TaskID, TIME_STOP_EVT, TIME_DISPLAY_INTERVAL );
 
 }
 
@@ -1702,6 +1691,8 @@ static void eepromWrite(uint8 type){
 
         oneData[point].count = 1;
 
+        saveStepData();
+
     }else{      // in same hour
 
         oneData[point].count ++;
@@ -1762,6 +1753,72 @@ static void eepromRead(void){
 
     uint16 length = DATA_TYPE_COUNT;
     SimpleProfile_SetParameter( HEALTH_DATA_HEADER, 2,  &length);
+
+    saveStepData();
+}
+
+static void saveStepData(void){
+
+    HalI2CInit(EEPROM_ADDRESS, I2C_CLOCK_RATE);
+
+    uint8 dBuf[4] = {
+        LO_UINT16(EEPROM_POSITION_STEP_DATA),    // address
+        HI_UINT16(EEPROM_POSITION_STEP_DATA),    // address
+        LO_UINT16(stepDataStart),
+        HI_UINT16(stepDataStart)
+    }, cBuf[4] = {
+        LO_UINT16(EEPROM_POSITION_STEP_DATA + 2),    // address
+        HI_UINT16(EEPROM_POSITION_STEP_DATA + 2),    // address
+        LO_UINT16(stepDataStop),
+        HI_UINT16(stepDataStop)
+    };
+
+    HalI2CWrite(sizeof(dBuf), dBuf);
+    HalI2CAckPolling();
+
+    HalI2CWrite(sizeof(cBuf), cBuf);
+    HalI2CAckPolling();
+
+    // uint8 d[8];
+
+    // osal_memcpy(d, &dBuf[2], 8);
+    // SimpleProfile_SetParameter( HEALTH_SYNC, 8, d);
+
+}
+
+static void loadStepData(void){
+
+    HalI2CInit(EEPROM_ADDRESS, I2C_CLOCK_RATE);
+
+    uint8 addr1[2] = {
+        LO_UINT16(EEPROM_POSITION_STEP_DATA),
+        HI_UINT16(EEPROM_POSITION_STEP_DATA)
+    }, addr2[2] = {
+        LO_UINT16(EEPROM_POSITION_STEP_DATA + 2),
+        HI_UINT16(EEPROM_POSITION_STEP_DATA + 2)
+    }, dBuf[2], cBuf[2];
+
+    HalI2CWrite(sizeof(addr1), addr1);
+    HalI2CRead(sizeof(dBuf), dBuf);
+
+    HalI2CWrite(sizeof(addr2), addr2);
+    HalI2CRead(sizeof(cBuf), cBuf);
+
+    if (!(dBuf[0] == 0xff && dBuf[1] == 0xff))
+    {
+        stepDataStart = (uint16)((dBuf[1] << 8) | dBuf[0]);
+    }
+
+    if (!(cBuf[0] == 0xff && cBuf[1] == 0xff))
+    {
+        stepDataStop = (uint16)((cBuf[1] << 8) | cBuf[0]);
+    }
+
+    uint8 d[8];
+
+    osal_memcpy(d, &stepDataStart, 2);
+    osal_memcpy(&d[2], &stepDataStop, 2);
+    SimpleProfile_SetParameter( HEALTH_SYNC, 8, d);
 }
 
 /*********************************************************************
