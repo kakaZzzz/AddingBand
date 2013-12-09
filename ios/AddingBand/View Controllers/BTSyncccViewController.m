@@ -197,7 +197,7 @@
     self.pastVC.lastSyncTime.text = _lastSyncTime;
     //计算使用时间
     int k = [[self.bc getBpByModel:MAM_BAND_MODEL] setupDate];
-    NSLog(@"使用了多少秒%d",k);
+//    NSLog(@"使用了多少秒%d",k);
     NSString *str = [BTGetData getBLEuseTime:k];//得到外围设备使用时间
     self.syncTwoVC.useTimeLabel.text = [NSString stringWithFormat:@"%@",str];
    // self.pastVC.useTimeLabel.text = [NSString stringWithFormat:@"%@",str];
@@ -468,7 +468,7 @@
 //动态改变每一行的高度
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    NSLog(@"heightForRowAtIndexPath");
+//    NSLog(@"heightForRowAtIndexPath");
     //根据index找到对应的peripheral
    // BTBandPeripheral*bp  = [self.bc getBpByIndex:indexPath.row];
     BTBandPeripheral*bp  = [self.bc getBpByModel:@"A1"];
@@ -480,7 +480,7 @@
     //是否正在连接中
     BOOL isConnecting = bp.isConnecting;
     
-    NSLog(@"设备是否正在连接  %d",isConnecting);
+//    NSLog(@"设备是否正在连接  %d",isConnecting);
     //
     if (isConnecting && !isConnected) {
         NSLog(@"开始搜索动画");
@@ -504,7 +504,7 @@
     }
     else if (isConnected)
     {
-        NSLog(@"已连接");
+//        NSLog(@"已连接");
         return kBluetoothConnectedHeight;
     }
     else

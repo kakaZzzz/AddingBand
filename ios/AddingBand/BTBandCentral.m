@@ -961,7 +961,7 @@
         
         if ([model isEqual:[BTUtils getModel:bp.name]]) {
             
-            NSLog(@"------%@",bp);
+//            NSLog(@"------%@",bp);
             
             return bp;
         }
