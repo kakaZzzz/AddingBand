@@ -71,7 +71,7 @@
 #define CLOSE_PIO                             1
 
 // How often to perform periodic event
-#define SBP_PERIODIC_EVT_PERIOD               0
+#define SBP_PERIODIC_EVT_PERIOD               100
 
 // What is the advertising interval when device is discoverable (units of 625us, 160=100ms)
 #define DEFAULT_ADVERTISING_INTERVAL          160
@@ -322,6 +322,8 @@ one_data_t oneData[DATA_TYPE_COUNT];
 
 // define for keys
 uint8 slipWaitFor = 0, lockSlip = 0, blinkPIO = 0, blinkMinutes = 13, onTheKey = 0, ledCycleCount = 0;
+
+uint16 testAddr = 0;
 
 /*********************************************************************
  * LOCAL FUNCTIONS
@@ -1017,7 +1019,49 @@ static void battPeriodicTask( void )
  */
 static void performPeriodicTask( void )
 {
-    // loadStepData();
+    if (testAddr < 32768)
+    {
+        HalI2CInit(EEPROM_ADDRESS, I2C_CLOCK_RATE);
+
+        uint8 addr[2] = {
+            LO_UINT16(testAddr),    // address
+            HI_UINT16(testAddr)
+        };
+
+        uint8 data[8] = {1,2,3,4,5,6,7,8};
+
+        // uint8 send[10], back[8];
+
+        uint8 d[8] = {
+                LO_UINT16(testAddr),
+                HI_UINT16(testAddr),
+                0,0,0,0,0,0
+            };
+
+        // osal_memcpy(&send[0], addr, 2);
+        // osal_memcpy(&send[2], data, 8);
+
+        uint8 send[3] = {
+            LO_UINT16(testAddr),
+            HI_UINT16(testAddr),
+            15
+        }, back;
+
+        HalI2CWrite(sizeof(send), send);
+        HalI2CAckPolling();
+
+        HalI2CWrite(sizeof(addr), addr);
+        HalI2CRead(sizeof(back), &back);
+
+        if(back == 15){
+            d[2] = 1;
+        }
+
+        SimpleProfile_SetParameter( HEALTH_SYNC, sizeof ( d ), d );
+
+        testAddr += 1;
+    }
+    
 }
 
 /*********************************************************************
