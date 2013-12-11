@@ -71,7 +71,7 @@
 #define CLOSE_PIO                             1
 
 // How often to perform periodic event
-#define SBP_PERIODIC_EVT_PERIOD               100
+#define SBP_PERIODIC_EVT_PERIOD               300
 
 // What is the advertising interval when device is discoverable (units of 625us, 160=100ms)
 #define DEFAULT_ADVERTISING_INTERVAL          160
@@ -1019,48 +1019,48 @@ static void battPeriodicTask( void )
  */
 static void performPeriodicTask( void )
 {
-    if (testAddr < 32768)
-    {
-        HalI2CInit(EEPROM_ADDRESS, I2C_CLOCK_RATE);
+    // if (testAddr < 32768)
+    // {
+    //     HalI2CInit(EEPROM_ADDRESS, I2C_CLOCK_RATE);
 
-        uint8 addr[2] = {
-            LO_UINT16(testAddr),    // address
-            HI_UINT16(testAddr)
-        };
+    //     uint8 addr[2] = {
+    //         HI_UINT16(testAddr),    // address
+    //         LO_UINT16(testAddr)
+    //     };
 
-        uint8 data[8] = {1,2,3,4,5,6,7,8};
+    //     uint8 data[8] = {1,2,0,4,7,9,2,8};
 
-        // uint8 send[10], back[8];
+    //     uint8 send[10], back[8];
 
-        uint8 d[8] = {
-                LO_UINT16(testAddr),
-                HI_UINT16(testAddr),
-                0,0,0,0,0,0
-            };
+    //     uint8 d[8] = {
+    //             LO_UINT16(testAddr),
+    //             HI_UINT16(testAddr),
+    //             0,0,0,0,0,0
+    //         };
 
-        // osal_memcpy(&send[0], addr, 2);
-        // osal_memcpy(&send[2], data, 8);
+    //     osal_memcpy(&send[0], addr, 2);
+    //     osal_memcpy(&send[2], data, 8);
 
-        uint8 send[3] = {
-            LO_UINT16(testAddr),
-            HI_UINT16(testAddr),
-            15
-        }, back;
+    //     // uint8 send[3] = {
+    //     //     HI_UINT16(testAddr),
+    //     //     LO_UINT16(testAddr),
+    //     //     15
+    //     // }, back;
 
-        HalI2CWrite(sizeof(send), send);
-        HalI2CAckPolling();
+    //     HalI2CWrite(sizeof(send), send);
+    //     HalI2CAckPolling();
 
-        HalI2CWrite(sizeof(addr), addr);
-        HalI2CRead(sizeof(back), &back);
+    //     HalI2CWrite(sizeof(addr), addr);
+    //     HalI2CRead(sizeof(back), back);
 
-        if(back == 15){
-            d[2] = 1;
-        }
+    //     if(osal_memcmp(back, data, 8)){
+    //         d[2] = 1;
+    //     }
 
-        SimpleProfile_SetParameter( HEALTH_SYNC, sizeof ( d ), d );
+    //     SimpleProfile_SetParameter( HEALTH_SYNC, sizeof ( d ), d );
 
-        testAddr += 1;
-    }
+    //     testAddr += 8;
+    // }
     
 }
 
@@ -1693,8 +1693,8 @@ static void eepromWrite(uint8 type){
         HalI2CInit(EEPROM_ADDRESS, I2C_CLOCK_RATE);
 
         uint8 dBuf[10] = {
-            LO_UINT16(stepDataStop),    // address
             HI_UINT16(stepDataStop),    // address
+            LO_UINT16(stepDataStop),    // address
             LO_UINT16(LO_UINT32(oneData[point].hourSeconds)),
             HI_UINT16(LO_UINT32(oneData[point].hourSeconds)),
             LO_UINT16(HI_UINT32(oneData[point].hourSeconds)),
@@ -1751,8 +1751,8 @@ static void eepromRead(void){
     while(stepDataStart != stepDataStop){
 
         uint8 dBuf[8], addr[2] = {
-            LO_UINT16(stepDataStart),
-            HI_UINT16(stepDataStart)
+            HI_UINT16(stepDataStart),
+            LO_UINT16(stepDataStart)
         };
 
         HalI2CWrite(sizeof(addr), addr);
@@ -1805,22 +1805,16 @@ static void saveStepData(void){
 
     HalI2CInit(EEPROM_ADDRESS, I2C_CLOCK_RATE);
 
-    uint8 dBuf[4] = {
-        LO_UINT16(EEPROM_POSITION_STEP_DATA),    // address
+    uint8 dBuf[6] = {
         HI_UINT16(EEPROM_POSITION_STEP_DATA),    // address
+        LO_UINT16(EEPROM_POSITION_STEP_DATA),    // address
         LO_UINT16(stepDataStart),
-        HI_UINT16(stepDataStart)
-    }, cBuf[4] = {
-        LO_UINT16(EEPROM_POSITION_STEP_DATA + 2),    // address
-        HI_UINT16(EEPROM_POSITION_STEP_DATA + 2),    // address
+        HI_UINT16(stepDataStart),
         LO_UINT16(stepDataStop),
         HI_UINT16(stepDataStop)
     };
 
     HalI2CWrite(sizeof(dBuf), dBuf);
-    HalI2CAckPolling();
-
-    HalI2CWrite(sizeof(cBuf), cBuf);
     HalI2CAckPolling();
 
     // uint8 d[8];
@@ -1835,27 +1829,17 @@ static void loadStepData(void){
     HalI2CInit(EEPROM_ADDRESS, I2C_CLOCK_RATE);
 
     uint8 addr1[2] = {
-        LO_UINT16(EEPROM_POSITION_STEP_DATA),
-        HI_UINT16(EEPROM_POSITION_STEP_DATA)
-    }, addr2[2] = {
-        LO_UINT16(EEPROM_POSITION_STEP_DATA + 2),
-        HI_UINT16(EEPROM_POSITION_STEP_DATA + 2)
-    }, dBuf[2], cBuf[2];
+        HI_UINT16(EEPROM_POSITION_STEP_DATA),
+        LO_UINT16(EEPROM_POSITION_STEP_DATA)
+    }, dBuf[4];
 
     HalI2CWrite(sizeof(addr1), addr1);
     HalI2CRead(sizeof(dBuf), dBuf);
 
-    HalI2CWrite(sizeof(addr2), addr2);
-    HalI2CRead(sizeof(cBuf), cBuf);
-
     if (!(dBuf[0] == 0xff && dBuf[1] == 0xff))
     {
         stepDataStart = (uint16)((dBuf[1] << 8) | dBuf[0]);
-    }
-
-    if (!(cBuf[0] == 0xff && cBuf[1] == 0xff))
-    {
-        stepDataStop = (uint16)((cBuf[1] << 8) | cBuf[0]);
+        stepDataStop = (uint16)((dBuf[3] << 8) | dBuf[2]);
     }
 
     uint8 d[8];
