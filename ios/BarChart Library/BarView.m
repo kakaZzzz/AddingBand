@@ -105,9 +105,9 @@
      transition.type = kCATransitionMoveIn;//{kCATransitionMoveIn, kCATransitionPush, kCATransitionReveal, kCATransitionFade};设置动画类型，移入，推出等
     
      //更多私有{@"cube",@"suckEffect",@"oglFlip",@"rippleEffect",@"pageCurl",@"pageUnCurl",@"cameraIrisHollowOpen",@"cameraIrisHollowClose"};
-     transition.subtype = kCATransitionFromLeft;//{kCATransitionFromLeft, kCATransitionFromRight, kCATransitionFromTop, kCATransitionFromBottom};
+     transition.subtype = kCATransitionFromTop;//{kCATransitionFromLeft, kCATransitionFromRight, kCATransitionFromTop, kCATransitionFromBottom};
     
-     transition.delegate = self; 　　　　　　//设置属性依赖
+     transition.delegate = self; 　　　　　//设置属性依赖
     [self.markView.layer addAnimation:transition forKey:nil];       //在图层增加动画效果
     
      // 要做的
