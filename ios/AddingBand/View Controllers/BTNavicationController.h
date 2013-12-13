@@ -6,6 +6,10 @@
 //  Copyright (c) 2013年 kaka'. All rights reserved.
 //
 
+
+/**
+ *  配置navigationController
+ */
 #import <UIKit/UIKit.h>
 
 @interface BTNavicationController : UINavigationController

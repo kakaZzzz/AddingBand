@@ -24,11 +24,17 @@
 //
 
 #define MAX_BAR_WIDTH 20.0f//柱子宽度
-#define STEP_AXIS_Y 1.0f
+#define STEP_AXIS_Y 100.0f//y轴级别间隔
 #define STROKE_AXIS_Y_SCALE 85
 #define FONT_SIZE 12.0f
-#define PLOT_PADDING_TOP 10.0f//距上距离
+#define PLOT_PADDING_TOP 5.0f//距上距离
 #define PLOT_PADDING_BOTTOM 10.0f//距下距离
+
+#define MARKVIEW_LEFT 0.0f //标签在柱子上的X坐标
+#define MARKVIEW_TOP -40.0f//标签在柱子上的Y坐标
+#define MARKVIEW_HEIGHT 40.0f//标签的高度
+
+
 
 #import <UIKit/UIKit.h>
 #import "PlotChartView.h"
@@ -69,6 +75,7 @@
 @property (assign) BarShape barViewShape;
 @property (assign) BarShadow barViewShadow;
 
+@property (nonatomic,assign)CGFloat barWidth;
 - (void)setXmlData:(NSData *)xmlData showAxis:(AxisDisplaySetting)axisDisplay withColor:(UIColor *)axisColor shouldPlotVerticalLines:(BOOL)verticalLines;
 - (void)setDataWithArray:(NSArray *)chartData showAxis:(AxisDisplaySetting)axisDisplay withColor:(UIColor *)axisColor shouldPlotVerticalLines:(BOOL)verticalLines;
 - (NSArray *)createChartDataWithTitles:(NSArray *)titles values:(NSArray *)values colors:(NSArray *)colors labelColors:(NSArray *)labelColors;
@@ -76,5 +83,7 @@
 - (void)setupBarViewStyle:(BarDisplayStyle)displayStyle;
 - (void)setupBarViewShape:(BarShape)shape;
 - (void)setupBarViewShadow:(BarShadow)shadow;
+
+- (void)animateBars;
 
 @end

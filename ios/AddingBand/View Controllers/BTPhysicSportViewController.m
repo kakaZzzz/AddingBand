@@ -15,6 +15,11 @@
 #import "BTGlobals.h"
 #import "BTBandCentral.h"
 #import "BTGetData.h"
+
+#import "BTDailySportViewController.h"//今日运动量
+#import "BTWeeklySportViewController.h"//本周运动量
+#import "BTMonthSportViewController.h"//本月运动量
+#import "MHTabBarController.h"
 //button
 #define syncButtonX 200
 #define syncButtonY 390
@@ -189,14 +194,42 @@ static int dailyStep = 0;
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor colorWithRed:255.0/255.0 green:153.0/255.0 blue:153.0/255.0 alpha:1.0];;
     self.navigationItem.title = @"MAMA运动";
-    //添加圆形进度条 和 Label
-    [self addCircleProgress];
-    //添加柱状图
-    [self loadBarChartUsingArray];
-    //添加同步按钮
-    [self addSycnButton];
+    
+    [self addDayWeekMonthView];
+//    //添加圆形进度条 和 Label
+//    [self addCircleProgress];
+//    //添加柱状图
+//    [self loadBarChartUsingArray];
+//    //添加同步按钮
+//    [self addSycnButton];
     
    	// Do any additional setup after loading the view.
+}
+#pragma mark - 加载button控制的日 周 月运动详情
+- (void)addDayWeekMonthView
+{
+    
+	BTDailySportViewController *dailyVC = [[BTDailySportViewController alloc] init];
+    BTWeeklySportViewController *weeklyVC = [[BTWeeklySportViewController alloc]init];
+    BTMonthSportViewController *monthVC = [[BTMonthSportViewController alloc] init];
+   
+    
+    
+    dailyVC.title = @"今天";
+    weeklyVC.title = @"周";
+	monthVC.title = @"月";
+    
+    
+	NSArray *viewControllers = [NSArray arrayWithObjects:dailyVC, weeklyVC, monthVC,nil];
+    
+	self.tabBarController = [[MHTabBarController alloc] init];
+    _tabBarController.view.frame = CGRectMake(0, 20, 320, self.view.frame.size.height);
+    _tabBarController.delegate = self;
+	_tabBarController.viewControllers = viewControllers;
+    [self.view addSubview:_tabBarController.view];
+	
+    
+    
 }
 
 #pragma mark - 读取累计总步数

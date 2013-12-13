@@ -133,6 +133,19 @@
     pausedTime = [NSDate date];
 }
 
+-(void)reset{
+    
+    pausedTime = nil;
+    if(_timerType == BTTimerLabelTypeStopWatch) timeUserValue = 0;
+    
+    if(_counting){
+        startCountDate = [NSDate date];
+    }else{
+        startCountDate = nil;
+    }
+    
+    [self updateLabel:nil];
+}
 #if NS_BLOCKS_AVAILABLE
 -(void)startWithEndingBlock:(void(^)(NSTimeInterval))end{
     [self start];

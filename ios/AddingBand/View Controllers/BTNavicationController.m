@@ -58,8 +58,10 @@
 //                                                            UITextAttributeTextShadowColor: shadowColor,
 //                                                            UITextAttributeTextShadowOffset: [NSValue valueWithCGSize: CGSizeMake(0.0, 1.0)]}];
     
+
+    
     /*简单的处理颜色*/
-    if (iOS7) {
+    if (IOS7_OR_LATER) {
         [[UINavigationBar appearance] setBarTintColor:[BTColor getColor:kBarColor]];
      }
     else{
@@ -102,6 +104,8 @@
     [super viewDidLoad];
     
     // Do any additional setup after loading the view.
+    
+    
     _animationLayer = [CALayer layer] ;
     CGRect layerFrame = self.view.frame;
     layerFrame.size.height = self.view.frame.size.height-self.navigationBar.frame.size.height;
@@ -116,17 +120,19 @@
 }
 - (id<CAAction>)actionForLayer:(CALayer *)layer forKey:(NSString *)event
 {
+    
+    
     id<CAAction> action = (id)[NSNull null];
     return action;
 }
 
--(void)viewWillLayoutSubviews{
-    [super viewWillLayoutSubviews];
-    CGRect layerFrame = self.view.bounds;
-    layerFrame.size.height = self.view.bounds.size.height-self.navigationBar.frame.size.height;
-    layerFrame.origin.y = self.navigationBar.frame.size.height+20;
-    _animationLayer.frame = layerFrame;
-}
+//-(void)viewWillLayoutSubviews{
+//    [super viewWillLayoutSubviews];
+//    CGRect layerFrame = self.view.bounds;
+//    layerFrame.size.height = self.view.bounds.size.height-self.navigationBar.frame.size.height;
+//    layerFrame.origin.y = self.navigationBar.frame.size.height+20;
+//    _animationLayer.frame = layerFrame;
+//}
 
 //-(void)pushViewController:(UIViewController *)viewController animated:(BOOL)animated
 //{
@@ -169,8 +175,18 @@
 //    }
 //    [super pushViewController:viewController animated:NO];
 //}
+
+/**
+ *  返回上一级页面
+ *
+ *  @param animated 参数 是否动画
+ *
+ *  @return 返回值为上一级页面
+ */
 -(UIViewController*)popViewControllerAnimated:(BOOL)animated
 {
+    
+    
     [_animationLayer removeFromSuperlayer];
     [self.view.layer insertSublayer:_animationLayer above:self.view.layer];
     if(animated)
@@ -180,8 +196,6 @@
         
         
         UIView * toView = [[self.viewControllers objectAtIndex:[self.viewControllers indexOfObject:self.visibleViewController]-1] view];
-        
-        
         
         
         CABasicAnimation *Animation  = [CABasicAnimation animationWithKeyPath:@"transform"];
@@ -214,6 +228,8 @@
 }
 -(void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag
 {
+    
+    
     [_animationLayer setContents:nil];
     [_animationLayer removeAllAnimations];
     [self.visibleViewController.view.layer removeAllAnimations];

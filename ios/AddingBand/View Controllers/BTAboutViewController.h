@@ -6,6 +6,9 @@
 //  Copyright (c) 2013年 kaka'. All rights reserved.
 //
 
+/**
+ *  此页面是关于页面
+ */
 #import <UIKit/UIKit.h>
 
 @interface BTAboutViewController : UIViewController

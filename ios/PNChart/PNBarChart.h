@@ -8,10 +8,9 @@
 
 #import <UIKit/UIKit.h>
 
-#define chartMargin     10
-#define xLabelMargin    15
-#define yLabelMargin    15
-#define yLabelHeight    11
+#define charBartMargin     10
+//#define xBarLabelMargin    15
+//#define yLabelHeight    11
 
 @interface PNBarChart : UIView
 
@@ -19,7 +18,7 @@
  * This method will call and troke the line in animation
  */
 
--(void)strokeChart;
+-(void)strokeChartWithXLabels:(NSArray *)xLabelArray;
 
 @property (strong, nonatomic) NSArray * xLabels;
 
@@ -30,8 +29,6 @@
 @property (nonatomic) CGFloat xLabelWidth;
 
 @property (nonatomic) int yValueMax;
-
-
 
 @property (nonatomic, strong) UIColor * strokeColor;
 

@@ -30,6 +30,11 @@
 
 -(void)setGrade:(float)grade
 {
+    
+    NSLog(@"动态绘制");
+    
+      
+    
 	_grade = grade;
 	UIBezierPath *progressline = [UIBezierPath bezierPath];
     
@@ -39,7 +44,7 @@
     [progressline setLineWidth:1.0];
     [progressline setLineCapStyle:kCGLineCapSquare];
 	_chartLine.path = progressline.CGPath;
-
+    
 	if (_barColor) {
 		_chartLine.strokeColor = [_barColor CGColor];
 	}else{
@@ -59,15 +64,20 @@
 
 // Only override drawRect: if you perform custom drawing.
 // An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect
-{
-	//Draw BG
-    CGContextRef context = UIGraphicsGetCurrentContext();
-    
-    CGContextSetFillColorWithColor(context, [UIColor colorWithRed:238.0/255.0 green:238.0/255.0 blue:238.0/255.0 alpha:1.0].CGColor);
-	CGContextFillRect(context, rect);
-    
-}
+//- (void)drawRect:(CGRect)rect
+//{
+//    NSLog(@"drawrect..............");
+//    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 30, 40)];
+//    label.backgroundColor = [UIColor clearColor];
+//    label.text = @"123";
+//    [self addSubview:label];
+//	//Draw BG
+//    CGContextRef context = UIGraphicsGetCurrentContext();
+//    
+//    CGContextSetFillColorWithColor(context, [UIColor colorWithRed:238.0/255.0 green:238.0/255.0 blue:238.0/255.0 alpha:1.0].CGColor);
+//	CGContextFillRect(context, rect);
+//    
+//}
 
 
 @end

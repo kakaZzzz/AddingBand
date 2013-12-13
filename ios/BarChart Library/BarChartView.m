@@ -115,6 +115,22 @@
 	NSUInteger _index = 0;
 	for (NSDictionary *barInfo in chartDataArray)  {
 		BarView *bar = [[BarView alloc] initWithFrame:CGRectMake((barFullWidth - barWidth)/2 + _index*(barFullWidth),  plotView.height - roundf([[barInfo objectForKey:@"value"] floatValue]*barHeightRatio), barWidth, roundf([[barInfo objectForKey:@"value"] floatValue]*barHeightRatio))];
+        /**
+         *  在柱状图上加上数值标签 默认隐藏 当点击的时候出现 过一会儿自动隐藏 或者再点击的时候直接隐藏
+         *
+         *  @param MARKVIEW_LEFT   在柱子上的X坐标
+         *  @param MARKVIEW_TOP 在柱子上的Y坐标
+         *  @param barWidth   数值标签的宽度
+         *  @param MARKVIEW_HEIGHT  数值标签的高度
+         *
+         *
+         */
+        bar.markView = [[BTBarMarkView alloc] initWithFrame:CGRectMake(MARKVIEW_LEFT, MARKVIEW_TOP, barWidth, MARKVIEW_HEIGHT)];
+        bar.markView.backgroundColor = [UIColor redColor];
+        bar.markView.hidden = YES;//初始默认 隐藏
+        bar.markView.markLabel.text =[NSString stringWithFormat:@"%@",[barInfo objectForKey:@"value"]];
+        [bar addSubview:bar.markView];
+        //
 		bar.cornerRadius = 10.0f;
 		bar.barValue = [[barInfo objectForKey:@"value"] floatValue];
 		bar.owner = self;
@@ -130,13 +146,19 @@
 		[barViews addObject:bar];
 		
 		if (showAxisX) {
-			BarLabel *barLabel = [[BarLabel alloc] initWithFrame:CGRectMake(roundf(plotView.left + _index*barFullWidth), plotChart.bottom - PLOT_PADDING_BOTTOM,roundf(barFullWidth), fontSize + PLOT_PADDING_BOTTOM)];
+			BarLabel *barLabel = [[BarLabel alloc] initWithFrame:CGRectMake(roundf(plotView.left + _index*barFullWidth), self.frame.size.height - 80,roundf(barFullWidth), fontSize + PLOT_PADDING_BOTTOM)];
 			barLabel.textColor = [barInfo objectForKey:@"labelColor"];
 			barLabel.text =  [barInfo objectForKey:@"label"];
 			barLabel.font = [UIFont systemFontOfSize:fontSize];
-           
+          
+#if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_5_1
+            // iPhone OS SDK 6.0 及其以后版本的处理
+            barLabel.textAlignment = NSTextAlignmentCenter;
+#else
+            // iPhone OS SDK 6.0 之前版本的处理
             barLabel.textAlignment = UITextAlignmentCenter;
-           
+
+#endif
             barLabel.clipsToBounds = false;
 			barLabel.backgroundColor = [UIColor clearColor];
 			[barLabels addObject:barLabel];
@@ -166,10 +188,10 @@
 	barWidth = plotView.width/chartDataArray.count;
 	barFullWidth = plotView.width/chartDataArray.count;
 	
-	if (barWidth > MAX_BAR_WIDTH)
-		barWidth = MAX_BAR_WIDTH;
+	if (barWidth > _barWidth)
+		barWidth = _barWidth;
 	
-	stepWidth = plotView.width/chartDataArray.count - MAX_BAR_WIDTH;
+	stepWidth = plotView.width/chartDataArray.count - _barWidth;
 	
 	if (stepWidth < 0.0f)
 		stepWidth = 0.0f;
@@ -408,6 +430,8 @@
 
 - (NSArray *)createChartDataWithTitles:(NSArray *)titles values:(NSArray *)values colors:(NSArray *)colors labelColors:(NSArray *)labelColors {
     //Make sure each array has the same number of objects, otherwise there'll be an exception and a crash
+    
+    NSLog(@"%d   %d ....",[titles count],[values count]);
     if ([titles count] == [values count] && [titles count] == [colors count] && [colors count] == [labelColors count]) {
         NSMutableArray *chartData = [[NSMutableArray alloc] init];
         for (int i =  0; i < [titles count]; i++) {

@@ -27,7 +27,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import "CMPopTipView.h"
 #import "BarTypes.h"
-
+#import "BTBarMarkView.h"
 @interface BarView : UIButton {
 	CGFloat barValue;
 	CGFloat cornerRadius;
@@ -43,6 +43,9 @@
 @property (assign) BarDisplayStyle barViewDisplayStyle;
 @property (assign) BarShape barViewShape;
 @property (assign) BarShadow barViewShadow;
+@property (nonatomic,strong) UILabel *valueLabel;
+@property (nonatomic,strong) BTBarMarkView *markView;
+
 
 - (void)setupBarStyle:(BarDisplayStyle)displayStyle;
 - (void)setupBarShape:(BarShape)shape;

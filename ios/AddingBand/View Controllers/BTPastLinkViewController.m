@@ -21,7 +21,7 @@
 #define kIconImageWidth 75
 #define kIconImageHeight 75
 
-#define iPhone5 ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? CGSizeEqualToSize(CGSizeMake(640, 1136), [[UIScreen mainScreen] currentMode].size) : NO)
+#define IPHONE_5_OR_LATER ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? CGSizeEqualToSize(CGSizeMake(640, 1136), [[UIScreen mainScreen] currentMode].size) : NO)
 
 static BTPastLinkViewController *pastLinkVC = nil;
 @interface BTPastLinkViewController ()
@@ -69,7 +69,7 @@ static BTPastLinkViewController *pastLinkVC = nil;
     _aScrollView.backgroundColor = [UIColor whiteColor];
     [self.view addSubview:_aScrollView];
     
-    if (iPhone5) {
+    if (IPHONE_5_OR_LATER) {
         _refreshButton.frame = CGRectMake((320 - 200)/2, self.view.frame.size.height - 200, 200, 50);
         
     }
@@ -90,7 +90,7 @@ static BTPastLinkViewController *pastLinkVC = nil;
 - (void)addSubviews
 {
     //背景粉红图
-    if (iPhone5) {
+    if (IPHONE_5_OR_LATER) {
         self.aImageView = [[UIImageView alloc] initWithFrame:CGRectMake(kImageBgX, kImageBgY, kImageBgWidth, kImageBgHeight + 50)];
     }
     else

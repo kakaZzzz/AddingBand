@@ -6,6 +6,9 @@
 //  Copyright (c) 2013年 kaka'. All rights reserved.
 //
 
+/**
+ *  此页面为体征页面
+ */
 #import <UIKit/UIKit.h>
 #import "MHTabBarController.h"
 @class CircularProgressView;
@@ -46,6 +49,5 @@ UITableViewDelegate>
 
 @property(nonatomic,strong)MHTabBarController *tabBarController;//一定要用属性，不然就dealloc了
 @property(nonatomic,strong)UITableView *tableView;//一定要用属性，不然就dealloc了
-
 
 @end

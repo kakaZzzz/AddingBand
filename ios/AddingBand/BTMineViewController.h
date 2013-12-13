@@ -6,6 +6,15 @@
 //  Copyright (c) 2013年 kaka'. All rights reserved.
 //
 
+
+/**
+ *  此页面是设置（我的）页面
+ *
+ *
+ *
+ *
+ *
+ */
 #import <UIKit/UIKit.h>
 #import "FlatDatePicker.h"
 @interface BTMineViewController : UITableViewController<FlatDatePickerDelegate,

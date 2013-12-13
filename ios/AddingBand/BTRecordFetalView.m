@@ -57,7 +57,7 @@ static int comMinute = 0;
     NSNumber* hour = [BTUtils getHour:localeDate];
     NSNumber* minute = [BTUtils getMinutes:localeDate];
     NSTimeInterval seconds = [localeDate timeIntervalSince1970];//当前时间距离1970年的秒数
-   
+  
     self.aYear = year;
     self.aMonth = month;
     self.aDay = day;

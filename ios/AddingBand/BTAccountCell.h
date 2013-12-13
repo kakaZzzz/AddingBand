@@ -6,6 +6,13 @@
 //  Copyright (c) 2013年 kaka'. All rights reserved.
 //
 
+/**
+ *  绑定账户 部分自定义cell
+ *  使用block用于点击绑定账户之后的回调
+ *  
+ *
+ *
+ */
 #import <UIKit/UIKit.h>
 typedef void(^chooseAccount)(NSString *);
 @interface BTAccountCell : UITableViewCell

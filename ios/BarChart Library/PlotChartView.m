@@ -115,8 +115,16 @@
 		for (NSUInteger i = 0; i <= stepCountAxisY; i++) {
 			NSString *textX = [NSString stringWithFormat:@"%i",(NSUInteger)(maxValueAxisY - i*stepValueAxisY)];
 			CGRect textRect = CGRectMake(CGRectGetMinX(rect), CGRectGetMinY(rect) + i*stepHeightAxisY - labelSizeAxisY.height/2, labelSizeAxisY.width, labelSizeAxisY.height);
-		
-			[textX drawInRect:textRect withFont:[UIFont systemFontOfSize:fontSize] lineBreakMode:UILineBreakModeClip alignment:UITextAlignmentCenter];
+
+            
+#if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_5_1
+            // iPhone OS SDK 6.0 及其以后版本的处理
+            [textX drawInRect:textRect withFont:[UIFont systemFontOfSize:fontSize] lineBreakMode:NSLineBreakByClipping alignment:NSTextAlignmentCenter];
+#else
+            // iPhone OS SDK 6.0 之前版本的处理
+             [textX drawInRect:textRect withFont:[UIFont systemFontOfSize:fontSize] lineBreakMode:UILineBreakModeClip alignment:UITextAlignmentCenter];
+#endif
+            
 		
 			CGContextBeginPath(context);
 			CGContextMoveToPoint(context, CGRectGetMinX(rect) + labelSizeAxisY.width, CGRectGetMinY(rect) + i*stepHeightAxisY);

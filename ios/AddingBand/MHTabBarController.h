@@ -1,5 +1,11 @@
 
 
+
+/**
+ *  自定义 类似TabBarController的控件,显示在体征页面，用作小窗口显示妈妈体征
+ */
+
+
 @protocol MHTabBarControllerDelegate;
 
 /*!
