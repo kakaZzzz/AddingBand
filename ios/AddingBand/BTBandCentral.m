@@ -397,13 +397,23 @@
 //        NSLog(@"hour:%@", [BTUtils dateWithSeconds:(NSTimeInterval)hourSencodes]);
         
         // 调试加速计xyz输出
-        int16_t x,y,z;
+//        int16_t x,y,z;
+//        
+//        [characteristic.value getBytes:&x range:NSMakeRange(0, 2)];
+//        [characteristic.value getBytes:&y range:NSMakeRange(2, 2)];
+//        [characteristic.value getBytes:&z range:NSMakeRange(4, 2)];
+//        
+//        NSLog(@"x:%d y:%d z:%d", x,y,z);
         
-        [characteristic.value getBytes:&x range:NSMakeRange(0, 2)];
-        [characteristic.value getBytes:&y range:NSMakeRange(2, 2)];
-        [characteristic.value getBytes:&z range:NSMakeRange(4, 2)];
         
-        NSLog(@"x:%d y:%d z:%d", x,y,z);
+        uint8_t same;
+        uint16_t addr;
+        
+        [characteristic.value getBytes:&addr range:NSMakeRange(0, 2)];
+        [characteristic.value getBytes:&same range:NSMakeRange(2, 1)];
+        
+        NSLog(@"a:%d s:%d", addr, same);
+
 
     }
     
