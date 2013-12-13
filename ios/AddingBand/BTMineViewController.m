@@ -20,13 +20,19 @@
 #import "BTGetData.h"
 #import "BTUserData.h"
 #import "BTAccountCell.h"
+
+#define CELL_SECTION (indexPath.row == 0 || indexPath.row == 4 || indexPath.row == 8)
+#define CELL_INDICATOR (indexPath.row == 3 || indexPath.row == 9 || indexPath.row == 10 ||indexPath.row == 11)
+#define CELL_TEXTFIELD (indexPath.row == 7)
+#define CELL_ACCOUNT (indexPath.row ==  12)
+
+#define ANIMATION_TIME 0.5f
+
 static int selected = 0;//选择行数
 static NSString *birthday = nil;//生日
 static NSString *duedate = nil;//预产期
 static NSString *pregnancy = nil;//怀孕症状
 @interface BTMineViewController ()
-//@property(nonatomic,strong)UIScrollView *aScrollView;
-//@property(nonatomic,strong)UITableView *tableView;
 
 @end
 
@@ -36,16 +42,11 @@ static NSString *pregnancy = nil;//怀孕症状
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        // Custom initialization
-        //设置tableview类型 为UITableViewStyleGrouped
-        //  self.tableView = [[UITableView alloc] initWithFrame:self.tableView.frame style:UITableViewStyleGrouped];
         
         self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
         self.tableView.separatorColor = [UIColor clearColor];
         self.tableView.showsVerticalScrollIndicator = NO;
-        self.tableView.dataSource = self;
-        self.tableView.delegate = self;
-
+        
         birthday = @"2013.12.25";
         duedate = @"2013.12.25";
         pregnancy = @"高血压";
@@ -80,19 +81,9 @@ static NSString *pregnancy = nil;//怀孕症状
 - (void)viewDidLoad
 {
     [super viewDidLoad];
- 
-    //加载scrollview
-//    self.aScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
-//    _aScrollView.contentSize = CGSizeMake(self.view.frame.size.width, self.view.frame.size.height + 100);
-//    _aScrollView.backgroundColor = [UIColor whiteColor];
-//    _aScrollView.showsVerticalScrollIndicator = NO;
-//    [self.view addSubview:_aScrollView];
-    //加载tableview
-//    self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width,self.view.frame.size.height)];
-//     [self.view addSubview:_tableView];
-	// Do any additional setup after loading the view.
     
-  }
+    
+}
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -104,35 +95,13 @@ static NSString *pregnancy = nil;//怀孕症状
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     
-    //刚开始没有连接上设备的时候 每个设备下面只有一行  显示“立即连接” ;当连接上的时候 设备下面变成两行 显示“上次同步时间” “立即同步”
-    //当同步完的时候 怎么做？？？
     return 13;
 }
 
-////分区头 所要显示的文字
-//- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
-//
-//{
-//    switch (section) {
-//        case 0:
-//            return @"账户名称";
-//            break;
-//        case 1:
-//            return @"孕期概况";
-//            break;
-//        case 2:
-//            return @"系统设置";
-//            break;
-//        default:
-//            break;
-//    }
-//    return nil;
-//}
-//
 
 //动态改变每一行的高度
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-
+    
     if (indexPath.row == 12)
     {
         return 130;
@@ -144,7 +113,7 @@ static NSString *pregnancy = nil;//怀孕症状
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     
-    NSLog(@"1111111111111111111");
+    
     static NSString *CellIdentifier = @"Cell";
     static NSString *CellIdentifierSection = @"CellSection";
     static NSString *CellIdentifierIndicate = @"CellIndicate";
@@ -153,7 +122,7 @@ static NSString *pregnancy = nil;//怀孕症状
     BTSettingIndicateCell *cellIndicate = [tableView dequeueReusableCellWithIdentifier:CellIdentifierIndicate];
     
     //类分区
-    if (indexPath.row == 0 || indexPath.row == 4 || indexPath.row == 8) {
+    if (CELL_SECTION) {
         if (cellSection == nil ) {
             cellSection = [[BTSettingSectionCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifierSection];
         }
@@ -162,7 +131,7 @@ static NSString *pregnancy = nil;//怀孕症状
         return cellSection;
     }
     //带箭头
-    else if (indexPath.row == 3 || indexPath.row == 9 || indexPath.row == 10 ||indexPath.row == 11){
+    else if (CELL_INDICATOR){
         if (cellIndicate == nil ) {
             cellIndicate = [[ BTSettingIndicateCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifierIndicate];
         }
@@ -172,7 +141,7 @@ static NSString *pregnancy = nil;//怀孕症状
         
     }
     //带输入框的
-    else if(indexPath.row == 7){
+    else if(CELL_TEXTFIELD){
         
         BTTextfieldCell *textCell = [[BTTextfieldCell alloc] init];
         textCell.titleLabel.text = [_titleArray objectAtIndex:indexPath.row];
@@ -183,7 +152,7 @@ static NSString *pregnancy = nil;//怀孕症状
         return textCell;
     }
     
-    else if(indexPath.row ==  12)
+    else if(CELL_ACCOUNT)
     {
         BTAccountCell *cellAccount = [[BTAccountCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
         // cellAccount.textLabel.text = @"你好您好";
@@ -197,7 +166,7 @@ static NSString *pregnancy = nil;//怀孕症状
         };
         return cellAccount;
     }
-
+    
     //带Label的Cell
     else{
         if (cell == nil) {
@@ -219,13 +188,13 @@ static NSString *pregnancy = nil;//怀孕症状
     
     BTSettingCell *cell =(BTSettingCell *)[self tableView:tableView cellForRowAtIndexPath:indexPath];
     //  [cell.contenTextField resignFirstResponder];
-    
+    //时间选择器
     if (indexPath.row == 5 || indexPath.row == 6) {
         selected = indexPath.row;
         [self showPicker:cell.titleLabel.text];
-        cell.titleLabel.text = @"你好";
         self.pickerLabel = cell.contentLabel;
     }
+    //修改密码
     if (indexPath.row == 3) {
         BTModifyPasswordViewController *modifyVC = [[BTModifyPasswordViewController alloc] init];
         [modifyVC setHidesBottomBarWhenPushed:YES];
@@ -246,7 +215,7 @@ static NSString *pregnancy = nil;//怀孕症状
     //关于页面
     if (indexPath.row == 11) {
         BTAboutViewController *aboutVC = [[BTAboutViewController alloc] init];
-       // [aboutVC setHidesBottomBarWhenPushed:YES];
+        // [aboutVC setHidesBottomBarWhenPushed:YES];
         [self.navigationController pushViewController:aboutVC animated:YES];
     }
     
@@ -265,7 +234,7 @@ static NSString *pregnancy = nil;//怀孕症状
     
     [UIView beginAnimations:@"FlatDatePickerShow1" context:nil];
     [UIView setAnimationDelegate:self];
-    [UIView setAnimationDuration:0.5];
+    [UIView setAnimationDuration:ANIMATION_TIME];
     [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
     [UIView setAnimationDelegate:self];
     self.tableView.contentOffset = CGPointMake(0, 100);
@@ -279,7 +248,7 @@ static NSString *pregnancy = nil;//怀孕症状
 {
     [UIView beginAnimations:@"FlatDatePickerDismiss" context:nil];
     [UIView setAnimationDelegate:self];
-    [UIView setAnimationDuration:0.5];
+    [UIView setAnimationDuration:ANIMATION_TIME];
     [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
     [UIView setAnimationDelegate:self];
     self.tableView.contentOffset = CGPointMake(0, 0);
@@ -308,8 +277,6 @@ static NSString *pregnancy = nil;//怀孕症状
 - (void)flatDatePicker:(FlatDatePicker*)datePicker didCancel:(UIButton*)sender {
     
     NSLog(@"didCancel");
-    //    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"FlatDatePicker" message:@"Did cancelled !" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
-    //    [alertView show];
     
     
 }
@@ -325,7 +292,7 @@ static NSString *pregnancy = nil;//怀孕症状
     NSNumber* year = [BTUtils getYear:date];
     NSNumber* month = [BTUtils getMonth:date];
     NSNumber* day = [BTUtils getDay:date];
-    NSNumber *day1 =[NSNumber numberWithInt:([day intValue]+1)];
+    NSNumber *day1 =[NSNumber numberWithInt:([day intValue]+1)];//因为选择器会莫名的比选择的早一天
     NSNumber* hour = [BTUtils getHour:date];
     NSNumber* minute = [BTUtils getMinutes:date];
     

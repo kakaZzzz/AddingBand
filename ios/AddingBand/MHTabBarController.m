@@ -341,7 +341,7 @@ static const NSInteger TAG_OFFSET = 1000;
 
 - (void)tabButtonPressed:(UIButton *)sender
 {
-	[self setSelectedIndex:sender.tag - TAG_OFFSET animated:YES];
+	[self setSelectedIndex:sender.tag - TAG_OFFSET animated:NO];//切换视图是否带有动画
 }
 
 @end

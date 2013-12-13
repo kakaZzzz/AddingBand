@@ -43,7 +43,7 @@
 		[_barChart setYValues:_yValues];
 		[_barChart setXLabels:_xLabels];
 		[_barChart setStrokeColor:_strokeColor];
-		[_barChart strokeChart];
+		[_barChart strokeChartWithXLabels:_xLabels];//
 
 	}
 }

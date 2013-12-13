@@ -122,52 +122,52 @@ static CGFloat ImageHeight  = 300.0;
     [self updateOffsets];
 }
 
-//#pragma mark - Table View Datasource
-//
-//- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-//    return 2;
-//}
-//
-//- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-//    if (section == 0) { return 1;  }
-//    else              { return 26; }
-//}
-//
-//- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-//    if (indexPath.section == 0) { return WindowHeight; }
-//    else                        { return 10.0;         }
-//}
-//
-//- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-//    static NSString *cellReuseIdentifier   = @"RBParallaxTableViewCell";
-//    static NSString *windowReuseIdentifier = @"RBParallaxTableViewWindow";
-//    
-//    UITableViewCell *cell = nil;
-//    
-//    if (indexPath.section == 0) {
-//        cell = [tableView dequeueReusableCellWithIdentifier:windowReuseIdentifier];
-//        if (!cell) {
-//            
-//            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:windowReuseIdentifier];
-//            cell.backgroundColor             = [UIColor clearColor];
-//            cell.contentView.backgroundColor = [UIColor clearColor];
-//            cell.selectionStyle              = UITableViewCellSelectionStyleNone;
-//        }
-//    } else {
-//        cell = [tableView dequeueReusableCellWithIdentifier:cellReuseIdentifier];
-//        if (!cell) {
-//            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellReuseIdentifier];
-//            cell.backgroundColor             = [UIColor grayColor];
-//
-//            //cell.contentView.backgroundColor = [UIColor grayColor];
-//            cell.alpha = 0.0;//改变透明度
-//            cell.selectionStyle              = UITableViewCellSelectionStyleNone;
-//
-//        }
-//    }
-//    
-//    return cell;
-//}
+#pragma mark - Table View Datasource
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    return 2;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    if (section == 0) { return 1;  }
+    else              { return 26; }
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.section == 0) { return WindowHeight; }
+    else                        { return 10.0;         }
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    static NSString *cellReuseIdentifier   = @"RBParallaxTableViewCell";
+    static NSString *windowReuseIdentifier = @"RBParallaxTableViewWindow";
+    
+    UITableViewCell *cell = nil;
+    
+    if (indexPath.section == 0) {
+        cell = [tableView dequeueReusableCellWithIdentifier:windowReuseIdentifier];
+        if (!cell) {
+            
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:windowReuseIdentifier];
+            cell.backgroundColor             = [UIColor clearColor];
+            cell.contentView.backgroundColor = [UIColor clearColor];
+            cell.selectionStyle              = UITableViewCellSelectionStyleNone;
+        }
+    } else {
+        cell = [tableView dequeueReusableCellWithIdentifier:cellReuseIdentifier];
+        if (!cell) {
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellReuseIdentifier];
+            cell.backgroundColor             = [UIColor grayColor];
+
+            //cell.contentView.backgroundColor = [UIColor grayColor];
+            cell.alpha = 0.0;//改变透明度
+            cell.selectionStyle              = UITableViewCellSelectionStyleNone;
+
+        }
+    }
+    
+    return cell;
+}
 
 #pragma mark - Table View Delegate
 

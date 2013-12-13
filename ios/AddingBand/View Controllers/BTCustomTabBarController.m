@@ -68,7 +68,7 @@
 //    self.viewControllers = [NSArray arrayWithObjects:mainNav,physicalNav,syncNav,mineNav,nil];
 //    //
 //#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
-//    if (iOS7) {
+//    if (IOS7_OR_LATER) {
 //        self.tabBar.barStyle = UIBarStyleBlack;
 //        self.tabBar.translucent = YES;
 //    }
@@ -86,10 +86,10 @@
     BTMainViewController *mainVC = [[BTMainViewController alloc] init];
     BTNavicationController *mainNav = [[BTNavicationController alloc] initWithRootViewController:mainVC];
     mainVC.navigationItem.title = @"主线";
-    mainNav.tabBarItem.badgeValue = @"2";
+   // mainNav.tabBarItem.badgeValue = @"2";
     
     //ios7上这样用
-    if (iOS7) {
+    if (IOS7_OR_LATER) {
         mainNav.tabBarItem.title = @"主页";
         [mainNav.tabBarItem setFinishedSelectedImage:[UIImage imageNamed:@"home_selected1.png"] withFinishedUnselectedImage:[UIImage imageNamed:@"home_unselected1.png"]];
         
@@ -107,10 +107,10 @@
     
     BTPhysicalViewController * physicalVC = [[BTPhysicalViewController alloc] init];
     BTNavicationController *physicalNav = [[BTNavicationController alloc] initWithRootViewController:physicalVC];
-    physicalNav.tabBarItem.badgeValue = @"";
+   // physicalNav.tabBarItem.badgeValue = @"";
     physicalVC.navigationItem.title = @"体征";
     //ios7上这样用
-    if (iOS7) {
+    if (IOS7_OR_LATER) {
         physicalNav.tabBarItem.title = @"体征";
         [physicalNav.tabBarItem setFinishedSelectedImage:[UIImage imageNamed:@"physical_selected1.png"] withFinishedUnselectedImage:[UIImage imageNamed:@"physical_unselected1.png"]];
         //5.0之后新特性
@@ -131,7 +131,7 @@
     syncVC.navigationItem.title = @"同步";
     // syncNav.tabBarItem.badgeValue = @"1";
     //ios7上这样用
-    if (iOS7) {
+    if (IOS7_OR_LATER) {
         syncNav.tabBarItem.title = @"同步";
         [syncNav.tabBarItem setFinishedSelectedImage:[UIImage imageNamed:@"sync_selected1.png"] withFinishedUnselectedImage:[UIImage imageNamed:@"sync_unselected1.png"]];
         //5.0之后新特性
@@ -152,7 +152,7 @@
     // mineNav.tabBarItem.title = @"我的";
     mineVC.navigationItem.title = @"设置";
     //    [mineNav.tabBarItem setFinishedSelectedImage:[UIImage imageNamed:@"shezhi_selected.png"] withFinishedUnselectedImage:[UIImage imageNamed:@"shezhi_unselected.png"]];
-    if (iOS7) {
+    if (IOS7_OR_LATER) {
         mineNav.tabBarItem.title = @"设置";
         [mineNav.tabBarItem setFinishedSelectedImage:[UIImage imageNamed:@"shezhi_selected1.png"] withFinishedUnselectedImage:[UIImage imageNamed:@"shezhi_unselected1.png"]];        //5.0之后新特性
         [mineNav.tabBarItem setTitleTextAttributes:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:[BTColor getColor:@"C9B9AD"], nil] forKeys:[NSArray arrayWithObjects:UITextAttributeTextColor, nil]] forState:UIControlStateNormal];
@@ -174,7 +174,7 @@
     
     //
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
-    if (iOS7) {
+    if (IOS7_OR_LATER) {
         self.tabBar.barStyle = UIBarStyleBlack;
         self.tabBar.translucent = NO;
     }

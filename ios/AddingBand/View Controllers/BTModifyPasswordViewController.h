@@ -6,6 +6,10 @@
 //  Copyright (c) 2013年 kaka'. All rights reserved.
 //
 
+
+/**
+ *  此页面是修改密码页面
+ */
 #import <UIKit/UIKit.h>
 
 @interface BTModifyPasswordViewController : UIViewController<UITextFieldDelegate>

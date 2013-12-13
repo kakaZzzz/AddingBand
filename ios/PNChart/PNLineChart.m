@@ -8,9 +8,14 @@
 
 #import "PNLineChart.h"
 #import "PNChartLabel.h"
-#define DISTANCE_X 20
-#define XLABEL_WIDTH 7.5f
-#define LINE_COLOR [UIColor colorWithRed:77.0/255.0 green:186.0/255.0 blue:122.0/255.0 alpha:1.0f]
+#define DISTANCE_X 2.5f//x轴坐标label之间的距离
+#define xLabelHeight 30.0f//x轴坐标label的高度
+#define xLabelWidth 7.0f//x轴坐标label的宽度
+#define LINE_COLOR [UIColor colorWithRed:77.0/255.0 green:186.0/255.0 blue:122.0/255.0 alpha:1.0f]//折线颜色
+#define LABELY_GRADE 5.0f//Y轴左边等级级数
+#define xLabelDistanceyLabel 5.0f//x轴和y轴左边之间的缝隙大小
+
+static CGFloat distance = 0;
 @implementation PNLineChart
 
 - (id)initWithFrame:(CGRect)frame
@@ -50,6 +55,7 @@
         
     }
     
+    // max = 200;//可以认为设定最大值
     //Min value for Y label
     if (max < 5) {
         max = 5;
@@ -57,33 +63,36 @@
     
     _yValueMax = (int)max;
     
-    float level = max /5.0;
+    float level = max /LABELY_GRADE;//纵坐标分级 有多少等级
 	
     NSInteger index = 0;
-	NSInteger num = [yLabels count] + 1;
+    
+    NSInteger num = LABELY_GRADE + 1;
+    
 	while (num > 0) {
-		CGFloat chartCavanHeight = self.frame.size.height - chartMargin * 2 - 40.0 ;
-		CGFloat levelHeight = chartCavanHeight /5.0;
-		PNChartLabel * label = [[PNChartLabel alloc] initWithFrame:CGRectMake(0.0,chartCavanHeight - index * levelHeight + (levelHeight - yLabelHeight) , 20.0, yLabelHeight)];
+		CGFloat chartCavanHeight = self.frame.size.height - yLabelMargin -yLabelHeight - (xLabelHeight + xLabelDistanceyLabel);//怎么都行可以调动
+        
+		CGFloat levelHeight = chartCavanHeight /LABELY_GRADE;
+        PNChartLabel * label = [[PNChartLabel alloc] initWithFrame:CGRectMake(0.0,self.frame.size.height - (xLabelHeight + yLabelHeight + xLabelDistanceyLabel)- index * levelHeight, 20.0, yLabelHeight)];
 		[label setTextAlignment:NSTextAlignmentRight];
 		label.text = [NSString stringWithFormat:@"%1.f",level * index];
+        
 		[self addSubview:label];
         index +=1 ;
 		num -= 1;
 	}
-
+    
 }
 
 -(void)setXLabels:(NSArray *)xLabels
 {
     _xLabels = xLabels;
-//    _xLabelWidth = (self.frame.size.width - chartMargin - 30.0 - ([xLabels count] -1) * xLabelMargin)/[xLabels count];
-    _xLabelWidth = XLABEL_WIDTH;//Label宽度。。。
+    _xLabelWidth = xLabelWidth;//Label宽度。。。
+     distance = (self.frame.size.width - xLabelMargin - [xLabels count]*xLabelWidth - 5)/([xLabels count] - 1);
     for (NSString * labelText in xLabels) {
         NSInteger index = [xLabels indexOfObject:labelText];
-        PNChartLabel * label = [[PNChartLabel alloc] initWithFrame:CGRectMake(index * (xLabelMargin + _xLabelWidth) + DISTANCE_X, self.frame.size.height - 30.0, _xLabelWidth, 30.0)];//连个label之间的距离应该是 xLabelMargin + _xLabelWidth
+        PNChartLabel * label = [[PNChartLabel alloc] initWithFrame:CGRectMake(index * (distance + _xLabelWidth) + xLabelMargin,self.frame.size.height - xLabelHeight, _xLabelWidth, xLabelHeight)];//两个label之间的距离应该是 xLabelMargin + _xLabelWidth
         [label setTextAlignment:NSTextAlignmentLeft];
-      //  [label setFont:[UIFont systemFontOfSize:8]];
         label.text = labelText;
         [self addSubview:label];
         NSLog(@"Label的X轴距离%f",label.frame.origin.x);
@@ -104,13 +113,14 @@
     
     CGFloat firstValue = [[_yValues objectAtIndex:0] floatValue];
     
-  //CGFloat xPosition = (xLabelMargin + _xLabelWidth) + 15   ;
-    CGFloat xPosition = DISTANCE_X + _xLabelWidth/2   ;
-    NSLog(@"草草草草草草草草草%f",xLabelMargin+_xLabelWidth);
-    CGFloat chartCavanHeight = self.frame.size.height - chartMargin * 2 - 40.0;
+    CGFloat xPosition = xLabelMargin + _xLabelWidth/2;
     
-    float grade = (float)firstValue / (float)_yValueMax;
-    [progressline moveToPoint:CGPointMake(xPosition,chartCavanHeight - grade * chartCavanHeight + 20.0)];
+    
+    CGFloat chartCavanHeight = self.frame.size.height - yLabelMargin - yLabelHeight - (xLabelHeight + xLabelDistanceyLabel);//怎么都行可以调动
+    
+    float grade = (float)firstValue / (float)_yValueMax;//认为设定 最大值 即可
+    [progressline moveToPoint:CGPointMake(xPosition,chartCavanHeight - grade * chartCavanHeight + yLabelMargin + yLabelHeight/2)];
+    
     [progressline setLineWidth:3.0];
     [progressline setLineCapStyle:kCGLineCapRound];
     [progressline setLineJoinStyle:kCGLineJoinRound];
@@ -119,13 +129,14 @@
         NSInteger value = [valueString integerValue];
         
         float grade = (float)value / (float)_yValueMax;
+        
         if (index != 0) {
             
-            [progressline addLineToPoint:CGPointMake( xPosition  + index *(xLabelMargin + _xLabelWidth), chartCavanHeight - grade * chartCavanHeight + 20.0)];
+            [progressline addLineToPoint:CGPointMake( xPosition  + index *(distance + _xLabelWidth), chartCavanHeight - grade * chartCavanHeight + yLabelMargin + yLabelHeight/2)];
             
-            [progressline moveToPoint:CGPointMake(xPosition  +index *(xLabelMargin + _xLabelWidth), chartCavanHeight - grade * chartCavanHeight + 20.0 )];
+            [progressline moveToPoint:CGPointMake(xPosition  +index *(distance + _xLabelWidth), chartCavanHeight - grade * chartCavanHeight + yLabelMargin + yLabelHeight/2)];
             
-           // [progressline stroke];
+            // [progressline stroke];
         }
         
         index += 1;
@@ -151,6 +162,7 @@
     
     
 }
+
 
 
 

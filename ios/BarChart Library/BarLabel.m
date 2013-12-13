@@ -58,8 +58,17 @@
 	self.backgroundColor = [UIColor clearColor];
 	self.textColor = [UIColor blackColor];
 	self.font = [UIFont boldSystemFontOfSize:13.0f];
-	self.textAlignment = UITextAlignmentCenter;
+#if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_5_1
+    // iPhone OS SDK 6.0 及其以后版本的处理
+ 	self.textAlignment = NSTextAlignmentCenter;
+	self.lineBreakMode = NSLineBreakByTruncatingTail;
+#else
+    // iPhone OS SDK 6.0 之前版本的处理
+ 	self.textAlignment = UITextAlignmentCenter;
 	self.lineBreakMode = UILineBreakModeTailTruncation;
+
+#endif
+
 }
 
 @end

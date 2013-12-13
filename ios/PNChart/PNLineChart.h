@@ -10,10 +10,10 @@
 #import <UIKit/UIKit.h>
 #import <QuartzCore/QuartzCore.h>
 
-#define chartMargin     10
-#define xLabelMargin    2.5
-#define yLabelMargin    15
-#define yLabelHeight    11
+#define xLabelMargin    20.0f//x轴最左边数值距离折线图最左端的距离
+#define yLabelMargin    15.0f//y轴最顶上数值距离折线图顶端的距离
+#define yLabelHeight    11.0f//y坐标指示label的高度
+
 
 @interface PNLineChart : UIView
 

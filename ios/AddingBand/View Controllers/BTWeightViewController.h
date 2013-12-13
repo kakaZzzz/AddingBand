@@ -6,6 +6,9 @@
 //  Copyright (c) 2013年 kaka'. All rights reserved.
 //
 
+/**
+ *  此页是妈妈体重页面
+ */
 #import <UIKit/UIKit.h>
 @class PCLineChartView;
 @interface BTWeightViewController : UIViewController

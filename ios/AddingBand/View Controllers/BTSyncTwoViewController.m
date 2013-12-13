@@ -20,7 +20,7 @@
 #define kIconImageWidth 75
 #define kIconImageHeight 75
 
-#define iPhone5 ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? CGSizeEqualToSize(CGSizeMake(640, 1136), [[UIScreen mainScreen] currentMode].size) : NO)
+#define IPHONE_5_OR_LATER ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? CGSizeEqualToSize(CGSizeMake(640, 1136), [[UIScreen mainScreen] currentMode].size) : NO)
 
 static BTSyncTwoViewController *syncTwoVC = nil;
 @interface BTSyncTwoViewController ()
@@ -84,7 +84,7 @@ static BTSyncTwoViewController *syncTwoVC = nil;
 - (void)addSubviews
 {
     //背景粉红图
-    if (iPhone5) {
+    if (IPHONE_5_OR_LATER) {
         self.aImageView = [[UIImageView alloc] initWithFrame:CGRectMake(kImageBgX, kImageBgY, kImageBgWidth, kImageBgHeight + 50)];
     }
     else
@@ -166,7 +166,7 @@ static BTSyncTwoViewController *syncTwoVC = nil;
     self.testButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     // [_testButton setTitle:@"测试按钮" forState:UIControlStateNormal];
     _testButton.frame = CGRectMake((self.view.frame.size.width - 95)/2, self.view.frame.size.height - 210, 95, 120);
-    if (iPhone5) {
+    if (IPHONE_5_OR_LATER) {
         _testButton.frame = CGRectMake((self.view.frame.size.width - 95)/2, self.view.frame.size.height - 260, 95, 120);
     }
     [_testButton setBackgroundImage:[UIImage imageNamed:@"sync_btn.png"] forState:UIControlStateNormal];
@@ -183,7 +183,6 @@ static BTSyncTwoViewController *syncTwoVC = nil;
 //监控参数，更新显示  当连接  断开的时候也会调用此方法
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
-    NSLog(@"监听设备数量变化3333");
     
     if([keyPath isEqualToString:@"bleListCount"])
     {

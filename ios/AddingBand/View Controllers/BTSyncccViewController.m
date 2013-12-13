@@ -590,6 +590,7 @@
         //
         self.syncTwoVC.batteryLabel.text = [NSString stringWithFormat:@"电量:%@%@",batteryLevel,@"%"];
         _syncButton.hidden = NO ;//导航栏上的按钮可按
+        
         //再此 移除搜索到历史设备 但未连接页面
         if (_pastVC.view) {
             [_syncTwoVC.view removeFromSuperview];
@@ -601,6 +602,7 @@
         return cellConnet;
         
     }
+    //意外情况断开连接
     else
     {
         
@@ -623,6 +625,7 @@
             [self addFindPastView];
 
         }
+        //新出现的问题 当没有bp的时候也会莫名的走cellForRow方法？？？？
         if (bp == nil) {
             [self.indicator startAnimating];
             if (!self.timerAnimation.isValid) {
@@ -712,7 +715,7 @@
     
     //往coredata里面存放选择的设备行数
     self.context =[BTGetData getAppContex];
-    NSArray *data = [BTGetData getFromCoreDataWithPredicate:nil entityName:@"BTUserData" sortKey:nil];
+//    NSArray *data = [BTGetData getFromCoreDataWithPredicate:nil entityName:@"BTUserData" sortKey:nil];
 //    if (data.count > 0) {
 //        BTUserData *userData = [data objectAtIndex:0];
 //        userData.selectedRow = [NSNumber numberWithInt:indexPath.row];

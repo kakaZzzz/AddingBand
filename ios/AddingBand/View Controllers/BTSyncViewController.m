@@ -307,8 +307,8 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    
-    return 1;
+
+       return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -498,7 +498,7 @@
 {
     //往coredata里面存放选择的设备行数
     self.context =[BTGetData getAppContex];
-    NSArray *data = [BTGetData getFromCoreDataWithPredicate:nil entityName:@"BTUserData" sortKey:nil];
+//    NSArray *data = [BTGetData getFromCoreDataWithPredicate:nil entityName:@"BTUserData" sortKey:nil];
 //    if (data.count > 0) {
 //        BTUserData *userData = [data objectAtIndex:0];
 //        userData.selectedRow = [NSNumber numberWithInt:indexPath.row];
@@ -561,7 +561,7 @@
 
     //往coredata里面存放选择的设备行数
     self.context =[BTGetData getAppContex];
-    NSArray *data = [BTGetData getFromCoreDataWithPredicate:nil entityName:@"BTUserData" sortKey:nil];
+//    NSArray *data = [BTGetData getFromCoreDataWithPredicate:nil entityName:@"BTUserData" sortKey:nil];
 //    if (data.count > 0) {
 //        BTUserData *userData = [data objectAtIndex:0];
 //        userData.selectedRow = [NSNumber numberWithInt:indexPath.row];

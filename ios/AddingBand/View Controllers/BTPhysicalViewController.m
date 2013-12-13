@@ -27,6 +27,7 @@
 #import "BTFetalViewController.h"//胎动详情
 #import "BTBabyFetalViewController.h"//胎心详情
 #import "BTBabyWeightViewController.h"//胎儿体重详情
+#import "BTFetalDailyViewController.h"//每日胎动页面
 #define kImageBgX 0
 #define kImageBgY 0
 #define kImageBgWidth 320
@@ -83,7 +84,7 @@
     //[self addImageViewByNumber:5];
 
     //背景粉红图
-    if (iPhone5) {
+    if (IPHONE_5_OR_LATER) {
         self.aImageView = [[UIImageView alloc] initWithFrame:CGRectMake(kImageBgX, kImageBgY, kImageBgWidth, kImageBgHeight)];
     }
     else
@@ -183,17 +184,22 @@
     _gradeLabel.center = _circularGrade.center;//利用center快速定位
     //自动换行
     [_gradeLabel setNumberOfLines:0];
+#if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_5_1
+    // iPhone OS SDK 6.0 及其以后版本的处理
+    _gradeLabel.lineBreakMode = NSLineBreakByWordWrapping;
+#else
+    // iPhone OS SDK 6.0 之前版本的处理
     _gradeLabel.lineBreakMode = UILineBreakModeWordWrap;
+    
+#endif
+
+    
     
     _gradeLabel.textAlignment = NSTextAlignmentCenter;
     _gradeLabel.textColor = [UIColor whiteColor];
     _gradeLabel.backgroundColor = [UIColor colorWithRed:255.0/255.0 green:153.0/255.0 blue:153.0/255.0 alpha:1.0];
     [_aScrollView addSubview:_gradeLabel];
     
-    //点击进入运动详情
-    _gradeLabel.userInteractionEnabled = YES;
-    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(enterDetai)];
-    [_gradeLabel addGestureRecognizer:tap];
     
     //创建运动量圆形进度条
     self.circularSport = [[CircularProgressView alloc] initWithFrame:CGRectMake(200, 180, 90, 120) backColor:backColor progressColor:progressColor lineWidth:13];
@@ -320,7 +326,7 @@
 //    NSNumber* month = [BTUtils getMonth:localeDate];
 //    NSNumber* day = [BTUtils getDay:localeDate];
 //    NSNumber* minute = [BTUtils getMinutes:date];
-    NSNumber* hour = [BTUtils getHour:localeDate];
+//    NSNumber* hour = [BTUtils getHour:localeDate];
     //设置查询条件
     //按月查询
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"year == %@ AND type == %@",year,[NSNumber numberWithInt:type]];
@@ -523,7 +529,7 @@
             break;
         case 1://胎动记录
         {
-            BTFetalViewController *fetalVC = [[BTFetalViewController alloc] init];
+            BTFetalDailyViewController *fetalVC = [[BTFetalDailyViewController alloc] init];
             fetalVC.hidesBottomBarWhenPushed = YES;
             [self.navigationController pushViewController:fetalVC animated:YES];
 
@@ -632,7 +638,7 @@
     NSNumber* year = [BTUtils getYear:localeDate];
     NSNumber* month = [BTUtils getMonth:localeDate];
     NSNumber* day = [BTUtils getDay:localeDate];
-    NSNumber* hour = [BTUtils getHour:localeDate];
+  //  NSNumber* hour = [BTUtils getHour:localeDate];
     
     
     //设置查询条件

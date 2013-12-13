@@ -78,7 +78,7 @@
 	}	
 }
 
-//- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
 //	if (popTipView != nil)  {
 //		[popTipView dismissAnimated:true];
 //		popTipView = nil;
@@ -97,7 +97,46 @@
 //		[popTipView dismissAnimated:true];
 //		popTipView = nil;
 //	});
-//}
+    
+    //
+     CATransition *transition = [CATransition animation];    //创建动画效果类
+     transition.duration = 0.7;　　　　　　　　　　　　//设置动画时长
+     transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];  //设置动画淡入淡出的效果
+     transition.type = kCATransitionMoveIn;//{kCATransitionMoveIn, kCATransitionPush, kCATransitionReveal, kCATransitionFade};设置动画类型，移入，推出等
+    
+     //更多私有{@"cube",@"suckEffect",@"oglFlip",@"rippleEffect",@"pageCurl",@"pageUnCurl",@"cameraIrisHollowOpen",@"cameraIrisHollowClose"};
+     transition.subtype = kCATransitionFromLeft;//{kCATransitionFromLeft, kCATransitionFromRight, kCATransitionFromTop, kCATransitionFromBottom};
+    
+     transition.delegate = self; 　　　　　　//设置属性依赖
+    [self.markView.layer addAnimation:transition forKey:nil];       //在图层增加动画效果
+    
+     // 要做的
+     self.markView.hidden = !self.markView.hidden;     //视图按设置的动画效果的转换
+
+    
+    
+    //
+    
+//    [UIView animateWithDuration:5 delay:0 options:UIViewAnimationOptionTransitionFlipFromTop animations:^{
+//        self.markView.hidden = !self.markView.hidden;
+//    } completion:^(BOOL finished) {
+//        
+//    }];
+    
+    
+    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, 2.0 * NSEC_PER_SEC);
+	dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+        [UIView animateWithDuration:5 delay:0 options:UIViewAnimationOptionTransitionFlipFromTop animations:^{
+            self.markView.hidden = YES;
+        } completion:^(BOOL finished) {
+            
+        }];
+
+	});
+
+    
+    
+} 
 
 #pragma mark - Drawing methods
 

@@ -1,37 +1,34 @@
 //
-//  BTFetalViewController.m
+//  BTFetalDailyViewController.m
 //  AddingBand
 //
-//  Created by wangpeng on 13-12-2.
+//  Created by wangpeng on 13-12-12.
 //  Copyright (c) 2013年 kaka'. All rights reserved.
 //
 
-#import "BTFetalViewController.h"
+#import "BTFetalDailyViewController.h"
 #import "BTRecordFetalView.h"//开始记录页面
 #import "PNChart.h"//折线图
 #import "BTUtils.h"
 #import "LayoutDef.h"
 #import "BTRawData.h"
 #import "BTGetData.h"
+
 #define kContentLabelX 0
 #define kContentLabelY 200
 #define kContentLabelWidth 320
 #define kContentLabelHeight 90
-
-@interface BTFetalViewController ()
+@interface BTFetalDailyViewController ()
 
 @end
 
-@implementation BTFetalViewController
+@implementation BTFetalDailyViewController
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
-        //注册更新数据的监听者
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateView:) name:FETALVIEWUPDATENOTICE object:nil];
-        
     }
     return self;
 }
@@ -39,21 +36,23 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [super viewDidLoad];
     self.navigationItem.title = @"胎动记录";
     self.view.backgroundColor = [UIColor whiteColor];//有时候，白色的底色也是需要设置的哦
     [self createSubviews];
+
 	// Do any additional setup after loading the view.
 }
 - (void)createSubviews
 {
-
+    
     if (IPHONE_5_OR_LATER) {
         self.contentLabel = [[UILabel alloc] initWithFrame:CGRectMake(kContentLabelX, kContentLabelY, kContentLabelWidth, kContentLabelHeight)];
-
+        
     }
     else{
         self.contentLabel = [[UILabel alloc] initWithFrame:CGRectMake(kContentLabelX, kContentLabelY - 30, kContentLabelWidth, kContentLabelHeight)];
-
+        
     }
     _contentLabel.backgroundColor = [UIColor redColor];
     _contentLabel.numberOfLines = 0;
@@ -75,11 +74,11 @@
     self.aButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     if (IPHONE_5_OR_LATER) {
         _aButton.frame = CGRectMake(60, self.view.frame.size.height - 200, 200, 50);
-
+        
     }
     else{
         _aButton.frame = CGRectMake(60, self.view.frame.size.height - 110, 200, 50);
-
+        
     }
     [_aButton addTarget:self action:@selector(startRecord) forControlEvents:UIControlEventTouchUpInside];
     [_aButton setTitle:@"开始记录" forState:UIControlStateNormal];
@@ -87,48 +86,165 @@
     
     
     //折线图
-    [self configureBarLine];
+   // [self configureBarLine];
+    
+    [self configureLineAndBarWithData];//配置折线图 和 柱状的遮盖层
 }
 //开始记录
 - (void)startRecord
 {
-  
-        self.recordVC = [[BTRecordFetalView alloc] init];
-        _recordVC.view.frame = CGRectMake(0,_contentLabel.frame.origin.y + _contentLabel.frame.size.height, 320, self.view.frame.size.height - _contentLabel.frame.origin.y - _contentLabel.frame.size.height);
-        
-        if(![_recordVC.timeLabel counting]){
-            [_recordVC.timeLabel start];
-        }
-        
-        [self.view addSubview:_recordVC.view];
-
- 
+    
+    self.recordVC = [[BTRecordFetalView alloc] init];
+    _recordVC.view.frame = CGRectMake(0,_contentLabel.frame.origin.y + _contentLabel.frame.size.height, 320, self.view.frame.size.height - _contentLabel.frame.origin.y - _contentLabel.frame.size.height);
+    
+    if(![_recordVC.timeLabel counting]){
+        [_recordVC.timeLabel start];
+    }
+    
+    [self.view addSubview:_recordVC.view];
+    
+    
 }
 
-#pragma mark - 配置折线图
+#pragma mark - 配置折线图 和 柱状的遮盖层~~~~~~
+- (void)configureLineAndBarWithData
+{
+    self.arrayYValue = [NSMutableArray arrayWithCapacity:1];
+    [self getEveryHourData];//调用此方法 即可更新 self.arrayYValue
+    self.lineChart = [[PNChart alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, _contentLabel.frame.origin.y)];
+    [_lineChart setXLabels:@[@"0",@"1",@"2",@"3",@"4",@"5",@"6",@"7",@"8",@"9",@"10",@"11",@"12",@"13",@"14",@"15",@"16",@"17",@"18",@"19",@"20",@"21",@"22",@"23"]];
+    [_lineChart setYValues:self.arrayYValue];
+    [_lineChart strokeChart];
+    [self.view addSubview:_lineChart];
+
+    
+    self.arrayBarXValue = [NSMutableArray arrayWithCapacity:1];
+    [self getBarXValue];
+    PNChart * barChart = [[PNChart alloc] initWithFrame:CGRectMake(0, 0, 320, 200.0)];
+	barChart.backgroundColor = [UIColor clearColor];
+	barChart.type = PNBarType;
+	[barChart setXLabels:self.arrayBarXValue];
+	[barChart setYValues:@[@"140",@"140",@"140",@"140",@"140"]];
+	[barChart strokeChart];
+    [self.view addSubview:barChart];
+
+    
+}
+- (void)getEveryHourData
+{
+    //获取当前时间
+    NSDate* date = [NSDate date];
+    NSTimeZone *zone = [NSTimeZone systemTimeZone];
+    NSInteger interval = [zone secondsFromGMTForDate: date];
+    NSDate *localeDate = [date  dateByAddingTimeInterval: interval];
+    NSLog(@"localeDate211==%@", localeDate);
+    
+    //分割出年月日小时
+    NSNumber* year = [BTUtils getYear:localeDate];
+    NSNumber* month = [BTUtils getMonth:localeDate];
+    NSNumber* day = [BTUtils getDay:localeDate];
+    
+    int count = 0;
+    for (int i =0; i < 24; i ++) {
+        NSPredicate *predicatePhone = [NSPredicate predicateWithFormat:@"year == %@ AND month == %@ AND day == %@ AND hour == %@ AND type == %@",year,month,day,[NSNumber numberWithInt:i],[NSNumber numberWithDouble:PHONE_FETAL_TYPE]];
+        NSPredicate *predicateDevice = [NSPredicate predicateWithFormat:@"year == %@ AND month == %@ AND day == %@ AND hour == %@ AND type == %@",year,month,day,[NSNumber numberWithInt:i],[NSNumber numberWithDouble:DEVICE_FETAL_TYPE]];
+        //取出记录时间数组
+        NSArray *rawArrayPhone = [BTGetData getFromCoreDataWithPredicate:predicatePhone entityName:@"BTRawData" sortKey:nil];//取出记录时间数组
+        NSArray *rawArrayDevice = [BTGetData getFromCoreDataWithPredicate:predicateDevice entityName:@"BTRawData" sortKey:nil];
+        for (BTRawData *raw in rawArrayPhone) {
+            count +=[raw.count intValue];
+        }
+       
+        for (BTRawData *raw in rawArrayDevice) {
+            count +=[raw.count intValue];
+        }
+        
+        
+        [self.arrayYValue addObject:[NSString stringWithFormat:@"%d",count]];
+        count = 0;
+    }
+
+ }
+
+- (void)getBarXValue
+{
+    
+    //获取当前时间
+    NSDate* date = [NSDate date];
+    NSTimeZone *zone = [NSTimeZone systemTimeZone];
+    NSInteger interval = [zone secondsFromGMTForDate: date];
+    NSDate *localeDate = [date  dateByAddingTimeInterval: interval];
+    
+    //分割出年月日小时
+    NSNumber* year = [BTUtils getYear:localeDate];
+    NSNumber* month = [BTUtils getMonth:localeDate];
+    NSNumber* day = [BTUtils getDay:localeDate];
+
+    //对手机存储的胎动 和 设备存储的胎动记录时间分别遍历
+    NSPredicate *predicatePhone = [NSPredicate predicateWithFormat:@"year == %@ AND month == %@ AND day == %@ AND type == %@",year,month,day,[NSNumber numberWithDouble:PHONE_START_TIME_TYPE]];
+    NSPredicate *predicateDevice = [NSPredicate predicateWithFormat:@"year == %@ AND month == %@ AND day == %@ AND type == %@",year,month,day,[NSNumber numberWithDouble:DEVICE_START_TIME_TYPE]];
+
+    //取出记录时间数组
+    NSArray *rawArrayPhone = [BTGetData getFromCoreDataWithPredicate:predicatePhone entityName:@"BTRawData" sortKey:nil];//取出记录时间数组
+    NSArray *rawArrayDevice = [BTGetData getFromCoreDataWithPredicate:predicateDevice entityName:@"BTRawData" sortKey:nil];
+
+    NSMutableArray *array = [NSMutableArray arrayWithArray:rawArrayPhone];
+    [array arrayByAddingObjectsFromArray:rawArrayDevice];
+    //排序
+    NSSortDescriptor *sorter = [[NSSortDescriptor  alloc ] initWithKey :@"seconds1970" ascending:YES];
+    [array  sortUsingDescriptors :[NSArray  arrayWithObject:sorter]];
+    
+    //在这里判断两个记录时间是否相差1个小时 如果小于一个小时 则只留一个
+    static BTRawData *rawOne = nil;
+    for (BTRawData *raw in array) {
+        if ([raw.seconds1970 doubleValue] - [rawOne.seconds1970 doubleValue] > 3600) {
+            [self.arrayBarXValue addObject:raw];
+            rawOne = raw;
+        }
+        else{
+            continue;
+        }
+
+//        int hour = [raw.hour intValue];
+//        float minute = [raw.minute intValue];
+//        float result = hour + minute/60;
+//        
+//        NSString *str = [NSString stringWithFormat:@"%f",result];
+        
+      }
+    
+    rawOne = nil;
+    
+}
+
+
+
+
+
+
 - (void)configureBarLine
 {
-    self.arrayLineX = [NSMutableArray arrayWithCapacity:1];
+//  self.arrayLineX = [NSMutableArray arrayWithCapacity:1];
     self.arrayYValue = [NSMutableArray arrayWithCapacity:1];
     
     [self configuerLineXandYValue];//调用此方法 即可更新self.lineXValue和 self.lineYValue
     
-   // [self testGetRecentThirtyHoursData];
+    // [self testGetRecentThirtyHoursData];
     self.lineChart = [[PNChart alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, _contentLabel.frame.origin.y)];
 	//lineChart.backgroundColor = [UIColor clearColor];
-//	[lineChart setXLabels:@[@"1",@"2",@"3",@"4",@"5",@"6",@"7",@"8",@"9",@"10",@"11",@"12",@"13",@"14",@"15",@"16",@"17",@"18",@"19",@"20",@"21",@"22",@"23",@"24",@"25",@"26",@"27",@"28",@"29",@"30"]];
+    //	[lineChart setXLabels:@[@"1",@"2",@"3",@"4",@"5",@"6",@"7",@"8",@"9",@"10",@"11",@"12",@"13",@"14",@"15",@"16",@"17",@"18",@"19",@"20",@"21",@"22",@"23",@"24",@"25",@"26",@"27",@"28",@"29",@"30"]];
     
-    	//[lineChart setXLabels:@[@"4",@"4"]];
-     // self.lineYValue = [NSArray arrayWithObjects:[NSString stringWithFormat:@"0"] count:30];
+    //[lineChart setXLabels:@[@"4",@"4"]];
+    // self.lineYValue = [NSArray arrayWithObjects:[NSString stringWithFormat:@"0"] count:30];
     [_lineChart setXLabels:self.lineXValue];
     [_lineChart setYValues:self.lineYValue];
-
-  //  [lineChart setYValues:@[@"20",@"140",@"130",@"6",@"3",@"8",@"10",@"14",@"19",@"3"]];
+    
+    //  [lineChart setYValues:@[@"20",@"140",@"130",@"6",@"3",@"8",@"10",@"14",@"19",@"3"]];
     //[lineChart setYValues:@[@"20",@"50"]];
 	[_lineChart strokeChart];
-
+    
 	[self.view addSubview:_lineChart];
-
+    
 }
 #pragma mark - 收到通知 刷新UI
 - (void)updateView:(NSNotification *)notice
@@ -144,13 +260,13 @@
     [_lineChart setXLabels:self.lineXValue];
     [_lineChart setYValues:self.lineYValue];
     [_lineChart strokeChart];
-
+    
 }
 #pragma mark - 数据处理处理 处理横坐标和纵坐标数据
 -(void)configuerLineXandYValue
 {
     self.lineXValue = [self getRecentThirtyDaysDateIsCludeMonth:NO];//绘制折线图所需横坐标 Like 3这样的
-
+    
     NSArray *arrayX = [self getRecentThirtyDaysDateIsCludeMonth:YES];//包含月份的 比如 Like 12-3这样的
     [self getRecentThirtyDaysData];
     
@@ -171,7 +287,7 @@
 - (NSString *)getLastRecordTimeFromRaw
 {
     
- 
+    
     BTRawData *raw = [self compareDeviceAndPhoneLastRecordTime];
     if (raw) {
         NSNumber *seconds = raw.seconds1970;
@@ -197,7 +313,7 @@
         }
         if (aHour < 10) {
             hour2 = [NSString stringWithFormat:@"%d%d",0,aHour];
-
+            
         }
         
         if ([minute intValue] < 10) {
@@ -205,13 +321,13 @@
         }
         NSString *str = [NSString stringWithFormat:@"上次记录时间:%@:%@-%@:%@",hour1,minute1,hour2,minute1];
         return str;
-
+        
     }
     
     else{
         return [NSString stringWithFormat:@"上次记录时间:未记录"];
     }
-
+    
 }
 
 #pragma mark - 从coredata中取出数据 根据最后记录时间 取出最后记录的胎动次数
@@ -246,7 +362,7 @@
     else{
         str = [NSString stringWithFormat:@"胎动次数:0次"];
         return str;
-
+        
     }
 }
 
@@ -257,7 +373,7 @@
     NSPredicate *predicate2 = [NSPredicate predicateWithFormat:@"type == %@",[NSNumber numberWithInt:DEVICE_START_TIME_TYPE]];
     NSArray *arrayPhone = [BTGetData getFromCoreDataWithPredicate:predicate1 entityName:@"BTRawData" sortKey:nil];
     NSArray *arrayDevice = [BTGetData getFromCoreDataWithPredicate:predicate2 entityName:@"BTRawData" sortKey:nil];
-
+    
     if (arrayPhone.count == 0 && arrayDevice.count == 0) {
         return nil;
     }
@@ -313,7 +429,7 @@
     
     NSRange rangeLast = [calendar rangeOfUnit:NSDayCalendarUnit inUnit:NSMonthCalendarUnit forDate:date1];
     NSUInteger lastMonthLength = rangeLast.length;//上一个月的天数
-
+    
     //array1存放最近30天的号数
     NSMutableArray *array1 = [NSMutableArray arrayWithCapacity:1];
     if (cludeMonth) {
@@ -329,7 +445,7 @@
         }
         
         return array1;
-
+        
     }
     
     else{
@@ -345,7 +461,7 @@
         }
         
         return array1;
-
+        
     }
 }
 
@@ -358,7 +474,7 @@
     NSTimeZone *zone = [NSTimeZone systemTimeZone];
     NSInteger interval = [zone secondsFromGMTForDate: date];
     NSDate *localeDate = [date  dateByAddingTimeInterval: interval];
-
+    
     NSTimeInterval secondsThirtyDays =30 * 24 * 60 * 60;
     NSDate *date2 =  [[NSDate alloc] initWithTimeInterval:-secondsThirtyDays sinceDate:localeDate];
     
@@ -436,7 +552,7 @@
         NSTimeZone *zone = [NSTimeZone systemTimeZone];
         NSInteger interval = [zone secondsFromGMTForDate: date];
         NSDate *date1 = [dateZone  dateByAddingTimeInterval: interval];
-
+        
         NSLog(@"^^^^^^^^^^%@",date1);
         NSTimeInterval seconds = [date1 timeIntervalSince1970];
         [arrayPerDay addObject:[NSNumber numberWithDouble:seconds]];
@@ -464,7 +580,7 @@
         
         return (NSComparisonResult)NSOrderedSame;
     }];
-
+    
     for (int i = 0; i < [array3 count]; i++) {
         for (NSNumber *num in arrayPerDay) {
             if ([[array3 objectAtIndex:i] isEqual:num]) {
@@ -482,7 +598,7 @@
     for (int i = 0; i < [array3 count]; i++) {
         NSNumber *num = [array3 objectAtIndex:i];
         NSDate *date =  [NSDate dateWithTimeIntervalSince1970:[num doubleValue]];
-       // NSNumber *year = [BTUtils getYear:date];
+        // NSNumber *year = [BTUtils getYear:date];
         NSNumber *month = [BTUtils getMonth:date];
         NSNumber *day = [BTUtils getDay:date];
         [self.arrayLineX addObject:[NSString stringWithFormat:@"%@-%@",month,day]];
@@ -494,174 +610,13 @@
         [self.arrayYValue addObject:[NSString stringWithFormat:@"%d",countTotal]];
         NSLog(@"########%@",self.arrayYValue);
     }
-      //要分别在手机记录和手环记录之间取数据
+    //要分别在手机记录和手环记录之间取数据
     
 }
 -(NSNumber *)getYlabelByMonth:(NSNumber *)month AndDay:(NSNumber *)day
 {
     NSPredicate *predicatePhone = [NSPredicate predicateWithFormat:@"month == %@ AND day == %@ AND type == %@",month,day,[NSNumber numberWithDouble:PHONE_FETAL_TYPE]];
     NSPredicate *predicateDevice = [NSPredicate predicateWithFormat:@"month == %@ AND day == %@ AND type == %@",month,day,[NSNumber numberWithDouble:DEVICE_FETAL_TYPE]];
-    //取出记录时间数组
-    NSArray *rawArrayPhone = [BTGetData getFromCoreDataWithPredicate:predicatePhone entityName:@"BTRawData" sortKey:nil];//取出记录时间数组
-    NSArray *rawArrayDevice = [BTGetData getFromCoreDataWithPredicate:predicateDevice entityName:@"BTRawData" sortKey:nil];
-    int count = 0;
-    for (BTRawData *raw in rawArrayPhone) {
-        count = count + [raw.count intValue];
-    }
-    
-    for (BTRawData *raw in rawArrayDevice) {
-        count = count + [raw.count intValue];
-
-    }
-
-    return [NSNumber numberWithInt:count];
-}
-
-#pragma mark - 胎动折线图测试用以下方法 -----------------------
-
-#pragma mark - 根据当前时间得出前30小时得日期,并得出其距离1970的秒数
-- (NSTimeInterval)testGetThirtyHoursAgoDateByCurrentTime
-{
-    //获取当前时间
-    NSDate* date = [NSDate date];
-    NSTimeZone *zone = [NSTimeZone systemTimeZone];
-    NSInteger interval = [zone secondsFromGMTForDate: date];
-    NSDate *localeDate = [date  dateByAddingTimeInterval: interval];
-    
-    NSTimeInterval secondsThirtyDays =30 * 60 * 60;
-    NSDate *date2 =  [[NSDate alloc] initWithTimeInterval:-secondsThirtyDays sinceDate:localeDate];
-    
-//    int hour = [[BTUtils getHour:localeDate] intValue];
-//    int minute = [[BTUtils getMinutes:localeDate] intValue];
-    NSTimeInterval seconds = [date2 timeIntervalSince1970];
-    return seconds;
-}
-#pragma mark - 得到最近30天的数据
-- (void)testGetRecentThirtyHoursData
-{
-    NSNumber *seconds = [NSNumber numberWithDouble:[self getThirtyAgoDateByCurrentTime]];//取出距离现在30天得日期距离1970年的秒数
-    NSPredicate *predicatePhone = [NSPredicate predicateWithFormat:@"seconds1970 > %@ AND type == %@",seconds,[NSNumber numberWithDouble:PHONE_START_TIME_TYPE]];
-    NSPredicate *predicateDevice = [NSPredicate predicateWithFormat:@"seconds1970 > %@ AND type == %@",seconds,[NSNumber numberWithDouble:DEVICE_START_TIME_TYPE]];
-    //取出记录时间数组
-    NSArray *rawArrayPhone = [BTGetData getFromCoreDataWithPredicate:predicatePhone entityName:@"BTRawData" sortKey:nil];//取出记录时间数组
-    NSArray *rawArrayDevice = [BTGetData getFromCoreDataWithPredicate:predicateDevice entityName:@"BTRawData" sortKey:nil];
-    NSLog(@"..........%@",rawArrayPhone);
-    NSMutableArray *array1 = [NSMutableArray arrayWithCapacity:1];
-    NSMutableArray *arrayD = [NSMutableArray arrayWithCapacity:1];
-    NSMutableArray *arrayCount = [NSMutableArray arrayWithCapacity:1];
-    for (BTRawData *raw in rawArrayPhone) {
-        [array1 addObject:raw.seconds1970];
-    }
-    
-    for (BTRawData *raw in rawArrayDevice) {
-        [array1 addObject:raw.seconds1970];
-    }
-    NSLog(@",,,,,,,,,%@",array1);
-    //对数组进行去重操作
-    NSSet *set = [NSSet setWithArray:array1];
-    NSArray *array2 = [set allObjects];
-    //然后对数组进行升序排序
-    NSArray *arrayX = [array2 sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
-        if ([obj1 doubleValue] > [obj2 doubleValue]) {
-            
-            return (NSComparisonResult)NSOrderedDescending;
-            
-        }
-        
-        if ([obj1 doubleValue] < [obj2 doubleValue]) {
-            
-            return (NSComparisonResult)NSOrderedAscending;
-            
-        }
-        
-        return (NSComparisonResult)NSOrderedSame;
-    }];
-    //现在arrayX是排序之后的数组 存放记录开始时间 秒数
-    //根据秒数 求出日期
-    NSLog(@"=========%@",arrayX);
-    for (NSNumber *num in arrayX) {
-        NSDate *date =  [NSDate dateWithTimeIntervalSince1970:[num doubleValue]];
-        NSNumber *year = [BTUtils getYear:date];
-        NSNumber *month = [BTUtils getMonth:date];
-        NSNumber *day = [BTUtils getDay:date];
-        NSNumber *hour = [BTUtils getHour:date];
-        NSLog(@"++++++++%@ %@ %@ %@",year,month,day,hour);
-        //单取年月日 计算距离1970年的秒数
-        NSDateFormatter* dateFormat = [[NSDateFormatter alloc] init];//实例化一个NSDateFormatter对象
-        [dateFormat setDateFormat:@"yyyy-MM-dd HH"];//设定时间格式,这里可以设置成自己需要的格式
-        [dateFormat setTimeZone:[NSTimeZone localTimeZone]];
-        NSDate *dateZone =[dateFormat dateFromString:[NSString stringWithFormat:@"%@-%@-%@ %@",year,month,day,hour]];
-        
-        NSTimeZone *zone = [NSTimeZone systemTimeZone];
-        NSInteger interval = [zone secondsFromGMTForDate: date];
-        NSDate *date1 = [dateZone  dateByAddingTimeInterval: interval];
-        
-        NSLog(@"^^^^^^^^^^%@",date1);
-        NSTimeInterval seconds = [date1 timeIntervalSince1970];
-        [arrayD addObject:[NSNumber numberWithDouble:seconds]];
-        //只要年月日
-    }
-    NSLog(@"￥￥￥￥￥￥￥%@",arrayD);
-    //现在arrayD中存放的就是开始记录的小时 距离1970年的秒数
-    //要找出每天出现的次数
-    int count = 0;
-    NSArray *arrayQu = [[NSSet setWithArray:arrayD] allObjects];//去重之后的数组
-    //然后再排序
-    NSArray *array3 = [arrayQu sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
-        if ([obj1 doubleValue] > [obj2 doubleValue]) {
-            
-            return (NSComparisonResult)NSOrderedDescending;
-            
-        }
-        
-        if ([obj1 doubleValue] < [obj2 doubleValue]) {
-            
-            return (NSComparisonResult)NSOrderedAscending;
-            
-        }
-        
-        return (NSComparisonResult)NSOrderedSame;
-    }];
-
-    for (int i = 0; i < [array3 count]; i++) {
-        for (NSNumber *num in arrayD) {
-            if ([[array3 objectAtIndex:i] isEqual:num]) {
-                count++;
-            }
-        }
-        [arrayCount addObject:[NSNumber numberWithInt:count]];
-        count = 0;
-    }
-    
-    NSLog(@"&&&&&&&&&%@",array3);
-    NSLog(@"&&&&&&&&&%@",arrayCount);
-    //array3是经过去重和排序的数组
-    //循环玩之后 arrayCount村放得就是每天出现的次数
-    //array3 和 arrayCount一一对应
-    //再此将 array3里面的转化为 年 月 日的形式
-    for (int i = 0; i < [array3 count]; i++) {
-        NSNumber *num = [array3 objectAtIndex:i];
-        NSDate *date =  [NSDate dateWithTimeIntervalSince1970:[num doubleValue]];
-       // NSNumber *year = [BTUtils getYear:date];
-       // NSNumber *month = [BTUtils getYear:date];
-        NSNumber *day = [BTUtils getDay:date];
-        NSNumber *hour = [BTUtils getHour:date];
-        [self.arrayLineX addObject:[NSString stringWithFormat:@"%@",hour]];
-        
-        NSLog(@"!!!!!!!!!%@",self.arrayLineX);
-        NSNumber *num1 = [self getYlabelByDay:day AndHour:hour];
-        NSNumber *num2 = [arrayCount objectAtIndex:i];
-        int countTotal = [num1 intValue]/[num2 intValue]*12;
-        [self.arrayYValue addObject:[NSString stringWithFormat:@"%d",countTotal]];
-        NSLog(@"########%@",self.arrayYValue);
-    }
-    //要分别在手机记录和手环记录之间取数据
-    
-}
--(NSNumber *)getYlabelByDay:(NSNumber *)day AndHour:(NSNumber *)hour
-{
-    NSPredicate *predicatePhone = [NSPredicate predicateWithFormat:@"day == %@ AND hour == %@ AND type == %@",day,hour,[NSNumber numberWithDouble:PHONE_FETAL_TYPE]];
-    NSPredicate *predicateDevice = [NSPredicate predicateWithFormat:@"day == %@ AND hour == %@ AND type == %@",day,hour,[NSNumber numberWithDouble:DEVICE_FETAL_TYPE]];
     //取出记录时间数组
     NSArray *rawArrayPhone = [BTGetData getFromCoreDataWithPredicate:predicatePhone entityName:@"BTRawData" sortKey:nil];//取出记录时间数组
     NSArray *rawArrayDevice = [BTGetData getFromCoreDataWithPredicate:predicateDevice entityName:@"BTRawData" sortKey:nil];
@@ -689,7 +644,8 @@
     if (self.recordVC.timeLabel.counting) {
         [self.recordVC.timeLabel pause];
     }
-
+    
     NSLog(@"1走了dealloc");
 }
+
 @end

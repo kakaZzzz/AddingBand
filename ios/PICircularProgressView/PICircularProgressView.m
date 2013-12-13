@@ -118,11 +118,10 @@
     
     if (_showText && _textColor)
     {
-<<<<<<< HEAD
-        NSString *progressString = [NSString stringWithFormat:@"%.0f", _progress * 10000.0];//显示label
-=======
-        NSString *progressString = [NSString stringWithFormat:@"%.0f", _progress * 500.0];
->>>>>>> e3d89159603a06eb1dd1002194ccea7f44241ca8
+
+   
+        NSString *progressString = [NSString stringWithFormat:@"%.0f", _progress * 500.0];//显示Label
+
         
         CGFloat fontSize = radius;
      //   UIFont *font = [_font fontWithSize:fontSize];

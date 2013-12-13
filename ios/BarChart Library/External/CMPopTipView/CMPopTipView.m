@@ -201,10 +201,22 @@
 	if (self.message) {
 		[textColor set];
 		CGRect textFrame = [self contentFrame];
+        
+#if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_5_1
+        // iPhone OS SDK 6.0 及其以后版本的处理
+        [self.message drawInRect:textFrame
+                        withFont:textFont
+                   lineBreakMode:NSLineBreakByWordWrapping
+                       alignment:NSTextAlignmentCenter];
+
+#else
+        // iPhone OS SDK 6.0 之前版本的处理
         [self.message drawInRect:textFrame
                         withFont:textFont
                    lineBreakMode:UILineBreakModeWordWrap
                        alignment:UITextAlignmentCenter];
+#endif
+
     }
 }
 
@@ -250,10 +262,21 @@
 	CGSize textSize = CGSizeZero;
     
     if (self.message!=nil) {
+        
+#if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_5_1
+        // iPhone OS SDK 6.0 及其以后版本的处理
+        textSize= [self.message sizeWithFont:textFont
+                           constrainedToSize:CGSizeMake(rectWidth, 99999.0)
+                               lineBreakMode:NSLineBreakByWordWrapping];
+#else
+        // iPhone OS SDK 6.0 之前版本的处理
         textSize= [self.message sizeWithFont:textFont
                            constrainedToSize:CGSizeMake(rectWidth, 99999.0)
                                lineBreakMode:UILineBreakModeWordWrap];
-    }
+        
+#endif
+
+     }
     if (self.customView != nil) {
         textSize = self.customView.frame.size;
     }
@@ -446,7 +469,15 @@
 		
 		self.textFont = [UIFont boldSystemFontOfSize:14.0];
 		self.textColor = [UIColor whiteColor];
-		self.textAlignment = UITextAlignmentCenter;
+#if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_5_1
+        // iPhone OS SDK 6.0 及其以后版本的处理
+       self.textAlignment = NSTextAlignmentCenter;
+#else
+        // iPhone OS SDK 6.0 之前版本的处理
+       self.textAlignment = UITextAlignmentCenter;
+        
+#endif
+		
 		self.backgroundColor = [UIColor colorWithRed:62.0/255.0 green:60.0/255.0 blue:154.0/255.0 alpha:1.0];
         self.animation = CMPopTipAnimationSlide;
     }

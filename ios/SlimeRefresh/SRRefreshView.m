@@ -162,7 +162,7 @@
         _refleshView.layer.transform = CATransform3DIdentity;
         [UIView transitionWithView:_scrollView
                           duration:0.3f
-                           options:UIViewAnimationCurveEaseOut
+                           options:UIViewAnimationOptionCurveEaseOut
                         animations:^{
                             UIEdgeInsets inset = _scrollView.contentInset;
                             inset.top = _upInset;
@@ -273,7 +273,7 @@
         if (self.loading) {
             [UIView transitionWithView:_scrollView
                               duration:0.2
-                               options:UIViewAnimationCurveEaseOut
+                               options:UIViewAnimationOptionCurveEaseOut
                             animations:^{
                                 UIEdgeInsets inset = _scrollView.contentInset;
                                 inset.top = _upInset + _dragingHeight;
@@ -308,7 +308,7 @@
     _slime.toPoint = _slime.startPoint;
     [UIView transitionWithView:_activityIndicatorView
                       duration:0.3f
-                       options:UIViewAnimationCurveEaseIn
+                       options:UIViewAnimationOptionCurveEaseIn
                     animations:^
      {
          //菊花消失时候动画 变小消失不见
