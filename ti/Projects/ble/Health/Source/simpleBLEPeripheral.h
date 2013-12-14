@@ -63,10 +63,9 @@ extern "C"
 #define LED_CYCLE_EVT                                     0x0020
 #define CLOSE_ALL_EVT                                     0x0040
 #define SLIP_TIMEOUT_EVT                                  0x0080
-#define MOTOR_STOP_EVT                                    0x0100
-#define BLINK_LED_EVT                                     0x0200
-#define TIME_STOP_EVT                                     0x0400
-#define LONG_PRESS_EVT                                    0x0800
+#define BLINK_LED_EVT                                     0x0100
+#define TIME_STOP_EVT                                     0x0200
+#define LONG_PRESS_EVT                                    0x0400
 
 /*********************************************************************
  * MACROS
