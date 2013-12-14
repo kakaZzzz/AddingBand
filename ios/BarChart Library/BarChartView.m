@@ -125,7 +125,7 @@
          *
          *
          */
-        bar.markView = [[BTBarMarkView alloc] initWithFrame:CGRectMake(MARKVIEW_LEFT, MARKVIEW_TOP, barWidth, MARKVIEW_HEIGHT)];
+        bar.markView = [[BTBarMarkView alloc] initWithFrame:CGRectMake(MARKVIEW_LEFT, MARKVIEW_TOP, _customBarWidth, MARKVIEW_HEIGHT)];
         bar.markView.backgroundColor = [UIColor redColor];
         bar.markView.hidden = YES;//初始默认 隐藏
         bar.markView.markLabel.text =[NSString stringWithFormat:@"%@",[barInfo objectForKey:@"value"]];
@@ -188,10 +188,10 @@
 	barWidth = plotView.width/chartDataArray.count;
 	barFullWidth = plotView.width/chartDataArray.count;
 	
-	if (barWidth > _barWidth)
-		barWidth = _barWidth;
+	if (barWidth > _customBarWidth)
+		barWidth = _customBarWidth;
 	
-	stepWidth = plotView.width/chartDataArray.count - _barWidth;
+	stepWidth = plotView.width/chartDataArray.count - _customBarWidth;
 	
 	if (stepWidth < 0.0f)
 		stepWidth = 0.0f;

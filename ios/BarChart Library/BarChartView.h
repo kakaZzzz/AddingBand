@@ -75,7 +75,7 @@
 @property (assign) BarShape barViewShape;
 @property (assign) BarShadow barViewShadow;
 
-@property (nonatomic,assign)CGFloat barWidth;
+@property (nonatomic,assign)CGFloat customBarWidth;//柱子宽度
 - (void)setXmlData:(NSData *)xmlData showAxis:(AxisDisplaySetting)axisDisplay withColor:(UIColor *)axisColor shouldPlotVerticalLines:(BOOL)verticalLines;
 - (void)setDataWithArray:(NSArray *)chartData showAxis:(AxisDisplaySetting)axisDisplay withColor:(UIColor *)axisColor shouldPlotVerticalLines:(BOOL)verticalLines;
 - (NSArray *)createChartDataWithTitles:(NSArray *)titles values:(NSArray *)values colors:(NSArray *)colors labelColors:(NSArray *)labelColors;

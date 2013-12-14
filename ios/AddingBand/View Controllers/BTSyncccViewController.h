@@ -31,7 +31,7 @@
 
 @property(nonatomic,strong)BTSyncTwoViewController *syncTwoVC;//连接完成之后的视图控制器
 @property(nonatomic,strong)BTPastLinkViewController *pastVC;//发现历史设备但是没有连接的视图控制器
-@property(nonatomic,strong)UIButton *syncButton;
+@property(nonatomic,strong)UIButton *deleteButton;
 
 @property(nonatomic,assign)int selectedRow;//选择的设备行数
 @property(nonatomic,strong)NSManagedObjectContext *context;
