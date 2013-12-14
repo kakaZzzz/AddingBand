@@ -52,20 +52,18 @@
 #define LO_UINT32(x)                          ((x) & 0xffff)
 
 // define LEDs
-#define LED0_PIO                              P0_2
-#define LED1_PIO                              P0_3
-#define LED2_PIO                              P0_1
-#define LED3_PIO                              P0_4
-#define LED4_PIO                              P0_5
-#define LED5_PIO                              P0_6
+#define LED0_PIO                              P0_1
+#define LED1_PIO                              P0_2
+#define LED2_PIO                              P0_4
+#define LED3_PIO                              P0_5
+#define LED4_PIO                              P0_6
+#define LED5_PIO                              P0_7
 #define LED6_PIO                              P1_0
-#define LED7_PIO                              P1_6
-#define LED8_PIO                              P1_7
-#define LED9_PIO                              P2_1
-#define LED10_PIO                             P2_2
-#define LED11_PIO                             P2_0
-
-#define MOTOR_PIO                             P0_0
+#define LED7_PIO                              P1_1
+#define LED8_PIO                              P1_6
+#define LED9_PIO                              P1_7
+#define LED10_PIO                             P2_0
+#define LED11_PIO                             P0_0
 
 #define OPEN_PIO                              0
 #define CLOSE_PIO                             1
@@ -348,7 +346,6 @@ static void eepromRead(void);
 
 static void closeAllPIO(void);
 
-static void shock(void);
 static void time(void);
 
 static void babyMove(void);
@@ -533,11 +530,11 @@ void SimpleBLEPeripheral_Init( uint8 task_id )
     // OBSSEL0 = 0x00;
     // OBSSEL1 = 0x00;
 
-    P0DIR = 0x7F;
+    P0DIR = 0xF7;
     P0SEL = 0x00;
 
-    P1DIR = 0xC3;
-    P1SEL = 0x00;
+    P1DIR = 0xE3;
+    P1SEL = 0x30;
 
     P2DIR = 0xFF;
     P2SEL = 0x00;
@@ -549,8 +546,6 @@ void SimpleBLEPeripheral_Init( uint8 task_id )
 
     //close all
     closeAllPIO();
-
-    // MOTOR_PIO = OPEN_PIO;
 
     // Register callback with SimpleGATTprofile
     VOID SimpleProfile_RegisterAppCBs( &simpleBLEPeripheral_SimpleProfileCBs );
@@ -707,14 +702,6 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
         return (events ^ SLIP_TIMEOUT_EVT);
     }
 
-    if ( events & MOTOR_STOP_EVT )
-    {
-        
-        MOTOR_PIO = CLOSE_PIO;
-
-        return (events ^ MOTOR_STOP_EVT);
-    }
-
     if ( events & BLINK_LED_EVT )
     {
         
@@ -814,6 +801,8 @@ static void simpleBLEPeripheral_ProcessOSALMsg( osal_event_hdr_t *pMsg )
 
       onTheKey = keys ? 1 : 0;
 
+      // LED6_PIO = !onTheKey;
+
       if (lockSlip)
       {
           break;
@@ -905,38 +894,38 @@ static void peripheralStateNotificationCB( gaprole_States_t newState )
 
         DevInfo_SetParameter(DEVINFO_SYSTEM_ID, DEVINFO_SYSTEM_ID_LEN, systemId);
 
-        LED1_PIO = OPEN_PIO;
+        // LED1_PIO = OPEN_PIO;
         
     }
     break;
 
     case GAPROLE_ADVERTISING:
     {
-        LED2_PIO = OPEN_PIO;
+        // LED2_PIO = OPEN_PIO;
     }
     break;
 
     case GAPROLE_CONNECTED:
     {
-        LED3_PIO = OPEN_PIO;
+        // LED3_PIO = OPEN_PIO;
     }
     break;
 
     case GAPROLE_WAITING:
     {
-        LED4_PIO = OPEN_PIO;
+        // LED4_PIO = OPEN_PIO;
     }
     break;
 
     case GAPROLE_WAITING_AFTER_TIMEOUT:
     {
-        LED5_PIO = OPEN_PIO;
+        // LED5_PIO = OPEN_PIO;
     }
     break;
 
     case GAPROLE_ERROR:
     {
-        LED6_PIO = OPEN_PIO;
+        // LED6_PIO = OPEN_PIO;
     }
     break;
 
@@ -1137,30 +1126,28 @@ static void simpleProfileChangeCB( uint8 paramID )
 
 static void closeAllPIO(void){
 
-    P0 = 0xFF;
+    // P0 = 0xFF;
 
-    // open
-    P1 = 0xC1;
+    // // open
+    // P1 = 0xC1;
 
-    // close
-    // P1 = 0xC3;
+    // // close
+    // // P1 = 0xC3;
 
-    P2 = 0x07;
-}
+    // P2 = 0x07;
 
-/*********************************************************************
- * @fn      shock
- *
- * @param   none
- *
- * @return  none
- */
-
-static void shock(void){
-
-    MOTOR_PIO = OPEN_PIO;
-
-    osal_start_timerEx( simpleBLEPeripheral_TaskID, MOTOR_STOP_EVT, 200 );
+    LED0_PIO = CLOSE_PIO;
+    LED1_PIO = CLOSE_PIO;
+    LED2_PIO = CLOSE_PIO;
+    LED3_PIO = CLOSE_PIO;
+    LED4_PIO = CLOSE_PIO;
+    LED5_PIO = CLOSE_PIO;
+    LED6_PIO = CLOSE_PIO;
+    LED7_PIO = CLOSE_PIO;
+    LED8_PIO = CLOSE_PIO;
+    LED9_PIO = CLOSE_PIO;
+    LED10_PIO = CLOSE_PIO;
+    LED11_PIO = CLOSE_PIO;
 }
 
 
@@ -1230,8 +1217,6 @@ static void time(void){
 
     lockSlip = 1;
 
-    shock();
-
     // get current time
     UTCTime current;
     UTCTimeStruct currentTm;
@@ -1274,8 +1259,6 @@ static void babyMove(void){
     lockSlip = 1;
 
     osal_set_event( simpleBLEPeripheral_TaskID, LED_CYCLE_EVT );
-
-    shock();
 }
 
 static void toggleAdvert(uint8 status){
@@ -1816,11 +1799,6 @@ static void saveStepData(void){
 
     HalI2CWrite(sizeof(dBuf), dBuf);
     HalI2CAckPolling();
-
-    // uint8 d[8];
-
-    // osal_memcpy(d, &dBuf[2], 8);
-    // SimpleProfile_SetParameter( HEALTH_SYNC, 8, d);
 
 }
 

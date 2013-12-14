@@ -203,58 +203,14 @@ static BTPastLinkViewController *pastLinkVC = nil;
 - (void)refreshLink
 {
     NSLog(@"尝试连接");
-    
-    [self.bc restartScan];
+//    self.bc = [BTBandCentral sharedBandCentral];
+//    [self.bc restartScan];
     //弹出提醒框
     UIAlertView *bLart = [[UIAlertView alloc] initWithTitle:@"无法连接设备" message:@"请删除此设备绑定，以便我们重新为你搜索" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
     bLart.tag = 101;
     [bLart show];
 
- 
-    
 }
-//
-//-(void)togglePeripheralByIndex:(NSUInteger)index{
-//    
-//    //根据index找到对应的peripheral
-//    NSEnumerator * enumeratorValue = [_allPeripherals objectEnumerator];
-//    BTBandPeripheral* bp = [[enumeratorValue allObjects] objectAtIndex:index];
-//    
-//    if (!bp.handle.isConnected) {
-//        
-//        [_cm connectPeripheral:bp.handle options:nil];
-//        NSLog(@"!!!connect");
-//        
-//    }else{
-//        
-//        //删除coredata里的这条数据
-//        NSEntityDescription *entity = [NSEntityDescription entityForName:@"BTBleList" inManagedObjectContext:_context];
-//        
-//        NSFetchRequest* request = [[NSFetchRequest alloc] init];
-//        [request setEntity:entity];
-//        
-//        NSError* error;
-//        _localBleLIst = [_context executeFetchRequest:request error:&error];
-//        
-//        for (BTBleList* old in _localBleLIst) {
-//            if ([old.name isEqualToString:bp.handle.name]){
-//                [_context deleteObject:old];
-//                NSLog(@"!!!2222222");
-//            }
-//        }
-//        
-//        //及时保存
-//        NSError* err;
-//        if(![_context save:&err]){
-//            NSLog(@"%@", [err localizedDescription]);
-//        }
-//        
-//        //断开连接
-//        [_cm cancelPeripheralConnection:bp.handle];
-//        NSLog(@"cancel connected");
-//    }
-//    
-//}
 
 - (void)didReceiveMemoryWarning
 {

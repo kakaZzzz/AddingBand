@@ -123,7 +123,7 @@
         NSString* findModel = [BTUtils getModel:peripheral.name];
         
         Boolean rightOne = YES;
-        
+        BOOL isLast = NO;//上一次连接判断标识符
         for (BTBleList* old in _localBleLIst) {
             
             //如果型号一致
@@ -132,10 +132,12 @@
                 if ([old.name isEqualToString:peripheral.name]){
                     
                     //sn也一致的话，直接连接
+                    // rightOne = NO;//不让列表再刷新  直接在历史页面进行设备连接
                     
+                    isLast = YES;
                     [self connectPeripheral:peripheral];
-                    
-                    NSLog(@"!!!2222222");
+                   
+                    NSLog(@"直接连接!!!2222222");
                     
                 }else{
                     
@@ -168,12 +170,15 @@
             //缓存周边对象，变更查找状态
             [find addPeripheral:peripheral];
             find.isFinded = YES;
-            
+            if (isLast) {
+                find.isConnecting = YES;//改过
+           }
+
             //保存在缓存里
             [_allPeripherals setObject:find forKey:find.name];
             
             //连接上一个以后增加
-            self.globals.bleListCount = _allPeripherals.count;
+            self.globals.bleListCount = _allPeripherals.count;//
         }
         
         
@@ -217,13 +222,16 @@
         [_allPeripherals removeObjectForKey:deleteName];
     }
     
+    
+    
+    NSLog(@"all: %@", _allPeripherals);
    
     BTBandPeripheral* find = [_allPeripherals objectForKey:peripheral.name];
-    NSLog(@"发现的连接设备%@",find.name);
+    NSLog(@"连接设备%@",find.name);
     //缓存中变更连接状态
     find.isConnecting = YES;//改了
     
-    self.globals.bleListCount = [_allPeripherals count];
+//    self.globals.bleListCount = [_allPeripherals count];//王鹏 12月13日修改 不要反复调用刷新列表
     
     //查找之前是否连接过
     Boolean never = YES;
@@ -257,7 +265,7 @@
     //代理peripheral
     [peripheral setDelegate:self];
     [peripheral discoverServices:nil];
-    NSLog(@"hello：%@", _allPeripherals);
+    NSLog(@"连接到设备hello：%@", _allPeripherals);
 }
 
 #pragma mark - 发现service后的回调
@@ -426,8 +434,8 @@
         
         bp.isConnected = YES;
         
-        //更新手环状态
-        self.globals.bleListCount += 0;
+        //更新手环状态  在电量读取出来之后
+        self.globals.bleListCount = [_allPeripherals count];
     }
     
     //接到数据总长度的通知
@@ -643,7 +651,7 @@
         }
     }
     
-    //设备总数减少
+    //设备总数减少 刷新列表
     self.globals.bleListCount = _allPeripherals.count;
     
     //断开一个设备
@@ -810,12 +818,15 @@
         NSLog(@"%@", [err localizedDescription]);
     }
     
-    //刷新列表
-    self.globals.bleListCount += 0;
-
+  
     //如果设备正在连接，则断开
     BTBandPeripheral* bp = [self getBpByModel:model];
-    
+    //如果是意外断开设备的时候  手动删除设备后要 刷新列表
+    if (bp && ! bp.isConnected) {
+        self.globals.bleListCount = [_allPeripherals count];
+        
+    }
+
     if (bp && bp.isConnected) {
         [_cm cancelPeripheralConnection:bp.handle];
         
@@ -851,7 +862,7 @@
     }
     
     //刷新列表
-    self.globals.bleListCount += 0;
+    self.globals.bleListCount = [_allPeripherals count];
     
     //如果设备正在连接，则断开
     BTBandPeripheral* bp = [self getBpByName:name];

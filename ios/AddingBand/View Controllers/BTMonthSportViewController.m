@@ -50,7 +50,7 @@
     
     _barChart = [[BarChartView alloc] initWithFrame:CGRectMake(0, 40, 320, 300)];//柱形图背景大小
     _barChart.backgroundColor = [UIColor clearColor];
-    _barChart.barWidth = 7.0f;//柱子宽度 ，外部可以修改  根据柱子的个数灵活改变柱子的宽度
+    _barChart.customBarWidth = 7.0f;//柱子宽度 ，外部可以修改  根据柱子的个数灵活改变柱子的宽度
     [self.view addSubview:_barChart];
     
     NSArray *array = [_barChart createChartDataWithTitles:self.xLableArray

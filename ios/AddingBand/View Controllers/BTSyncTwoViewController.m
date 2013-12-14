@@ -37,7 +37,7 @@ static BTSyncTwoViewController *syncTwoVC = nil;
           self.g = [BTGlobals sharedGlobals];
          self.bc = [BTBandCentral sharedBandCentral];
         //监听设备变化
-        [self.g addObserver:self forKeyPath:@"bleListCount" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:NULL];
+       // [self.g addObserver:self forKeyPath:@"bleListCount" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:NULL];
         
     }
     return self;
@@ -74,7 +74,7 @@ static BTSyncTwoViewController *syncTwoVC = nil;
 #pragma mark - 同步数据
 - (void)shuchu
 {
-    NSLog(@"点击了测试按钮");
+   // NSLog(@"点击了测试按钮");
      NSLog(@"同步数据");
     //进行同步 这里也得判断设备是哪个设备啊
     [self.bc sync:MAM_BAND_MODEL];
