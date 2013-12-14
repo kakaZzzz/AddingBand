@@ -436,6 +436,7 @@
         
         //更新手环状态  在电量读取出来之后
         self.globals.bleListCount = [_allPeripherals count];
+
     }
     
     //接到数据总长度的通知
@@ -824,7 +825,6 @@
     //如果是意外断开设备的时候  手动删除设备后要 刷新列表
     if (bp && ! bp.isConnected) {
         self.globals.bleListCount = [_allPeripherals count];
-        
     }
 
     if (bp && bp.isConnected) {

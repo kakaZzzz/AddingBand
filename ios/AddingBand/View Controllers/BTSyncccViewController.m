@@ -287,7 +287,6 @@
         if (buttonIndex == 0) {
             
             //断开连接
-
             _isBreak = YES;
             NSString *bpName = nil;
             self.context =[BTGetData getAppContex];
@@ -426,8 +425,7 @@
     // BTBandPeripheral*bp  = [self.bc getBpByIndex:indexPath.row];
     BTBandPeripheral*bp = nil;
     if ([self.bc.allPeripherals count] > 0) {
-        bp  =  [self.bc getBpByModel:@"A1"];
-
+        bp  = [self.bc getBpByIndex:indexPath.row];
         
     }
     
