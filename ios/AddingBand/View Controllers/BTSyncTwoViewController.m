@@ -37,7 +37,7 @@ static BTSyncTwoViewController *syncTwoVC = nil;
           self.g = [BTGlobals sharedGlobals];
          self.bc = [BTBandCentral sharedBandCentral];
         //监听设备变化
-       // [self.g addObserver:self forKeyPath:@"bleListCount" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:NULL];
+        [self.g addObserver:self forKeyPath:@"bleListCount" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:NULL];
         
     }
     return self;
@@ -179,54 +179,32 @@ static BTSyncTwoViewController *syncTwoVC = nil;
     _syncIcon.image = [UIImage imageNamed:@"sync_icon.png"];
     [_testButton addSubview:_syncIcon];
     
+    
+    //
+    self.syncProgress = [[UILabel alloc]initWithFrame:CGRectMake(10,200,200,50)];
+    _syncProgress.backgroundColor = [UIColor blueColor];
+    _syncProgress.font = [UIFont systemFontOfSize:15];
+    _syncProgress.textColor = [UIColor whiteColor];
+    _syncProgress.text = @"进度:";
+    _syncProgress.textAlignment = NSTextAlignmentLeft;
+    _syncProgress.lineBreakMode = NSLineBreakByTruncatingTail;
+    _syncProgress.numberOfLines= 0;
+    [_aScrollView addSubview:_syncProgress];
+
+    
 }
 //监控参数，更新显示  当连接  断开的时候也会调用此方法
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
     
-    if([keyPath isEqualToString:@"bleListCount"])
-    {
-        NSLog(@"ble count: %d", self.g.bleListCount);
-        
-        //行数变化时，重新加载列表
-        //todo 等于0的时候处理成“查找中”
-        if (self.g.bleListCount == 0) {
-            //加载动画显示
-            }
-        if (self.g.bleListCount > 0) {
-            BTBandPeripheral*bp  = [self.bc getBpByIndex:0];
-            
-            //是否发现
-           // Boolean isFinded = bp.isFinded;
-            
-            //是否连接
-            Boolean isConnected = bp.isConnected;
-            
-            //是否正在连接中
-          //  BOOL isConnecting = bp.isConnecting;
-            
-            if (isConnected) {
-                NSLog(@"隐藏测试按钮");
-                self.testButton.hidden = NO;
-                
-            }
-
-            
-           }
-        
-        if ([self.bc isConnectedByModel:MAM_BAND_MODEL]){
-            NSLog(@"oh oh fuck");
-            
-            [[self.bc getBpByModel:MAM_BAND_MODEL] addObserver:self forKeyPath:@"dlPercent" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:NULL];
-        }
-    }
     
     //侦听 同步进度
     if([keyPath isEqualToString:@"dlPercent"])
     {
         BTBandPeripheral *bp = [self.bc getBpByModel:MAM_BAND_MODEL];
         //bp.dlPercent表示同步进度
-        NSLog(@"dl: %f", bp.dlPercent);
+        NSLog(@"同步进度dl: %f", bp.dlPercent);
+        _syncProgress.text = [NSString stringWithFormat:@"进度:%f",bp.dlPercent];
         //  NSDictionary *dicProgress = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:bp.dlPercent] forKey:@"progress"];
         
         if (bp.dlPercent == 1) {

@@ -248,6 +248,7 @@
         BTBandPeripheral *bp = [self.bc getBpByModel:MAM_BAND_MODEL];
         //bp.dlPercent表示同步进度
         NSLog(@"dl: %f", bp.dlPercent);
+        _syncTwoVC.syncProgress.text = [NSString stringWithFormat:@"进度:%f",bp.dlPercent];
         //  NSDictionary *dicProgress = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:bp.dlPercent] forKey:@"progress"];
         
         if (bp.dlPercent == 1) {
@@ -725,6 +726,7 @@
     _syncTwoVC.view.frame = CGRectMake(0, 0, _syncTwoVC.view.frame.size.width, _syncTwoVC.view.frame.size.height);
     [self.view addSubview:_syncTwoVC.view];
     _deleteButton.hidden = NO;
+   
 }
 //发现历史设备 但是未连接成功
 - (void)addFindPastView
@@ -735,7 +737,7 @@
     _pastVC.view.frame = CGRectMake(0, 0, _pastVC.view.frame.size.width, _pastVC.view.frame.size.height);
     [self.view addSubview:_pastVC.view];
     _deleteButton.hidden = NO;
-    
+   
 }
 
 @end

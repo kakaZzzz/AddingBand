@@ -33,6 +33,8 @@
 
 @property(strong, nonatomic) UIImageView * useTimeImage;//上次同步时间背景图片
 @property(strong, nonatomic) UILabel * useTimeLabel;//上次同步时间背景图片
+
+@property(strong, nonatomic) UILabel * syncProgress;//上次同步时间背景图片
 //单例描述
 + (BTSyncTwoViewController *)shareSyncTwoview;
 @end

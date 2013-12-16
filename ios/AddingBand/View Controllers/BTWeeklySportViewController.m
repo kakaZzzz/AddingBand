@@ -40,7 +40,7 @@
     self.view.backgroundColor = [UIColor blueColor];
     
     [self configureBarViewAllDatas];
-    NSLog(@"==========%@",self.yValueArray);
+    NSLog(@"周运动量==========%@",self.yValueArray);
     [self loadBarChartUsingArray];
     
 }
