@@ -181,7 +181,7 @@ static BTSyncTwoViewController *syncTwoVC = nil;
     
     
     //
-    self.syncProgress = [[UILabel alloc]initWithFrame:CGRectMake(10,200,200,50)];
+    self.syncProgress = [[UILabel alloc]initWithFrame:CGRectMake(150,200,150,50)];
     _syncProgress.backgroundColor = [UIColor blueColor];
     _syncProgress.font = [UIFont systemFontOfSize:15];
     _syncProgress.textColor = [UIColor whiteColor];
