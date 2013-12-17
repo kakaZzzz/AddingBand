@@ -697,6 +697,9 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
         if (slipWaitFor == 3)
         {
             time();
+
+            //stop long press
+            osal_stop_timerEx( simpleBLEPeripheral_TaskID, LONG_PRESS_EVT );
         }
 
         slipWaitFor = 0;
@@ -796,8 +799,8 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
 
         if (onTheKey)
         {
-            cycleLED6();
             eepromWrite(TAP_DATA_TYPE);
+            cycleLED6();
         }
 
         return (events ^ LONG_PRESS_EVT);
@@ -864,6 +867,9 @@ static void simpleBLEPeripheral_ProcessOSALMsg( osal_event_hdr_t *pMsg )
             cycleLED12();
 
             osal_stop_timerEx( simpleBLEPeripheral_TaskID, SLIP_TIMEOUT_EVT );
+
+            //stop long press
+            osal_stop_timerEx( simpleBLEPeripheral_TaskID, LONG_PRESS_EVT );
 
             slipWaitFor = 0;
           }
