@@ -60,12 +60,13 @@ extern "C"
 #define SBP_ADV_IN_CONNECTION_EVT                         0x0004
 #define BATT_PERIODIC_EVT                                 0x0008
 #define ACC_PERIODIC_EVT                                  0x0010
-#define LED_CYCLE_EVT                                     0x0020
+#define CYCLE_LED_6_EVT                                   0x0020
 #define CLOSE_ALL_EVT                                     0x0040
 #define SLIP_TIMEOUT_EVT                                  0x0080
 #define BLINK_LED_EVT                                     0x0100
 #define TIME_STOP_EVT                                     0x0200
 #define LONG_PRESS_EVT                                    0x0400
+#define CYCLE_LED_12_EVT                                  0x0800
 
 /*********************************************************************
  * MACROS

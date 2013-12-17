@@ -72,7 +72,7 @@
 #define SBP_PERIODIC_EVT_PERIOD               300
 
 // What is the advertising interval when device is discoverable (units of 625us, 160=100ms)
-#define DEFAULT_ADVERTISING_INTERVAL          1600
+#define DEFAULT_ADVERTISING_INTERVAL          2000
 
 // Limited discoverable mode advertises for 30.72s, and then stops
 // General discoverable mode advertises indefinitely
@@ -80,10 +80,10 @@
 #define DEFAULT_DISCOVERABLE_MODE             GAP_ADTYPE_FLAGS_GENERAL
 
 // Minimum connection interval (units of 1.25ms, 80=100ms) if automatic parameter update request is enabled
-#define DEFAULT_DESIRED_MIN_CONN_INTERVAL     400
+#define DEFAULT_DESIRED_MIN_CONN_INTERVAL     800
 
 // Maximum connection interval (units of 1.25ms, 800=1000ms) if automatic parameter update request is enabled
-#define DEFAULT_DESIRED_MAX_CONN_INTERVAL     800
+#define DEFAULT_DESIRED_MAX_CONN_INTERVAL     1200
 
 // Slave latency to use if automatic parameter update request is enabled
 #define DEFAULT_DESIRED_SLAVE_LATENCY         4
@@ -212,9 +212,10 @@ int16 ACC_CUR = 0;
 #define LONG_PRESS_INTERVAL                 1000
 #define DOUBLE_PRESS_INTERVAL               500
 #define ACC_LOAD_INTERVAL                   2500    // 80MS * 30
-#define LED_CYCLE_INTERVAL                  100
+#define CYCLE_LED_6_INTERVAL                80
+#define CYCLE_LED_12_INTERVAL               60
 #define BLINK_LED_INTERVAL                  500
-#define TIME_DISPLAY_INTERVAL               5000
+#define TIME_DISPLAY_INTERVAL               3000
 
 
 /*********************************************************************
@@ -348,7 +349,8 @@ static void closeAllPIO(void);
 
 static void time(void);
 
-static void babyMove(void);
+static void cycleLED6(void);
+static void cycleLED12(void);
 
 static void toggleLEDWithTime(uint8 num, uint8 io);
 static void blinkLED(void);
@@ -533,8 +535,8 @@ void SimpleBLEPeripheral_Init( uint8 task_id )
     P0DIR = 0xF7;
     P0SEL = 0x00;
 
-    P1DIR = 0xE3;
-    P1SEL = 0x30;
+    P1DIR = 0xF3;
+    P1SEL = 0x00;
 
     P2DIR = 0xFF;
     P2SEL = 0x00;
@@ -726,7 +728,7 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
         return (events ^ TIME_STOP_EVT);
     }
 
-    if ( events & LED_CYCLE_EVT )
+    if ( events & CYCLE_LED_6_EVT )
     {
         
         if (ledCycleCount < 7)
@@ -742,7 +744,7 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
         
         if (ledCycleCount < 8)
         {
-            osal_start_timerEx( simpleBLEPeripheral_TaskID, LED_CYCLE_EVT, LED_CYCLE_INTERVAL );
+            osal_start_timerEx( simpleBLEPeripheral_TaskID, CYCLE_LED_6_EVT, CYCLE_LED_6_INTERVAL );
 
         }else{
 
@@ -750,7 +752,35 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
             lockSlip = 0;
         }
 
-        return (events ^ LED_CYCLE_EVT);
+        return (events ^ CYCLE_LED_6_EVT);
+    }
+
+    if ( events & CYCLE_LED_12_EVT )
+    {
+        
+        if (ledCycleCount < 12){
+            toggleLEDWithTime(ledCycleCount, OPEN_PIO);
+            toggleLEDWithTime(ledCycleCount - 1, CLOSE_PIO);
+        }else if(ledCycleCount == 12){
+            toggleLEDWithTime(0, OPEN_PIO);
+            toggleLEDWithTime(11, CLOSE_PIO);
+        }else{
+            toggleLEDWithTime(0, CLOSE_PIO);
+        }
+        
+        ledCycleCount++;
+        
+        if (ledCycleCount < 14)
+        {
+            osal_start_timerEx( simpleBLEPeripheral_TaskID, CYCLE_LED_12_EVT, CYCLE_LED_12_INTERVAL );
+
+        }else{
+
+            ledCycleCount = 0;
+            lockSlip = 0;
+        }
+
+        return (events ^ CYCLE_LED_12_EVT);
     }
 
     if ( events & CLOSE_ALL_EVT )
@@ -766,7 +796,7 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
 
         if (onTheKey)
         {
-            babyMove();
+            cycleLED6();
             eepromWrite(TAP_DATA_TYPE);
         }
 
@@ -831,7 +861,7 @@ static void simpleBLEPeripheral_ProcessOSALMsg( osal_event_hdr_t *pMsg )
 
             // trible tap!!
             eepromWrite(TAP_HOUR_START_TYPE);
-            babyMove();
+            cycleLED12();
 
             osal_stop_timerEx( simpleBLEPeripheral_TaskID, SLIP_TIMEOUT_EVT );
 
@@ -1148,6 +1178,9 @@ static void closeAllPIO(void){
     LED9_PIO = CLOSE_PIO;
     LED10_PIO = CLOSE_PIO;
     LED11_PIO = CLOSE_PIO;
+
+    P1_4 = 0;
+    P1_5 = 0;
 }
 
 
@@ -1254,11 +1287,18 @@ static void time(void){
 
 }
 
-static void babyMove(void){
+static void cycleLED6(void){
 
     lockSlip = 1;
 
-    osal_set_event( simpleBLEPeripheral_TaskID, LED_CYCLE_EVT );
+    osal_set_event( simpleBLEPeripheral_TaskID, CYCLE_LED_6_EVT );
+}
+
+static void cycleLED12(void){
+
+    lockSlip = 1;
+
+    osal_set_event( simpleBLEPeripheral_TaskID, CYCLE_LED_12_EVT );
 }
 
 static void toggleAdvert(uint8 status){
