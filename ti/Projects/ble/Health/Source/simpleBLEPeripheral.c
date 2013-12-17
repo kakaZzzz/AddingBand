@@ -214,6 +214,7 @@ int16 ACC_CUR = 0;
 #define ACC_LOAD_INTERVAL                   2500    // 80MS * 30
 #define CYCLE_LED_6_INTERVAL                80
 #define CYCLE_LED_12_INTERVAL               60
+#define TRIBLE_TAP_INTERVAL                 400
 #define BLINK_LED_INTERVAL                  500
 #define TIME_DISPLAY_INTERVAL               3000
 
@@ -357,8 +358,10 @@ static void blinkLED(void);
 
 static void toggleAdvert(uint8 status);
 
-static void saveStepData();
-static void loadStepData();
+static void saveStepData(void);
+static void loadStepData(void);
+
+static void tribleTap(void);
 
 
 /*********************************************************************
@@ -761,13 +764,16 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
     if ( events & CYCLE_LED_12_EVT )
     {
         
-        if (ledCycleCount < 12){
+        if (ledCycleCount < 12)
+        {
             toggleLEDWithTime(ledCycleCount, OPEN_PIO);
             toggleLEDWithTime(ledCycleCount - 1, CLOSE_PIO);
-        }else if(ledCycleCount == 12){
+        }else if(ledCycleCount == 12)
+        {
             toggleLEDWithTime(0, OPEN_PIO);
             toggleLEDWithTime(11, CLOSE_PIO);
-        }else{
+        }else
+        {
             toggleLEDWithTime(0, CLOSE_PIO);
         }
         
@@ -804,6 +810,14 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
         }
 
         return (events ^ LONG_PRESS_EVT);
+    }
+
+    if ( events & RUN_TRIBLE_TAP_EVT )
+    {
+
+        cycleLED12();
+
+        return (events ^ RUN_TRIBLE_TAP_EVT);
     }
 
     // Discard unknown events
@@ -863,8 +877,7 @@ static void simpleBLEPeripheral_ProcessOSALMsg( osal_event_hdr_t *pMsg )
           }else if (slipWaitFor == 3){
 
             // trible tap!!
-            eepromWrite(TAP_HOUR_START_TYPE);
-            cycleLED12();
+            tribleTap();
 
             osal_stop_timerEx( simpleBLEPeripheral_TaskID, SLIP_TIMEOUT_EVT );
 
@@ -1311,6 +1324,14 @@ static void toggleAdvert(uint8 status){
 
     uint8 turnOnAdv = status;
     GAPRole_SetParameter(GAPROLE_ADVERT_ENABLED, sizeof( uint8 ), &turnOnAdv);
+}
+
+static void tribleTap(void){
+
+    lockSlip = 1;
+
+    eepromWrite(TAP_HOUR_START_TYPE);
+    osal_start_timerEx( simpleBLEPeripheral_TaskID, RUN_TRIBLE_TAP_EVT, TRIBLE_TAP_INTERVAL );
 }
 
 /*********************************************************************
