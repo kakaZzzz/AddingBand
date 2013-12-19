@@ -195,7 +195,7 @@ static BTSyncTwoViewController *syncTwoVC = nil;
     _syncProgress.textAlignment = NSTextAlignmentLeft;
     _syncProgress.lineBreakMode = NSLineBreakByTruncatingTail;
     _syncProgress.numberOfLines= 0;
-  //  [_aScrollView addSubview:_syncProgress];
+    [_aScrollView addSubview:_syncProgress];
 
     
 }
