@@ -50,17 +50,23 @@
     //横坐标元素
     /*   在此传入横坐标名称  柱子表示的数值  柱子颜色  以及label中字体颜色 */
     
-    _barChart = [[BarChartView alloc] initWithFrame:CGRectMake(0, 40, 320, 300)];//柱形图背景大小
+    self.lineScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, 320,200)];
+    _lineScrollView.contentSize = CGSizeMake(320, _lineScrollView.frame.size.height);
+    _lineScrollView.backgroundColor = kGlobalColor;
+    [self.view addSubview:_lineScrollView];
+ 
+    
+    _barChart = [[BarChartView alloc] initWithFrame:CGRectMake(-20, 0, 320, 200)];//柱形图背景大小
     _barChart.backgroundColor = [UIColor clearColor];
     _barChart.customBarWidth = 40.0f;//柱子宽度 ，外部可以修改  根据柱子的个数灵活改变柱子的宽度
-    [self.view addSubview:_barChart];
+    [self.lineScrollView addSubview:_barChart];
     
     NSArray *array = [_barChart createChartDataWithTitles:self.xLableArray
                                                    values:self.yValueArray
                       
-                                                   colors:[NSArray arrayWithObjects:@"87E317",@"87E317",@"87E317",@"87E317",@"87E317",@"87E317",@"87E317", nil]
+                                                   colors:[NSArray arrayWithObjects:@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",nil]
                       
-                                              labelColors:[NSArray arrayWithObjects:@"87E317",@"87E317",@"87E317",@"87E317",@"87E317",@"87E317",@"87E317", nil]
+                                              labelColors:[NSArray arrayWithObjects:@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff", nil]
                       ];
     
     
@@ -79,8 +85,8 @@
     //Generate the bar chart using the formatted data
     [_barChart setDataWithArray:array
                        showAxis:DisplayBothAxes
-                      withColor:[UIColor redColor]//指示坐标颜色 Y轴颜色
-        shouldPlotVerticalLines:YES];
+                      withColor:[UIColor clearColor]//指示坐标颜色 Y轴颜色
+        shouldPlotVerticalLines:NO];
 }
 
 - (NSArray *)getDateWithWeekday
@@ -101,7 +107,7 @@
     
     NSDate *date1 = dateBegin;
     NSDate *date2 = [dateBegin addDay:1];
-    NSDate *date3 = [dateBegin addDay:3];
+    NSDate *date3 = [dateBegin addDay:2];
     NSDate *date4 = [dateBegin addDay:3];
     NSDate *date5 = [dateBegin addDay:4];
     NSDate *date6 = [dateBegin addDay:5];
@@ -130,7 +136,6 @@
         NSNumber* month = [BTUtils getMonth:date];
         NSNumber* day = [BTUtils getDay:date];
 
-        
         
         NSPredicate *predicateDevice = [NSPredicate predicateWithFormat:@"year == %@ AND month == %@ AND day == %@ AND type == %@",year,month,day,[NSNumber numberWithDouble:DEVICE_SPORT_TYPE]];
         //取出记录时间数组

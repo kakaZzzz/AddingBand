@@ -27,10 +27,7 @@
 {
     [super viewDidLoad];
       self.view.backgroundColor = [UIColor yellowColor];
-    if (_lineChartView == nil) {
-     //   [self drawLineChartView];
-        
-    }
+    self.navigationItem.title = @"宫高";
 	// Do any additional setup after loading the view.
 }
 #pragma mark - 绘制折线图

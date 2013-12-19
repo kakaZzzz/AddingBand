@@ -99,7 +99,7 @@ static BTSyncTwoViewController *syncTwoVC = nil;
     [_aImageView addSubview:_aIconImage];
     //上次同步时间背景图
     self.asynctimeImage = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 140, (_aImageView.frame.size.height - 50)/2 - 20, 140, 50)];
-    _asynctimeImage.image = [UIImage imageNamed:@"透明层.png"];
+   // _asynctimeImage.image = [UIImage imageNamed:@"透明层.png"];
     [_aImageView addSubview:_asynctimeImage];
     
     //上次同步时间
@@ -151,7 +151,7 @@ static BTSyncTwoViewController *syncTwoVC = nil;
     //设备使用时间背景
     
     self.useTimeImage = [[UIImageView alloc] initWithFrame:CGRectMake(0,_aImageView.frame.size.height - 50, 320, 50)];
-    _useTimeImage.image = [UIImage imageNamed:@"uestime_bg.png"];
+  //  _useTimeImage.image = [UIImage imageNamed:@"uestime_bg.png"];
     
     [_aImageView   addSubview:_useTimeImage];
     
@@ -163,22 +163,28 @@ static BTSyncTwoViewController *syncTwoVC = nil;
     _useTimeLabel.textColor = [UIColor whiteColor];
     [_useTimeImage addSubview:_useTimeLabel];
     //同步按钮
-    self.testButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    self.testButton = [UIButton buttonWithType:UIButtonTypeCustom];
     // [_testButton setTitle:@"测试按钮" forState:UIControlStateNormal];
-    _testButton.frame = CGRectMake((self.view.frame.size.width - 95)/2, self.view.frame.size.height - 210, 95, 120);
+    _testButton.frame = CGRectMake((self.view.frame.size.width - 120)/2, self.view.frame.size.height - 210, 120, 120);
     if (IPHONE_5_OR_LATER) {
-        _testButton.frame = CGRectMake((self.view.frame.size.width - 95)/2, self.view.frame.size.height - 260, 95, 120);
+        _testButton.frame = CGRectMake((self.view.frame.size.width - 120)/2, self.view.frame.size.height - 260, 120, 120);
     }
-    [_testButton setBackgroundImage:[UIImage imageNamed:@"sync_btn.png"] forState:UIControlStateNormal];
-    [_testButton setBackgroundImage:[UIImage imageNamed:@"sync_btn_sel.png"] forState:UIControlStateHighlighted];
+    [_testButton setBackgroundImage:[UIImage imageNamed:@"fetal_record_unsel@2x"] forState:UIControlStateNormal];
+    [_testButton setBackgroundImage:[UIImage imageNamed:@"fetal_record_sel@2x"] forState:UIControlStateHighlighted];
     [_testButton addTarget:self action:@selector(shuchu) forControlEvents:UIControlEventTouchUpInside];
     [_aScrollView addSubview:_testButton];
     
     //同步旋转图标
-    self.syncIcon = [[UIImageView alloc] initWithFrame:CGRectMake(29, 20, 40, 34)];
+    self.syncIcon = [[UIImageView alloc] initWithFrame:CGRectMake(40, 20, 40, 40)];
     _syncIcon.image = [UIImage imageNamed:@"sync_icon.png"];
     [_testButton addSubview:_syncIcon];
     
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(35, 60, 50, 50)];
+    label.textAlignment = NSTextAlignmentCenter;
+    label.backgroundColor = [UIColor clearColor];
+    label.textColor = [UIColor whiteColor];
+    label.text = @"同步";
+    [_testButton addSubview:label];
     
     //
     self.syncProgress = [[UILabel alloc]initWithFrame:CGRectMake(150,200,150,50)];
@@ -189,7 +195,7 @@ static BTSyncTwoViewController *syncTwoVC = nil;
     _syncProgress.textAlignment = NSTextAlignmentLeft;
     _syncProgress.lineBreakMode = NSLineBreakByTruncatingTail;
     _syncProgress.numberOfLines= 0;
-    [_aScrollView addSubview:_syncProgress];
+  //  [_aScrollView addSubview:_syncProgress];
 
     
 }

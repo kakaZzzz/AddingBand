@@ -27,6 +27,8 @@
 {
     [super viewDidLoad];
       self.view.backgroundColor = [UIColor greenColor];
+    self.navigationItem.title = @"腹围";
+
 	// Do any additional setup after loading the view.
 }
 

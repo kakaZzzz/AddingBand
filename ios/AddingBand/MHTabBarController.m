@@ -5,6 +5,7 @@
 static const float TAB_BAR_HEIGHT = 44.0f;
 static const NSInteger TAG_OFFSET = 1000;
 
+#define CONTENTVIEW_HEIGHT 200.0f
 @implementation MHTabBarController
 {
 	UIView *tabButtonsContainerView;
@@ -21,6 +22,9 @@ static const NSInteger TAG_OFFSET = 1000;
 	CGRect rect = indicatorImageView.frame;
 	rect.origin.x = button.center.x - floorf(indicatorImageView.frame.size.width/2.0f);
 	rect.origin.y = TAB_BAR_HEIGHT - indicatorImageView.frame.size.height;
+    rect.origin.y = CONTENTVIEW_HEIGHT;
+
+    NSLog(@"只是图片的坐标是%@",NSStringFromCGRect(rect));
 	indicatorImageView.frame = rect;
 	indicatorImageView.hidden = NO;
 }
@@ -29,7 +33,7 @@ static const NSInteger TAG_OFFSET = 1000;
 {
 	[button setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
 
-	UIImage *image = [[UIImage imageNamed:@"MHTabBarActiveTab"] stretchableImageWithLeftCapWidth:0 topCapHeight:0];
+	UIImage *image = [[UIImage imageNamed:@"MHTabBarActiveTab11"] stretchableImageWithLeftCapWidth:0 topCapHeight:0];
 	[button setBackgroundImage:image forState:UIControlStateNormal];
 	[button setBackgroundImage:image forState:UIControlStateHighlighted];
 	
@@ -70,16 +74,11 @@ static const NSInteger TAG_OFFSET = 1000;
 	{
         
         NSLog(@"添加按钮。。。。。。。");
-        //如果下标是3和4,那么 button的交互暂时关闭
 		UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
 		button.tag = TAG_OFFSET + index;
 		[button setTitle:viewController.title forState:UIControlStateNormal];
 		[button addTarget:self action:@selector(tabButtonPressed:) forControlEvents:UIControlEventTouchDown];
-        if (index == 3 || index == 4) {
-            button.userInteractionEnabled = NO;
-         
-        }
-		button.titleLabel.font = [UIFont boldSystemFontOfSize:18];
+        button.titleLabel.font = [UIFont boldSystemFontOfSize:18];
 		//button.titleLabel.shadowOffset = CGSizeMake(0, 1);
 		[self deselectTabButton:button];
 		[tabButtonsContainerView addSubview:button];
@@ -106,7 +105,6 @@ static const NSInteger TAG_OFFSET = 1000;
     NSLog(@"布局tabba");
 	NSUInteger index = 0;
 	NSUInteger count = [self.viewControllers count];
-
 	CGRect rect = CGRectMake(0, 0, floorf(self.view.bounds.size.width / count), TAB_BAR_HEIGHT);
 
 	indicatorImageView.hidden = YES;
@@ -132,25 +130,31 @@ static const NSInteger TAG_OFFSET = 1000;
 	[super viewDidLoad];
 
     NSLog(@"黑条加载。。。。");
-//	self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+	self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     
   //  self.view.frame = CGRectMake(0, 100, 240, 200);
 
 	CGRect rect = CGRectMake(0, 0, self.view.bounds.size.width, TAB_BAR_HEIGHT);
-	tabButtonsContainerView = [[UIView alloc] initWithFrame:rect];
+  
+    tabButtonsContainerView = [[UIView alloc] initWithFrame:CGRectMake(0, CONTENTVIEW_HEIGHT, self.view.bounds.size.width, TAB_BAR_HEIGHT)];
+
    // tabButtonsContainerView.backgroundColor = [UIColor blueColor];
 	tabButtonsContainerView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
 	[self.view addSubview:tabButtonsContainerView];
 
-	rect.origin.y = TAB_BAR_HEIGHT;
-	rect.size.height = self.view.bounds.size.height - TAB_BAR_HEIGHT;
+	rect.origin.y = 0;
+	//rect.size.height = self.view.bounds.size.height - TAB_BAR_HEIGHT;
+    rect.size.height = CONTENTVIEW_HEIGHT;
 	contentContainerView = [[UIView alloc] initWithFrame:rect];
-	contentContainerView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+	//contentContainerView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 	[self.view addSubview:contentContainerView];
 
 	indicatorImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"MHTabBarIndicator"]];
 	[self.view addSubview:indicatorImageView];
 
+    
+  
+    
     
     //在页面出现的时候要对button进行配置  血糖 血压是显示还是非显示 及其重要
 	//[self reloadTabButtons];
@@ -341,6 +345,7 @@ static const NSInteger TAG_OFFSET = 1000;
 
 - (void)tabButtonPressed:(UIButton *)sender
 {
+   
 	[self setSelectedIndex:sender.tag - TAG_OFFSET animated:NO];//切换视图是否带有动画
 }
 

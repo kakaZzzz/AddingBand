@@ -7,30 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "BTBandCentral.h"
+#import "BTScrollViewController.h"
 #import "MHTabBarController.h"
-@class BarChartView;
-@class BTGlobals;
+
 @class MHTabBarController;
-@interface BTPhysicSportViewController : UIViewController<MHTabBarControllerDelegate>
-@property (strong, nonatomic)BarChartView *barChart;//柱形图
-@property (strong, nonatomic)UILabel *totalStep;//一共走了多少步
-@property (strong, nonatomic)UILabel *realStep;//实际走了多少步
-
-@property(strong, nonatomic) NSManagedObjectContext* context;
-@property (strong, nonatomic) NSMutableArray* dailyData;
-@property (assign, nonatomic) int stepCount;
-
-@property(strong, nonatomic) BTGlobals* g;
-@property(strong, nonatomic) BTBandCentral* bc;
-//柱形图Y值
-@property(strong, nonatomic) NSArray *barYValue;
-//柱形图X值
-@property(strong, nonatomic) NSArray *barXValue;
-//柱形图柱子颜色
-@property(strong, nonatomic) NSMutableArray *barColors;
-//柱形图下横坐标颜色
-@property(strong, nonatomic) NSMutableArray *barLabelColors;
-
+@interface BTPhysicSportViewController : BTScrollViewController<MHTabBarControllerDelegate>
 @property(nonatomic,strong)MHTabBarController *tabBarController;//一定要用属性，不然就dealloc了
+@property(nonatomic,strong)UIView *progressView;//进度动画view
+@property(nonatomic,strong)UILabel *titleLabel;//
+@property(nonatomic,strong)UILabel *goalLabel;//目标量
+@property(nonatomic,strong)UILabel *progressLabel;//完成进度label
 @end

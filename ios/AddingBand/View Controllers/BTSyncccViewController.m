@@ -70,8 +70,13 @@
         self.indicator = [[DDIndicator alloc] initWithFrame:CGRectMake((self.view.frame.size.width - _indicator.frame.size.width - 50)/2 , 150, 50, 50)];
         [self.view addSubview:_indicator];
         _indicator.hidden = YES;
-        // [_indicator startAnimating];
-        
+        [_indicator startAnimating];
+        //动画是否超时
+        if (!self.timerAnimation.isValid) {
+            self.timerAnimation =[NSTimer timerWithTimeInterval:50 target:self selector:@selector(stopIndicatorAnimation) userInfo:nil repeats:NO];
+            [[NSRunLoop currentRunLoop] addTimer:self.timerAnimation forMode:NSRunLoopCommonModes];
+        }
+
         
         self.peripheralArray = [NSMutableArray arrayWithCapacity:1];
         
@@ -163,6 +168,40 @@
     _label3.numberOfLines= 0;
     [self.aScrollView addSubview:_label3];
     
+    
+    //重新搜索蓝牙设备按钮
+    self.refreshButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    [_refreshButton setTitle:@"重新搜索" forState:UIControlStateNormal];
+    [_refreshButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+
+    if (IPHONE_5_OR_LATER) {
+        _refreshButton.frame = CGRectMake((320 - 200)/2, _label3.frame.origin.y + _label3.frame.size.height + 5, 200, 50);
+        
+    }
+    else
+    {
+        _refreshButton.frame = CGRectMake((320 - 200)/2, _label3.frame.origin.y + _label3.frame.size.height, 200, 50);
+    }
+    [_refreshButton setBackgroundImage:[UIImage imageNamed:@"refresh_btn.png"] forState:UIControlStateNormal];
+    [_refreshButton setBackgroundImage:[UIImage imageNamed:@"refresh_btn_sel.png"] forState:UIControlStateHighlighted];
+    
+    [_refreshButton addTarget:self action:@selector(restartScanBySelf) forControlEvents:UIControlEventTouchUpInside];
+    [_aScrollView addSubview:_refreshButton];
+    [self.aScrollView addSubview:_refreshButton];
+
+}
+#pragma mark - 手动重新搜索设备
+- (void)restartScanBySelf
+{
+    
+    [self.indicator startAnimating];
+    //动画是否超时
+    if (!self.timerAnimation.isValid) {
+        self.timerAnimation =[NSTimer timerWithTimeInterval:50 target:self selector:@selector(stopIndicatorAnimation) userInfo:nil repeats:NO];
+        [[NSRunLoop currentRunLoop] addTimer:self.timerAnimation forMode:NSRunLoopCommonModes];
+    }
+
+    [self.bc restartScan];
 }
 #pragma mark - 设置导航栏上面的按钮
 - (void)configureNavigationbar
@@ -171,11 +210,12 @@
     _deleteButton.frame = CGRectMake(250, 5, 65, 30);
     
     [_deleteButton setTitle:@"删除" forState:UIControlStateNormal];//title的值根据定位和和选择而改变
+    [_deleteButton setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
     _deleteButton.tag = 198;
     _deleteButton.hidden = YES;
-    [_deleteButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+   // [_deleteButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [_deleteButton addTarget:self action:@selector(breakConnect) forControlEvents:UIControlEventTouchUpInside];
-    [_deleteButton setBackgroundImage:[UIImage imageNamed:@"透明.png"] forState:UIControlStateNormal];
+   // [_deleteButton setBackgroundImage:[UIImage imageNamed:@"透明.png"] forState:UIControlStateNormal];
     _deleteButton.tintColor = [UIColor colorWithRed:70/255.0 green:163/255.0 blue:210/255.0 alpha:1];
     
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:(UIView *)_deleteButton];

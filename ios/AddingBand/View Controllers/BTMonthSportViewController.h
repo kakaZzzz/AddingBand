@@ -7,11 +7,15 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "BarView.h"
 @class BarChartView;
 @interface BTMonthSportViewController : UIViewController
 @property (strong, nonatomic)BarChartView *barChart;//柱形图
-@property (strong, nonatomic)NSArray *xLableArray;//柱形图x轴数组
+@property (strong, nonatomic)NSMutableArray *xLableArray;//柱形图x轴数组
 @property (strong, nonatomic)NSMutableArray *yValueArray;//柱形图y轴数组
+@property (strong,nonatomic)NSMutableArray *barColorsArray;//柱子颜色
+@property (strong,nonatomic)NSMutableArray *labelColorsArray;//柱子颜色
 
+@property(nonatomic,strong)UIScrollView *lineScrollView;
 
 @end

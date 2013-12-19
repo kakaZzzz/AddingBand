@@ -27,13 +27,9 @@
     [super viewDidLoad];
     NSLog(@"视图加载加载");
 
-    if (_lineChartView == nil) {
-        [self drawLineChartView];
-        
-    }
-    NSLog(@"****************%@",_lineChartView);
-
-	// Do any additional setup after loading the view.
+    self.view.backgroundColor = [UIColor whiteColor];
+    self.navigationItem.title = @"体重";
+ 	// Do any additional setup after loading the view.
 }
 #pragma mark - 绘制折线图
 - (void)drawLineChartView

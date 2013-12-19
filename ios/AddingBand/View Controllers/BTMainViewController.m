@@ -9,7 +9,7 @@
 #import "BTMainViewController.h"
 #import "RBParallaxTableVC.h"
 #import "BTUndoCell.h"
-#import "BTChartViewController.h"
+
 
 
 static NSString *textStr = nil;
@@ -123,10 +123,10 @@ static NSString *textStr = nil;
 #pragma mark - tableView delegate
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    BTChartViewController *chartVC = [[BTChartViewController alloc] init];
-    //点击进入下一界面 进入历史记录页面
-    chartVC.hidesBottomBarWhenPushed = YES;//隐藏tabbar
-    [self.navigationController pushViewController:chartVC animated:YES];
+//   // BTChartViewController *chartVC = [[BTChartViewController alloc] init];
+//    //点击进入下一界面 进入历史记录页面
+//    chartVC.hidesBottomBarWhenPushed = YES;//隐藏tabbar
+//    [self.navigationController pushViewController:chartVC animated:YES];
     
 }
 

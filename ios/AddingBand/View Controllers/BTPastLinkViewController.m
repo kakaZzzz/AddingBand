@@ -105,7 +105,7 @@ static BTPastLinkViewController *pastLinkVC = nil;
     [_aImageView addSubview:_aIconImage];
     //上次同步时间背景图
     self.asynctimeImage = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 140, ((_aImageView.frame.size.height - 50)/2 - 20), 140, 50)];
-    _asynctimeImage.image = [UIImage imageNamed:@"透明层.png"];
+   // _asynctimeImage.image = [UIImage imageNamed:@"透明层.png"];
     [_aImageView addSubview:_asynctimeImage];
     
     //上次同步时间
@@ -156,7 +156,7 @@ static BTPastLinkViewController *pastLinkVC = nil;
     
     //设备使用时间背景
     self.useTimeImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, _aImageView.frame.size.height - 50, 320, 50)];
-    _useTimeImage.image = [UIImage imageNamed:@"uestime_bg.png"];
+   // _useTimeImage.image = [UIImage imageNamed:@"uestime_bg.png"];
     [_aImageView addSubview:_useTimeImage];
     
     //使用时间标签

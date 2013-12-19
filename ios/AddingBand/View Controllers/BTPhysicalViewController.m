@@ -8,14 +8,13 @@
 
 #import "BTPhysicalViewController.h"
 #import "BTPhysicSportViewController.h"
-#import "BTPhysicQuickeningViewController.h"
 #import "LayoutDef.h"
 #import "CircularProgressView.h"
 #import "BTGetData.h"
-#import "BarChartView.h"
 #import "PICircularProgressView.h"
 #import "BTColor.h"
-
+#import "BTUtils.h"
+#import "BTRawData.h"
 
 #import "MHTabBarController.h"
 #import "BTWeightViewController.h"
@@ -28,12 +27,19 @@
 #import "BTBabyFetalViewController.h"//胎心详情
 #import "BTBabyWeightViewController.h"//胎儿体重详情
 #import "BTFetalDailyViewController.h"//每日胎动页面
+#import "BTPhysicalCell.h"
+#import "BTPhisicalModel.h"
+
+//布局宏
 #define kImageBgX 0
 #define kImageBgY 0
 #define kImageBgWidth 320
-#define kImageBgHeight 200
+#define kImageBgHeight 220
+
+#define kGradeImageWidth 200
+#define kGradeImageHeight 160
 @interface BTPhysicalViewController ()
-@property(nonatomic,strong)UIScrollView *aScrollView;
+
 @property(nonatomic,strong)NSArray *textLabelArray;
 @property(nonatomic,strong)NSArray *detailTextArray;
 
@@ -47,9 +53,6 @@
     if (self) {
         // Custom initialization
         
-        self.barYValue = [self getResentOneWeekSteps];
-        
-        
     }
     return self;
 }
@@ -59,56 +62,36 @@
     
    
     [super viewDidLoad];
+    
+    [self addSubviews];//加载子视图
 
-    //加载滚动视图
-    [self addSubviews];
-    [self addBackgroundImage];
-    [self addMamaPhisicalView];
-
-    [self addBabyTableView];
     // Do any additional setup after loading the view.
 }
 #pragma mark - 开始配置背景色
 - (void)addSubviews
 {
     
-    //添加滚动视图
-    self.aScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
-    _aScrollView.delegate = self;
-    _aScrollView.contentSize = CGSizeMake(self.view.frame.size.width, self.view.frame.size.height + 150);
-    _aScrollView.showsVerticalScrollIndicator = NO;
-    _aScrollView.backgroundColor = [UIColor whiteColor];
-    [self.view addSubview:_aScrollView];
     
-    //配置图片 传得参数为图片数量
-    //[self addImageViewByNumber:5];
-
     //背景粉红图
-    if (IPHONE_5_OR_LATER) {
-        self.aImageView = [[UIImageView alloc] initWithFrame:CGRectMake(kImageBgX, kImageBgY, kImageBgWidth, kImageBgHeight)];
+    if (IOS7_OR_LATER) {
+        self.aImageView = [[UIImageView alloc] initWithFrame:CGRectMake(kImageBgX, -20, kImageBgWidth, kImageBgHeight)];
     }
     else
     {
         self.aImageView = [[UIImageView alloc] initWithFrame:CGRectMake(kImageBgX, kImageBgY, kImageBgWidth, kImageBgHeight)];
     }
-    _aImageView.image = [UIImage imageNamed:@"red_bg.png"];
-    [_aScrollView addSubview:_aImageView];
+    _aImageView.image = [UIImage imageNamed:@"physical_top_bg@2x"];
+    [self.scrollView addSubview:_aImageView];
     
-    //设备使用时间背景
+    //分数
+    self.gradeImage = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width - kGradeImageWidth,_aImageView.frame.size.height - kGradeImageHeight, kGradeImageWidth, kGradeImageHeight)];
+    _gradeImage.image = [UIImage imageNamed:@"physical_grade@2x"];
     
-    self.useTimeImage = [[UIImageView alloc] initWithFrame:CGRectMake(0,_aImageView.frame.size.height - 50, 320, 50)];
-    _useTimeImage.image = [UIImage imageNamed:@"uestime_bg.png"];
+    [_aImageView addSubview:_gradeImage];
     
-   // [_aImageView addSubview:_useTimeImage];
-    
-    
-    //使用时间标签
-    self.useTimeLabel = [[UILabel alloc] initWithFrame:CGRectMake(5, 0, 200, _useTimeImage.frame.size.height)];
-    _useTimeLabel.backgroundColor = [UIColor clearColor];
-    _useTimeLabel.text = @"使用时间:---";
-    _useTimeLabel.textColor = [UIColor whiteColor];
-   // [_useTimeImage addSubview:_useTimeLabel];
 
+    [self addPhysicalTableView];
+    [self addBabyPhysicalView];
 }
 
 #pragma mark - 添加弧形的进度条
@@ -131,7 +114,7 @@
 //    [self.progressView setProgressTopGradientColor:[UIColor colorWithRed:15.0/255.0 green:97.0/255.0 blue:189.0/255.0 alpha:1.0]];
 //    [self.progressView setProgressBottomGradientColor:[UIColor colorWithRed:114.0/255.0 green:174.0/255.0 blue:235.0/255.0 alpha:1.0]];
     
-    [_aScrollView addSubview:_progressView];
+    [self.scrollView addSubview:_progressView];
 	// Do any additional setup after loading the view.
     
     //加入计时器 动态绘制出进度
@@ -155,362 +138,116 @@
 
 
 
-#pragma mark - add circle progress
-- (void)addCircleProgress
+#pragma mark - 配置体征tableView
+- (void)addPhysicalTableView
 {
-    //妈妈运动量标签
-    UILabel *label1 = [[UILabel alloc] initWithFrame:CGRectMake(10, 20, 120, 50)];
-    label1.text = @"妈妈运动量:";
-    label1.textColor =[UIColor blueColor];
- //   [self.aScrollView addSubview:label1];
+    self.dataArray = [NSMutableArray arrayWithCapacity:1];
+    self.textLabelArray = [NSArray arrayWithObjects:@"运动量",@"体   重",@"宫   高",@"腹   围",@"血   糖",@"血   压", nil];
+    self.detailTextArray = [NSArray arrayWithObjects:@"70%",@"72kg",@"16cm",@"88cm",@"",@"120/80", nil];
 
-    
-    
-    
-    //set backcolor & progresscolor
-  //  UIColor *progressColor = [UIColor colorWithRed:255.0/255.0 green:255.0/255.0 blue:255.0/255.0 alpha:1.0];
-    UIColor *progressColor = [UIColor yellowColor];
-    UIColor *backColor = [UIColor colorWithRed:255.0/255.0 green:153.0/255.0 blue:153.0/255.0 alpha:1.0];
-    
-   //整体分数进度条
-    //alloc CircularProgressView instance
-    self.circularGrade = [[CircularProgressView alloc] initWithFrame:CGRectMake(60, 40, 200, 200) backColor:backColor progressColor:progressColor lineWidth:13];
-   // [self.circularGrade updateProgressCircle: 50 withTotal:100];
-
-    //add CircularProgressView
-    [self.aScrollView addSubview:_circularGrade];
-    //分数标签
-    self.gradeLabel = [[UILabel alloc] initWithFrame:CGRectMake(_circularGrade.frame.origin.x, _circularGrade.frame.origin.y +40, 140, 70)];
-    _gradeLabel.center = _circularGrade.center;//利用center快速定位
-    //自动换行
-    [_gradeLabel setNumberOfLines:0];
-#if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_5_1
-    // iPhone OS SDK 6.0 及其以后版本的处理
-    _gradeLabel.lineBreakMode = NSLineBreakByWordWrapping;
-#else
-    // iPhone OS SDK 6.0 之前版本的处理
-    _gradeLabel.lineBreakMode = UILineBreakModeWordWrap;
-    
-#endif
-
-    
-    
-    _gradeLabel.textAlignment = NSTextAlignmentCenter;
-    _gradeLabel.textColor = [UIColor whiteColor];
-    _gradeLabel.backgroundColor = [UIColor colorWithRed:255.0/255.0 green:153.0/255.0 blue:153.0/255.0 alpha:1.0];
-    [_aScrollView addSubview:_gradeLabel];
-    
-    
-    //创建运动量圆形进度条
-    self.circularSport = [[CircularProgressView alloc] initWithFrame:CGRectMake(200, 180, 90, 120) backColor:backColor progressColor:progressColor lineWidth:13];
-    //[self.circularSport updateProgressCircle: 50 withTotal:100];
-    
-    //add CircularProgressView
- //   [self.aScrollView addSubview:_circularSport];
-    
-    //运动量标签
-    self.sportLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 55, 30)];
-    _sportLabel.center = _circularSport.center;//利用center快速定位
-    _sportLabel.textAlignment = NSTextAlignmentCenter;
-    _sportLabel.text = @"100";
-    _sportLabel.backgroundColor = [UIColor redColor];
- //   [_aScrollView addSubview:_sportLabel];
-
-    
-      
-    
-//    //创建Label
-//    self.totalStep = [[UILabel alloc] initWithFrame:CGRectMake(stepLabelX, stepLabelY, stepLabelWidth, stepLabelHeight)];
-//    _totalStep.font = [UIFont systemFontOfSize:stepLabelFont];
-//    _totalStep.text = @"9506";
-//    _totalStep.textAlignment =  NSTextAlignmentCenter;
-//    _totalStep.backgroundColor = [UIColor redColor];
-//    [self.view addSubview:_totalStep];
-//    
-//    self.realStep = [[UILabel alloc] initWithFrame:CGRectMake(stepLabelX, stepLabelY + 170, stepLabelWidth, stepLabelHeight)];
-//    _realStep.text = @"100";
-//    _realStep.font = [UIFont systemFontOfSize:stepLabelFont];
-//    _realStep.textAlignment =  NSTextAlignmentCenter;
-//    [self.view addSubview:_realStep];
-    
-    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(10, 200, 100, 50)];
-    label.text = @"宝宝胎动：";
-    label.textColor =[UIColor blueColor];
-    [self.aScrollView addSubview:label];
-}
-#pragma mark -添加演示用背景花边
-- (void)addBackgroundImage
-{
-    UIImageView *aImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, _aImageView.frame.origin.y + _aImageView.frame.size.height, self.view.frame.size.width, 131)];
-    aImageView.image = [UIImage imageNamed:@"lace_bg.png"];
-    [_aScrollView addSubview:aImageView];
-    
-    //胎动
-    UILabel *aLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 5, 100, 20)];
-    
-    aLabel.textAlignment = NSTextAlignmentLeft;
-    aLabel.text = @"胎动";
-    aLabel.backgroundColor = [UIColor clearColor];
-  //  [aImageView addSubview:aLabel];
-    
-    UIImageView *bImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, aImageView.frame.origin.y + aImageView.frame.size.height, self.view.frame.size.width, 121)];
-    bImageView.backgroundColor = [UIColor redColor];
-    bImageView.image = [UIImage imageNamed:@"lace_bg.png"];
-    //在柱形图上加入手势 点击进如下一页面 目前进入胎动详情
-    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(enterNextView:)];
-    bImageView.userInteractionEnabled = YES;
-    [bImageView addGestureRecognizer:tap];
-
-    [_aScrollView addSubview:bImageView];
-}
-#pragma mark - 点击花边背景暂时进入胎动详情页面
-- (void)enterNextView:(UITapGestureRecognizer *)tap
-{
-    BTFetalViewController *fetalVC = [[BTFetalViewController alloc] init];
-    fetalVC.hidesBottomBarWhenPushed = YES;
-    [self.navigationController pushViewController:fetalVC animated:YES];
-}
-
-#pragma mark - loadBarChart  加载柱形图
-- (void)loadBarChartUsingArray {
-    //Generate properly formatted data to give to the bar chart
-    //横坐标元素
-    /*   在此传入横坐标名称  柱子表示的数值  柱子颜色  以及label中字体颜色 */
-    
-    _barChart = [[BarChartView alloc] initWithFrame:CGRectMake(30, 220, 250, 100)];//柱形图背景大小
-    _barChart.backgroundColor = [UIColor clearColor];
-   // [self.aScrollView addSubview:_barChart];
-    
-    NSArray *array = [_barChart createChartDataWithTitles:_barXValue
-                                                   values:_barYValue
-                                                   colors:_barColors
-                                              labelColors:_barLabelColors];
-    
-    
-    //Set the Shape of the Bars (Rounded or Squared) - Rounded is default
-    //柱形形状  分圆角型和直角型
-    [_barChart setupBarViewShape:BarShapeSquared];
-    
-    //Set the Style of the Bars (Glossy, Matte, or Flat) - Glossy is default
-    //柱形样式  分有光泽的  无光泽的  扁平的
-    [_barChart setupBarViewStyle:BarStyleFlat];
-    
-    //Set the Drop Shadow of the Bars (Light, Heavy, or None) - Light is default
-    //柱形阴影   分 轻 重 无 三种
-    [_barChart setupBarViewShadow:BarShadowNone];
-    
-    //Generate the bar chart using the formatted data
-    [_barChart setDataWithArray:array
-                       showAxis:DisplayBothAxes
-                      withColor:[BTColor getColor:kBarColor]//指示坐标颜色 Y轴颜色
-        shouldPlotVerticalLines:YES];
-}
-#pragma mark - 读取最近一周每天的运动量 并配置绘制柱形图所需参数
-- (NSArray *)getResentOneWeekSteps
-{
-    
-    self.barColors = [NSMutableArray arrayWithObjects:@"87E317",@"87E317",@"87E317",@"87E317",@"87E317",@"87E317",@"87E317", nil];
-    self.barLabelColors = [NSMutableArray arrayWithObjects:@"87E317",@"87E317",@"87E317",@"87E317",@"87E317",@"87E317",@"87E317", nil];
-    
-    //设置数据类型
-    int type = 1;
-    //读取当前时间
-    NSDate* date = [NSDate date];
-    NSTimeZone *zone = [NSTimeZone systemTimeZone];
-    NSInteger interval = [zone secondsFromGMTForDate: date];
-    NSDate *localeDate = [date  dateByAddingTimeInterval: interval];
-    
-    NSLog(@"localeDate==%@", localeDate);
-    //分割出年 月 日 小时
-    NSNumber* year = [BTUtils getYear:localeDate];
-//    NSNumber* month = [BTUtils getMonth:localeDate];
-//    NSNumber* day = [BTUtils getDay:localeDate];
-//    NSNumber* minute = [BTUtils getMinutes:date];
-//    NSNumber* hour = [BTUtils getHour:localeDate];
-    //设置查询条件
-    //按月查询
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"year == %@ AND type == %@",year,[NSNumber numberWithInt:type]];
-    NSArray *array = [BTGetData getFromCoreDataWithPredicate:predicate entityName:@"BTRawData" sortKey:nil];
-    
-    NSMutableArray *arrayStep = [NSMutableArray arrayWithCapacity:1];
-    NSMutableArray *arrayDate = [NSMutableArray arrayWithCapacity:1];
-    for (BTRawData* one in array) {
-        [arrayStep addObject:[NSString stringWithFormat:@"%@",one.count]];
-        [arrayDate addObject:[NSString stringWithFormat:@"%@分",one.minute]];//测试用小时 实际上线时 用天
-        
+    for (int i = 0; i <6; i ++) {
+        BTPhisicalModel *model = [[BTPhisicalModel alloc] initWithTitle:[self.textLabelArray objectAtIndex:i] content:[self.detailTextArray objectAtIndex:i]];
+        [self.dataArray addObject:model];
     }
     
-    
-    //最近七天的一个范围
-    NSArray *resultArray;
-    //如果数据大于七天
-    if (arrayStep.count >= 7) {
-        NSRange theRange;
-        theRange.location = arrayStep.count - 7;//range的起点
-        theRange.length = 7;//range的长度
-        resultArray = [arrayStep subarrayWithRange:theRange];
-        self.barXValue = [arrayDate subarrayWithRange:theRange];
-        
-    }
-    //如果数据少于七天
-    else{
-        resultArray = arrayStep;
-        //横坐标值
-        self.barXValue = arrayDate;
-        
-        NSRange theRange;
-        theRange.location = arrayStep.count ;//range的起点
-        theRange.length = 7 - arrayStep.count;//range的长度
-        
-        //柱子颜色
-        [self.barColors removeObjectsInRange:theRange];
-        [self.barLabelColors removeObjectsInRange:theRange];
-        
-    }
-    NSLog(@"最近一周的运动量是 %@",resultArray);
-    return resultArray;
-    
-    
-}
-
-#pragma mark - 加载button控制的对页面视图 妈妈体征项
-- (void)addMamaPhisicalView
-{
-    
-	BTWeightViewController *weightVC = [[BTWeightViewController alloc] init];
-    BTHeightViewController *heightVC = [[BTHeightViewController alloc] init];
-    BTGirthViewController *girthVC = [[BTGirthViewController alloc] init];
-    BTGluViewController *gluVC = [[BTGluViewController alloc] init];
-    BTBPViewController *bpVC = [[BTBPViewController alloc] init];
-    
-    
-    weightVC.title = @"体重";
-    heightVC.title = @"宫高";
-	girthVC.title = @"腹围";
-    gluVC.title = @"血糖";
-    bpVC.title = @"血压";
-    
-    
-	NSArray *viewControllers = [NSArray arrayWithObjects:weightVC, heightVC, girthVC,gluVC,bpVC, nil];
-    
-	self.tabBarController = [[MHTabBarController alloc] init];
-    _tabBarController.view.frame = CGRectMake(0, 200, 220, 120);
-    _tabBarController.delegate = self;
-	_tabBarController.viewControllers = viewControllers;
-    [self.aScrollView addSubview:_tabBarController.view];
-	
-    
-    //添加详情按钮
-    UIButton *detailButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    [detailButton setTitle:@"详情" forState:UIControlStateNormal];
-    [detailButton addTarget:self action:@selector(enterMamaDetail:) forControlEvents:UIControlEventTouchUpInside];
-    detailButton.frame = CGRectMake(320 - 40, _tabBarController.view.frame.origin.y + 5, 30, 30);
-    [self.aScrollView addSubview:detailButton];
-    
-    //添加今日运动量标签
-    UILabel *aLabel = [[UILabel alloc] initWithFrame:CGRectMake(_tabBarController.view.frame.origin.x + _tabBarController.view.size.width + 10, detailButton.frame.origin.y + 40, 90, 30)];
-    aLabel.text = @"今日运动量";
-    [self.aScrollView addSubview:aLabel];
-    
-    self.sportLabel = [[UILabel alloc] initWithFrame:CGRectMake(aLabel.frame.origin.x, aLabel.frame.origin.y + aLabel.frame.size.height - 10, aLabel.frame.size.width, 50)];
-    _sportLabel.backgroundColor = [UIColor redColor];
-    _sportLabel.font = [UIFont systemFontOfSize:25];
-    _sportLabel.textAlignment = NSTextAlignmentCenter ;
-    _sportLabel.text = @"69%";
-    //在label上加手势  点击进入下一个页面  运动量详情
-    _sportLabel.userInteractionEnabled = YES;
-    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(pushToSportView:)];
-    [_sportLabel addGestureRecognizer:tap];
-    [self.aScrollView addSubview:_sportLabel];
-
-}
-- (void)pushToSportView:(UITapGestureRecognizer *)tap
-{
-    BTPhysicSportViewController *sportVC = [[BTPhysicSportViewController alloc] init];
-    sportVC.hidesBottomBarWhenPushed = YES;
-    [self.navigationController pushViewController:sportVC animated:YES];
-}
-
-#pragma mark - 妈妈体征页的代理方法 自写tabbar的代理方法
-- (BOOL)mh_tabBarController:(MHTabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController atIndex:(NSUInteger)index
-{
-	//NSLog(@"mh_tabBarController %@ shouldSelectViewController %@ at index %u", tabBarController, viewController, index);
-    
-    //在这里可以决定哪个button不允许点击
-    
-	return YES;
-}
-
-- (void)mh_tabBarController:(MHTabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController atIndex:(NSUInteger)index
-{
-	//NSLog(@"mh_tabBarController %@ didSelectViewController %@ at index %u", tabBarController, viewController, index);
-}
-#pragma mark - 进入mama体征详情页面
-- (void)enterMamaDetail:(UIButton *)button
-{
-    
-    UIViewController *selectedVC = self.tabBarController.selectedViewController;
-    BTMamaDetailViewController *detailVC = [[BTMamaDetailViewController alloc] init];
-    detailVC.navigationItem.title = selectedVC.title;
-    detailVC.hidesBottomBarWhenPushed = YES;
-    [self.navigationController pushViewController:detailVC animated:YES];
-    
-    
-}
-
-#pragma mark - 配置胎儿体征tableView
-- (void)addBabyTableView
-{
-    
-    self.textLabelArray = [NSArray arrayWithObjects:@"胎儿体重",@"胎动记录",@"胎心监护", nil];
-    self.detailTextArray = [NSArray arrayWithObjects:@"598g",@"平均每天 30次",@"平均每分钟 147次", nil];
-
-    //加载tableview
-    self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, _tabBarController.view.frame.origin.y + _tabBarController.view.frame.size.height + 5, 320,200)];
+    self.tableView.rowHeight = 60;
+     //加载tableview
+    self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, _aImageView.frame.origin.y + _aImageView.frame.size.height, 320,360)];
    // _tableView.backgroundColor = [UIColor redColor];
     _tableView.dataSource = self;
     _tableView.delegate = self;
-    [_aScrollView addSubview:_tableView];
+    [self.scrollView addSubview:_tableView];
 
+}
+#pragma mark - 配置胎儿体征三个页面
+- (void)addBabyPhysicalView
+{
+    UIButton *buttonWeight = [UIButton buttonWithType:UIButtonTypeCustom];
+    buttonWeight.frame = CGRectMake(15, self.tableView.frame.origin.y + self.tableView.frame.size.height -80, 90, 90);
+    [buttonWeight setBackgroundImage:[UIImage imageNamed:@"baby_weight_unsel@2x"] forState:UIControlStateNormal];
+    [buttonWeight setBackgroundImage:[UIImage imageNamed:@"baby_weight_sel@2x"] forState:UIControlStateHighlighted];
+    [buttonWeight addTarget:self action:@selector(enterBabyWeigh) forControlEvents:UIControlEventTouchUpInside];
+    [self.scrollView addSubview:buttonWeight];
+    
+    UIButton *buttonfetalCount = [UIButton buttonWithType:UIButtonTypeCustom];
+    buttonfetalCount.frame = CGRectMake(buttonWeight.frame.origin.x + buttonWeight.frame.size.width + 10, buttonWeight.frame.origin.y, 90, 90);
+    [buttonfetalCount setBackgroundImage:[UIImage imageNamed:@"Fetal_count_unsel@2x"] forState:UIControlStateNormal];
+    [buttonfetalCount setBackgroundImage:[UIImage imageNamed:@"Fetal_count_sel@2x"] forState:UIControlStateHighlighted];
+
+    [buttonfetalCount addTarget:self action:@selector(enterBabyFetalCount) forControlEvents:UIControlEventTouchUpInside];
+    [self.scrollView addSubview:buttonfetalCount];
+
+    UIButton *buttonfetal = [UIButton buttonWithType:UIButtonTypeCustom];
+    buttonfetal.frame = CGRectMake(buttonfetalCount.frame.origin.x + buttonfetalCount.frame.size.width + 10, buttonWeight.frame.origin.y, 90, 90);
+    [buttonfetal setBackgroundImage:[UIImage imageNamed:@"fetal_unsel@2x"] forState:UIControlStateNormal];
+    [buttonfetal setBackgroundImage:[UIImage imageNamed:@"fetal_sel@2x"] forState:UIControlStateHighlighted];
+
+    [buttonfetal addTarget:self action:@selector(enterenterBabyFetal) forControlEvents:UIControlEventTouchUpInside];
+    [self.scrollView addSubview:buttonfetal];
+
+    //设置一下滚动视图的contentsize
+    self.scrollView.contentSize = CGSizeMake(self.view.frame.size.width, buttonfetal.frame.origin.y + buttonfetal.frame.size.height + 60);
+}
+
+- (void)enterBabyWeigh
+{
+    //胎儿体重
+    BTBabyWeightViewController *weightVC = [[BTBabyWeightViewController alloc] init];
+    weightVC.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:weightVC animated:YES];
+
+}
+- (void)enterBabyFetalCount
+{
+    //胎动详情
+    BTFetalDailyViewController *fetalVC = [[BTFetalDailyViewController alloc] init];
+    fetalVC.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:fetalVC animated:YES];
+
+}
+- (void)enterenterBabyFetal
+{   //胎心
+    BTBabyFetalViewController *fetalVC = [[BTBabyFetalViewController alloc] init];
+    fetalVC.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:fetalVC animated:YES];
+
+    
 }
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     
-    // Return the number of sections.
-    //    return [self.peripheralArray count];
+
     return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    // Return the number of rows in the section.
     
-    //刚开始没有连接上设备的时候 每个设备下面只有一行  显示“立即连接” ;当连接上的时候 设备下面变成两行 显示“上次同步时间” “立即同步”
-    //当同步完的时候 怎么做？？？
-    return 3 ;
+     return 6 ;
 }
 
 
-//动态改变每一行的高度
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return 60;
-}
+////动态改变每一行的高度
+//- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+//    return 60;
+//}
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *CellIdentifier = @"Cell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    BTPhysicalCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     
     // Configure the cell...
     if (cell == nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
+        cell = [[BTPhysicalCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     }
-    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-    cell.imageView.image = [UIImage imageNamed:@"sync_btn_sel"];
-    cell.textLabel.text = [self.textLabelArray objectAtIndex:indexPath.row];
-    cell.detailTextLabel.text = [self.detailTextArray objectAtIndex:indexPath.row];
+    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    self.tableView.separatorColor = [UIColor clearColor];
+    BTPhisicalModel *model = [self.dataArray objectAtIndex:indexPath.row];
+    cell.physicalModel = model;
+    
     return cell;
 
 }
@@ -519,31 +256,60 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     
+    
     switch (indexPath.row) {
-        case 0://胎儿体重
+        case 0://运动量
         {
-            BTBabyWeightViewController *weightVC = [[BTBabyWeightViewController alloc] init];
-            weightVC.hidesBottomBarWhenPushed = YES;
-            [self.navigationController pushViewController:weightVC animated:YES];
+            BTPhysicSportViewController *sportVC = [[BTPhysicSportViewController alloc] init];
+            sportVC.hidesBottomBarWhenPushed = YES;
+            [self.navigationController pushViewController:sportVC animated:YES];
         }
             break;
-        case 1://胎动记录
+        case 1://妈妈体重
         {
-            BTFetalDailyViewController *fetalVC = [[BTFetalDailyViewController alloc] init];
-            fetalVC.hidesBottomBarWhenPushed = YES;
-            [self.navigationController pushViewController:fetalVC animated:YES];
+            BTWeightViewController *weightlVC = [[BTWeightViewController alloc] init];
+            weightlVC.hidesBottomBarWhenPushed = YES;
+            [self.navigationController pushViewController:weightlVC animated:YES];
 
         }
             break;
-        case 2://胎心监护
+        case 2://宫高
         {
-            BTBabyFetalViewController *babyFetalVC = [[BTBabyFetalViewController alloc] init];
-            babyFetalVC.hidesBottomBarWhenPushed = YES;
-            [self.navigationController pushViewController:babyFetalVC animated:YES];
+             BTHeightViewController *heightVC = [[BTHeightViewController alloc] init];
+            heightVC.hidesBottomBarWhenPushed = YES;
+            [self.navigationController pushViewController:heightVC animated:YES];
             
         }
             break;
     
+        case 3://腹围
+        {
+            BTGirthViewController *girthVC = [[BTGirthViewController alloc] init];
+            girthVC.hidesBottomBarWhenPushed = YES;
+            [self.navigationController pushViewController:girthVC animated:YES];
+            
+        }
+            break;
+
+        case 4://血糖
+        {
+            BTGluViewController *gluVC = [[BTGluViewController alloc] init];
+
+            gluVC.hidesBottomBarWhenPushed = YES;
+            [self.navigationController pushViewController:gluVC animated:YES];
+            
+        }
+            break;
+
+        case 5://血压
+        {
+           BTBPViewController *bpVC = [[BTBPViewController alloc] init];
+           bpVC.hidesBottomBarWhenPushed = YES;
+            [self.navigationController pushViewController:bpVC animated:YES];
+            
+        }
+            break;
+
         default:
             break;
     }
@@ -557,24 +323,11 @@
 {
     [super viewWillAppear:animated];
     NSLog(@"视图出现出现出现.....");
-//    //在视图出现的时候加载进度条 然后再视图消失的时候移除进度条  这样可以保证进度条进度动态的出现
-//    [self addCircleProgress];
-//    int i = [self getDailyStep];
-//    [self updateUIWithStepDaily:i totalStep:2000];//100为每日目标
-//    if (i == 0) {
-//    self.gradeLabel.text = [NSString stringWithFormat:@"今日还未开始运动,妈妈要努力啊"];
-//    }
-//
-//    if (i < 2000 && i > 0) {
-//         self.gradeLabel.text = [NSString stringWithFormat:@"今日已完成%d步,继续努力啊",i];
-//    }
-//    
-//    if (i >= 2000) {
-//        self.gradeLabel.text = [NSString stringWithFormat:@"今日圆满完成目标，妈妈真棒"];
-//    }
+    
+    [self.navigationController setNavigationBarHidden:YES animated:NO];
     
     
-    [self addGradeCircular];
+   // [self addGradeCircular];
     int i = [self getDailyStep];
     NSLog(@"走了多少步%d",i);
     //判断保证内圆为0的时候没有凸来的圆角矩形
@@ -584,45 +337,26 @@
     else{
         self.progressView.roundedHead = YES;
     }
-    _progress =(float) i/10000;//此处1000是目标值 记得改 另外改了之后也要改柱状图内部
+    _progress = i/10000.0;//此处1000是目标值 记得改 另外改了之后也要改柱状图内部
     NSLog(@"进度是%f",_progress);
- //   [self updateUIWithStepDaily:i totalStep:2000];//100为每日目标
    
-    self.barYValue = [self getResentOneWeekSteps];
-    [self loadBarChartUsingArray];
-    
-    //刷新胎儿一栏数据
-    
+    NSString *strProgress = [NSString stringWithFormat:@"%0.1f%%",_progress*100];
+    BTPhisicalModel *model = [[BTPhisicalModel alloc] initWithTitle:@"运动量" content:strProgress];
+   // self.detailTextArray = [NSArray arrayWithObjects:strProgress,@"72kg",@"16cm",@"88cm",@"88cm",@"120/80", nil];
+    [self.dataArray replaceObjectAtIndex:0 withObject:model];
     [self.tableView reloadData];//既可以刷新数据 又可以取消某一行的选中状态
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
-//    [self.circularGrade removeFromSuperview];
-//    [self.circularSport removeFromSuperview];
+    
+    [self.navigationController setNavigationBarHidden:NO animated:NO];
     
     [self.progressView removeFromSuperview];
-    [self.barChart removeFromSuperview];
-}
-- (void)updateUIWithStepDaily:(int)stepDaily totalStep:(int)totalStep
-{
     
-    [self.circularGrade updateProgressCircle:stepDaily withTotal:totalStep];
 }
 
 
-#pragma mark - 读取累计总步数
-- (int)getTotalStep
-{
-    int stepCount = 0;
-    NSArray *array = [BTGetData getFromCoreDataWithPredicate:nil entityName:@"BTRawData" sortKey:nil];
-    for (BTRawData* one in array) {
-        stepCount += [one.count intValue];
-        
-    }
-    NSLog(@"一共步数%d",stepCount);
-    return stepCount;
-}
 #pragma mark - 读取当天总步数
 - (int)getDailyStep
 {

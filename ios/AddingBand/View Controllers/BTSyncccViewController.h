@@ -47,5 +47,7 @@
 @property(nonatomic,strong)UILabel *label3;//
 //可连接设备label
 @property(nonatomic,strong)UILabel *labelSection;//
+//重新搜索button
+@property(nonatomic,strong)UIButton *refreshButton;
 
 @end

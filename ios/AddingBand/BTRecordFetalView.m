@@ -12,7 +12,7 @@
 #import "BTRawData.h"
 #import "BTGetData.h"
 #import "LayoutDef.h"
-#define kAlabelX 10
+#define kAlabelX 20
 #define kAlabelY 20
 #define kAlabelWidth 150
 #define kAlabelHeight 20
@@ -68,7 +68,7 @@ static int comMinute = 0;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.view.backgroundColor = [UIColor blueColor];
+    self.view.backgroundColor = [UIColor whiteColor];
     [self createSubviews];
 	// Do any additional setup after loading the view.
 }
@@ -77,74 +77,111 @@ static int comMinute = 0;
     [self getLocalTime];//取出现在的时间
     //现在就往coredata里写一条数据  开始记录时间
     [self writeToCoredataWithFetalType:[NSNumber numberWithInt:PHONE_START_TIME_TYPE]];
+    
+    //倒计时
+    self.countTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(kAlabelX, kAlabelY, kAlabelWidth, kAlabelHeight)];
+    //_cLabel.backgroundColor = [UIColor yellowColor];
+    _countTitleLabel.textColor = kBigTextColor;
+    _countTitleLabel.font = [UIFont systemFontOfSize:17];
+
+    _countTitleLabel.text = @"倒计时:";
+    [self.view addSubview:_countTitleLabel];
+
     //开始时间
-    self.aLabel = [[UILabel alloc] initWithFrame:CGRectMake(kAlabelX, kAlabelY, kAlabelWidth, kAlabelHeight)];
-    _aLabel.backgroundColor = [UIColor yellowColor];
+    self.startTimeLabel = [[UILabel alloc] initWithFrame:CGRectMake(kAlabelX, _countTitleLabel.frame.origin.y + _countTitleLabel.frame.size.height, kAlabelWidth, kAlabelHeight)];
+    //_aLabel.backgroundColor = [UIColor yellowColor];
+    _startTimeLabel.textColor = kBigTextColor;
     //显示的时候做下处理
     NSString *hour1 = [NSString stringWithFormat:@"%@",self.aHour];
     NSString *minute1 = [NSString stringWithFormat:@"%@",self.aMinute];
     
+    
+    int aHour = [hour1 intValue] + 1;
+    if (aHour >= 24) {
+        aHour = aHour - 24;
+    }
+   NSString *hour2 = [NSString stringWithFormat:@"%d",aHour];
     //当小时 和分钟 是个位数的时候做如下处理
     if ([self.aHour intValue] < 10) {
         hour1 = [NSString stringWithFormat:@"%d%@",0,self.aHour];
     }
+    if (aHour < 10) {
+        hour2 = [NSString stringWithFormat:@"%d%d",0,aHour];
+        
+    }
+
     if ([self.aMinute intValue] < 10) {
         minute1 = [NSString stringWithFormat:@"%d%@",0,self.aMinute];
         
     }
     
-    _aLabel.text = [NSString stringWithFormat:@"开始时间:%@:%@",hour1,minute1];
-    [self.view addSubview:_aLabel];
+    _startTimeLabel.text = [NSString stringWithFormat:@"%@:%@-%@:%@",hour1,minute1,hour2,minute1];
+    [self.view addSubview:_startTimeLabel];
     
-    //记录间隔
-    self.bLabel = [[UILabel alloc] initWithFrame:CGRectMake(_aLabel.frame.origin.x, _aLabel.frame.origin.y + _aLabel.frame.size.height +10, _aLabel.frame.size.width, _aLabel.frame.size.height)];
-    _bLabel.backgroundColor = [UIColor yellowColor];
-    _bLabel.text = @"记录间隔:60分钟";
-    [self.view addSubview:_bLabel];
-    //倒计时
-    self.cLabel = [[UILabel alloc] initWithFrame:CGRectMake(kAlabelX + kAlabelWidth + 10, kAlabelY, 75, kAlabelHeight)];
-    _cLabel.backgroundColor = [UIColor yellowColor];
-    _cLabel.text = @"剩余时间:";
-    [self.view addSubview:_cLabel];
+    
+    
+    
+    
     
     //此处为倒计时label
     self.timeLabel = [[BTTimerLabel alloc] initWithTimerType:BTTimerLabelTypeTimer];
-    _timeLabel.frame = CGRectMake(_cLabel.frame.origin.x + _cLabel.frame.size.width, _cLabel.frame.origin.y, _cLabel.frame.size.width, kAlabelHeight);
-    _timeLabel.backgroundColor = [UIColor redColor];
+    _timeLabel.frame = CGRectMake(_countTitleLabel.frame.origin.x + _countTitleLabel.frame.size.width, _countTitleLabel.frame.origin.y - 20, _countTitleLabel.frame.size.width, kAlabelHeight + 50);
+   // _timeLabel.backgroundColor = [UIColor redColor];
+    _timeLabel.font = [UIFont systemFontOfSize:62];
+    _timeLabel.textColor = kGlobalColor;
+
     [self.timeLabel setCountDownTime:20];
     _timeLabel.delegate = self;
     [self.view addSubview:_timeLabel];
     
     
+    
+    self.recordButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    
+    if (IPHONE_5_OR_LATER) {
+        _recordButton.frame = CGRectMake((320 - 152)/2, 118, 152, 152);
+       
+    }
+    else{
+        _recordButton.frame = CGRectMake((320 - 120)/2, 80, 120, 120);
+        
+    }
+
+    [_recordButton addTarget:self action:@selector(oneceTap) forControlEvents:UIControlEventTouchUpInside];
+    [_recordButton setBackgroundImage:[UIImage imageNamed:@"fetal_record_unsel@2x"] forState:UIControlStateNormal];
+    [_recordButton setBackgroundImage:[UIImage imageNamed:@"fetal_record_sel@2x"] forState:UIControlStateSelected];
+    [self.view addSubview:_recordButton];
+    
     //胎动次数
-    self.dLabel = [[UILabel alloc] initWithFrame:CGRectMake(_cLabel.frame.origin.x, _bLabel.frame.origin.y,_cLabel.frame.size.width + 50, kAlabelHeight)];
-    _dLabel.backgroundColor = [UIColor yellowColor];
-    _dLabel.text = @"胎动次数:0次";
-    [self.view addSubview:_dLabel];
-    
-    
-    
-    
-    
-    self.aButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    _aButton.frame = CGRectMake(30, 80, 260, 50);
-    [_aButton addTarget:self action:@selector(oneceTap) forControlEvents:UIControlEventTouchUpInside];
-    [_aButton setTitle:@"感觉到胎动时,点击这里" forState:UIControlStateNormal];
-    [self.view addSubview:_aButton];
-    
+    self.countLabel = [[UILabel alloc] initWithFrame:CGRectMake(_countTitleLabel.frame.origin.x -30, _countTitleLabel.frame.origin.y,80, kAlabelHeight + 50)];
+    _countLabel.center = _recordButton.center;
+    _countLabel.backgroundColor = [UIColor clearColor];
+    _countLabel.font = [UIFont systemFontOfSize:62];
+    _countLabel.textColor = [UIColor whiteColor];
+    _countLabel.textAlignment = NSTextAlignmentCenter;
+    _countLabel.text = @"0";
+    [self.view addSubview:_countLabel];
+
+    UILabel *fetalCount = [[UILabel alloc] initWithFrame:CGRectMake(_countLabel.frame.origin.x + _countLabel.frame.size.width - 7, _countLabel.frame.origin.y + 35, 50, 25)];
+    fetalCount.font = [UIFont systemFontOfSize:17];
+    fetalCount.backgroundColor = [UIColor clearColor];
+    fetalCount.textColor =[UIColor whiteColor];
+    fetalCount.text = @"次";
+    [self.view addSubview:fetalCount];
+
 }
 #pragma mark - 点击记录胎动
 - (void)oneceTap
 {
     [self getLocalTime];//得出当前时间
     
-    double nowDate = [[NSDate date] timeIntervalSince1970];
+ //   double nowDate = [[NSDate date] timeIntervalSince1970];
     
-    if ([self isBeyondFiveMinutes:nowDate]) {
-        _dLabel.text = [NSString stringWithFormat:@"胎动次数:%d次",++fetalCount];
+ //   if ([self isBeyondFiveMinutes:nowDate]) {
+        _countLabel.text = [NSString stringWithFormat:@"%d",++fetalCount];
         //往coredata里存一条数据
         [self writeToCoredataWithFetalType:[NSNumber numberWithInt:PHONE_FETAL_TYPE]];
-    }
+ //   }
     
     comHour = [self.aHour intValue];
     comMinute = [self.aMinute intValue];

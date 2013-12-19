@@ -107,6 +107,8 @@
     
     BTPhysicalViewController * physicalVC = [[BTPhysicalViewController alloc] init];
     BTNavicationController *physicalNav = [[BTNavicationController alloc] initWithRootViewController:physicalVC];
+    
+    
    // physicalNav.tabBarItem.badgeValue = @"";
     physicalVC.navigationItem.title = @"体征";
     //ios7上这样用

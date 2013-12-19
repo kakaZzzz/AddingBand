@@ -12,4 +12,5 @@
 @property (strong, nonatomic)BarChartView *barChart;//柱形图
 @property (strong, nonatomic)NSMutableArray *xLableArray;//柱形图x轴数组
 @property (strong, nonatomic)NSMutableArray *yValueArray;//柱形图y轴数组
+@property(nonatomic,strong)UIScrollView *lineScrollView;//底图用滚动视图
 @end

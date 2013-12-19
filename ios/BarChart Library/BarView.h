@@ -28,6 +28,7 @@
 #import "CMPopTipView.h"
 #import "BarTypes.h"
 #import "BTBarMarkView.h"
+
 @interface BarView : UIButton {
 	CGFloat barValue;
 	CGFloat cornerRadius;

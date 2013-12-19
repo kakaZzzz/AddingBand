@@ -18,7 +18,7 @@
        // self.backgroundColor = [UIColor whiteColor];
         self.clipsToBounds = NO;
         self.type = PNLineType;
-        self.backgroundColor = [UIColor redColor];
+        self.backgroundColor = [UIColor clearColor];
     }
     
     return self;

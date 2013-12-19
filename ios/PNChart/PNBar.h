@@ -17,4 +17,6 @@
 
 @property (nonatomic, strong) UIColor * barColor;
 
+@property(nonatomic,strong)UIImageView *labelBgView;
+@property(nonatomic,strong)UILabel *titleLabel;
 @end

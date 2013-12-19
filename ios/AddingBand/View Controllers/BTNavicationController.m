@@ -47,11 +47,11 @@
   //  [[UINavigationBar appearance] setTitleVerticalPositionAdjustment: 1.0f forBarMetrics: UIBarMetricsDefault];
     
    // UIColor *titleColor = [UIColor colorWithRed: 150.0f/255.0f green: 149.0f/255.0f blue: 149.0f/255.0f alpha: 1.0f];
-    UIColor *titleColor = [UIColor whiteColor];
+    UIColor *titleColor = kGlobalColor;
 
   //  UIColor* shadowColor = [UIColor colorWithWhite: 1.0 alpha: 1.0];
     
-    [[UIApplication sharedApplication] setStatusBarStyle: UIStatusBarStyleBlackOpaque];
+    [[UIApplication sharedApplication] setStatusBarStyle: UIStatusBarStyleDefault];
     
 //   [[UINavigationBar appearance] setTitleTextAttributes: @{UITextAttributeTextColor: titleColor,
 //                                                            UITextAttributeFont: [UIFont boldSystemFontOfSize: 23.0f],
@@ -62,13 +62,14 @@
     
     /*简单的处理颜色*/
     if (IOS7_OR_LATER) {
-        [[UINavigationBar appearance] setBarTintColor:[BTColor getColor:kBarColor]];
+        [[UINavigationBar appearance] setBarTintColor:[UIColor whiteColor]];
      }
     else{
             CGRect rect = CGRectMake(0.0f, 0.0f, 320, 44.0f);
             UIGraphicsBeginImageContext(rect.size);
             CGContextRef context = UIGraphicsGetCurrentContext();
-            CGContextSetFillColorWithColor(context, [[BTColor getColor:kBarColor] CGColor]);
+           // CGContextSetFillColorWithColor(context, [[BTColor getColor:kBarColor] CGColor]);
+         CGContextSetFillColorWithColor(context, [[UIColor whiteColor] CGColor]);
             CGContextFillRect(context, rect);
             UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
             UIGraphicsEndImageContext();

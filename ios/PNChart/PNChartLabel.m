@@ -20,11 +20,11 @@
         [self setMinimumScaleFactor:11.0f];
         [self setNumberOfLines:0];
         [self setFont:[UIFont boldSystemFontOfSize:11.0f]];
-        [self setTextColor:LABEL_TEXT_COLOR];//LABEL颜色
+        [self setTextColor:[UIColor whiteColor]];//LABEL颜色
         self.backgroundColor = [UIColor clearColor];
         [self setTextAlignment:NSTextAlignmentLeft];
         self.userInteractionEnabled = YES;
-        self.backgroundColor = [UIColor yellowColor];
+        self.backgroundColor = [UIColor clearColor];
     }
     return self;
 }

@@ -10,7 +10,7 @@
 #import "PNChartLabel.h"
 #define DISTANCE_X 2.5f//x轴坐标label之间的距离
 #define xLabelHeight 30.0f//x轴坐标label的高度
-#define xLabelWidth 7.0f//x轴坐标label的宽度
+#define xLabelWidth 13.0f//x轴坐标label的宽度
 #define LINE_COLOR [UIColor colorWithRed:77.0/255.0 green:186.0/255.0 blue:122.0/255.0 alpha:1.0f]//折线颜色
 #define LABELY_GRADE 5.0f//Y轴左边等级级数
 #define xLabelDistanceyLabel 5.0f//x轴和y轴左边之间的缝隙大小
@@ -32,7 +32,7 @@ static CGFloat distance = 0;
 		_chartLine.lineWidth   = 3.0;
 		_chartLine.strokeEnd   = 0.0;
 		[self.layer addSublayer:_chartLine];
-        self.backgroundColor = [UIColor blueColor];
+        self.backgroundColor = [UIColor clearColor];
     }
     
     return self;
@@ -88,7 +88,7 @@ static CGFloat distance = 0;
 {
     _xLabels = xLabels;
     _xLabelWidth = xLabelWidth;//Label宽度。。。
-     distance = (self.frame.size.width - xLabelMargin - [xLabels count]*xLabelWidth - 5)/([xLabels count] - 1);
+     distance = (self.frame.size.width - xLabelMargin - [xLabels count]*xLabelWidth)/([xLabels count]);
     for (NSString * labelText in xLabels) {
         NSInteger index = [xLabels indexOfObject:labelText];
         PNChartLabel * label = [[PNChartLabel alloc] initWithFrame:CGRectMake(index * (distance + _xLabelWidth) + xLabelMargin,self.frame.size.height - xLabelHeight, _xLabelWidth, xLabelHeight)];//两个label之间的距离应该是 xLabelMargin + _xLabelWidth
@@ -121,7 +121,7 @@ static CGFloat distance = 0;
     float grade = (float)firstValue / (float)_yValueMax;//认为设定 最大值 即可
     [progressline moveToPoint:CGPointMake(xPosition,chartCavanHeight - grade * chartCavanHeight + yLabelMargin + yLabelHeight/2)];
     
-    [progressline setLineWidth:3.0];
+    [progressline setLineWidth:1.0];//折线宽度
     [progressline setLineCapStyle:kCGLineCapRound];
     [progressline setLineJoinStyle:kCGLineJoinRound];
     NSInteger index = 0;

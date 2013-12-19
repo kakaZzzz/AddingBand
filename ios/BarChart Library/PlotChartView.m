@@ -92,14 +92,14 @@
 	CGFloat barFullWidth = (rect.size.width - leftPaddingAxisY)/stepCountAxisX;
 
 	CGContextSetLineWidth(context, 1.0f);
-	CGContextSetStrokeColorWithColor(context, [[UIColor redColor] CGColor]);//
+	CGContextSetStrokeColorWithColor(context, [[UIColor clearColor] CGColor]);//
 	for (NSUInteger i = 0; i < stepCountAxisY; i++)  {
 		if (i % 2) {
 			//CGContextSetFillColorWithColor(context, [[UIColor colorWithHexString:@"e8ebee"] CGColor]);
-            CGContextSetFillColorWithColor(context, [[UIColor redColor] CGColor]);
+            CGContextSetFillColorWithColor(context, [[UIColor clearColor] CGColor]);
 		} else {
 			//CGContextSetFillColorWithColor(context, [[UIColor colorWithHexString:@"e3e5e7"] CGColor]);
-            CGContextSetFillColorWithColor(context, [[UIColor redColor] CGColor]);
+            CGContextSetFillColorWithColor(context, [[UIColor clearColor] CGColor]);
 		}
 		
 		CGContextBeginPath(context);

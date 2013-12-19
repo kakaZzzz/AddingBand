@@ -72,6 +72,9 @@
 #define kBarColor @"EE4966"
 #define titleLabelColor @"333333"
 #define contentLabelColor @"999999"
+
+#define kGlobalColor [UIColor colorWithRed:255/255.0 green:52/255.0 blue:91/255.0 alpha:1.0]
+#define kBigTextColor [UIColor colorWithRed:94/255.0 green:101/255.0 blue:113/255.0 alpha:1.0];
 //程序中各种tag值
 #define BREAK_CONNECT_ALERT 100
 #define TIME_OUT_ALERT 101
