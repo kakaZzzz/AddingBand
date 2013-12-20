@@ -32,6 +32,7 @@
 @property(strong, nonatomic) NSTimer* timeoutTimer;
 
 @property(assign, nonatomic) Boolean syncLocker;
+@property(assign, nonatomic) Boolean waitForNextSync;
 
 @property(strong, nonatomic) void(^timeoutBlock)(void);
 

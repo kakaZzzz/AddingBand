@@ -31,6 +31,10 @@
         UIApplication *app = [UIApplication sharedApplication];
         BTAppDelegate *delegate = (BTAppDelegate *)[app delegate];
         _context = delegate.managedObjectContext;
+        
+        self.waitForNextSync = YES;
+        
+         [NSTimer scheduledTimerWithTimeInterval:SCAN_INTERVAL target:self selector:@selector(doScan:) userInfo:nil repeats:YES];
     }
     
     return self;
@@ -135,8 +139,11 @@
                     // rightOne = NO;//不让列表再刷新  直接在历史页面进行设备连接
                     
                     isLast = YES;
-                    [self connectPeripheral:peripheral];
-                   
+                    
+                    if (_waitForNextSync) {
+                        [self connectPeripheral:peripheral];
+                    }
+
                     NSLog(@"直接连接!!!2222222");
                     
                 }else{
@@ -363,9 +370,9 @@
         NSLog(@"Notification began on %@", characteristic);
         
         // 发现可以注册notify以后，读取一下数据长度
-        if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:UUID_HEALTH_DATA_HEADER]]) {
-            [peripheral readValueForCharacteristic:characteristic];
-        }
+//        if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:UUID_HEALTH_DATA_HEADER]]) {
+//            [peripheral readValueForCharacteristic:characteristic];
+//        }
         
         // 发现可以注册notify以后，读取一下电量
         if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:UUID_BATTERY_LEVEL]]) {
@@ -433,6 +440,8 @@
         BTBandPeripheral* bp = [_allPeripherals objectForKey:peripheral.name];
         
         bp.isConnected = YES;
+        
+        [self sync:[BTUtils getModel:peripheral.name]];
         
         //更新手环状态  在电量读取出来之后
         self.globals.bleListCount = [_allPeripherals count];
@@ -585,6 +594,9 @@
             if(![_context save:&error]){
                 NSLog(@"%@", [error localizedDescription]);
             }
+            
+            _waitForNextSync = NO;
+            [_cm cancelPeripheralConnection:peripheral];
             
         }
         
@@ -919,6 +931,15 @@
             
             int interval = [[NSDate date] timeIntervalSince1970] - bp.lastSync;
             
+            if (interval > AUTO_SYNC_INTERVAL) {
+                
+                if (_waitForNextSync == NO) {
+                    _waitForNextSync = YES;
+                    
+                    [self scan];
+                }
+            }
+            
             
             if (interval < 10) {
                 
@@ -931,7 +952,7 @@
                 last = [NSString stringWithFormat:@"%d0秒前", interval/10];
                 
             }else if(interval < 3600){
-                
+
                 // 1小时以内，xx分钟前
                 last = [NSString stringWithFormat:@"%d分钟前", interval/60];
                 
