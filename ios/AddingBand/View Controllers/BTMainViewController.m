@@ -2,17 +2,15 @@
 //  BTMainViewController.m
 //  AddingBand
 //
-//  Created by kaka' on 13-11-1.
+//  Created by wangpeng on 13-12-20.
 //  Copyright (c) 2013年 kaka'. All rights reserved.
 //
 
 #import "BTMainViewController.h"
-#import "RBParallaxTableVC.h"
-#import "BTUndoCell.h"
+#import "LayoutDef.h"
 
-
-
-static NSString *textStr = nil;
+#define NAVIGATIONBAR_Y 0
+#define NAVIGATIONBAR_HEIGHT 65
 @interface BTMainViewController ()
 
 @end
@@ -21,23 +19,149 @@ static NSString *textStr = nil;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
-    //self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    //在这里  添加图片
-    self = [super initWithImage:[UIImage imageNamed:@"demo1@2x.png"]];
+    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
     }
     return self;
 }
+#pragma mark - 视图出现  消失
+- (void)viewWillAppear:(BOOL)animated
+{
+     [self.navigationController setNavigationBarHidden:YES animated:NO];
+}
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [self.navigationController setNavigationBarHidden:NO animated:NO];
 
+}
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    textStr = [NSString stringWithFormat:@"Hello AddingHome   "];
-    NSLog(@"11111111111111%@",NSStringFromCGRect(self.view.frame));
-
-  
+    //self.view.backgroundColor = [UIColor yellowColor];
+    [self addSubviews];
 	// Do any additional setup after loading the view.
+}
+#pragma mark - 加载子视图
+- (void)addSubviews
+{
+    self.navigationBgView = [[UIView alloc]initWithFrame:CGRectMake(0, NAVIGATIONBAR_Y, 320, NAVIGATIONBAR_HEIGHT)];
+    _navigationBgView.backgroundColor = kGlobalColor;
+    [self.view addSubview:_navigationBgView];
+    
+//    self.tableViewBackgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, _navigationBgView.frame.origin.y + _navigationBgView.frame.size.height, 320, self.view.frame.size.height - NAVIGATIONBAR_HEIGHT)];
+//    _tableViewBackgroundView.backgroundColor = [UIColor redColor];
+//    [self.view addSubview:_tableViewBackgroundView];
+    
+    self.headView = [[UIView alloc] initWithFrame:CGRectMake(0, NAVIGATIONBAR_HEIGHT, 320, 40)];
+    _headView.backgroundColor = [UIColor orangeColor];
+    [self.view addSubview:_headView];
+
+    //加载tableview
+    self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, _headView.frame.origin.y + _headView.frame.size.height, 320,360)];
+    _tableView.backgroundColor = [UIColor blueColor];
+    _tableView.dataSource = self;
+    _tableView.delegate = self;
+    [self.view addSubview:_tableView];
+}
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView
+{
+    if (scrollView.contentOffset.y >= 0 ) {
+       // static CGRect rect = _headView.frame;
+        NSLog(@"..........%f",_tableView.contentOffset.y);
+        
+     
+        _headView.frame = CGRectMake(0, NAVIGATIONBAR_HEIGHT - scrollView.contentOffset.y, 320, 40);
+       self.tableView.frame = CGRectMake(0, NAVIGATIONBAR_HEIGHT - scrollView.contentOffset.y + 40, 320, 360);
+        [self.view bringSubviewToFront:_navigationBgView];
+    }
+    NSLog(@"..........%f",_tableView.contentOffset.y);
+}
+#pragma mark - Table view data source
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    
+    
+    return 1;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    
+    return 60 ;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+    return 44;
+}
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+{
+    UIView *aView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 150)];
+    aView.backgroundColor = [UIColor greenColor];
+    
+    UILabel *lable = [[UILabel alloc] initWithFrame:CGRectMake(5, 5, 60, (44 - 5*2))];
+    lable.backgroundColor = [UIColor blueColor];
+    lable.textAlignment = NSTextAlignmentCenter;
+    lable.textColor =[UIColor whiteColor];
+    
+    UIButton *button  = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    button.frame = CGRectMake(320 - 100, 10,100, (44 - 10*2));
+    button.tag = MAIN_BUTTON_TAG + section;
+    [button setTitle:@"卵子受孕中" forState:UIControlStateNormal];
+    [button addTarget:self action:@selector(pushNextView:) forControlEvents:UIControlEventTouchUpInside];
+    [aView addSubview:button];
+    
+    if (section == 0) {
+       lable.text = @"3周";
+    }
+    if (section == 1)
+    {
+        lable.text = @"看.属于你的文字";
+        
+    }
+    if (section == 2)
+    {
+        lable.text = @"做.属于你的个性";
+        
+    }
+    
+    [aView addSubview: lable];
+  
+    static int tag = 1001;
+    aView.tag = tag++;
+    return aView;
+}
+- (void)pushNextView:(UIButton *)button
+{
+    NSLog(@"点击分区头，进入下一页");
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    static NSString *CellIdentifier = @"Cell";
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    
+    // Configure the cell...
+    if (cell == nil) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+    }
+//    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+//    self.tableView.separatorColor = [UIColor clearColor];
+//    BTPhisicalModel *model = [self.dataArray objectAtIndex:indexPath.row];
+//    cell.physicalModel = model;
+    cell.textLabel.text = @"哈哈";
+    return cell;
+    
+}
+
+#pragma mark - tabelview delegate
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    
+    
+    
 }
 
 - (void)didReceiveMemoryWarning
@@ -45,90 +169,5 @@ static NSString *textStr = nil;
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
-#pragma mark - Table View Datasource
-
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    NSLog(@"配置tableView");
-    return 2;
-}
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if (section == 0)
-     return 1;
-    else
-     return 10;
-}
-
-//- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
-//
-//{
-//    NSLog(@"titleForHeaderInSection");
-//    if (section == 0) {
-//        return nil;
-//    }
-//    else
-//    return @"哈哈哈哈哈哈哈哈哈哈哈";
-//}
-
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == 0)
-     return 130.0;
-    else
-    {
-    NSLog(@"%f........",[BTUndoCell cellHeight:textStr]);
-        
-    return [BTUndoCell cellHeight:textStr];
-        
-    }
-;
-}
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    NSLog(@"cellForRowAtIndexPath");
-    static NSString *cellReuseIdentifier   = @"RBParallaxTableViewCell";
-    static NSString *windowReuseIdentifier = @"RBParallaxTableViewWindow";
-    
-  
-    if (indexPath.section == 0) {
-       
-     UITableViewCell * cell = [tableView dequeueReusableCellWithIdentifier:windowReuseIdentifier];
-        if (!cell) {
-            
-            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:windowReuseIdentifier];
-            cell.backgroundColor             = [UIColor clearColor];
-            cell.contentView.backgroundColor = [UIColor clearColor];
-            cell.selectionStyle              = UITableViewCellSelectionStyleNone;
-            tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-            //cell不可点击 取消交互
-            cell.userInteractionEnabled = NO;
-        }
-        return cell;
-    } else {
-        NSLog(@"显示内容cell");
-      BTUndoCell * cell = [tableView dequeueReusableCellWithIdentifier:cellReuseIdentifier];
-        if (!cell) {
-            cell = [[BTUndoCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellReuseIdentifier];
-            cell.backgroundColor             = [UIColor whiteColor];
-            cell.contentLabel.text = @"Hello,AddingHome ";
-            cell.contentView.backgroundColor = [UIColor whiteColor];
-            cell.selectionStyle              = UITableViewCellSelectionStyleNone;
-            tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
-            
-        }
-        return cell;
-    }
- 
-}
-#pragma mark - tableView delegate
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
-//   // BTChartViewController *chartVC = [[BTChartViewController alloc] init];
-//    //点击进入下一界面 进入历史记录页面
-//    chartVC.hidesBottomBarWhenPushed = YES;//隐藏tabbar
-//    [self.navigationController pushViewController:chartVC animated:YES];
-    
-}
-
 
 @end

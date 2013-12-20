@@ -116,7 +116,7 @@
 		BarView *bar = [[BarView alloc] initWithFrame:CGRectMake((barFullWidth - barWidth)/2 + _index*(barFullWidth),  plotView.height - roundf([[barInfo objectForKey:@"value"] floatValue]*barHeightRatio), barWidth, roundf([[barInfo objectForKey:@"value"] floatValue]*barHeightRatio))];
         
         NSLog(@"bar的大小事多少。。。。%@",NSStringFromCGRect(bar.frame));
-        bar.tag = 1 + _index;
+       // bar.tag = 1 + _index;
           /**
          *  在柱状图上加上数值标签 默认隐藏 当点击的时候出现 过一会儿自动隐藏 或者再点击的时候直接隐藏
          *
@@ -128,12 +128,7 @@
          *
          */
         
-       // bar.markView.backgroundColor = [UIColor redColor];
-        bar.markView.aImageView.image = [UIImage imageNamed:@"markview_ba_middle@2x"];
-        bar.markView.hidden = YES;//初始默认 隐藏
-        bar.markView.markLabel.text =[NSString stringWithFormat:@"%@",[barInfo objectForKey:@"value"]];
-        [bar addSubview:bar.markView];
-        //
+     
 		bar.cornerRadius = 10.0f;
 		bar.barValue = [[barInfo objectForKey:@"value"] floatValue];
 		bar.owner = self;
@@ -148,16 +143,19 @@
 		[plotView addSubview:bar];
 		[barViews addObject:bar];
 		
-        bar.markView = [[BTBarMarkView alloc] initWithFrame:CGRectMake(-15 ,-40, 50, MARKVIEW_HEIGHT)];
-        bar.markView.center = CGPointMake(bar.frame.size.width/2, -40);
+        CGRect rect = CGRectMake(-(50 - self.customBarWidth)/2, -40, 50, MARKVIEW_HEIGHT);//标签坐标 大小
+        bar.markView = [[BTBarMarkView alloc] initWithFrame:rect];
+        bar.markView.center = CGPointMake(bar.frame.size.width/2, rect.origin.y);
         //指示图标显示的位置
-        if (_index == 1) {
+        if (_index == 0) {
              bar.markView.aImageView.image = [UIImage imageNamed:@"markview_ba_left@2x"];
-             bar.markView .frame = CGRectMake(0 ,-40, 50, MARKVIEW_HEIGHT);
+             rect.origin.x = 0;
+             bar.markView .frame = rect;
         }
-        if (_index == 30) {
+       else if (_index == [chartDataArray count] - 1) {
             bar.markView.aImageView.image = [UIImage imageNamed:@"markview_ba_right@2x"];
-            bar.markView.frame = CGRectMake(-30 ,-40, 50, MARKVIEW_HEIGHT);
+            rect.origin.x = -(50 - self.customBarWidth);
+            bar.markView.frame = rect;
         }
         // bar.markView.backgroundColor = [UIColor redColor];
         else{
@@ -165,7 +163,8 @@
 
         }
         if (bar.frame.size.height > 100.0) {
-            bar.markView.frame = CGRectMake(bar.markView.frame.origin.x,0, 50, MARKVIEW_HEIGHT);
+            rect.origin = CGPointMake(bar.markView.frame.origin.x, 0);
+            bar.markView.frame = rect;
             bar.markView.center = CGPointMake(bar.frame.size.width/2, 40);
 
         }
@@ -178,7 +177,7 @@
 		if (showAxisX) {
 //			BarLabel *barLabel = [[BarLabel alloc] initWithFrame:CGRectMake(roundf(plotView.left + _index*barFullWidth), self.frame.size.height - 80,roundf(barFullWidth), fontSize + PLOT_PADDING_BOTTOM)];//王鹏 修改
             
-        BarLabel *barLabel = [[BarLabel alloc] initWithFrame:CGRectMake(roundf(plotView.left + _index*barFullWidth), self.frame.size.height - 10,roundf(barFullWidth), fontSize + PLOT_PADDING_BOTTOM)];
+        BarLabel *barLabel = [[BarLabel alloc] initWithFrame:CGRectMake(roundf(plotView.left + _index*barFullWidth), self.frame.size.height- 20,roundf(barFullWidth), fontSize + PLOT_PADDING_BOTTOM)];
 
 			barLabel.textColor = [barInfo objectForKey:@"labelColor"];
 			barLabel.text =  [barInfo objectForKey:@"label"];

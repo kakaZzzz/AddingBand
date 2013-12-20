@@ -2,12 +2,16 @@
 //  BTMainViewController.h
 //  AddingBand
 //
-//  Created by kaka' on 13-11-1.
+//  Created by wangpeng on 13-12-20.
 //  Copyright (c) 2013年 kaka'. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
-#import "RBParallaxTableVC.h"
-@interface BTMainViewController : RBParallaxTableVC
 
+@interface BTMainViewController : UIViewController<UITableViewDataSource,
+UITableViewDelegate>
+@property(nonatomic,strong)UIView *navigationBgView;
+@property(nonatomic,strong)UIView *headView;
+@property(nonatomic,strong)UIView *tableViewBackgroundView;
+@property(nonatomic,strong)UITableView *tableView;
 @end

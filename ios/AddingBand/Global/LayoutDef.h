@@ -78,6 +78,8 @@
 //程序中各种tag值
 #define BREAK_CONNECT_ALERT 100
 #define TIME_OUT_ALERT 101
+#define FETAL_BAR_TAG 1000
+#define MAIN_BUTTON_TAG 2000
 //刷新小雨滴
 #define POINT_X 40 //小雨滴距离X轴的距离
 #define POINT_LARGE 12.0f //小雨滴大小

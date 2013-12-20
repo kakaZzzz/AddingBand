@@ -19,6 +19,7 @@
 #define klineScrollViewWidth 320
 #define klineScrollViewHeight 200
 
+#define klineScrollViewContentSizeX (320 *2)
 static int offsetX = 0;
 @interface BTFetalDailyViewController ()
 
@@ -122,7 +123,7 @@ static int offsetX = 0;
 {
     //可左右滑动视图
     self.lineScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH,klineScrollViewHeight)];
-    _lineScrollView.contentSize = CGSizeMake(320 *2, _lineScrollView.frame.size.height);
+    _lineScrollView.contentSize = CGSizeMake(klineScrollViewContentSizeX, _lineScrollView.frame.size.height);
     _lineScrollView.backgroundColor = kGlobalColor;
     [self.view addSubview:_lineScrollView];
     
@@ -150,6 +151,9 @@ static int offsetX = 0;
     [_lineScrollView addSubview:barChart];
 
     
+    //
+    //动画效果 改变偏移量
+    [self changeScrollViewContentOffsetWithOffset:offsetX animated:YES];
 }
 - (void)getEveryHourData
 {
@@ -187,21 +191,9 @@ static int offsetX = 0;
         [self.lineYValues addObject:[NSString stringWithFormat:@"%d",count]];
         count = 0;
     }
-    //
-    //动画效果 改变偏移量
+  
     
-    int k = ((320 *2 + 100)/24) * offsetX;
-    if (k < 160) {
-        k = 0;
-    }
-    else{
-        k = k - 160;
-    }
-    
-    [UIView animateWithDuration:1.0 animations:^{
-        [self.lineScrollView setContentOffset:CGPointMake(k, 0) animated:YES];
-    }];
-
+ 
 
  }
 
@@ -374,6 +366,33 @@ static int offsetX = 0;
     }
     else{
         return nil;
+    }
+}
+
+#pragma mark - 动态的改变scrollview的偏移量
+- (void)changeScrollViewContentOffsetWithOffset:(int)offSetX animated:(BOOL)animated
+{
+    
+    int k = ((klineScrollViewContentSizeX)/24) * offSetX;
+    if (k < 320/2) {
+        k = 0;
+    }
+    else{
+        k = k - 320/2;
+    }
+    
+    if (animated) {
+        //动画效果 改变偏移量
+        [UIView animateWithDuration:1.0 animations:^{
+            
+            [self.lineScrollView setContentOffset:CGPointMake(k, 0) animated:YES];
+            
+        }];
+    }
+    
+    else{
+        [self.lineScrollView setContentOffset:CGPointMake(k, 0) animated:YES];
+        
     }
 }
 

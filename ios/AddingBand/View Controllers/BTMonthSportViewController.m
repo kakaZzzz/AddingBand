@@ -14,6 +14,7 @@
 #import "LayoutDef.h"
 #import "BTRawData.h"
 
+#define klineScrollViewContentSizeX (320 *2 + 100)
 static int offsetX = 0;
 @interface BTMonthSportViewController ()
 
@@ -52,24 +53,12 @@ static int offsetX = 0;
     //可左右滑动视图
         
     self.lineScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, 320,200)];
-    _lineScrollView.contentSize = CGSizeMake(320 *2 + 100, _lineScrollView.frame.size.height);
+    _lineScrollView.contentSize = CGSizeMake(klineScrollViewContentSizeX, _lineScrollView.frame.size.height);
     _lineScrollView.backgroundColor = kGlobalColor;
     [self.view addSubview:_lineScrollView];
     //动画效果 改变偏移量
-    
-
-    [UIView animateWithDuration:1.0 animations:^{
-        int k = ((320 *2 + 100)/31) * offsetX;
-        if (k < 160) {
-            k = 0;
-        }
-        else{
-            k = k - 160;
-        }
-        [self.lineScrollView setContentOffset:CGPointMake(k, 0) animated:YES];
-
-    }];
-
+    [self changeScrollViewContentOffsetWithOffset:offsetX animated:YES];
+  
     _barChart = [[BarChartView alloc] initWithFrame:CGRectMake(-20, 0, 640 + 100, 200)];//柱形图背景大小
     _barChart.target = self;
     _barChart.backgroundColor = [UIColor clearColor];
@@ -79,9 +68,9 @@ static int offsetX = 0;
     NSArray *array = [_barChart createChartDataWithTitles:self.xLableArray
                                                    values:self.yValueArray
                       
-                                                   colors:[NSArray arrayWithObjects:@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe", nil]
+                                                   colors:self.barColorsArray
                       
-                                              labelColors:[NSArray arrayWithObjects:@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff", nil]
+                                              labelColors:self.labelColorsArray
                       ];
     
     
@@ -107,22 +96,30 @@ static int offsetX = 0;
  }
 - (void)configureBarViewAllDatas
 {
-    self.xLableArray = [NSMutableArray arrayWithObjects:@"1",@"2",@"3",@"4",@"5",@"6",@"7",@"8",@"9",@"10",@"11",@"12",@"13",@"14", @"15",@"16",@"17",@"18",@"19",@"20",@"21",@"22",@"23",@"24",@"25",@"26",@"27",@"28",@"29",@"30",@"31",nil];
-    self.yValueArray = [NSMutableArray arrayWithObjects:@"0.1",@"0.1",@"0.1",@"0.1",@"0.1",@"0.1",@"0.1",@"0.1",@"0.1",@"0.1",@"0.1",@"0.1",@"0.1",@"0.1",@"0.1",@"0.1",@"0.1",@"0.1",@"0.1",@"0.1",@"0.1",@"0.1",@"0.1",@"0.1",@"0.1",@"0.1",@"0.1",@"0.1",@"0.1",@"0.1",@"0.1", nil];
-    self.barColorsArray = [NSMutableArray arrayWithObjects:@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe", nil];
-    self.labelColorsArray = [NSMutableArray arrayWithObjects:@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff", nil];
     
     
-    //首先得到这个月有多少天
+    NSArray *arrayXlabel = [NSArray arrayWithObjects:@"1",@"2",@"3",@"4",@"5",@"6",@"7",@"8",@"9",@"10",@"11",@"12",@"13",@"14", @"15",@"16",@"17",@"18",@"19",@"20",@"21",@"22",@"23",@"24",@"25",@"26",@"27",@"28",@"29",@"30",@"31",nil];
+    NSArray *arrayYvalue = [NSArray arrayWithObjects:@"0.1",@"0.1",@"0.1",@"0.1",@"0.1",@"0.1",@"0.1",@"0.1",@"0.1",@"0.1",@"0.1",@"0.1",@"0.1",@"0.1",@"0.1",@"0.1",@"0.1",@"0.1",@"0.1",@"0.1",@"0.1",@"0.1",@"0.1",@"0.1",@"0.1",@"0.1",@"0.1",@"0.1",@"0.1",@"0.1",@"0.1", nil];
+    NSArray *arraybarColor = [NSArray arrayWithObjects:@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe",@"ffaebe", nil];
+    NSArray *arraylabelColor = [NSArray arrayWithObjects:@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff",@"ffffff", nil];
+    
+    
+    //首先得到这个月有多少天  按天存放数据
     NSDate *localeDate = [NSDate localdate];
     //分割出年月日小时
     NSNumber* year = [BTUtils getYear:localeDate];
     NSNumber* month = [BTUtils getMonth:localeDate];
     //NSNumber* day = [BTUtils getDay:localeDate];
     int daysCount = [NSDate dayOfMonthWithYear:[year intValue] Month:[month intValue]];
-   
+    NSRange range;
+    range.location = 0;
+    range.length = daysCount;
+    self.xLableArray =[arrayXlabel subarrayWithRange:range];
+    self.yValueArray =[NSMutableArray arrayWithArray:[arrayYvalue subarrayWithRange:range]];
+    self.barColorsArray = [arraybarColor subarrayWithRange:range];
+    self.labelColorsArray = [arraylabelColor subarrayWithRange:range];
     
-    
+ 
     int count = 0;
     for (int i =0; i < 31; i ++) {
         NSPredicate *predicateDevice = [NSPredicate predicateWithFormat:@"year == %@ AND month == %@ AND day == %@ AND type == %@",year,month,[NSNumber numberWithInt:i+1],[NSNumber numberWithDouble:DEVICE_SPORT_TYPE]];
@@ -140,6 +137,32 @@ static int offsetX = 0;
         count = 0;
     }
 
+}
+#pragma mark - 动态的改变scrollview的偏移量
+- (void)changeScrollViewContentOffsetWithOffset:(int)offSetX animated:(BOOL)animated
+{
+    
+    int k = ((klineScrollViewContentSizeX)/31) * offSetX;
+    if (k < 320/2) {
+        k = 0;
+    }
+    else{
+        k = k - 320/2;
+    }
+    
+    if (animated) {
+        //动画效果 改变偏移量
+        [UIView animateWithDuration:1.0 animations:^{
+            
+            [self.lineScrollView setContentOffset:CGPointMake(k, 0) animated:YES];
+            
+        }];
+    }
+    
+    else{
+        [self.lineScrollView setContentOffset:CGPointMake(k, 0) animated:YES];
+        
+    }
 }
 
 

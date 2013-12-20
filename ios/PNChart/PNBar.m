@@ -7,8 +7,8 @@
 //
 
 #import "PNBar.h"
-
-
+#import "PNBarChart.h"
+static PNBar *constBar = nil;
 @implementation PNBar
 
 - (id)initWithFrame:(CGRect)frame
@@ -16,6 +16,8 @@
     self = [super initWithFrame:frame];
     if (self) {
         // Initialization code
+        
+        self.markViewArray = [NSMutableArray arrayWithCapacity:1];
 		_chartLine = [CAShapeLayer layer];
 		_chartLine.lineCap = kCALineCapSquare;
 		_chartLine.fillColor   = [[UIColor whiteColor] CGColor];
@@ -60,6 +62,36 @@
     [_chartLine addAnimation:pathAnimation forKey:@"strokeEndAnimation"];
     
     _chartLine.strokeEnd = 1.0;
+}
+
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+    
+
+    PNBarChart *barChart = (PNBarChart *)self.superview;
+    for (UIView *aView in barChart.subviews) {
+        if ([aView isKindOfClass:[PNBar class]] && aView.tag != self.tag) {
+            CATransition *animation = [CATransition animation];//创建动画效果类
+            animation.delegate = self;//设置属性依赖
+            animation.duration = 0.7;//设置动画时长
+            animation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];  //设置动画淡入淡出的效果
+            animation.type = kCATransitionPush;
+            animation.subtype = kCATransitionFromLeft;
+            // 要做的
+            self.markView.hidden = NO;     //视图按设置的动画效果的转换
+            [self.markView.layer addAnimation:animation forKey:nil];       //在图层增加动画效果
+            
+            
+            CATransition *animation1 = [CATransition animation];
+            animation1.delegate = self;
+            animation1.duration = 0.7;
+            animation1.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
+            animation1.type = kCATransitionFade;
+            animation1.subtype = kCATransitionFromTop;
+            [[(PNBar *)aView markView] setHidden:YES];
+            [[[(PNBar *)aView markView] layer] addAnimation:animation1 forKey:nil];
+}
+    }
+   
 }
 
 // Only override drawRect: if you perform custom drawing.

@@ -14,7 +14,7 @@
 #import "BTRawData.h"
 #import "NSDate+DateHelper.h"//NSDate的类目
 
-
+#define klineScrollViewContentSizeX (320 *2 + 100)
 static int offsetX = 0;
 @interface BTDailySportViewController ()
 
@@ -55,22 +55,13 @@ static int offsetX = 0;
     //横坐标元素
     /*   在此传入横坐标名称  柱子表示的数值  柱子颜色  以及label中字体颜色 */
     self.lineScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, 320,200)];
-    _lineScrollView.contentSize = CGSizeMake(320 *2 + 100, _lineScrollView.frame.size.height);
+    _lineScrollView.contentSize = CGSizeMake(klineScrollViewContentSizeX, _lineScrollView.frame.size.height);
     _lineScrollView.backgroundColor = kGlobalColor;
     [self.view addSubview:_lineScrollView];
     
     //动画效果 改变偏移量
-    [UIView animateWithDuration:1.0 animations:^{
-        
-        int k = ((320 *2 + 100)/24) * offsetX;
-        if (k < 160) {
-            k = 0;
-        }
-        else{
-            k = k - 160;
-        }
-        [self.lineScrollView setContentOffset:CGPointMake(k, 0) animated:YES];
-    }];
+    [self changeScrollViewContentOffsetWithOffset:offsetX animated:YES];
+    
     
     _barChart = [[BarChartView alloc] initWithFrame:CGRectMake(-20, 0, 640 + 100, 200)];//柱形图背景view大小
     _barChart.backgroundColor = [UIColor clearColor];
@@ -106,36 +97,7 @@ static int offsetX = 0;
 }
 
 
-//- (void)configureBarViewAllDatas
-//{
-//    self.xLableArray = [NSMutableArray arrayWithCapacity:1];
-//    self.yValueArray = [NSMutableArray arrayWithObject:@"0.1"];
-//    
-//    //以下配置数据
-//    //获取当前时间
-//    NSDate *localDate = [NSDate localdate];
-//    
-//    //分割出年月日小时
-//    NSNumber* year = [BTUtils getYear:localDate];
-//    NSNumber* month = [BTUtils getMonth:localDate];
-//    NSNumber* day = [BTUtils getDay:localDate];
-//    
-//    [self.xLableArray addObject:[NSString stringWithFormat:@"%@月%@日",month,day]];
-//    
-//    //
-//     NSPredicate *predicateDevice = [NSPredicate predicateWithFormat:@"year == %@ AND month == %@ AND day == %@ AND type == %@",year,month,day,[NSNumber numberWithDouble:DEVICE_SPORT_TYPE]];
-//    //取出记录时间数组
-//    NSArray *rawArrayDevice = [BTGetData getFromCoreDataWithPredicate:predicateDevice entityName:@"BTRawData" sortKey:nil];
-//    int count = 0;
-//    for (BTRawData *raw in rawArrayDevice) {
-//        count +=[raw.count intValue];
-//    }
-//    if (count > 0) {
-//        [self.yValueArray replaceObjectAtIndex:0 withObject:[NSString stringWithFormat:@"%d",count]];
-//
-//    }
-//    
-//}
+
 #pragma mark - 得到每小时的数据
 - (void)getEveryHourData
 {
@@ -174,7 +136,32 @@ static int offsetX = 0;
     }
     
 }
+#pragma mark - 动态的改变scrollview的偏移量
+- (void)changeScrollViewContentOffsetWithOffset:(int)offSetX animated:(BOOL)animated
+{
+    
+    int k = ((klineScrollViewContentSizeX)/24) * offSetX;
+    if (k < 320/2) {
+        k = 0;
+    }
+    else{
+        k = k - 320/2;
+    }
 
+    if (animated) {
+        //动画效果 改变偏移量
+        [UIView animateWithDuration:1.0 animations:^{
+            
+        [self.lineScrollView setContentOffset:CGPointMake(k, 0) animated:YES];
+            
+        }];
+    }
+    
+    else{
+        [self.lineScrollView setContentOffset:CGPointMake(k, 0) animated:YES];
+
+    }
+}
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];

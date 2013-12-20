@@ -88,6 +88,7 @@
 {
       
     //开始新需求的bar的绘制
+    int _index = 0;
     
     for (BTRawData *raw in xLabelArray) {
         
@@ -108,24 +109,25 @@
   
         bar.barColor = [UIColor colorWithRed:238.0/255.0 green:238.0/255.0 blue:238.0/255.0 alpha:0.5];
         bar.grade = 1;//在这个方法里面进行了绘制
+        bar.tag = FETAL_BAR_TAG + _index;
         [self addSubview:bar];
         
+        //
         
-        //柱子上添加一个Label label放在view
+        CGRect rect = CGRectMake((bar.center.x - 70/2), 0, 70, 50);//标签坐标 大小
+        bar.markView = [[BTBarMarkView alloc] initWithFrame:rect];
+        bar.markView.aImageView.image = [UIImage imageNamed:@"markview_ba_middle@2x"];
+        bar.markView.markLabel.text = [NSString stringWithFormat:@"%@ \n%d次",[self getLastRecordTimeFromRaw:raw],[self getFetalCountFromRecordTime:raw.seconds1970]];
+        bar.markView.markLabel.font = [UIFont boldSystemFontOfSize:11.0f];
+        [self addSubview:bar.markView];
         
-        bar.labelBgView = [[UIImageView alloc] initWithFrame:CGRectMake((bar.center.x - 70/2), 0, 70, 50)];
-        bar.labelBgView.image = [UIImage imageNamed:@"markview_ba_middle@2x"];
-        [self addSubview:bar.labelBgView];
         
-        bar.titleLabel =[[UILabel alloc] initWithFrame:CGRectMake(0, 0, 70, 50)];
-        bar.titleLabel.backgroundColor = [UIColor clearColor];
-        bar.titleLabel.text = [NSString stringWithFormat:@"%@ \n%d次",[self getLastRecordTimeFromRaw:raw],[self getFetalCountFromRecordTime:raw.seconds1970]];
-        [bar.titleLabel setFont:[UIFont boldSystemFontOfSize:11.0f]];
-        bar.titleLabel.textAlignment = NSTextAlignmentCenter;
-        bar.titleLabel.textColor = kGlobalColor;
-        bar.titleLabel.numberOfLines = 0;
-        bar.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
-        [bar.labelBgView addSubview:bar.titleLabel];
+        //显示最后一个bar的标签 隐藏其他的
+        bar.markView.hidden = YES;
+        if (_index == [xLabelArray count] - 1) {
+            bar.markView.hidden = NO;
+        }
+        _index ++;
      }
     
 }
@@ -176,16 +178,14 @@
 - (int)getFetalCountFromRecordTime:(NSNumber *)seconds
 {
    
-    NSLog(@"((((((((((((((%@",[NSDate dateWithTimeIntervalSince1970:1387377600]);
-NSNumber *secondsTO = [NSNumber numberWithDouble:([seconds doubleValue] + 60 * 60)];
+ NSNumber *secondsTO = [NSNumber numberWithDouble:([seconds doubleValue] + 60 * 60)];
 //对手机存储的胎动 和 设备存储的胎动记录时间分别遍历
 NSPredicate *predicatePhone = [NSPredicate predicateWithFormat:@"seconds1970 >= %@ AND seconds1970 <= %@ AND type == %@",seconds,secondsTO,[NSNumber numberWithDouble:PHONE_FETAL_TYPE]];
 NSPredicate *predicateDevice = [NSPredicate predicateWithFormat:@"seconds1970 >= %@ AND seconds1970 <= %@ AND type == %@",seconds,secondsTO,[NSNumber numberWithDouble:DEVICE_FETAL_TYPE]];
 //取出记录时间数组
 NSArray *rawArrayPhone = [BTGetData getFromCoreDataWithPredicate:predicatePhone entityName:@"BTRawData" sortKey:nil];//取出记录时间数组
 NSArray *rawArrayDevice = [BTGetData getFromCoreDataWithPredicate:predicateDevice entityName:@"BTRawData" sortKey:nil];
-    NSLog(@"#########%@",rawArrayPhone);
-     NSLog(@"#########%@",rawArrayDevice);
+    
     int oneCount = 0;
     for (BTRawData *raw in rawArrayPhone) {
         oneCount +=[raw.count intValue];
