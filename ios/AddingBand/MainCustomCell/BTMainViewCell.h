@@ -9,5 +9,11 @@
 #import <UIKit/UIKit.h>
 
 @interface BTMainViewCell : UITableViewCell
+@property(nonatomic,strong)UILabel *dayLabel;
+@property(nonatomic,strong)UIImageView *iconImage;
+@property(nonatomic,strong)UILabel *titleLabel;
+@property(nonatomic,strong)UIImageView *accessoryImage;
+@property(nonatomic,strong)UILabel *contentLabel;
 
++ (CGFloat)cellHeight:(NSString *)content;
 @end

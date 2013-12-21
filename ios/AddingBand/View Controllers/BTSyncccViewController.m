@@ -461,10 +461,7 @@
 //动态改变每一行的高度
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    //    NSLog(@"heightForRowAtIndexPath");
-    //根据index找到对应的peripheral
-    // BTBandPeripheral*bp  = [self.bc getBpByIndex:indexPath.row];
-    BTBandPeripheral*bp = nil;
+     BTBandPeripheral*bp = nil;
     if ([self.bc.allPeripherals count] > 0) {
         bp  = [self.bc getBpByIndex:indexPath.row];
         
@@ -472,6 +469,7 @@
     
     //BTBandPeripheral*bp  = [self.bc getBpByModel:@"A1"];
     //是否发现
+  //  BOOL isDisplyList = bp.
     Boolean isFinded = bp.isFinded;
     //是否连接
     Boolean isConnected = bp.isConnected;
@@ -770,6 +768,7 @@
     NSLog(@"加载连接成功页面...");
     self.syncTwoVC = [BTSyncTwoViewController shareSyncTwoview];
     _syncTwoVC.view.frame = CGRectMake(0, 0, _syncTwoVC.view.frame.size.width, _syncTwoVC.view.frame.size.height);
+    self.syncTwoVC.linkLabel.text = @"正在同步........";
     [self.view addSubview:_syncTwoVC.view];
     _deleteButton.hidden = NO;
    
@@ -777,12 +776,16 @@
 //发现历史设备 但是未连接成功
 - (void)addFindPastView
 {
-    
-    NSLog(@"加载历史记录页面...");
-    self.pastVC = [BTPastLinkViewController sharePastLinkview];
-    _pastVC.view.frame = CGRectMake(0, 0, _pastVC.view.frame.size.width, _pastVC.view.frame.size.height);
-    [self.view addSubview:_pastVC.view];
-    _deleteButton.hidden = NO;
+    self.syncTwoVC = [BTSyncTwoViewController shareSyncTwoview];
+    _syncTwoVC.view.frame = CGRectMake(0, 0, _syncTwoVC.view.frame.size.width, _syncTwoVC.view.frame.size.height);
+    [self.view addSubview:_syncTwoVC.view];
+
+    self.syncTwoVC.linkLabel.text = @"等待同步";
+//    NSLog(@"加载历史记录页面...");
+//    self.pastVC = [BTPastLinkViewController sharePastLinkview];
+//    _pastVC.view.frame = CGRectMake(0, 0, _pastVC.view.frame.size.width, _pastVC.view.frame.size.height);
+//    [self.view addSubview:_pastVC.view];
+//    _deleteButton.hidden = NO;
    
 }
 

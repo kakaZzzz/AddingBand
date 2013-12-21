@@ -70,7 +70,7 @@
 #define SCAN_INTERVAL                   60.0
 
 //自动同步间隔
-#define AUTO_SYNC_INTERVAL              300.0
+#define AUTO_SYNC_INTERVAL              20.0
 
 //周边连接超时
 #define CONNECT_PERIPHERAL_TIMEOUT      10.0

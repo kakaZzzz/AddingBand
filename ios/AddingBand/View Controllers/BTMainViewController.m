@@ -8,6 +8,7 @@
 
 #import "BTMainViewController.h"
 #import "LayoutDef.h"
+#import "BTMainViewCell.h"
 
 #define NAVIGATIONBAR_Y 0
 #define NAVIGATIONBAR_HEIGHT 65
@@ -98,7 +99,10 @@
     NSLog(@"..........%f",_tableView.contentOffset.y);
 }
 #pragma mark - Table view data source
-
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return 100.0;
+}
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     
@@ -161,11 +165,11 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *CellIdentifier = @"Cell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    BTMainViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     
     // Configure the cell...
     if (cell == nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+        cell = [[BTMainViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     }
 //    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
 //    self.tableView.separatorColor = [UIColor clearColor];
