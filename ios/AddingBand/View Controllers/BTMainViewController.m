@@ -38,7 +38,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    //self.view.backgroundColor = [UIColor yellowColor];
+    self.view.backgroundColor = [UIColor yellowColor];
     [self addSubviews];
 	// Do any additional setup after loading the view.
 }
@@ -54,11 +54,11 @@
 //    [self.view addSubview:_tableViewBackgroundView];
     
     self.headView = [[UIView alloc] initWithFrame:CGRectMake(0, NAVIGATIONBAR_HEIGHT, 320, 40)];
-    _headView.backgroundColor = [UIColor orangeColor];
+    _headView.backgroundColor = kGlobalColor;
     [self.view addSubview:_headView];
 
     //加载tableview
-    self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, _headView.frame.origin.y + _headView.frame.size.height, 320,360)];
+    self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, _headView.frame.origin.y + _headView.frame.size.height, 320,self.view.frame.size.height)];
     _tableView.backgroundColor = [UIColor blueColor];
     _tableView.dataSource = self;
     _tableView.delegate = self;
@@ -66,14 +66,34 @@
 }
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
-    if (scrollView.contentOffset.y >= 0 ) {
+    if (scrollView.contentOffset.y >= 0 && scrollView.contentOffset.y <= 40) {
        // static CGRect rect = _headView.frame;
         NSLog(@"..........%f",_tableView.contentOffset.y);
         
-     
-        _headView.frame = CGRectMake(0, NAVIGATIONBAR_HEIGHT - scrollView.contentOffset.y, 320, 40);
-       self.tableView.frame = CGRectMake(0, NAVIGATIONBAR_HEIGHT - scrollView.contentOffset.y + 40, 320, 360);
-        [self.view bringSubviewToFront:_navigationBgView];
+     [UIView animateWithDuration:0.1 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+         _headView.frame = CGRectMake(0,NAVIGATIONBAR_HEIGHT - scrollView.contentOffset.y, 320, 40);
+         self.tableView.frame = CGRectMake(0, NAVIGATIONBAR_HEIGHT - scrollView.contentOffset.y + 40, 320, self.view.frame.size.height);
+
+     } completion:nil];
+         [self.view bringSubviewToFront:_navigationBgView];
+    }
+    
+    
+    else if (scrollView.contentOffset.y > 40) {
+        [UIView animateWithDuration:0.1 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+            _headView.frame = CGRectMake(0,NAVIGATIONBAR_HEIGHT - 40, 320, 40);
+            self.tableView.frame = CGRectMake(0, NAVIGATIONBAR_HEIGHT - 40 + 40, 320, self.view.frame.size.height - 59);
+            
+        } completion:nil];
+
+    }
+    
+    else{
+        //[UIView animateWithDuration:0.1 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+            _headView.frame = CGRectMake(0,NAVIGATIONBAR_HEIGHT, 320, 40);
+            
+        //} completion:nil];
+
     }
     NSLog(@"..........%f",_tableView.contentOffset.y);
 }

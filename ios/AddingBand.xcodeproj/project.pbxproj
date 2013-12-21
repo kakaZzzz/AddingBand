@@ -189,6 +189,7 @@
 		72B418FC18238E3E002EAD35 /* BTPhysicSportViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 72B418FB18238E3E002EAD35 /* BTPhysicSportViewController.m */; };
 		72B418FF18238E53002EAD35 /* BTMineViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 72B418FE18238E53002EAD35 /* BTMineViewController.m */; };
 		72B419041823904B002EAD35 /* BTCustomTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 72B419031823904B002EAD35 /* BTCustomTabBarController.m */; };
+		72B5EDB51865731900FF363E /* BTMainViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 72B5EDB41865731900FF363E /* BTMainViewCell.m */; };
 		72B67A6F1839BEBD00294A08 /* PCLineChartView.m in Sources */ = {isa = PBXBuildFile; fileRef = 72B67A6E1839BEBD00294A08 /* PCLineChartView.m */; };
 		72B67A731839E49400294A08 /* tabbar_sel.png in Resources */ = {isa = PBXBuildFile; fileRef = 72B67A711839E49400294A08 /* tabbar_sel.png */; };
 		72B67A741839E49400294A08 /* tabbar_bg.png in Resources */ = {isa = PBXBuildFile; fileRef = 72B67A721839E49400294A08 /* tabbar_bg.png */; };
@@ -502,6 +503,8 @@
 		72B4190118238EC1002EAD35 /* Head.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Head.h; sourceTree = "<group>"; };
 		72B419021823904B002EAD35 /* BTCustomTabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BTCustomTabBarController.h; path = "View Controllers/BTCustomTabBarController.h"; sourceTree = "<group>"; };
 		72B419031823904B002EAD35 /* BTCustomTabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BTCustomTabBarController.m; path = "View Controllers/BTCustomTabBarController.m"; sourceTree = "<group>"; };
+		72B5EDB31865731900FF363E /* BTMainViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BTMainViewCell.h; path = MainCustomCell/BTMainViewCell.h; sourceTree = "<group>"; };
+		72B5EDB41865731900FF363E /* BTMainViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BTMainViewCell.m; path = MainCustomCell/BTMainViewCell.m; sourceTree = "<group>"; };
 		72B67A6D1839BEBD00294A08 /* PCLineChartView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PCLineChartView.h; sourceTree = "<group>"; };
 		72B67A6E1839BEBD00294A08 /* PCLineChartView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PCLineChartView.m; sourceTree = "<group>"; };
 		72B67A711839E49400294A08 /* tabbar_sel.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tabbar_sel.png; sourceTree = "<group>"; };
@@ -1351,6 +1354,8 @@
 				723213531824D4E600C17EDC /* BTUndoCell.h */,
 				723213541824D4E600C17EDC /* BTUndoCell.m */,
 				724146761827B116008B05C5 /* 分割线@2x.png */,
+				72B5EDB31865731900FF363E /* BTMainViewCell.h */,
+				72B5EDB41865731900FF363E /* BTMainViewCell.m */,
 			);
 			name = "首页自定义cell";
 			sourceTree = "<group>";
@@ -1674,6 +1679,7 @@
 				72716EE018640FE900499D76 /* BTMainViewController.m in Sources */,
 				72B67AA8183A335800294A08 /* MKNetworkOperation.m in Sources */,
 				7262FACA184DB134005F3B67 /* BTGirthViewController.m in Sources */,
+				72B5EDB51865731900FF363E /* BTMainViewCell.m in Sources */,
 				722EDEF9182A3D43006B25EE /* BTBluetoothLinkCell.m in Sources */,
 				72CB9C3C182B595200C0DAF0 /* BTConstants.m in Sources */,
 				72E3E50D182B9A360062DA3D /* BTBluetoothFindCell.m in Sources */,
@@ -1829,7 +1835,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "AddingBand/AddingBand-Prefix.pch";
 				INFOPLIST_FILE = "AddingBand/AddingBand-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
@@ -1848,7 +1854,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "AddingBand/AddingBand-Prefix.pch";
 				INFOPLIST_FILE = "AddingBand/AddingBand-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";

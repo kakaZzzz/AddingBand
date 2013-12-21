@@ -522,7 +522,7 @@
     Boolean isConnected = bp.isConnected;
     
     //是否正在连接中
-    // BOOL isConnecting = bp.isConnecting;
+     BOOL isConnecting = bp.isConnecting;
     //设备名称
     NSString* name = bp.name;
     
@@ -559,7 +559,13 @@
         //移除搜索到历史设备 但未连接页面
         //        if (![self isPastBL]) {
         //            if (_pastVC.view) {
-        [_pastVC.view removeFromSuperview];
+        if (isConnecting) {
+            [self addFindPastView];
+        }
+        else{
+            [_pastVC.view removeFromSuperview];
+        }
+     
         //            }
         //
         //        }
@@ -569,7 +575,7 @@
         //        }
         return cellFind;
     }
-    //连接成功
+     //连接成功
     else if (isConnected)
     {
         

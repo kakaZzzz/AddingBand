@@ -89,7 +89,7 @@ static int offsetX = 0;
         
           }
     else{
-        _startButton.frame = CGRectMake((320 - 120)/2, self.view.frame.size.height - 180, 120, 120);
+        _startButton.frame = CGRectMake((320 - 120)/2, self.view.frame.size.height - 200, 120, 120);
         
     }
     [_startButton setBackgroundImage:[UIImage imageNamed:@"fetal_record_unsel@2x"] forState:UIControlStateNormal];
