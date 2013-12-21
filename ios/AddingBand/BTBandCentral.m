@@ -947,11 +947,7 @@
             
             if (interval > AUTO_SYNC_INTERVAL) {
                 
-                if (_waitForNextSync == NO) {
-                    _waitForNextSync = YES;
-                    
-                    [self scan];
-                }
+                [self scanAndSync];
             }
             
             
@@ -1083,4 +1079,15 @@
         _timeoutBlock();
     }
 }
+
+#pragma mark - 重新扫描并同步
+-(void)scanAndSync{
+    
+    if (_waitForNextSync == NO) {
+        _waitForNextSync = YES;
+        
+        [self scan];
+    }
+}
+
 @end

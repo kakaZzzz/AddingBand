@@ -59,5 +59,7 @@
 
 -(void)restartScan;
 
+-(void)scanAndSync;
+
 @end
  
