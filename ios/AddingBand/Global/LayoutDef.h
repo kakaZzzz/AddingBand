@@ -92,4 +92,7 @@
 
 #define PHONE_FETAL_TYPE 11
 #define PHONE_START_TIME_TYPE 13
+
+//蓝牙同步 连接部分宏
+#define SCAN_PERIPHERAL_TIMEOUT 10.0
 #endif

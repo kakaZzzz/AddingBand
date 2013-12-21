@@ -56,20 +56,7 @@
     _accessoryImage.frame = CGRectMake(320 - 50,_iconImage.frame.origin.y, 50, 50);
     [self.contentView addSubview:_accessoryImage];
     
-//    self.conditiontLabel = [[UILabel alloc] initWithFrame:CGRectMake(_warnImage.frame.origin.x + _warnImage.frame.size.width, contentLabelY, contentLabelWidth, contentLabelHeight)];
-//    _conditiontLabel.backgroundColor = [UIColor clearColor];
-//    
-//    _conditiontLabel.font = [UIFont systemFontOfSize:17.0f];
-//    _conditiontLabel.textAlignment = NSTextAlignmentLeft;
-//    _conditiontLabel.textColor = kBigTextColor;
-//    //  _conditiontLabel.backgroundColor = [UIColor redColor];
-//    _conditiontLabel.opaque = NO;
-//    [self.contentView addSubview:_conditiontLabel];
-//    
-//    self.accessoryImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"accessory_blue@2x"]];
-//    _accessoryImage.frame = CGRectMake(320 - 20, 11.5, 20, 20);
-//    [self.contentView addSubview:_accessoryImage];
-    
+
     
 }
 

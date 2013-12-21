@@ -19,7 +19,7 @@
 #import "DDIndicator.h"
 #import "BTColor.h"
 #import "BTConstants.h"//存放外设设备的各种宏的头文件
-
+#import "BTCloseToBleViewController.h"//靠近设备 提示页面
 
 #define kTitleX 10
 #define kTitleY 20
@@ -66,6 +66,8 @@
         //监听设备变化
         [self.g addObserver:self forKeyPath:@"bleListCount" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:NULL];
         
+        [self.g addObserver:self forKeyPath:@"displayBleList" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:NULL];
+        
         //菊花
         self.indicator = [[DDIndicator alloc] initWithFrame:CGRectMake((self.view.frame.size.width - _indicator.frame.size.width - 50)/2 , 150, 50, 50)];
         [self.view addSubview:_indicator];
@@ -73,7 +75,7 @@
         [_indicator startAnimating];
         //动画是否超时
         if (!self.timerAnimation.isValid) {
-            self.timerAnimation =[NSTimer timerWithTimeInterval:50 target:self selector:@selector(stopIndicatorAnimation) userInfo:nil repeats:NO];
+            self.timerAnimation =[NSTimer timerWithTimeInterval:SCAN_PERIPHERAL_TIMEOUT target:self selector:@selector(stopIndicatorAnimation) userInfo:nil repeats:NO];
             [[NSRunLoop currentRunLoop] addTimer:self.timerAnimation forMode:NSRunLoopCommonModes];
         }
 
@@ -194,12 +196,12 @@
 - (void)restartScanBySelf
 {
     
-    [self.indicator startAnimating];
-    //动画是否超时
-    if (!self.timerAnimation.isValid) {
-        self.timerAnimation =[NSTimer timerWithTimeInterval:50 target:self selector:@selector(stopIndicatorAnimation) userInfo:nil repeats:NO];
-        [[NSRunLoop currentRunLoop] addTimer:self.timerAnimation forMode:NSRunLoopCommonModes];
-    }
+//    [self.indicator startAnimating];
+//    //动画是否超时
+//    if (!self.timerAnimation.isValid) {
+//        self.timerAnimation =[NSTimer timerWithTimeInterval:50 target:self selector:@selector(stopIndicatorAnimation) userInfo:nil repeats:NO];
+//        [[NSRunLoop currentRunLoop] addTimer:self.timerAnimation forMode:NSRunLoopCommonModes];
+//    }
 
     [self.bc restartScan];
 }
@@ -223,9 +225,9 @@
 
 - (void)reloadmData
 {
-    NSLog(@"收到刷新列表的通知");
-    self.g.bleListCount = 0;//把列表行数置为空
-    [self.tableView reloadData];
+//    NSLog(@"收到刷新列表的通知");
+//    self.g.bleListCount = 0;//把列表行数置为空
+//    [self.tableView reloadData];
 }
 //检测上次更新时间 同步时间
 - (void)observeLastSyncTime
@@ -257,11 +259,17 @@
         //行数变化时，重新加载列表
         //todo 等于0的时候处理成“查找中”
         if (self.g.bleListCount == 0) {
+            
+            //动画是否超时
+            if (!self.timerAnimation.isValid) {
+                self.timerAnimation =[NSTimer timerWithTimeInterval:SCAN_PERIPHERAL_TIMEOUT target:self selector:@selector(stopIndicatorAnimation) userInfo:nil repeats:NO];
+                [[NSRunLoop currentRunLoop] addTimer:self.timerAnimation forMode:NSRunLoopCommonModes];
+            }
+
+            [self.tableView reloadData];
             //加载动画显示
             _isBreak = NO;
-            NSLog(@"准备加个搜索动画呢啊");
-            //   [self.indicator startAnimating];
-            //   [self.tableView reloadData];
+
         }
         if (self.g.bleListCount > 0) {
             
@@ -269,10 +277,10 @@
             [self.timerAnimation invalidate];
             
             //reloaddata的条件还得加以判断，为了防止ios7上的奇葩问题
-            if (_isBreak == NO) {
+            //if (_isBreak == NO) {
                 [self.tableView reloadData];
                 
-            }
+//}
         }
         
         if ([self.bc isConnectedByModel:MAM_BAND_MODEL]){
@@ -301,6 +309,11 @@
             //    [[NSNotificationCenter defaultCenter] postNotificationName:UPDATACIRCULARPROGRESSNOTICE object:nil userInfo:dicProgress];//接受通知页面必须存在
         }
         
+    }
+    
+    if([keyPath isEqualToString:@"displayBleList"])
+    {
+        NSLog(@"!!!---!!! dis: %d", self.g.displayBleList);
     }
 }
 #pragma mark - 断开连接
@@ -339,86 +352,89 @@
             self.bc = [BTBandCentral sharedBandCentral];
             BTBandPeripheral* bp = [self.bc getBpByName:bpName];
             //如果是正在连接的设备就断开连接
-            if (bp.isConnected) {
+//            if (bp.isConnected) {
                 // [self.bc togglePeripheralByIndex:i];
                 [self.bc removePeripheralByModel:MAM_BAND_MODEL];
                 // [self.bc removePeripheralByName:bpName];
                 //
                 _deleteButton.hidden = YES;
                 //[self.navigationItem.rightBarButtonItem setEnabled:NO];
+                [self.closeToBleVC.view removeFromSuperview];
                 [self.syncTwoVC.view removeFromSuperview];
-                [self.pastVC.view removeFromSuperview];
-                //菊花显示
                 self.indicator.contentLabel.text = @"正在搜索设备";
-                [self.indicator startAnimating];//加载动画
-                //动画是否超时
-                if (!self.timerAnimation.isValid) {
-                    self.timerAnimation =[NSTimer timerWithTimeInterval:50 target:self selector:@selector(stopIndicatorAnimation) userInfo:nil repeats:NO];
-                    [[NSRunLoop currentRunLoop] addTimer:self.timerAnimation forMode:NSRunLoopCommonModes];
-                }
-            }
+                [self.indicator startAnimating];
+
+                               //菊花显示
+//                self.indicator.contentLabel.text = @"正在搜索设备";
+//                [self.indicator startAnimating];//加载动画
+//                //动画是否超时
+//                if (!self.timerAnimation.isValid) {
+//                    self.timerAnimation =[NSTimer timerWithTimeInterval:50 target:self selector:@selector(stopIndicatorAnimation) userInfo:nil repeats:NO];
+//                    [[NSRunLoop currentRunLoop] addTimer:self.timerAnimation forMode:NSRunLoopCommonModes];
+//                }
             
             
             
+//        }
             //在设备因为意外情况断开的情况下删除设备时 走介个方法
-            else{
-                
+//            else{
+        
                 //以下为删除设备
                 //往coredata里面存放选择的设备行数
                 
                 //根据index找到对应的peripheral
-                self.bc = [BTBandCentral sharedBandCentral];
-                
-                //删除coredata里的这条数据
-                _context = [BTGetData getAppContex];
-                NSEntityDescription *entity = [NSEntityDescription entityForName:@"BTBleList" inManagedObjectContext:_context];
-                
-                NSFetchRequest* request = [[NSFetchRequest alloc] init];
-                [request setEntity:entity];
-                
-                NSError* error;
-                
-                NSArray *resultArray = [_context executeFetchRequest:request error:&error];
-                
-                for (BTBleList* old in resultArray) {
-                    NSLog(@"设备名称%@",bp.name);
-                    if ([old.name isEqualToString:bpName]){
-                        [self.bc.allPeripherals removeObjectForKey:bpName];//缓存清除
-                        [_context deleteObject:old];//存放连接上设备的coredata清除
-                        NSLog(@"!!!2222222");
-                    }
-                    
-                    
-                    //及时保存
-                    NSError* err;
-                    if(![_context save:&err]){
-                        NSLog(@"%@", [err localizedDescription]);
-                    }
-                    
-                    [self.bc scan];//重新搜索设备
-                }
-                
+//                self.bc = [BTBandCentral sharedBandCentral];
+//                
+//                //删除coredata里的这条数据
+//                _context = [BTGetData getAppContex];
+//                NSEntityDescription *entity = [NSEntityDescription entityForName:@"BTBleList" inManagedObjectContext:_context];
+//                
+//                NSFetchRequest* request = [[NSFetchRequest alloc] init];
+//                [request setEntity:entity];
+//                
+//                NSError* error;
+//                
+//                NSArray *resultArray = [_context executeFetchRequest:request error:&error];
+//                
+//                for (BTBleList* old in resultArray) {
+//                    NSLog(@"设备名称%@",bp.name);
+//                    if ([old.name isEqualToString:bpName]){
+//                        [self.bc.allPeripherals removeObjectForKey:bpName];//缓存清除
+//                        [_context deleteObject:old];//存放连接上设备的coredata清除
+//                        NSLog(@"!!!2222222");
+//                    }
+//                    
+//                    
+//                    //及时保存
+//                    NSError* err;
+//                    if(![_context save:&err]){
+//                        NSLog(@"%@", [err localizedDescription]);
+//                    }
+//                    
+//                    [self.bc scan];//重新搜索设备
+//                }
+//                
                 //移除页面
                 [self.pastVC.view removeFromSuperview];
                 _deleteButton.hidden = YES;
                 [[NSNotificationCenter defaultCenter]postNotificationName:@"reloadData" object:nil];
                 //菊花开始做动画
                 //菊花显示
-                self.indicator.contentLabel.text = @"正在搜索设备";
-                [self.indicator startAnimating];
-                if (!self.timerAnimation.isValid) {
-                    self.timerAnimation =[NSTimer timerWithTimeInterval:50 target:self selector:@selector(stopIndicatorAnimation) userInfo:nil repeats:NO];
-                    [[NSRunLoop currentRunLoop] addTimer:self.timerAnimation forMode:NSRunLoopCommonModes];
-                }
+//                self.indicator.contentLabel.text = @"正在搜索设备";
+//                [self.indicator startAnimating];
+//                if (!self.timerAnimation.isValid) {
+//                    self.timerAnimation =[NSTimer timerWithTimeInterval:50 target:self selector:@selector(stopIndicatorAnimation) userInfo:nil repeats:NO];
+//                    [[NSRunLoop currentRunLoop] addTimer:self.timerAnimation forMode:NSRunLoopCommonModes];
+//                }
                 
                 
                 
             }
         }
-    }
     
     
-    
+
+
 }
 
 
@@ -432,10 +448,10 @@
 #pragma mark - 连接超时 或者 搜索超时 都走这个方法
 - (void)stopIndicatorAnimation
 {
-    UIAlertView *aLart = [[UIAlertView alloc] initWithTitle:@"超时了亲 " message:@"请检查设备" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-    aLart.tag = TIME_OUT_ALERT;
-    [aLart show];
-    
+//    UIAlertView *aLart = [[UIAlertView alloc] initWithTitle:@"超时了亲 " message:@"请检查设备" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+//    aLart.tag = TIME_OUT_ALERT;
+//    [aLart show];
+    [self addCloseToBleView];
     [self.indicator stopAnimating];
 }
 #pragma mark - Table view data source
@@ -479,21 +495,24 @@
     BOOL isConnecting = bp.isConnecting;
     
     if (isConnecting && !isConnected) {
-        NSLog(@"开始连接动画");
-        self.indicator.contentLabel.text = @"正在连接设备";
-        [self.indicator startAnimating];
-        if (!self.timerAnimation.isValid) {
-            self.timerAnimation =[NSTimer timerWithTimeInterval:50 target:self selector:@selector(stopIndicatorAnimation) userInfo:nil repeats:NO];
-            [[NSRunLoop currentRunLoop] addTimer:self.timerAnimation forMode:NSRunLoopCommonModes];
-        }
+     
+//        self.indicator.contentLabel.text = @"正在连接设备";
+//        [self.indicator startAnimating];
+//        if (!self.timerAnimation.isValid) {
+//            self.timerAnimation =[NSTimer timerWithTimeInterval:50 target:self selector:@selector(stopIndicatorAnimation) userInfo:nil repeats:NO];
+//            [[NSRunLoop currentRunLoop] addTimer:self.timerAnimation forMode:NSRunLoopCommonModes];
+//        }
         
     }
     if (isConnected && isConnecting) {
-        [self.indicator stopAnimating];
-        [self.timerAnimation invalidate];
+//        [self.indicator stopAnimating];
+//        [self.timerAnimation invalidate];
     }
     if (isDisplayBleList && isFinded && !isConnected && !isConnecting) {
         NSLog(@"发现未连接  %d",isConnecting);
+        
+//        [self.indicator stopAnimating];
+//        [self.timerAnimation invalidate];
         
         return 50;
         // return kBluetoothFindHeight;
@@ -546,9 +565,11 @@
     
     BTBluetoothFindCell *cellFind = [tableView dequeueReusableCellWithIdentifier:CellIdentifierFind];
     BTBluetoothConnectedCell *cellConnet = [tableView dequeueReusableCellWithIdentifier:CellIdentifierConnect];
-    BTBluetoothLinkCell *cellNofind = [tableView dequeueReusableCellWithIdentifier:CellIdentifierNoFind];
+  //  BTBluetoothLinkCell *cellNofind = [tableView dequeueReusableCellWithIdentifier:CellIdentifierNoFind];
     NSLog(@"是否找到 %d  是否连接%d",isFinded,isConnected);
     NSLog(@"外围设备名称是 %@",name);
+    
+    NSLog(@"----display: %hhd", self.g.displayBleList);
     
     //发现设备 但是木有连接 新设备
     if (isDisplayBleList) {
@@ -560,19 +581,9 @@
         cellFind.titleLabel.text = [NSString stringWithFormat:@"%@",name];
 
         if (isConnecting) {
-            [self addLinkSuccessfulView];
+            //[self addLinkSuccessfulView];
         }
-//        else{
-//            [_pastVC.view removeFromSuperview];
-//        }
-     
-        //            }
-        //
-        //        }
-        //        //是历史设备 加载历史设备页面
-        //        if ([self isPastBL]) {
-        //            [self addFindPastView];
-        //        }
+        [self.closeToBleVC.view removeFromSuperview];
         return cellFind;
     }
     
@@ -582,32 +593,58 @@
                     cellConnet = [[BTBluetoothConnectedCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifierConnect tatget:self];
                }
         
-              //
-        if (isWaitforSync && isConnecting) {
-            [self addLinkSuccessfulView];
-            self.syncTwoVC.batteryLabel.text = [NSString stringWithFormat:@"电量:%@%@",batteryLevel,@"%"];
-                   self.syncTwoVC.linkLabel.text = [NSString stringWithFormat:@"正在同步...."];
-            _deleteButton.hidden = NO ;//导航栏上的按钮可按
-
-        }
         
-        if (isWaitforSync && !isConnecting) {
-            [self addLinkSuccessfulView];
-            self.syncTwoVC.linkLabel.text = [NSString stringWithFormat:@"等待同步"];
+        //isWaitforSync 为yes的时候是三种状态  等待同步  同步中  正在搜索
+        if (isWaitforSync) {
+            
+            if (isFinded) {
+                if(isConnecting){
+                    [self.closeToBleVC.view removeFromSuperview];
+                    [self addLinkSuccessfulView];
+                    self.syncTwoVC.batteryLabel.text = [NSString stringWithFormat:@"电量:%@%@",batteryLevel,@"%"];
+                    self.syncTwoVC.linkLabel.text = [NSString stringWithFormat:@"正在同步...."];
+                    self.syncTwoVC.syncButton.userInteractionEnabled = NO;//手动同步按钮不可用
+                    _deleteButton.hidden = YES ;//导航栏上的按钮可按
+                    
+                    
+                }
+                else{
+                    [self.closeToBleVC.view removeFromSuperview];
+                    [self addLinkSuccessfulView];
+                    self.syncTwoVC.linkLabel.text = [NSString stringWithFormat:@"等待同步"];
+                    self.syncTwoVC.syncButton.userInteractionEnabled = YES;//手动同步按钮可用
+                    // self.syncTwoVC.batteryLabel.text = [NSString stringWithFormat:@"电量:%@%@",batteryLevel,@"%"];
+                    _deleteButton.hidden = YES ;//导航栏上的按钮可按
+                    
+                }
+            }
+           else{
+                    
+                    [self.closeToBleVC.view removeFromSuperview];
+                    [self addLinkSuccessfulView];
+                    self.syncTwoVC.linkLabel.text = [NSString stringWithFormat:@"正在搜索.."];
+                    self.syncTwoVC.syncButton.userInteractionEnabled = YES;//手动同步按钮可用
+                    // self.syncTwoVC.batteryLabel.text = [NSString stringWithFormat:@"电量:%@%@",batteryLevel,@"%"];
+                    _deleteButton.hidden = YES ;//导航栏上的按钮可按
+                    //同时开启一个计时器 10秒的计时器 超时了 加载靠近引导页面
+                  if (!self.timerAnimation.isValid) {
+                   self.timerAnimation =[NSTimer timerWithTimeInterval:SCAN_PERIPHERAL_TIMEOUT target:self selector:@selector(stopIndicatorAnimation) userInfo:nil repeats:NO];
+                   [[NSRunLoop currentRunLoop] addTimer:self.timerAnimation forMode:NSRunLoopCommonModes];
+                   }
 
-           // self.syncTwoVC.batteryLabel.text = [NSString stringWithFormat:@"电量:%@%@",batteryLevel,@"%"];
-            _deleteButton.hidden = NO ;//导航栏上的按钮可按
+               
+                }
 
-        }
-
+         }
         
-        if (!isWaitforSync) {
+    else{
+            [self.closeToBleVC.view removeFromSuperview];
             [self addLinkSuccessfulView];
             self.syncTwoVC.linkLabel.text = [NSString stringWithFormat:@"上次同步"];
-           _deleteButton.hidden = NO ;//导航栏上的按钮可按
+             self.syncTwoVC.syncButton.userInteractionEnabled = YES;//手动同步按钮可用
+            _deleteButton.hidden = NO ;//导航栏上的按钮可按
+
         }
-        
-        
             return cellConnet;
 
     }
@@ -707,17 +744,14 @@
     }
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        NSLog(@"连接设备；；；；；；；%@",findCell.titleLabel.text);
+   
         [self.bc connectPeripheralByName:findCell.titleLabel.text];//根据设备名字连接设备
     });
     
     //菊花显示
     self.indicator.contentLabel.text = @"正在连接设备";
     [self.indicator startAnimating];
-    //动画是否超时
-    if (!self.timerAnimation.isValid) {
-        self.timerAnimation =[NSTimer timerWithTimeInterval:50 target:self selector:@selector(stopIndicatorAnimation) userInfo:nil repeats:NO];
-        [[NSRunLoop currentRunLoop] addTimer:self.timerAnimation forMode:NSRunLoopCommonModes];
-    }
     
 }
 //判断是否是历史设备
@@ -834,5 +868,12 @@
 //    _deleteButton.hidden = NO;
    
 }
+- (void)addCloseToBleView
+{
+    self.closeToBleVC = [BTCloseToBleViewController shareCloseToBleview];
+    _closeToBleVC.view.frame = CGRectMake(0, 0, _syncTwoVC.view.frame.size.width, _syncTwoVC.view.frame.size.height);
+       [self.view addSubview:_closeToBleVC.view];
+    _deleteButton.hidden = NO;
 
+}
 @end

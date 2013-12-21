@@ -14,6 +14,7 @@
 #import "BTBandCentral.h"
 @class BTSyncTwoViewController;
 @class BTPastLinkViewController;
+@class BTCloseToBleViewController;
 @class DDIndicator;
 @interface BTSyncccViewController : UIViewController<UIAlertViewDelegate,UITableViewDataSource,UITableViewDelegate>
 //存放外设备
@@ -31,6 +32,7 @@
 
 @property(nonatomic,strong)BTSyncTwoViewController *syncTwoVC;//连接完成之后的视图控制器
 @property(nonatomic,strong)BTPastLinkViewController *pastVC;//发现历史设备但是没有连接的视图控制器
+@property(nonatomic,strong)BTCloseToBleViewController *closeToBleVC;//搜索超时 加载靠近设备提示页面
 @property(nonatomic,strong)UIButton *deleteButton;
 
 @property(nonatomic,assign)int selectedRow;//选择的设备行数

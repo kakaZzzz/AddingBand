@@ -190,6 +190,8 @@
 		72B418FF18238E53002EAD35 /* BTMineViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 72B418FE18238E53002EAD35 /* BTMineViewController.m */; };
 		72B419041823904B002EAD35 /* BTCustomTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 72B419031823904B002EAD35 /* BTCustomTabBarController.m */; };
 		72B5EDB51865731900FF363E /* BTMainViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 72B5EDB41865731900FF363E /* BTMainViewCell.m */; };
+		72B5EDB81865B0EB00FF363E /* BTCloseToBleViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 72B5EDB71865B0EB00FF363E /* BTCloseToBleViewController.m */; };
+		72B5EDBA1865B1AB00FF363E /* closeto_ble_bg@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 72B5EDB91865B1AB00FF363E /* closeto_ble_bg@2x.png */; };
 		72B67A6F1839BEBD00294A08 /* PCLineChartView.m in Sources */ = {isa = PBXBuildFile; fileRef = 72B67A6E1839BEBD00294A08 /* PCLineChartView.m */; };
 		72B67A731839E49400294A08 /* tabbar_sel.png in Resources */ = {isa = PBXBuildFile; fileRef = 72B67A711839E49400294A08 /* tabbar_sel.png */; };
 		72B67A741839E49400294A08 /* tabbar_bg.png in Resources */ = {isa = PBXBuildFile; fileRef = 72B67A721839E49400294A08 /* tabbar_bg.png */; };
@@ -505,6 +507,9 @@
 		72B419031823904B002EAD35 /* BTCustomTabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BTCustomTabBarController.m; path = "View Controllers/BTCustomTabBarController.m"; sourceTree = "<group>"; };
 		72B5EDB31865731900FF363E /* BTMainViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BTMainViewCell.h; path = MainCustomCell/BTMainViewCell.h; sourceTree = "<group>"; };
 		72B5EDB41865731900FF363E /* BTMainViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BTMainViewCell.m; path = MainCustomCell/BTMainViewCell.m; sourceTree = "<group>"; };
+		72B5EDB61865B0EB00FF363E /* BTCloseToBleViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BTCloseToBleViewController.h; path = "View Controllers/BTCloseToBleViewController.h"; sourceTree = "<group>"; };
+		72B5EDB71865B0EB00FF363E /* BTCloseToBleViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BTCloseToBleViewController.m; path = "View Controllers/BTCloseToBleViewController.m"; sourceTree = "<group>"; };
+		72B5EDB91865B1AB00FF363E /* closeto_ble_bg@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "closeto_ble_bg@2x.png"; sourceTree = "<group>"; };
 		72B67A6D1839BEBD00294A08 /* PCLineChartView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PCLineChartView.h; sourceTree = "<group>"; };
 		72B67A6E1839BEBD00294A08 /* PCLineChartView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PCLineChartView.m; sourceTree = "<group>"; };
 		72B67A711839E49400294A08 /* tabbar_sel.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tabbar_sel.png; sourceTree = "<group>"; };
@@ -673,6 +678,8 @@
 				723CD15E183B45EE007C486D /* BTSyncTwoViewController.m */,
 				723CD160183B72DA007C486D /* BTPastLinkViewController.h */,
 				723CD161183B72DA007C486D /* BTPastLinkViewController.m */,
+				72B5EDB61865B0EB00FF363E /* BTCloseToBleViewController.h */,
+				72B5EDB71865B0EB00FF363E /* BTCloseToBleViewController.m */,
 			);
 			name = "同步页面";
 			sourceTree = "<group>";
@@ -830,6 +837,7 @@
 		724544891838AD130070F700 /* UIImagess */ = {
 			isa = PBXGroup;
 			children = (
+				72B5EDB91865B1AB00FF363E /* closeto_ble_bg@2x.png */,
 				72EE545D1846F99D00093583 /* Phisical */,
 				723F0ECA183C5DFE005F1921 /* Sync */,
 				72B67AB2183A418B00294A08 /* zhuceshur.png */,
@@ -1485,6 +1493,7 @@
 				729293E41838A726007B09A7 /* shezhi_unselected.png in Resources */,
 				723F9C48183F3DA400732359 /* sync_unselected1@2x.png in Resources */,
 				723F24A618308925001F27DA /* 4.png in Resources */,
+				72B5EDBA1865B1AB00FF363E /* closeto_ble_bg@2x.png in Resources */,
 				724AB217186007FD00067CAD /* accessory_blue@2x.png in Resources */,
 				723F24A118308925001F27DA /* 1@2x.png in Resources */,
 				724AB219186007FD00067CAD /* accessory_red@2x.png in Resources */,
@@ -1613,6 +1622,7 @@
 				7262FACD184DB15F005F3B67 /* BTGluViewController.m in Sources */,
 				72CFDD051856F2320008816D /* BTSettingCell.m in Sources */,
 				7262FAC7184DB105005F3B67 /* BTHeightViewController.m in Sources */,
+				72B5EDB81865B0EB00FF363E /* BTCloseToBleViewController.m in Sources */,
 				72B67AA4183A335800294A08 /* NSString+MKNetworkKitAdditions.m in Sources */,
 				72B67AAE183A33C400294A08 /* BTCheckVersion.m in Sources */,
 				72CB9C32182B590500C0DAF0 /* BTBandPeripheral.m in Sources */,

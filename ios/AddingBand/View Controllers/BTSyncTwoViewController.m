@@ -77,7 +77,7 @@ static BTSyncTwoViewController *syncTwoVC = nil;
    // NSLog(@"点击了测试按钮");
      NSLog(@"同步数据");
     //进行同步 这里也得判断设备是哪个设备啊
-    [self.bc sync:MAM_BAND_MODEL];
+    [self.bc scanAndSync];
 
     
 }
