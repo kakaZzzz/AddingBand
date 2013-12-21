@@ -34,6 +34,8 @@
         
         self.waitForNextSync = YES;
         
+        self.globals.displayBleList = NO;
+        
          [NSTimer scheduledTimerWithTimeInterval:SCAN_INTERVAL target:self selector:@selector(doScan:) userInfo:nil repeats:YES];
     }
     
@@ -81,6 +83,10 @@
             }
             
             self.globals.bleListCount = _allPeripherals.count;
+            
+            if (_allPeripherals.count) {
+                self.globals.displayBleList = YES;
+            }
             
             NSLog(@"array: %@", _allPeripherals);
             
@@ -267,6 +273,8 @@
         if(![_context save:&error]){
             NSLog(@"%@", [error localizedDescription]);
         }
+        
+        self.globals.displayBleList = NO;
     }
     
     //代理peripheral
@@ -776,6 +784,8 @@
             NSLog(@"%@", [err localizedDescription]);
         }
         
+        self.globals.displayBleList = YES;
+        
         //断开连接
         [_cm cancelPeripheralConnection:bp.handle];
         NSLog(@"cancel connected");
@@ -838,6 +848,8 @@
     if (bp && ! bp.isConnected) {
         self.globals.bleListCount = [_allPeripherals count];
     }
+    
+    self.globals.displayBleList = YES;
 
     if (bp && bp.isConnected) {
         [_cm cancelPeripheralConnection:bp.handle];
@@ -878,6 +890,8 @@
     
     //如果设备正在连接，则断开
     BTBandPeripheral* bp = [self getBpByName:name];
+    
+    self.globals.displayBleList = YES;
     
     if (bp && bp.isConnected) {
         [_cm cancelPeripheralConnection:bp.handle];

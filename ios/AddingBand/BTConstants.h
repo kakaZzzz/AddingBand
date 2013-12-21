@@ -67,9 +67,10 @@
 #define SYNC_CODE                       22
 
 //定时蓝牙扫描间隔
-#define SCAN_INTERVAL                   60.0
+#define SCAN_INTERVAL                   20.0
 
 //自动同步间隔
+
 #define AUTO_SYNC_INTERVAL              20.0
 
 //周边连接超时

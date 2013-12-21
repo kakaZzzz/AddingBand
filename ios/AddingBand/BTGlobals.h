@@ -25,6 +25,9 @@
 //手环总数
 @property(assign, nonatomic) NSInteger bleListCount;
 
+//是否显示蓝牙列表页
+@property(assign, nonatomic) Boolean displayBleList;
+
 //手环行数
 @property(assign, nonatomic) NSInteger selectedRow;
 +(BTGlobals*)sharedGlobals;
