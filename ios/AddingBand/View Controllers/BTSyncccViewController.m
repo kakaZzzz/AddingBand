@@ -469,7 +469,8 @@
     
     //BTBandPeripheral*bp  = [self.bc getBpByModel:@"A1"];
     //是否发现
-  //  BOOL isDisplyList = bp.
+    BOOL isWaitforSync = self.bc.waitForNextSync;
+    BOOL isDisplayBleList = self.g.displayBleList;
     Boolean isFinded = bp.isFinded;
     //是否连接
     Boolean isConnected = bp.isConnected;
@@ -477,8 +478,6 @@
     //是否正在连接中
     BOOL isConnecting = bp.isConnecting;
     
-    //    NSLog(@"设备是否正在连接  %d",isConnecting);
-    //
     if (isConnecting && !isConnected) {
         NSLog(@"开始连接动画");
         self.indicator.contentLabel.text = @"正在连接设备";
@@ -493,7 +492,7 @@
         [self.indicator stopAnimating];
         [self.timerAnimation invalidate];
     }
-    if (isFinded && !isConnected && !isConnecting) {
+    if (isDisplayBleList && isFinded && !isConnected && !isConnecting) {
         NSLog(@"发现未连接  %d",isConnecting);
         
         return 50;
@@ -520,7 +519,12 @@
     Boolean isConnected = bp.isConnected;
     
     //是否正在连接中
-     BOOL isConnecting = bp.isConnecting;
+    BOOL isConnecting = bp.isConnecting;
+    
+    BOOL isWaitforSync = self.bc.waitForNextSync;
+    
+    BOOL isDisplayBleList = self.g.displayBleList;
+
     //设备名称
     NSString* name = bp.name;
     
@@ -547,22 +551,20 @@
     NSLog(@"外围设备名称是 %@",name);
     
     //发现设备 但是木有连接 新设备
-    if (isFinded && !isConnected) {
+    if (isDisplayBleList) {
         
         NSLog(@"收到新设备。。。。。。。。。。。。");
         if (cellFind == nil) {
             cellFind = [[BTBluetoothFindCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifierFind];
         }
         cellFind.titleLabel.text = [NSString stringWithFormat:@"%@",name];
-        //移除搜索到历史设备 但未连接页面
-        //        if (![self isPastBL]) {
-        //            if (_pastVC.view) {
+
         if (isConnecting) {
-            [self addFindPastView];
+            [self addLinkSuccessfulView];
         }
-        else{
-            [_pastVC.view removeFromSuperview];
-        }
+//        else{
+//            [_pastVC.view removeFromSuperview];
+//        }
      
         //            }
         //
@@ -573,73 +575,117 @@
         //        }
         return cellFind;
     }
-     //连接成功
-    else if (isConnected)
-    {
+    
+    else{
+            if (cellConnet == nil) {
         
+                    cellConnet = [[BTBluetoothConnectedCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifierConnect tatget:self];
+               }
         
-        if (cellConnet == nil) {
-            
-            cellConnet = [[BTBluetoothConnectedCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifierConnect tatget:self];
+              //
+        if (isWaitforSync && isConnecting) {
+            [self addLinkSuccessfulView];
+            self.syncTwoVC.batteryLabel.text = [NSString stringWithFormat:@"电量:%@%@",batteryLevel,@"%"];
+                   self.syncTwoVC.linkLabel.text = [NSString stringWithFormat:@"正在同步...."];
+            _deleteButton.hidden = NO ;//导航栏上的按钮可按
+
         }
-        //        cellConnet.bluetoothName.text = [NSString stringWithFormat:@"%@  %@%@",name,batteryLevel,@"％"];
-        //        cellConnet.lastSyncTime.text = _lastSyncTime;//更新数据 从哪里读取数据
-        //
-        _deleteButton.hidden = NO ;//导航栏上的按钮可按
         
-        //再此 移除搜索到历史设备 但未连接页面
-        if (_pastVC.view) {
-            [_syncTwoVC.view removeFromSuperview];
+        if (isWaitforSync && !isConnecting) {
+            [self addLinkSuccessfulView];
+            self.syncTwoVC.linkLabel.text = [NSString stringWithFormat:@"等待同步"];
+
+           // self.syncTwoVC.batteryLabel.text = [NSString stringWithFormat:@"电量:%@%@",batteryLevel,@"%"];
+            _deleteButton.hidden = NO ;//导航栏上的按钮可按
+
         }
-        /*cell其实还存在  数据也在刷新 不过在此上面盖了一层view而已*/
-        //加载连接成功后的视图
-        [self addLinkSuccessfulView];
-        self.syncTwoVC.batteryLabel.text = [NSString stringWithFormat:@"电量:%@%@",batteryLevel,@"%"];
+
         
-        return cellConnet;
+        if (!isWaitforSync) {
+            [self addLinkSuccessfulView];
+            self.syncTwoVC.linkLabel.text = [NSString stringWithFormat:@"上次同步"];
+           _deleteButton.hidden = NO ;//导航栏上的按钮可按
+        }
         
+        
+            return cellConnet;
+
     }
-    //意外情况断开连接
-    else
-    {
-        
-        
-        NSLog(@"空加载个屁啊。。。。。。。。");
-        
-        
-        if (cellNofind == nil) {
-            
-            cellNofind = [[BTBluetoothLinkCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifierConnect];
-        }
-        //在此 移除连接成功页面  加载发现历史设备 但未连接状态页面
-        if (_syncTwoVC.view) {
-            [_syncTwoVC.view removeFromSuperview];
-        }
-        if (bp) {
-            //导航栏右边按钮隐藏
-            self.deleteButton.hidden = NO;
-            //加载发现历史设备 但未连接页面
-            [self addFindPastView];
-            
-        }
-        //新出现的问题 当没有bp的时候也会莫名的走cellForRow方法？？？？
-        if (bp == nil) {
-            
-             [_syncTwoVC.view removeFromSuperview];
-            [_pastVC.view removeFromSuperview];
-            [self.indicator startAnimating];
-            if (!self.timerAnimation.isValid) {
-                self.timerAnimation =[NSTimer timerWithTimeInterval:50 target:self selector:@selector(stopIndicatorAnimation) userInfo:nil repeats:NO];
-                [[NSRunLoop currentRunLoop] addTimer:self.timerAnimation forMode:NSRunLoopCommonModes];
-            }
-            
-        }
-        
-        cellNofind.bluetoothName.backgroundColor = [UIColor grayColor];
-        cellNofind.bluetoothName.text = [NSString stringWithFormat:@"%@  %@",bp.name,batteryLevel];
-        
-        return cellNofind;
-    }
+    
+    
+    
+    
+    
+    
+    
+    
+//     //连接成功
+//    else if (isConnected)
+//    {
+//        
+//        
+//        if (cellConnet == nil) {
+//            
+//            cellConnet = [[BTBluetoothConnectedCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifierConnect tatget:self];
+//        }
+//        //        cellConnet.bluetoothName.text = [NSString stringWithFormat:@"%@  %@%@",name,batteryLevel,@"％"];
+//        //        cellConnet.lastSyncTime.text = _lastSyncTime;//更新数据 从哪里读取数据
+//        //
+//        _deleteButton.hidden = NO ;//导航栏上的按钮可按
+//        
+//        //再此 移除搜索到历史设备 但未连接页面
+//        if (_pastVC.view) {
+//            [_syncTwoVC.view removeFromSuperview];
+//        }
+//        /*cell其实还存在  数据也在刷新 不过在此上面盖了一层view而已*/
+//        //加载连接成功后的视图
+//        [self addLinkSuccessfulView];
+//        self.syncTwoVC.batteryLabel.text = [NSString stringWithFormat:@"电量:%@%@",batteryLevel,@"%"];
+//        
+//        return cellConnet;
+//        
+//    }
+//    //意外情况断开连接
+//    else
+//    {
+//        
+//        
+//        NSLog(@"空加载个屁啊。。。。。。。。");
+//        
+//        
+//        if (cellNofind == nil) {
+//            
+//            cellNofind = [[BTBluetoothLinkCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifierConnect];
+//        }
+//        //在此 移除连接成功页面  加载发现历史设备 但未连接状态页面
+//        if (_syncTwoVC.view) {
+//            [_syncTwoVC.view removeFromSuperview];
+//        }
+//        if (bp) {
+//            //导航栏右边按钮隐藏
+//            self.deleteButton.hidden = NO;
+//            //加载发现历史设备 但未连接页面
+//            [self addFindPastView];
+//            
+//        }
+//        //新出现的问题 当没有bp的时候也会莫名的走cellForRow方法？？？？
+//        if (bp == nil) {
+//            
+//             [_syncTwoVC.view removeFromSuperview];
+//            [_pastVC.view removeFromSuperview];
+//            [self.indicator startAnimating];
+//            if (!self.timerAnimation.isValid) {
+//                self.timerAnimation =[NSTimer timerWithTimeInterval:50 target:self selector:@selector(stopIndicatorAnimation) userInfo:nil repeats:NO];
+//                [[NSRunLoop currentRunLoop] addTimer:self.timerAnimation forMode:NSRunLoopCommonModes];
+//            }
+//            
+//        }
+//        
+//        cellNofind.bluetoothName.backgroundColor = [UIColor grayColor];
+//        cellNofind.bluetoothName.text = [NSString stringWithFormat:@"%@  %@",bp.name,batteryLevel];
+//        
+//        return cellNofind;
+//    }
     
     
 }
@@ -768,7 +814,7 @@
     NSLog(@"加载连接成功页面...");
     self.syncTwoVC = [BTSyncTwoViewController shareSyncTwoview];
     _syncTwoVC.view.frame = CGRectMake(0, 0, _syncTwoVC.view.frame.size.width, _syncTwoVC.view.frame.size.height);
-    self.syncTwoVC.linkLabel.text = @"正在同步........";
+    self.syncTwoVC.linkLabel.text = @"等待同步";
     [self.view addSubview:_syncTwoVC.view];
     _deleteButton.hidden = NO;
    

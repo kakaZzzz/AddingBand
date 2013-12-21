@@ -84,7 +84,7 @@
             
             self.globals.bleListCount = _allPeripherals.count;
             
-            if (_allPeripherals.count) {
+            if (_allPeripherals.count == 0) {
                 self.globals.displayBleList = YES;
             }
             
@@ -183,7 +183,7 @@
             //缓存周边对象，变更查找状态
             [find addPeripheral:peripheral];
             find.isFinded = YES;
-            if (isLast) {
+            if (_waitForNextSync) {
                 find.isConnecting = YES;//改过
            }
 
