@@ -9,7 +9,8 @@
 #import "BTMainViewController.h"
 #import "LayoutDef.h"
 #import "BTMainViewCell.h"
-
+#import "UMSocialSnsService.h"//友盟分享
+#import "UMSocial.h"
 #define NAVIGATIONBAR_Y 0
 #define NAVIGATIONBAR_HEIGHT 65
 @interface BTMainViewController ()
@@ -40,9 +41,82 @@
 {
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor yellowColor];
+   
     [self addSubviews];
+    [self addChageScrollViewToTopButton];
 	// Do any additional setup after loading the view.
 }
+#pragma mark - 加载返回第一行按钮
+- (void)addChageScrollViewToTopButton
+{
+    self.toTopButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    _toTopButton.frame = CGRectMake(10, self.view.frame.size.height - 100, 50, 50);
+    _toTopButton.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.5];
+    [_toTopButton addTarget:self action:@selector(toTop:) forControlEvents:UIControlEventTouchUpInside];
+    [_toTopButton setTitle:@"toTop" forState:UIControlStateNormal];
+    [self.view addSubview:_toTopButton];
+}
+//返回到首页
+- (void)toTop:(UIButton *)button
+{
+    [UIView animateWithDuration:0.1 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+     self.tableView.contentOffset = CGPointMake(0, 0);
+    } completion:nil];
+    
+    //友盟分享
+//    UMSocialSnsPlatform *sinaPlatform = [UMSocialSnsPlatformManager getSocialPlatformWithName:UMShareToSina];
+//    sinaPlatform.bigImageName = @"icon";
+//    sinaPlatform.displayName = @"微博";
+//    sinaPlatform.snsClickHandler = ^(UIViewController *presentingController, UMSocialControllerService * socialControllerService, BOOL isPresentInController){
+//        NSLog(@"点击新浪微博的响应");
+//        
+//
+//  
+//    };
+
+//    [UMSocialSnsService presentSnsIconSheetView:self
+//                                         appKey:nil
+//                                      shareText:@"你要分享的文字"
+//                                     shareImage:[UIImage imageNamed:@"icon.png"]
+//                                shareToSnsNames:[NSArray arrayWithObjects:UMShareToQzone,UMShareToTencent,UMShareToWechatSession,UMShareToWechatTimeline,nil]
+//                                       delegate:nil];
+
+ 
+    
+//    //以下方法可以实现自定义页面
+//    if (![UMSocialAccountManager isOauthWithPlatform:UMShareToSina]) {
+//        //进入授权页面
+//        [UMSocialSnsPlatformManager getSocialPlatformWithName:UMShareToSina].loginClickHandler(self,[UMSocialControllerService defaultControllerService],YES,^(UMSocialResponseEntity *response){
+//            if (response.responseCode == UMSResponseCodeSuccess) {
+//                //获取微博用户名、uid、token等
+//                UMSocialAccountEntity *snsAccount = [[UMSocialAccountManager socialAccountDictionary] valueForKey:UMShareToSina];
+//                NSLog(@"username is %@, uid is %@, token is %@",snsAccount.userName,snsAccount.usid,snsAccount.accessToken);
+//                //进入你的分享内容编辑页面
+//                
+//            }
+//        });
+//
+//        };
+//    
+//    if ([UMSocialAccountManager isOauthWithPlatform:UMShareToSina]) {
+//        NSLog(@"已授权；；；；；");
+//        [[UMSocialDataService defaultDataService]  postSNSWithTypes:@[UMShareToSina] content:@"分享内嵌文字啦啦啦" image:nil location:nil urlResource:nil presentedController:self completion:^(UMSocialResponseEntity *response){
+//            if (response.responseCode == UMSResponseCodeSuccess) {
+//                NSLog(@"分享成功！");
+//            }
+//        }];
+//    }
+    
+    
+    
+    //单独测试微信朋友圈
+    
+            [[UMSocialDataService defaultDataService]  postSNSWithTypes:@[UMShareToWechatTimeline] content:@"分享内嵌文字啦啦啦" image:nil location:nil urlResource:nil presentedController:self completion:^(UMSocialResponseEntity *response){
+                if (response.responseCode == UMSResponseCodeSuccess) {
+                    NSLog(@"分享成功！");
+                }
+           }];
+ }
 #pragma mark - 加载子视图
 - (void)addSubviews
 {
@@ -60,7 +134,7 @@
 
     //加载tableview
     self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, _headView.frame.origin.y + _headView.frame.size.height, 320,self.view.frame.size.height)];
-    _tableView.backgroundColor = [UIColor blueColor];
+    _tableView.backgroundColor = [UIColor whiteColor];
     _tableView.dataSource = self;
     _tableView.delegate = self;
     [self.view addSubview:_tableView];
@@ -101,7 +175,7 @@
 #pragma mark - Table view data source
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 100.0;
+    return 150.0;
 }
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {

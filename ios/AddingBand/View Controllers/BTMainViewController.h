@@ -14,4 +14,5 @@ UITableViewDelegate>
 @property(nonatomic,strong)UIView *headView;
 @property(nonatomic,strong)UIView *tableViewBackgroundView;
 @property(nonatomic,strong)UITableView *tableView;
+@property(nonatomic,strong)UIButton *toTopButton;
 @end

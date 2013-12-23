@@ -14,6 +14,8 @@
 #import "BTSyncTwoViewController.h"
 #import "BTGetData.h"
 #import "BTUserData.h"
+#import "UMSocialData.h"//友盟分享组件
+#import "UMSocial.h"
 @implementation BTAppDelegate
 
 @synthesize managedObjectContext = _managedObjectContext;
@@ -60,8 +62,22 @@
     }
     
     
+//    //分享 注册
+//    [ShareSDK registerApp:@"fa5b01a73b0"];
+//    
+//    /**
+//     连接新浪微博开放平台应用以使用相关功能，此应用需要引用SinaWeiboConnection.framework
+//     http://open.weibo.com上注册新浪微博开放平台应用，并将相关信息填写到以下字段
+//     **/
+//    [ShareSDK connectSinaWeiboWithAppKey:@"48993404"
+//                               appSecret:@"cffc91bba791bdc887684f2ab20c09c3"
+//                             redirectUri:@"http://www.sharesdk.cn"];
     
     
+    //友盟分享
+   [UMSocialData setAppKey:@"52b7fae256240bd52f18fdd2"];
+    
+    [UMSocialConfig setWXAppId:@"wxd9a39c7122aa6516" url:nil];
     return YES;
 }
 

@@ -14,6 +14,9 @@
 @property(nonatomic,strong)UILabel *titleLabel;
 @property(nonatomic,strong)UIImageView *accessoryImage;
 @property(nonatomic,strong)UILabel *contentLabel;
+@property(nonatomic,strong)UILabel *countLabel;
+@property(nonatomic,strong)UILabel *conditonLabel;
+@property(nonatomic,strong)UILabel *measureContentLabel;
 
-+ (CGFloat)cellHeight:(NSString *)content;
++ (CGFloat)cellHeightWithisHasTimeFlag:(BOOL)timeFlag;
 @end
