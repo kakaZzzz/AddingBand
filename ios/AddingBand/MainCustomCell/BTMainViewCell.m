@@ -15,7 +15,7 @@
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
         // Initialization code
-        [self createCustomCell];
+         [self createCustomCell];
     }
     return self;
 }
@@ -24,6 +24,10 @@
 {
     // self.contentView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"settingcell_bg.png"]];
     
+    UIView *aView = [[UIView alloc] initWithFrame:self.frame];
+    aView.backgroundColor = [UIColor whiteColor];
+    self.backgroundView = aView;
+
     //时间标签
     self.dayLabel = [[UILabel alloc] initWithFrame:CGRectMake(0,5, 50, 20)];
     _dayLabel.font = [UIFont systemFontOfSize:17.0f];

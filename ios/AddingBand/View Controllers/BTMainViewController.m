@@ -11,6 +11,8 @@
 #import "BTMainViewCell.h"
 #import "UMSocialSnsService.h"//友盟分享
 #import "UMSocial.h"
+
+#import "BTKnowledgeViewController.h"
 #define NAVIGATIONBAR_Y 0
 #define NAVIGATIONBAR_HEIGHT 65
 @interface BTMainViewController ()
@@ -44,6 +46,7 @@
    
     [self addSubviews];
     [self addChageScrollViewToTopButton];
+    [self createHeaderView];
 	// Do any additional setup after loading the view.
 }
 #pragma mark - 加载返回第一行按钮
@@ -63,59 +66,6 @@
      self.tableView.contentOffset = CGPointMake(0, 0);
     } completion:nil];
     
-    //友盟分享
-//    UMSocialSnsPlatform *sinaPlatform = [UMSocialSnsPlatformManager getSocialPlatformWithName:UMShareToSina];
-//    sinaPlatform.bigImageName = @"icon";
-//    sinaPlatform.displayName = @"微博";
-//    sinaPlatform.snsClickHandler = ^(UIViewController *presentingController, UMSocialControllerService * socialControllerService, BOOL isPresentInController){
-//        NSLog(@"点击新浪微博的响应");
-//        
-//
-//  
-//    };
-
-//    [UMSocialSnsService presentSnsIconSheetView:self
-//                                         appKey:nil
-//                                      shareText:@"你要分享的文字"
-//                                     shareImage:[UIImage imageNamed:@"icon.png"]
-//                                shareToSnsNames:[NSArray arrayWithObjects:UMShareToQzone,UMShareToTencent,UMShareToWechatSession,UMShareToWechatTimeline,nil]
-//                                       delegate:nil];
-
- 
-    
-//    //以下方法可以实现自定义页面
-//    if (![UMSocialAccountManager isOauthWithPlatform:UMShareToSina]) {
-//        //进入授权页面
-//        [UMSocialSnsPlatformManager getSocialPlatformWithName:UMShareToSina].loginClickHandler(self,[UMSocialControllerService defaultControllerService],YES,^(UMSocialResponseEntity *response){
-//            if (response.responseCode == UMSResponseCodeSuccess) {
-//                //获取微博用户名、uid、token等
-//                UMSocialAccountEntity *snsAccount = [[UMSocialAccountManager socialAccountDictionary] valueForKey:UMShareToSina];
-//                NSLog(@"username is %@, uid is %@, token is %@",snsAccount.userName,snsAccount.usid,snsAccount.accessToken);
-//                //进入你的分享内容编辑页面
-//                
-//            }
-//        });
-//
-//        };
-//    
-//    if ([UMSocialAccountManager isOauthWithPlatform:UMShareToSina]) {
-//        NSLog(@"已授权；；；；；");
-//        [[UMSocialDataService defaultDataService]  postSNSWithTypes:@[UMShareToSina] content:@"分享内嵌文字啦啦啦" image:nil location:nil urlResource:nil presentedController:self completion:^(UMSocialResponseEntity *response){
-//            if (response.responseCode == UMSResponseCodeSuccess) {
-//                NSLog(@"分享成功！");
-//            }
-//        }];
-//    }
-    
-    
-    
-    //单独测试微信朋友圈
-    
-            [[UMSocialDataService defaultDataService]  postSNSWithTypes:@[UMShareToWechatTimeline] content:@"分享内嵌文字啦啦啦" image:nil location:nil urlResource:nil presentedController:self completion:^(UMSocialResponseEntity *response){
-                if (response.responseCode == UMSResponseCodeSuccess) {
-                    NSLog(@"分享成功！");
-                }
-           }];
  }
 #pragma mark - 加载子视图
 - (void)addSubviews
@@ -124,6 +74,11 @@
     _navigationBgView.backgroundColor = kGlobalColor;
     [self.view addSubview:_navigationBgView];
     
+    UIButton *clockButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [clockButton setTitle:@"产检期" forState:UIControlStateNormal];
+    [clockButton addTarget:self action:@selector(inputYourPreproduction:) forControlEvents:UIControlEventTouchUpInside];
+    clockButton.frame = CGRectMake(320 - 100, 30, 100, 50);
+    [_navigationBgView addSubview:clockButton];
 //    self.tableViewBackgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, _navigationBgView.frame.origin.y + _navigationBgView.frame.size.height, 320, self.view.frame.size.height - NAVIGATIONBAR_HEIGHT)];
 //    _tableViewBackgroundView.backgroundColor = [UIColor redColor];
 //    [self.view addSubview:_tableViewBackgroundView];
@@ -139,6 +94,13 @@
     _tableView.delegate = self;
     [self.view addSubview:_tableView];
 }
+#pragma mark - 各种button event
+- (void)inputYourPreproduction:(UIButton *)button
+{
+    UIDatePicker *datePicker = [[UIDatePicker alloc] init];
+    datePicker.datePickerMode = UIDatePickerModeDateAndTime;
+    [self.view addSubview:datePicker];
+}
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
     if (scrollView.contentOffset.y >= 0 && scrollView.contentOffset.y <= 40) {
@@ -150,7 +112,7 @@
          self.tableView.frame = CGRectMake(0, NAVIGATIONBAR_HEIGHT - scrollView.contentOffset.y + 40, 320, self.view.frame.size.height);
 
      } completion:nil];
-         [self.view bringSubviewToFront:_navigationBgView];
+         //[self.view bringSubviewToFront:_navigationBgView];
     }
     
     
@@ -171,6 +133,13 @@
 
     }
     NSLog(@"..........%f",_tableView.contentOffset.y);
+    
+    //刷新数据
+    if (_refreshHeaderView)
+	{
+        [_refreshHeaderView egoRefreshScrollViewDidScroll:scrollView];
+    }
+
 }
 #pragma mark - Table view data source
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -245,10 +214,7 @@
     if (cell == nil) {
         cell = [[BTMainViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     }
-//    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-//    self.tableView.separatorColor = [UIColor clearColor];
-//    BTPhisicalModel *model = [self.dataArray objectAtIndex:indexPath.row];
-//    cell.physicalModel = model;
+
     cell.textLabel.text = @"哈哈";
     return cell;
     
@@ -257,9 +223,122 @@
 #pragma mark - tabelview delegate
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    BTKnowledgeViewController *knowledge = [[BTKnowledgeViewController alloc] init];
+    knowledge.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:knowledge animated:YES];
+    
+    
+}
+
+
+//＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+//初始化刷新视图
+//＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+#pragma mark
+#pragma methods for creating and removing the header view
+
+-(void)createHeaderView{
+    if (_refreshHeaderView && [_refreshHeaderView superview]) {
+        [_refreshHeaderView removeFromSuperview];
+    }
+    //	_refreshHeaderView = [[EGORefreshTableHeaderView alloc] initWithFrame:
+    //                          CGRectMake(0.0f, 0.0f - self.view.bounds.size.height,
+    //                                     self.view.frame.size.width, self.view.bounds.size.height) orientation:YES];
+    _refreshHeaderView = [[EGORefreshTableHeaderView alloc]initWithFrame:
+                          CGRectMake(0.0f, 0.0f - self.view.bounds.size.height,self.view.frame.size.width, self.view.bounds.size.height) arrowImageName:@"blueArrow.png" textColor:[UIColor whiteColor] orientation:YES];
+    _refreshHeaderView.delegate = self;
+   	[self.tableView addSubview:_refreshHeaderView];
+    
+    [_refreshHeaderView refreshLastUpdatedDate];
+}
+
+-(void)testFinishedLoadData{
+	
+    
+    //[self setFooterView];
+}
+//===============
+//刷新delegate
+#pragma mark -
+#pragma mark data reloading methods that must be overide by the subclass
+
+-(void)beginToReloadData:(EGORefreshPos)aRefreshPos{
+	
+	//  should be calling your tableviews data source model to reload
+	_reloading = YES;
+    
+    if (aRefreshPos == EGORefreshHeader)
+	{
+        // pull down to refresh data
+        [self performSelector:@selector(refreshView) withObject:nil afterDelay:2.0];
+ 	}
+}
+
+//刷新调用的方法
+-(void)refreshView
+{
+    
+    //[self requestNetwork];
+    
+    NSLog(@"刷新完成");
+    [self finishReloadingData];
     
     
     
+}
+
+#pragma mark -
+#pragma mark method that should be called when the refreshing is finished
+- (void)finishReloadingData{
+	
+	//  model should call this when its done loading
+	_reloading = NO;
+    
+	if (_refreshHeaderView) {
+        [_refreshHeaderView egoRefreshScrollViewDataSourceDidFinishedLoading:self.tableView];
+    }
+    
+    
+    
+}
+
+#pragma mark -
+#pragma mark UIScrollViewDelegate Methods
+
+
+
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate{
+	if (_refreshHeaderView)
+	{
+        [_refreshHeaderView egoRefreshScrollViewDidEndDragging:scrollView];
+    }
+	
+}
+
+
+#pragma mark -
+#pragma mark EGORefreshTableDelegate Methods
+
+- (void)egoRefreshTableDidTriggerRefresh:(EGORefreshPos)aRefreshPos
+{
+	
+	[self beginToReloadData:aRefreshPos];
+	
+}
+
+- (BOOL)egoRefreshTableDataSourceIsLoading:(UIView*)view{
+	
+	return _reloading; // should return if data source model is reloading
+	
+}
+
+
+// if we don't realize this method, it won't display the refresh timestamp
+- (NSDate*)egoRefreshTableDataSourceLastUpdated:(UIView*)view
+{
+	
+	return [NSDate date]; // should return date data source was last changed
+	
 }
 
 - (void)didReceiveMemoryWarning

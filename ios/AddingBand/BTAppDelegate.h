@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "WXApi.h"
 @class BTCustomTabBarController;
-@interface BTAppDelegate : UIResponder <UIApplicationDelegate>
+@interface BTAppDelegate : UIResponder <UIApplicationDelegate,WXApiDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
 

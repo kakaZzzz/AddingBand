@@ -141,6 +141,9 @@
 		7266B61518374C0100B1452A /* BTPhsicalData.m in Sources */ = {isa = PBXBuildFile; fileRef = 7266B61418374C0100B1452A /* BTPhsicalData.m */; };
 		726EAFCD185AE84F000A00FD /* BTBarMarkView.m in Sources */ = {isa = PBXBuildFile; fileRef = 726EAFCC185AE84F000A00FD /* BTBarMarkView.m */; };
 		72716EE018640FE900499D76 /* BTMainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 72716EDF18640FE900499D76 /* BTMainViewController.m */; };
+		72729EDD1869792C009C2EDE /* EGORefreshTableFooterView.m in Sources */ = {isa = PBXBuildFile; fileRef = 72729ED91869792C009C2EDE /* EGORefreshTableFooterView.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		72729EDE1869792C009C2EDE /* EGORefreshTableHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 72729EDB1869792C009C2EDE /* EGORefreshTableHeaderView.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		72729EE018697C7F009C2EDE /* blueArrow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 72729EDF18697C7F009C2EDE /* blueArrow@2x.png */; };
 		72774F4F1844517800CA034E /* BTAccountCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 72774F4E1844517800CA034E /* BTAccountCell.m */; };
 		72774FE11844762F00CA034E /* sina_sel@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 72774FDB1844762F00CA034E /* sina_sel@2x.png */; };
 		72774FE21844762F00CA034E /* sina@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 72774FDC1844762F00CA034E /* sina@2x.png */; };
@@ -181,6 +184,15 @@
 		7298793718616A7B00039E83 /* physical_grade@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7298793618616A7B00039E83 /* physical_grade@2x.png */; };
 		729879391861716D00039E83 /* physical_sport_bg@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 729879381861716D00039E83 /* physical_sport_bg@2x.png */; };
 		7298793C18618B4200039E83 /* BTScrollViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7298793B18618B4200039E83 /* BTScrollViewController.m */; };
+		72A3735418694199003F5B24 /* BTKnowledgeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 72A3735318694199003F5B24 /* BTKnowledgeViewController.m */; };
+		72A373581869433B003F5B24 /* HYActivityView.m in Sources */ = {isa = PBXBuildFile; fileRef = 72A373571869433B003F5B24 /* HYActivityView.m */; };
+		72A373601869435F003F5B24 /* share_platform_email@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 72A373591869435F003F5B24 /* share_platform_email@2x.png */; };
+		72A373611869435F003F5B24 /* share_platform_evernote@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 72A3735A1869435F003F5B24 /* share_platform_evernote@2x.png */; };
+		72A373621869435F003F5B24 /* share_platform_imessage@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 72A3735B1869435F003F5B24 /* share_platform_imessage@2x.png */; };
+		72A373631869435F003F5B24 /* share_platform_qqfriends@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 72A3735C1869435F003F5B24 /* share_platform_qqfriends@2x.png */; };
+		72A373641869435F003F5B24 /* share_platform_sina@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 72A3735D1869435F003F5B24 /* share_platform_sina@2x.png */; };
+		72A373651869435F003F5B24 /* share_platform_wechat@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 72A3735E1869435F003F5B24 /* share_platform_wechat@2x.png */; };
+		72A373661869435F003F5B24 /* share_platform_wechattimeline@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 72A3735F1869435F003F5B24 /* share_platform_wechattimeline@2x.png */; };
 		72AF9BA7183CD9F600BCC6F6 /* BTBleList.m in Sources */ = {isa = PBXBuildFile; fileRef = 72AF9BA6183CD9F600BCC6F6 /* BTBleList.m */; };
 		72AFBA5718431995004F0350 /* BarChartView.m in Sources */ = {isa = PBXBuildFile; fileRef = 72AFBA3F18431995004F0350 /* BarChartView.m */; };
 		72AFBA5818431995004F0350 /* BarLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 72AFBA4118431995004F0350 /* BarLabel.m */; };
@@ -469,6 +481,12 @@
 		726EAFCC185AE84F000A00FD /* BTBarMarkView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTBarMarkView.m; sourceTree = "<group>"; };
 		72716EDE18640FE900499D76 /* BTMainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BTMainViewController.h; path = "View Controllers/BTMainViewController.h"; sourceTree = "<group>"; };
 		72716EDF18640FE900499D76 /* BTMainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BTMainViewController.m; path = "View Controllers/BTMainViewController.m"; sourceTree = "<group>"; };
+		72729ED81869792C009C2EDE /* EGORefreshTableFooterView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EGORefreshTableFooterView.h; sourceTree = "<group>"; };
+		72729ED91869792C009C2EDE /* EGORefreshTableFooterView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EGORefreshTableFooterView.m; sourceTree = "<group>"; };
+		72729EDA1869792C009C2EDE /* EGORefreshTableHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EGORefreshTableHeaderView.h; sourceTree = "<group>"; };
+		72729EDB1869792C009C2EDE /* EGORefreshTableHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EGORefreshTableHeaderView.m; sourceTree = "<group>"; };
+		72729EDC1869792C009C2EDE /* EGOViewCommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EGOViewCommon.h; sourceTree = "<group>"; };
+		72729EDF18697C7F009C2EDE /* blueArrow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "blueArrow@2x.png"; sourceTree = "<group>"; };
 		72774F4D1844517800CA034E /* BTAccountCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTAccountCell.h; sourceTree = "<group>"; };
 		72774F4E1844517800CA034E /* BTAccountCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTAccountCell.m; sourceTree = "<group>"; };
 		72774FDB1844762F00CA034E /* sina_sel@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sina_sel@2x.png"; sourceTree = "<group>"; };
@@ -515,6 +533,17 @@
 		729879381861716D00039E83 /* physical_sport_bg@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "physical_sport_bg@2x.png"; sourceTree = "<group>"; };
 		7298793A18618B4200039E83 /* BTScrollViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BTScrollViewController.h; path = CustomSuperViewController/BTScrollViewController.h; sourceTree = "<group>"; };
 		7298793B18618B4200039E83 /* BTScrollViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BTScrollViewController.m; path = CustomSuperViewController/BTScrollViewController.m; sourceTree = "<group>"; };
+		72A3735218694199003F5B24 /* BTKnowledgeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BTKnowledgeViewController.h; path = "View Controllers/BTKnowledgeViewController.h"; sourceTree = "<group>"; };
+		72A3735318694199003F5B24 /* BTKnowledgeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BTKnowledgeViewController.m; path = "View Controllers/BTKnowledgeViewController.m"; sourceTree = "<group>"; };
+		72A373561869433B003F5B24 /* HYActivityView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HYActivityView.h; sourceTree = "<group>"; };
+		72A373571869433B003F5B24 /* HYActivityView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HYActivityView.m; sourceTree = "<group>"; };
+		72A373591869435F003F5B24 /* share_platform_email@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "share_platform_email@2x.png"; sourceTree = "<group>"; };
+		72A3735A1869435F003F5B24 /* share_platform_evernote@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "share_platform_evernote@2x.png"; sourceTree = "<group>"; };
+		72A3735B1869435F003F5B24 /* share_platform_imessage@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "share_platform_imessage@2x.png"; sourceTree = "<group>"; };
+		72A3735C1869435F003F5B24 /* share_platform_qqfriends@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "share_platform_qqfriends@2x.png"; sourceTree = "<group>"; };
+		72A3735D1869435F003F5B24 /* share_platform_sina@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "share_platform_sina@2x.png"; sourceTree = "<group>"; };
+		72A3735E1869435F003F5B24 /* share_platform_wechat@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "share_platform_wechat@2x.png"; sourceTree = "<group>"; };
+		72A3735F1869435F003F5B24 /* share_platform_wechattimeline@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "share_platform_wechattimeline@2x.png"; sourceTree = "<group>"; };
 		72AF9BA5183CD9F600BCC6F6 /* BTBleList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BTBleList.h; path = AddingBand/BTBleList.h; sourceTree = "<group>"; };
 		72AF9BA6183CD9F600BCC6F6 /* BTBleList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BTBleList.m; path = AddingBand/BTBleList.m; sourceTree = "<group>"; };
 		72AFBA3E18431995004F0350 /* BarChartView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BarChartView.h; sourceTree = "<group>"; };
@@ -889,6 +918,7 @@
 		72414668182758FB008B05C5 /* 二级页面 */ = {
 			isa = PBXGroup;
 			children = (
+				72A37351186940FD003F5B24 /* 知识详情 */,
 				7262FAC1184DB02E005F3B67 /* 妈妈体征页面 */,
 				7266F03418628FE00029F6A3 /* 设置页面 */,
 				7231BE591859B36A009A6DB5 /* 运动量详情 */,
@@ -1114,9 +1144,23 @@
 			name = "设置页面";
 			sourceTree = "<group>";
 		};
+		72729ED71869792C009C2EDE /* EGO */ = {
+			isa = PBXGroup;
+			children = (
+				72729EDF18697C7F009C2EDE /* blueArrow@2x.png */,
+				72729ED81869792C009C2EDE /* EGORefreshTableFooterView.h */,
+				72729ED91869792C009C2EDE /* EGORefreshTableFooterView.m */,
+				72729EDA1869792C009C2EDE /* EGORefreshTableHeaderView.h */,
+				72729EDB1869792C009C2EDE /* EGORefreshTableHeaderView.m */,
+				72729EDC1869792C009C2EDE /* EGOViewCommon.h */,
+			);
+			path = EGO;
+			sourceTree = "<group>";
+		};
 		727F1938182B37EE00CAD11A /* Library */ = {
 			isa = PBXGroup;
 			children = (
+				72729ED71869792C009C2EDE /* EGO */,
 				7231BE491859910C009A6DB5 /* PNChart */,
 				728C607E1855C45A00232B4F /* BTCustomBadge */,
 				72CB79F21852EDB50027664E /* BTTimerLabel */,
@@ -1184,6 +1228,32 @@
 				729293D91838A726007B09A7 /* tabbar_sel@2x.png */,
 			);
 			path = Tabbar;
+			sourceTree = "<group>";
+		};
+		72A37351186940FD003F5B24 /* 知识详情 */ = {
+			isa = PBXGroup;
+			children = (
+				72A3735518694319003F5B24 /* 分享 */,
+				72A3735218694199003F5B24 /* BTKnowledgeViewController.h */,
+				72A3735318694199003F5B24 /* BTKnowledgeViewController.m */,
+			);
+			name = "知识详情";
+			sourceTree = "<group>";
+		};
+		72A3735518694319003F5B24 /* 分享 */ = {
+			isa = PBXGroup;
+			children = (
+				72A373591869435F003F5B24 /* share_platform_email@2x.png */,
+				72A3735A1869435F003F5B24 /* share_platform_evernote@2x.png */,
+				72A3735B1869435F003F5B24 /* share_platform_imessage@2x.png */,
+				72A3735C1869435F003F5B24 /* share_platform_qqfriends@2x.png */,
+				72A3735D1869435F003F5B24 /* share_platform_sina@2x.png */,
+				72A3735E1869435F003F5B24 /* share_platform_wechat@2x.png */,
+				72A3735F1869435F003F5B24 /* share_platform_wechattimeline@2x.png */,
+				72A373561869433B003F5B24 /* HYActivityView.h */,
+				72A373571869433B003F5B24 /* HYActivityView.m */,
+			);
+			name = "分享";
 			sourceTree = "<group>";
 		};
 		72AFBA3D18431995004F0350 /* BarChart Library */ = {
@@ -1662,6 +1732,7 @@
 				729293E91838A726007B09A7 /* sync_unselected@2x.png in Resources */,
 				723F24AC18308925001F27DA /* checkBox_blankCheck.png in Resources */,
 				723F0ED3183C5E7F005F1921 /* 家丁手环icon.png in Resources */,
+				72A373601869435F003F5B24 /* share_platform_email@2x.png in Resources */,
 				724075E418488E000033BB90 /* sr_refresh@2X.png in Resources */,
 				729293F41838B2E6007B09A7 /* sep_line.png in Resources */,
 				72B418C518238BCA002EAD35 /* InfoPlist.strings in Resources */,
@@ -1673,6 +1744,7 @@
 				723F24AF18308925001F27DA /* checkBox_selectCheck@2x.png in Resources */,
 				729879391861716D00039E83 /* physical_sport_bg@2x.png in Resources */,
 				72774FE21844762F00CA034E /* sina@2x.png in Resources */,
+				72A373661869435F003F5B24 /* share_platform_wechattimeline@2x.png in Resources */,
 				723F9C42183F3DA400732359 /* home_unselected1@2x.png in Resources */,
 				725E9CB21868333300BD2354 /* UMSCommentDetailController.xib in Resources */,
 				725E9CAC1868333200BD2354 /* UMSocialLocalizable.strings in Resources */,
@@ -1684,11 +1756,14 @@
 				725E9CB31868333300BD2354 /* UMSCommentInputController.xib in Resources */,
 				729293DD1838A726007B09A7 /* home_unselected@2x.png in Resources */,
 				7298793718616A7B00039E83 /* physical_grade@2x.png in Resources */,
+				72A373611869435F003F5B24 /* share_platform_evernote@2x.png in Resources */,
 				724AB22F18603CB900067CAD /* markview_ba_middle@2x.png in Resources */,
 				72EE546B18470A0E00093583 /* icon.png in Resources */,
 				72B67A7E1839EE1900294A08 /* FlatDatePicker-Icon-Close.png in Resources */,
+				72A373621869435F003F5B24 /* share_platform_imessage@2x.png in Resources */,
 				723F0EE6183C67D0005F1921 /* sync_btn@2x.png in Resources */,
 				724AB2331860606400067CAD /* MHTabBarInactiveTab@2x.png in Resources */,
+				72A373651869435F003F5B24 /* share_platform_wechat@2x.png in Resources */,
 				723ECAF1184625FD00D47DFA /* demo1@2x.png in Resources */,
 				72B67A741839E49400294A08 /* tabbar_bg.png in Resources */,
 				723F9C41183F3DA400732359 /* home_selected1@2x.png in Resources */,
@@ -1704,6 +1779,7 @@
 				723F0EE3183C67D0005F1921 /* sync_btn_sel.png in Resources */,
 				723F24A818308925001F27DA /* btn_nor.png in Resources */,
 				729293F71838B2E6007B09A7 /* settingcell_bg@2x.png in Resources */,
+				72729EE018697C7F009C2EDE /* blueArrow@2x.png in Resources */,
 				72B67A7F1839EE1900294A08 /* FlatDatePicker-Icon-Close@2x.png in Resources */,
 				723F24A518308925001F27DA /* 3@2x.png in Resources */,
 				724AB2201860218700067CAD /* baby_weight_sel@2x.png in Resources */,
@@ -1725,9 +1801,11 @@
 				729293E71838A726007B09A7 /* sync_selected@2x.png in Resources */,
 				724146771827B116008B05C5 /* 分割线@2x.png in Resources */,
 				72B67A7D1839EE1900294A08 /* FlatDatePicker-Icon-Check@2x.png in Resources */,
+				72A373641869435F003F5B24 /* share_platform_sina@2x.png in Resources */,
 				724AB2291860245100067CAD /* physical_top_bg@2x.png in Resources */,
 				729293E31838A726007B09A7 /* shezhi_selected@2x.png in Resources */,
 				724AB216186007FD00067CAD /* accessory_gray@2x.png in Resources */,
+				72A373631869435F003F5B24 /* share_platform_qqfriends@2x.png in Resources */,
 				72B418D018238BCA002EAD35 /* Images.xcassets in Resources */,
 				72EE546A18470A0E00093583 /* icon@2x.png in Resources */,
 				723F24A718308925001F27DA /* 4@2x.png in Resources */,
@@ -1807,6 +1885,8 @@
 				7241465C18274581008B05C5 /* BTMainSuperCell.m in Sources */,
 				72CB9C31182B590500C0DAF0 /* BTBandCentral.m in Sources */,
 				723213551824D4E600C17EDC /* BTUndoCell.m in Sources */,
+				72729EDD1869792C009C2EDE /* EGORefreshTableFooterView.m in Sources */,
+				72729EDE1869792C009C2EDE /* EGORefreshTableHeaderView.m in Sources */,
 				7248694318518255008FD8FA /* BTBabyWeightViewController.m in Sources */,
 				72774F4F1844517800CA034E /* BTAccountCell.m in Sources */,
 				725E9B811867EDA100BD2354 /* BTMainviewModel.m in Sources */,
@@ -1832,6 +1912,7 @@
 				7262FAC4184DB08D005F3B67 /* BTWeightViewController.m in Sources */,
 				7231BE4818598670009A6DB5 /* BTFetalDailyViewController.m in Sources */,
 				72AFBA5818431995004F0350 /* BarLabel.m in Sources */,
+				72A373581869433B003F5B24 /* HYActivityView.m in Sources */,
 				724075E518488E000033BB90 /* SRRefreshView.m in Sources */,
 				723ECAED1845F9D300D47DFA /* PICircularProgressView.m in Sources */,
 				72AFBA5C18431995004F0350 /* UIViewSizeShortcuts.m in Sources */,
@@ -1842,6 +1923,7 @@
 				72B67A89183A2FC200294A08 /* BTModifyPasswordViewController.m in Sources */,
 				725E9B7E1867E3F900BD2354 /* BTKnowledgeCell.m in Sources */,
 				724F1CEB184F093300342DF7 /* BTRawData.m in Sources */,
+				72A3735418694199003F5B24 /* BTKnowledgeViewController.m in Sources */,
 				72CB9C41182B599E00C0DAF0 /* BTEntity.m in Sources */,
 				72B418F918238E2A002EAD35 /* BTPhysicalViewController.m in Sources */,
 				72AFBA5E18431995004F0350 /* XMLParser.m in Sources */,
@@ -2019,14 +2101,6 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					/Users/lanyu/dev/AddingBand/ios/ShareSDK_v2.6.1/Connection,
-					/Users/lanyu/dev/AddingBand/ios/ShareSDK_v2.6.1/Core,
-					/Users/lanyu/dev/AddingBand/ios/ShareSDK_v2.6.1/Extend/GooglePlusSDK,
-					/Users/lanyu/dev/AddingBand/ios/ShareSDK_v2.6.1/Extend/Pinterest.embeddedframework,
-					/Users/lanyu/dev/AddingBand/ios/ShareSDK_v2.6.1/Extend/QQConnectSDK,
-					/Users/lanyu/dev/AddingBand/ios/ShareSDK_v2.6.1/Extend/RenRenSDK,
-					/Users/lanyu/dev/AddingBand/ios/ShareSDK_v2.6.1,
-					/Users/lanyu/dev/AddingBand/ios/ShareSDK_v2.6.1/UI,
 					/Users/lanyu/dev/AddingBand/ios/UMSocial_Sdk_3.2/frameworks/TencentOpenAPI,
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -2058,14 +2132,6 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					/Users/lanyu/dev/AddingBand/ios/ShareSDK_v2.6.1/Connection,
-					/Users/lanyu/dev/AddingBand/ios/ShareSDK_v2.6.1/Core,
-					/Users/lanyu/dev/AddingBand/ios/ShareSDK_v2.6.1/Extend/GooglePlusSDK,
-					/Users/lanyu/dev/AddingBand/ios/ShareSDK_v2.6.1/Extend/Pinterest.embeddedframework,
-					/Users/lanyu/dev/AddingBand/ios/ShareSDK_v2.6.1/Extend/QQConnectSDK,
-					/Users/lanyu/dev/AddingBand/ios/ShareSDK_v2.6.1/Extend/RenRenSDK,
-					/Users/lanyu/dev/AddingBand/ios/ShareSDK_v2.6.1,
-					/Users/lanyu/dev/AddingBand/ios/ShareSDK_v2.6.1/UI,
 					/Users/lanyu/dev/AddingBand/ios/UMSocial_Sdk_3.2/frameworks/TencentOpenAPI,
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;

@@ -16,6 +16,7 @@
 #import "BTUserData.h"
 #import "UMSocialData.h"//友盟分享组件
 #import "UMSocial.h"
+#import "UMSocialConfig.h"
 @implementation BTAppDelegate
 
 @synthesize managedObjectContext = _managedObjectContext;
@@ -75,9 +76,12 @@
     
     
     //友盟分享
-   [UMSocialData setAppKey:@"52b7fae256240bd52f18fdd2"];
+    [UMSocialData setAppKey:@"52b7fae256240bd52f18fdd2"];
     
-    [UMSocialConfig setWXAppId:@"wxd9a39c7122aa6516" url:nil];
+    [UMSocialConfig setWXAppId:@"wxd9a39c7122aa6516" url:nil];//微信
+    //[WXApi registerApp:@"wxd9a39c7122aa6516"];//微信
+    
+   // [UMSocialConfig setQQAppId:@"100424468" url:nil importClasses:@[[QQApiInterface class],[TencentOAuth class]]];
     return YES;
 }
 
@@ -101,7 +105,27 @@
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+    
+    [UMSocialSnsService  applicationDidBecomeActive];
+    
 }
+- (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url
+{
+    return  [UMSocialSnsService handleOpenURL:url wxApiDelegate:nil];
+    
+   // return [WXApi handleOpenURL:url delegate:self];
+}
+
+- (BOOL)application:(UIApplication *)application
+            openURL:(NSURL *)url
+  sourceApplication:(NSString *)sourceApplication
+         annotation:(id)annotation
+
+{
+    return  [UMSocialSnsService handleOpenURL:url wxApiDelegate:nil];
+    //return [WXApi handleOpenURL:url delegate:self];
+}
+
 
 - (void)applicationWillTerminate:(UIApplication *)application
 {
