@@ -6,14 +6,30 @@ AddingBand
 ###目录结构
 
     ti - 2541蓝牙芯片的C代码
+       - 工程文件：ti\Projects\ble\Health\CC2541DB\SimpleBLEPeripheral.eww
     ios - app的obj-c代码
+        - 工程文件：ios\AddingBand.xcodeproj
 
 ###开发环境
 
-    ti - IAR：代码编辑、编译；
+    ti - IAR：代码编辑、编译
        - SmartRF_Flash_Programmer：下载程序到芯片里
+       - ble_Stack_1.3.2：蓝牙协议栈，包括库、驱动、示例代码等
+       
        - 安装文件在：快盘/!!Develper/CC2541
+       
+       - 调试方法：
+         1. IAR打开工程文件，左侧workspace里右键点击根节点选“Rebuild All”
+         2. 调试点右上角绿色按钮“Download And Debug”
+         3. 下载打开SmartRF_Flash_Programmer，“flash image”选ti\Projects\ble\Health\CC2541DB\CC2541\Exe\SimpleBLEPeripheral.hex，然后点“Perform actions”。
+       
     ios - xcode已经装好了
+    
+        - 调试方法：
+        1. 连上设备，左上角三角、方块按钮右边，选择到自己的设备名（下面是模拟器）
+        2. 点三角就下载并调试了，中间可能需要输入apple开发者账号信息：
+           账号：isodev@addinghome.com
+           密码：Batone520
     
 ##程序结构
 
