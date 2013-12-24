@@ -63,13 +63,13 @@ AddingBand
 具体特征含义：
     
     // Simple Profile Service UUID
-    #define HEALTH_SERV_UUID              0x2300
+    #define HEALTH_SERV_UUID              0x2300    //主要功能服务
     // Key Pressed UUID
-    #define HEALTH_SYNC_UUID              0x2301
-    #define HEALTH_CLOCK_UUID             0x2302
-    #define HEALTH_DATA_HEADER_UUID       0x2303
-    #define HEALTH_DATA_BODY_UUID         0x2304
+    #define HEALTH_SYNC_UUID              0x2301    //发起同步标志
+    #define HEALTH_CLOCK_UUID             0x2302    //现在时间的偏移量
+    #define HEALTH_DATA_HEADER_UUID       0x2303    //待同步数据的总长度
+    #define HEALTH_DATA_BODY_UUID         0x2304    //具体一条待同步数据
     
     // Battery Service UUIDs
-    #define BATT_SERVICE_UUID             0x180F  // Battery Service
-    #define BATT_LEVEL_UUID               0x2A19  // Battery Level
+    #define BATT_SERVICE_UUID             0x180F    // Battery Service
+    #define BATT_LEVEL_UUID               0x2A19    // Battery Level
