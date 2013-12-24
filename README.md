@@ -54,3 +54,22 @@ AddingBand
     
     ti\Components\hal\target\CC2541ST
     - hal_i2c.c：封装I2C底层操作
+    
+####特征和服务
+
+特征（Characteristic）是最基础的元素，相当于具体变量，可以对它进行读、写、通知操作
+服务（Service）是聚合n个特征的集合，服务可以套服务，但不能进行各种操作
+    
+具体特征含义：
+    
+    // Simple Profile Service UUID
+    #define HEALTH_SERV_UUID              0x2300
+    // Key Pressed UUID
+    #define HEALTH_SYNC_UUID              0x2301
+    #define HEALTH_CLOCK_UUID             0x2302
+    #define HEALTH_DATA_HEADER_UUID       0x2303
+    #define HEALTH_DATA_BODY_UUID         0x2304
+    
+    // Battery Service UUIDs
+    #define BATT_SERVICE_UUID             0x180F  // Battery Service
+    #define BATT_LEVEL_UUID               0x2A19  // Battery Level
