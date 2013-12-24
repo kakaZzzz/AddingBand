@@ -71,5 +71,5 @@ AddingBand
     #define HEALTH_DATA_BODY_UUID         0x2304    //具体一条待同步数据
     
     // Battery Service UUIDs
-    #define BATT_SERVICE_UUID             0x180F    // Battery Service
-    #define BATT_LEVEL_UUID               0x2A19    // Battery Level
+    #define BATT_SERVICE_UUID             0x180F    //Battery Service
+    #define BATT_LEVEL_UUID               0x2A19    //Battery Level
