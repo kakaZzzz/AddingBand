@@ -70,3 +70,27 @@ AddingBand
     
     #define BATT_SERVICE_UUID             0x180F    //Battery Service
     #define BATT_LEVEL_UUID               0x2A19    //Battery Level
+    
+对特征的初始化定义在health_profile.c文件中，例如：
+
+    static uint8 healthSyncProps = GATT_PROP_READ | GATT_PROP_NOTIFY | GATT_PROP_WRITE;
+    static uint8 healthSync[8] = {0,0,0,0,0,0,0,0};                                         // uint8*8
+    static gattCharCfg_t healthSyncConfig[GATT_MAX_NUM_CONN];
+    static uint8 healthSyncUserDesp[17] = "Do Sync\0";
+
+通知（Notify）的作用是：读、写操作都是主机（Central）发起对周边（Peripheral）里的特征进行操作，通知则是周边自己对特征进行修改后主动告知主机
+
+####程序流程
+
+主机：指手机App
+周边：指手环设备
+
+    1. 周边进行初始化操作，发起广播
+    2. 主机扫描到设备后，手动或自动尝试连接
+    3. 主机和周边连接成功后，主机先发现所有服务，再发现指定服务里所有的特征
+    4. 主机对特征2A19、2301、2303、2304注册通知的回调，在注册成功的回调里，读取2A19电量
+    5. 主机写入2302，当前时刻距离2001-1-1的秒数，周边收到后初始化自己的时间
+    6. 主机对2301写入同步密钥（22），发起同步
+    7. 周边收到同步密钥后，修改2303通知给主机，所有数据的总长度（多少个uint8）
+    8. 周边每100ms发送1个uint8的数据片段，通过修改2304来通知给主机
+    9. 主机收到所有数据后，断开连接，等待下一次自动同步
