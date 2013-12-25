@@ -11,6 +11,8 @@
 @interface NSDate (DateHelper)
 //获取当前日期
 + (NSDate *)localdate;
+//根据0时区的日期转化成当前日期
++ (NSDate *)localdateByDate:(NSDate *)date;
 //获取今天是星期几
 -(NSInteger)dayOfWeek;
 //获取每月有多少天

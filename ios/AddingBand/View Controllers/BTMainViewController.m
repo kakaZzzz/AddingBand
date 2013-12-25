@@ -11,6 +11,9 @@
 #import "BTMainViewCell.h"
 #import "UMSocialSnsService.h"//友盟分享
 #import "UMSocial.h"
+#import "NSDate+DateHelper.h"
+#import "BTUtils.h"
+#import "BTAlertView.h"
 
 #import "BTKnowledgeViewController.h"
 #define NAVIGATIONBAR_Y 0
@@ -32,8 +35,28 @@
 #pragma mark - 视图出现  消失
 - (void)viewWillAppear:(BOOL)animated
 {
+    
+    //增加标识，用于判断是否是第一次启动应用,进入此页面
+    if (![[NSUserDefaults standardUserDefaults] boolForKey:@"everAppear"]) {
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"firstAppear"];
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"everAppear"];
+        
+        }
+
+    
+    //如果是第一次进入此页面 pop一个view
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"firstAppear"]) {
+        [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"firstAppear"];
+        NSLog(@"第一次进来");
+        [self popAlertView];
+        
+        
+    }
+
      [self.navigationController setNavigationBarHidden:YES animated:NO];
 }
+
+
 - (void)viewWillDisappear:(BOOL)animated
 {
     [self.navigationController setNavigationBarHidden:NO animated:NO];
@@ -43,7 +66,9 @@
 {
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor yellowColor];
-   
+ 
+    [self popAlertView];
+    
     [self addSubviews];
     [self addChageScrollViewToTopButton];
     [self createHeaderView];
@@ -94,53 +119,64 @@
     _tableView.delegate = self;
     [self.view addSubview:_tableView];
 }
+
+#pragma mark - popview 请输入预产期
+- (void)popAlertView
+{
+    
+
+    BTAlertView *alert = [[BTAlertView alloc] initWithTitle:@"美妈美妈" iconImage:nil contentText:@"请输入宝宝预产期" leftButtonTitle:nil rightButtonTitle:@"好的"];
+    [alert show];
+    alert.rightBlock = ^() {
+        NSLog(@"right button clicked");
+        //弹出输入预产期选择器
+        if (self.actionSheetView == nil) {
+            self.actionSheetView = [[BTSheetPickerview alloc] initWithPikerType:BTActionSheetPickerStyleDatePicker referView:self.view delegate:self];
+        }
+        
+        [_actionSheetView show];
+        
+    };
+    alert.dismissBlock = ^() {
+        NSLog(@"Do something interesting after dismiss block");
+    };
+    
+}
+
 #pragma mark - 各种button event
+//点击分区头上的按钮 进入下一页
+- (void)pushNextView:(UIButton *)button
+{
+    NSLog(@"点击分区头，进入下一页");
+}
+
+//输入预产期
 - (void)inputYourPreproduction:(UIButton *)button
 {
-    UIDatePicker *datePicker = [[UIDatePicker alloc] init];
-    datePicker.datePickerMode = UIDatePickerModeDateAndTime;
-    [self.view addSubview:datePicker];
+    if (self.actionSheetView == nil) {
+        self.actionSheetView = [[BTSheetPickerview alloc] initWithPikerType:BTActionSheetPickerStyleDatePicker referView:self.view delegate:self];
+    }
+    
+    [_actionSheetView show];
+
 }
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView
+#pragma mark - 输入预产期 日期选择器delegate
+- (void)actionSheetPickerView:(BTSheetPickerview *)pickerView didSelectDate:(NSDate*)date
 {
-    if (scrollView.contentOffset.y >= 0 && scrollView.contentOffset.y <= 40) {
-       // static CGRect rect = _headView.frame;
-        NSLog(@"..........%f",_tableView.contentOffset.y);
-        
-     [UIView animateWithDuration:0.1 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
-         _headView.frame = CGRectMake(0,NAVIGATIONBAR_HEIGHT - scrollView.contentOffset.y, 320, 40);
-         self.tableView.frame = CGRectMake(0, NAVIGATIONBAR_HEIGHT - scrollView.contentOffset.y + 40, 320, self.view.frame.size.height);
-
-     } completion:nil];
-         //[self.view bringSubviewToFront:_navigationBgView];
-    }
     
+   NSDate *localDate = [NSDate localdateByDate:date];
+   NSString *dateAndTime = [NSDate stringFromDate:date withFormat:@"yy-MM-dd HH:mm:ss"];
+    NSNumber *year = [BTUtils getYear:localDate];
+    NSNumber *month = [BTUtils getMonth:localDate];
+    NSNumber *day = [BTUtils getDay:localDate];
+    NSNumber *hour = [BTUtils getHour:localDate];
+    NSNumber *minute = [BTUtils getMinutes:localDate];
+   
     
-    else if (scrollView.contentOffset.y > 40) {
-        [UIView animateWithDuration:0.1 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
-            _headView.frame = CGRectMake(0,NAVIGATIONBAR_HEIGHT - 40, 320, 40);
-            self.tableView.frame = CGRectMake(0, NAVIGATIONBAR_HEIGHT - 40 + 40, 320, self.view.frame.size.height - 59);
-            
-        } completion:nil];
-
-    }
-    
-    else{
-        //[UIView animateWithDuration:0.1 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
-            _headView.frame = CGRectMake(0,NAVIGATIONBAR_HEIGHT, 320, 40);
-            
-        //} completion:nil];
-
-    }
-    NSLog(@"..........%f",_tableView.contentOffset.y);
-    
-    //刷新数据
-    if (_refreshHeaderView)
-	{
-        [_refreshHeaderView egoRefreshScrollViewDidScroll:scrollView];
-    }
-
+    NSLog(@"选择的日期是。。。。。%@",dateAndTime);
+    NSLog(@"选泽的年：%@,月：%@，日：%@,小时：%@,分钟：%@",year,month,day,hour,minute);
 }
+
 #pragma mark - Table view data source
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -200,10 +236,6 @@
     aView.tag = tag++;
     return aView;
 }
-- (void)pushNextView:(UIButton *)button
-{
-    NSLog(@"点击分区头，进入下一页");
-}
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -234,8 +266,7 @@
 //＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
 //初始化刷新视图
 //＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
-#pragma mark
-#pragma methods for creating and removing the header view
+#pragma mark - methods for creating and removing the header view
 
 -(void)createHeaderView{
     if (_refreshHeaderView && [_refreshHeaderView superview]) {
@@ -302,11 +333,51 @@
     
 }
 
-#pragma mark -
-#pragma mark UIScrollViewDelegate Methods
 
+#pragma mark - UIScrollViewDelegate Methods
 
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView
+{
+    if (scrollView.contentOffset.y >= 0 && scrollView.contentOffset.y <= 40) {
+        // static CGRect rect = _headView.frame;
+        NSLog(@"..........%f",_tableView.contentOffset.y);
+        
+        [UIView animateWithDuration:0.1 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+            _headView.frame = CGRectMake(0,NAVIGATIONBAR_HEIGHT - scrollView.contentOffset.y, 320, 40);
+            self.tableView.frame = CGRectMake(0, NAVIGATIONBAR_HEIGHT - scrollView.contentOffset.y + 40, 320, self.view.frame.size.height);
+            
+        } completion:nil];
+        [self.view bringSubviewToFront:_navigationBgView];
+    }
+    
+    
+    else if (scrollView.contentOffset.y > 40) {
+        [UIView animateWithDuration:0.1 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+            _headView.frame = CGRectMake(0,NAVIGATIONBAR_HEIGHT - 40, 320, 40);
+            self.tableView.frame = CGRectMake(0, NAVIGATIONBAR_HEIGHT - 40 + 40, 320, self.view.frame.size.height - 59);
+            
+        } completion:nil];
+        
+    }
+    
+    else{
+        //[UIView animateWithDuration:0.1 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+        _headView.frame = CGRectMake(0,NAVIGATIONBAR_HEIGHT, 320, 40);
+        
+        //} completion:nil];
+        
+    }
+    NSLog(@"..........%f",_tableView.contentOffset.y);
+    
+    //刷新数据
+    if (_refreshHeaderView)
+	{
+        [_refreshHeaderView egoRefreshScrollViewDidScroll:scrollView];
+    }
+    
+}
 
+//
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate{
 	if (_refreshHeaderView)
 	{
@@ -316,8 +387,8 @@
 }
 
 
-#pragma mark -
-#pragma mark EGORefreshTableDelegate Methods
+
+#pragma mark - EGORefreshTableDelegate Methods
 
 - (void)egoRefreshTableDidTriggerRefresh:(EGORefreshPos)aRefreshPos
 {

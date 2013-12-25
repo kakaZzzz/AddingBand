@@ -18,6 +18,15 @@
     NSDate *localeDate = [date  dateByAddingTimeInterval: interval];
     return localeDate;
 }
+
++ (NSDate *)localdateByDate:(NSDate *)date
+{
+    NSTimeZone *zone = [NSTimeZone systemTimeZone];
+    NSInteger interval = [zone secondsFromGMTForDate: date];
+    NSDate *localeDate = [date  dateByAddingTimeInterval: interval];
+    return localeDate;
+
+}
 //获取今天是星期几
 -(NSInteger)dayOfWeek{
     NSCalendar*calendar =[NSCalendar currentCalendar];

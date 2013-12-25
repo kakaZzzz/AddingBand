@@ -8,10 +8,11 @@
 
 #import <UIKit/UIKit.h>
 #import "EGORefreshTableHeaderView.h"
-
+#import "BTSheetPickerview.h"
 @interface BTMainViewController : UIViewController<UITableViewDataSource,
 UITableViewDelegate,
-EGORefreshTableDelegate>
+EGORefreshTableDelegate,
+BTSheetPickerviewDelegate>
 {
     //EGOHeader
     EGORefreshTableHeaderView *_refreshHeaderView;
@@ -24,4 +25,6 @@ EGORefreshTableDelegate>
 @property(nonatomic,strong)UIView *tableViewBackgroundView;
 @property(nonatomic,strong)UITableView *tableView;
 @property(nonatomic,strong)UIButton *toTopButton;
+//输入预产期 选择器
+@property(nonatomic,strong)BTSheetPickerview *actionSheetView;
 @end
