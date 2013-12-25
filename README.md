@@ -75,7 +75,7 @@ AddingBand
 
     static uint8 healthSyncProps = GATT_PROP_READ | GATT_PROP_NOTIFY | GATT_PROP_WRITE;
     static uint8 healthSync[8] = {0,0,0,0,0,0,0,0};                                         // uint8*8
-    static gattCharCfg_t healthSyncConfig[GATT_MAX_NUM_CONN];
+    static gattCharCfg_t healthSyncConfig[GATT_MAX_NUM_CONN];                               // used for notify
     static uint8 healthSyncUserDesp[17] = "Do Sync\0";
 
 通知（Notify）的作用是：读、写操作都是主机（Central）发起对周边（Peripheral）里的特征进行操作，通知则是周边自己对特征进行修改后主动告知主机
