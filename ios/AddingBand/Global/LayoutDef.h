@@ -65,6 +65,8 @@
 #define kPhysicalImageWidth 100
 #define kPhysicalImageHeight 100
 
+
+#define kSeparatorLineHeight 1.5f
 //颜色转换
 #define UIColorFromRGB(rgbValue) [UIColor colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 green:((float)((rgbValue & 0xFF00) >> 8))/255.0 blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0] 
 
@@ -73,13 +75,17 @@
 #define titleLabelColor @"333333"
 #define contentLabelColor @"999999"
 
-#define kGlobalColor [UIColor colorWithRed:255/255.0 green:52/255.0 blue:91/255.0 alpha:1.0]
+#define kGlobalColor [UIColor colorWithRed:255/255.0 green:35/255.0 blue:80/255.0 alpha:1.0]
 #define kBigTextColor [UIColor colorWithRed:94/255.0 green:101/255.0 blue:113/255.0 alpha:1.0];
 //程序中各种tag值
 #define BREAK_CONNECT_ALERT 100
 #define TIME_OUT_ALERT 101
 #define FETAL_BAR_TAG 1000
 #define MAIN_BUTTON_TAG 2000
+
+#define PHYSICAL_BUTTON_TAG 1050
+//体征页面的tag值
+#define PHYSICAL_CONTROL_TAG 3000
 //刷新小雨滴
 #define POINT_X 40 //小雨滴距离X轴的距离
 #define POINT_LARGE 12.0f //小雨滴大小

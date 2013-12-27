@@ -15,14 +15,16 @@
 @class CircularProgressView;
 @class BarChartView;
 @class PICircularProgressView;
-
+@class BTPhysicalCollectionView;
 @interface BTPhysicalViewController : BTScrollViewController<UIScrollViewDelegate,
 MHTabBarControllerDelegate,
 UITableViewDataSource,
 UITableViewDelegate>
 
 //视图布局
-@property(strong, nonatomic) UIImageView * aImageView;//粉红色背景图片
+@property(nonatomic,strong)UIView *navigationBgView;
+@property(nonatomic,strong)UIView *headView;
+@property(nonatomic,strong)BTPhysicalCollectionView *physicalView;
 @property(strong, nonatomic) UIImageView * gradeImage;//上次同步时间背景图片
 @property (strong, nonatomic)PICircularProgressView *progressView;//分数圆圈
 @property(nonatomic,strong)MHTabBarController *tabBarController;//一定要用属性，不然就dealloc了

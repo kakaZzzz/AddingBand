@@ -1,18 +1,18 @@
 //
-//  BTBabyFetalViewController.m
+//  BTUCViewController.m
 //  AddingBand
 //
-//  Created by wangpeng on 13-12-6.
+//  Created by wangpeng on 13-12-27.
 //  Copyright (c) 2013年 kaka'. All rights reserved.
 //
 
-#import "BTBabyFetalViewController.h"
+#import "BTUCViewController.h"
 
-@interface BTBabyFetalViewController ()
+@interface BTUCViewController ()
 
 @end
 
-@implementation BTBabyFetalViewController
+@implementation BTUCViewController
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -26,8 +26,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.navigationItem.title = @"胎心监测";
-     self.view.backgroundColor = [UIColor whiteColor];//有时候，白色的底色也是需要设置的哦
+    self.navigationItem.title = @"宫缩";
+    self.view.backgroundColor = [UIColor whiteColor];
 	// Do any additional setup after loading the view.
 }
 

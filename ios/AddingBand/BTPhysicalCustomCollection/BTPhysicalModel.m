@@ -1,24 +1,25 @@
 //
-//  BTPhisicalModel.m
-//  AddingBand
+//  BTPhysicalModel.m
+//  BTTestCollectionView
 //
-//  Created by wangpeng on 13-12-17.
-//  Copyright (c) 2013年 kaka'. All rights reserved.
+//  Created by wangpeng on 13-12-26.
+//  Copyright (c) 2013年 wangpeng. All rights reserved.
 //
 
-#import "BTPhisicalModel.h"
+#import "BTPhysicalModel.h"
 
-@implementation BTPhisicalModel
+@implementation BTPhysicalModel
 - (id)initWithTitle:(NSString *)atitle content:(NSString *)acontent
 {
     if (self == [super init]) {
         
         self.title = atitle;
         self.content = acontent;
-
+        
     }
     
     return self;
     
 }
+
 @end

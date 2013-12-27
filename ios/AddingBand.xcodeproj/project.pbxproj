@@ -86,8 +86,6 @@
 		72486934185020BF008FD8FA /* BTUserData.m in Sources */ = {isa = PBXBuildFile; fileRef = 72486933185020BF008FD8FA /* BTUserData.m */; };
 		7248694318518255008FD8FA /* BTBabyWeightViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7248694218518255008FD8FA /* BTBabyWeightViewController.m */; };
 		724869461851827A008FD8FA /* BTBabyFetalViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 724869451851827A008FD8FA /* BTBabyFetalViewController.m */; };
-		724AB20E185FF0CE00067CAD /* BTPhysicalCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 724AB20D185FF0CE00067CAD /* BTPhysicalCell.m */; };
-		724AB2111860046A00067CAD /* BTPhisicalModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 724AB2101860046A00067CAD /* BTPhisicalModel.m */; };
 		724AB216186007FD00067CAD /* accessory_gray@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 724AB212186007FD00067CAD /* accessory_gray@2x.png */; };
 		724AB217186007FD00067CAD /* accessory_blue@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 724AB213186007FD00067CAD /* accessory_blue@2x.png */; };
 		724AB218186007FD00067CAD /* warning@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 724AB214186007FD00067CAD /* warning@2x.png */; };
@@ -109,6 +107,19 @@
 		724AB2371860832300067CAD /* markview_ba_left@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 724AB2351860832300067CAD /* markview_ba_left@2x.png */; };
 		724F1CEB184F093300342DF7 /* BTRawData.m in Sources */ = {isa = PBXBuildFile; fileRef = 724F1CEA184F093300342DF7 /* BTRawData.m */; };
 		724F1CF0184F3AF800342DF7 /* MHTabBarActiveTab.png in Resources */ = {isa = PBXBuildFile; fileRef = 724F1CED184F3AF800342DF7 /* MHTabBarActiveTab.png */; };
+		7255AD94186D3E5B003A0913 /* BTPhysicalCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7255AD8B186D3E5B003A0913 /* BTPhysicalCell.m */; };
+		7255AD95186D3E5B003A0913 /* BTPhysicalCollectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7255AD8D186D3E5B003A0913 /* BTPhysicalCollectionView.m */; };
+		7255AD96186D3E5B003A0913 /* BTPhysicalModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 7255AD8F186D3E5B003A0913 /* BTPhysicalModel.m */; };
+		7255AD98186D3E5B003A0913 /* BTUCCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7255AD93186D3E5B003A0913 /* BTUCCell.m */; };
+		7255AD9C186D3EA1003A0913 /* horizontal_sep_line@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7255AD99186D3EA1003A0913 /* horizontal_sep_line@2x.png */; };
+		7255AD9D186D3EA1003A0913 /* physical_collectioncell_bg@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7255AD9A186D3EA1003A0913 /* physical_collectioncell_bg@2x.png */; };
+		7255AD9E186D3EA1003A0913 /* vertical_sep_line@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7255AD9B186D3EA1003A0913 /* vertical_sep_line@2x.png */; };
+		7255ADA1186D4E8B003A0913 /* prhysical_!@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7255AD9F186D4E8B003A0913 /* prhysical_!@2x.png */; };
+		7255ADA2186D4E8B003A0913 /* physical_?@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7255ADA0186D4E8B003A0913 /* physical_?@2x.png */; };
+		7255ADA4186D4F43003A0913 /* physical_nodata_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7255ADA3186D4F43003A0913 /* physical_nodata_icon@2x.png */; };
+		7255ADA7186D5BE0003A0913 /* physical_fetal_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7255ADA5186D5BE0003A0913 /* physical_fetal_icon@2x.png */; };
+		7255ADA8186D5BE0003A0913 /* physical_blood_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7255ADA6186D5BE0003A0913 /* physical_blood_icon@2x.png */; };
+		7255ADAB186D66F7003A0913 /* BTUCViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7255ADAA186D66F7003A0913 /* BTUCViewController.m */; };
 		725E018D182CDF0B00022A15 /* BTGetData.m in Sources */ = {isa = PBXBuildFile; fileRef = 725E018C182CDF0B00022A15 /* BTGetData.m */; };
 		725E9B7B1867E30800BD2354 /* BTWarnCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 725E9B7A1867E30800BD2354 /* BTWarnCell.m */; };
 		725E9B7E1867E3F900BD2354 /* BTKnowledgeCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 725E9B7D1867E3F900BD2354 /* BTKnowledgeCell.m */; };
@@ -190,6 +201,12 @@
 		72A2A30A186AC9F000A504CA /* btn_close_normal@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 72A2A305186AC9F000A504CA /* btn_close_normal@2x.png */; };
 		72A2A30B186AC9F000A504CA /* btn_close_selected.png in Resources */ = {isa = PBXBuildFile; fileRef = 72A2A306186AC9F000A504CA /* btn_close_selected.png */; };
 		72A2A30C186AC9F000A504CA /* btn_close_selected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 72A2A307186AC9F000A504CA /* btn_close_selected@2x.png */; };
+		72A2A312186C07DC00A504CA /* icon_logo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 72A2A311186C07DC00A504CA /* icon_logo@2x.png */; };
+		72A2A315186C106500A504CA /* hand_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 72A2A313186C106500A504CA /* hand_icon@2x.png */; };
+		72A2A316186C106500A504CA /* sync_litbutton_bg@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 72A2A314186C106500A504CA /* sync_litbutton_bg@2x.png */; };
+		72A2A319186C1C5900A504CA /* BTView.m in Sources */ = {isa = PBXBuildFile; fileRef = 72A2A318186C1C5900A504CA /* BTView.m */; };
+		72A2A320186C2B7400A504CA /* physical_fetal_sel@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 72A2A31E186C2B7400A504CA /* physical_fetal_sel@2x.png */; };
+		72A2A321186C2B7400A504CA /* physical_fetal_unsel@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 72A2A31F186C2B7400A504CA /* physical_fetal_unsel@2x.png */; };
 		72A3735418694199003F5B24 /* BTKnowledgeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 72A3735318694199003F5B24 /* BTKnowledgeViewController.m */; };
 		72A373581869433B003F5B24 /* HYActivityView.m in Sources */ = {isa = PBXBuildFile; fileRef = 72A373571869433B003F5B24 /* HYActivityView.m */; };
 		72A373601869435F003F5B24 /* share_platform_email@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 72A373591869435F003F5B24 /* share_platform_email@2x.png */; };
@@ -401,10 +418,6 @@
 		7248694218518255008FD8FA /* BTBabyWeightViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BTBabyWeightViewController.m; path = "View Controllers/BTBabyWeightViewController.m"; sourceTree = "<group>"; };
 		724869441851827A008FD8FA /* BTBabyFetalViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BTBabyFetalViewController.h; path = "View Controllers/BTBabyFetalViewController.h"; sourceTree = "<group>"; };
 		724869451851827A008FD8FA /* BTBabyFetalViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BTBabyFetalViewController.m; path = "View Controllers/BTBabyFetalViewController.m"; sourceTree = "<group>"; };
-		724AB20C185FF0CE00067CAD /* BTPhysicalCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BTPhysicalCell.h; path = MainCustomCell/BTPhysicalCell.h; sourceTree = "<group>"; };
-		724AB20D185FF0CE00067CAD /* BTPhysicalCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BTPhysicalCell.m; path = MainCustomCell/BTPhysicalCell.m; sourceTree = "<group>"; };
-		724AB20F1860046A00067CAD /* BTPhisicalModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTPhisicalModel.h; sourceTree = "<group>"; };
-		724AB2101860046A00067CAD /* BTPhisicalModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTPhisicalModel.m; sourceTree = "<group>"; };
 		724AB212186007FD00067CAD /* accessory_gray@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "accessory_gray@2x.png"; sourceTree = "<group>"; };
 		724AB213186007FD00067CAD /* accessory_blue@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "accessory_blue@2x.png"; sourceTree = "<group>"; };
 		724AB214186007FD00067CAD /* warning@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "warning@2x.png"; sourceTree = "<group>"; };
@@ -427,6 +440,24 @@
 		724F1CE9184F093300342DF7 /* BTRawData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BTRawData.h; path = AddingBand/BTRawData.h; sourceTree = "<group>"; };
 		724F1CEA184F093300342DF7 /* BTRawData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BTRawData.m; path = AddingBand/BTRawData.m; sourceTree = "<group>"; };
 		724F1CED184F3AF800342DF7 /* MHTabBarActiveTab.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = MHTabBarActiveTab.png; sourceTree = "<group>"; };
+		7255AD8A186D3E5B003A0913 /* BTPhysicalCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTPhysicalCell.h; sourceTree = "<group>"; };
+		7255AD8B186D3E5B003A0913 /* BTPhysicalCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTPhysicalCell.m; sourceTree = "<group>"; };
+		7255AD8C186D3E5B003A0913 /* BTPhysicalCollectionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTPhysicalCollectionView.h; sourceTree = "<group>"; };
+		7255AD8D186D3E5B003A0913 /* BTPhysicalCollectionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTPhysicalCollectionView.m; sourceTree = "<group>"; };
+		7255AD8E186D3E5B003A0913 /* BTPhysicalModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTPhysicalModel.h; sourceTree = "<group>"; };
+		7255AD8F186D3E5B003A0913 /* BTPhysicalModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTPhysicalModel.m; sourceTree = "<group>"; };
+		7255AD92186D3E5B003A0913 /* BTUCCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTUCCell.h; sourceTree = "<group>"; };
+		7255AD93186D3E5B003A0913 /* BTUCCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTUCCell.m; sourceTree = "<group>"; };
+		7255AD99186D3EA1003A0913 /* horizontal_sep_line@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "horizontal_sep_line@2x.png"; sourceTree = "<group>"; };
+		7255AD9A186D3EA1003A0913 /* physical_collectioncell_bg@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "physical_collectioncell_bg@2x.png"; sourceTree = "<group>"; };
+		7255AD9B186D3EA1003A0913 /* vertical_sep_line@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "vertical_sep_line@2x.png"; sourceTree = "<group>"; };
+		7255AD9F186D4E8B003A0913 /* prhysical_!@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "prhysical_!@2x.png"; sourceTree = "<group>"; };
+		7255ADA0186D4E8B003A0913 /* physical_?@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "physical_?@2x.png"; sourceTree = "<group>"; };
+		7255ADA3186D4F43003A0913 /* physical_nodata_icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "physical_nodata_icon@2x.png"; sourceTree = "<group>"; };
+		7255ADA5186D5BE0003A0913 /* physical_fetal_icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "physical_fetal_icon@2x.png"; sourceTree = "<group>"; };
+		7255ADA6186D5BE0003A0913 /* physical_blood_icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "physical_blood_icon@2x.png"; sourceTree = "<group>"; };
+		7255ADA9186D66F7003A0913 /* BTUCViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BTUCViewController.h; path = "View Controllers/BTUCViewController.h"; sourceTree = "<group>"; };
+		7255ADAA186D66F7003A0913 /* BTUCViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BTUCViewController.m; path = "View Controllers/BTUCViewController.m"; sourceTree = "<group>"; };
 		725E018B182CDF0B00022A15 /* BTGetData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BTGetData.h; path = Global/BTGetData.h; sourceTree = "<group>"; };
 		725E018C182CDF0B00022A15 /* BTGetData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BTGetData.m; path = Global/BTGetData.m; sourceTree = "<group>"; };
 		725E9B791867E30800BD2354 /* BTWarnCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BTWarnCell.h; path = MainCustomCell/BTWarnCell.h; sourceTree = "<group>"; };
@@ -547,6 +578,13 @@
 		72A2A305186AC9F000A504CA /* btn_close_normal@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "btn_close_normal@2x.png"; sourceTree = "<group>"; };
 		72A2A306186AC9F000A504CA /* btn_close_selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = btn_close_selected.png; sourceTree = "<group>"; };
 		72A2A307186AC9F000A504CA /* btn_close_selected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "btn_close_selected@2x.png"; sourceTree = "<group>"; };
+		72A2A311186C07DC00A504CA /* icon_logo@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon_logo@2x.png"; sourceTree = "<group>"; };
+		72A2A313186C106500A504CA /* hand_icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "hand_icon@2x.png"; sourceTree = "<group>"; };
+		72A2A314186C106500A504CA /* sync_litbutton_bg@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sync_litbutton_bg@2x.png"; sourceTree = "<group>"; };
+		72A2A317186C1C5900A504CA /* BTView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BTView.h; path = Global/BTView.h; sourceTree = "<group>"; };
+		72A2A318186C1C5900A504CA /* BTView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BTView.m; path = Global/BTView.m; sourceTree = "<group>"; };
+		72A2A31E186C2B7400A504CA /* physical_fetal_sel@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "physical_fetal_sel@2x.png"; sourceTree = "<group>"; };
+		72A2A31F186C2B7400A504CA /* physical_fetal_unsel@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "physical_fetal_unsel@2x.png"; sourceTree = "<group>"; };
 		72A3735218694199003F5B24 /* BTKnowledgeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BTKnowledgeViewController.h; path = "View Controllers/BTKnowledgeViewController.h"; sourceTree = "<group>"; };
 		72A3735318694199003F5B24 /* BTKnowledgeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BTKnowledgeViewController.m; path = "View Controllers/BTKnowledgeViewController.m"; sourceTree = "<group>"; };
 		72A373561869433B003F5B24 /* HYActivityView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HYActivityView.h; sourceTree = "<group>"; };
@@ -899,7 +937,6 @@
 		7241465918274520008B05C5 /* MainCustomCell */ = {
 			isa = PBXGroup;
 			children = (
-				724AB20B185FF06900067CAD /* 体征页自定义cell */,
 				72CFDD061856F7F40008816D /* 首页自定义cell */,
 				7245448B1838AFBB0070F700 /* BTSettingCell */,
 				7236B7B7183324CA002E4FA8 /* BTLoginRegisterCell */,
@@ -1025,17 +1062,6 @@
 			name = "胎心监护";
 			sourceTree = "<group>";
 		};
-		724AB20B185FF06900067CAD /* 体征页自定义cell */ = {
-			isa = PBXGroup;
-			children = (
-				724AB20C185FF0CE00067CAD /* BTPhysicalCell.h */,
-				724AB20D185FF0CE00067CAD /* BTPhysicalCell.m */,
-				724AB20F1860046A00067CAD /* BTPhisicalModel.h */,
-				724AB2101860046A00067CAD /* BTPhisicalModel.m */,
-			);
-			name = "体征页自定义cell";
-			sourceTree = "<group>";
-		};
 		724F1CEC184F3AF800342DF7 /* Images */ = {
 			isa = PBXGroup;
 			children = (
@@ -1044,6 +1070,22 @@
 				724F1CED184F3AF800342DF7 /* MHTabBarActiveTab.png */,
 			);
 			path = Images;
+			sourceTree = "<group>";
+		};
+		7255AD89186D3E5B003A0913 /* BTPhysicalCustomCollection */ = {
+			isa = PBXGroup;
+			children = (
+				7255AD8A186D3E5B003A0913 /* BTPhysicalCell.h */,
+				7255AD8B186D3E5B003A0913 /* BTPhysicalCell.m */,
+				7255AD8C186D3E5B003A0913 /* BTPhysicalCollectionView.h */,
+				7255AD8D186D3E5B003A0913 /* BTPhysicalCollectionView.m */,
+				7255AD8E186D3E5B003A0913 /* BTPhysicalModel.h */,
+				7255AD8F186D3E5B003A0913 /* BTPhysicalModel.m */,
+				7255AD92186D3E5B003A0913 /* BTUCCell.h */,
+				7255AD93186D3E5B003A0913 /* BTUCCell.m */,
+			);
+			name = BTPhysicalCustomCollection;
+			path = AddingBand/BTPhysicalCustomCollection;
 			sourceTree = "<group>";
 		};
 		725E9C881868333200BD2354 /* UMSocial_Sdk_3.2 */ = {
@@ -1136,6 +1178,8 @@
 				7262FACF184DB189005F3B67 /* BTBPViewController.m */,
 				7262FB1C184DD833005F3B67 /* BTMamaDetailViewController.h */,
 				7262FB1D184DD833005F3B67 /* BTMamaDetailViewController.m */,
+				7255ADA9186D66F7003A0913 /* BTUCViewController.h */,
+				7255ADAA186D66F7003A0913 /* BTUCViewController.m */,
 			);
 			name = "妈妈体征页面";
 			sourceTree = "<group>";
@@ -1174,6 +1218,7 @@
 		727F1938182B37EE00CAD11A /* Library */ = {
 			isa = PBXGroup;
 			children = (
+				7255AD89186D3E5B003A0913 /* BTPhysicalCustomCollection */,
 				72A2A301186AC9F000A504CA /* BTAlert */,
 				72A2A2FD186AAB8C00A504CA /* BTSheetPickerView */,
 				72729ED71869792C009C2EDE /* EGO */,
@@ -1476,6 +1521,8 @@
 				728C60831855C47900232B4F /* BTBadgeManager.m */,
 				7231BE631859D8EF009A6DB5 /* NSDate+DateHelper.h */,
 				7231BE641859D8EF009A6DB5 /* NSDate+DateHelper.m */,
+				72A2A317186C1C5900A504CA /* BTView.h */,
+				72A2A318186C1C5900A504CA /* BTView.m */,
 			);
 			name = Global;
 			sourceTree = "<group>";
@@ -1644,6 +1691,19 @@
 		72EE545D1846F99D00093583 /* Phisical */ = {
 			isa = PBXGroup;
 			children = (
+				72A2A31E186C2B7400A504CA /* physical_fetal_sel@2x.png */,
+				7255AD9F186D4E8B003A0913 /* prhysical_!@2x.png */,
+				7255ADA5186D5BE0003A0913 /* physical_fetal_icon@2x.png */,
+				7255ADA6186D5BE0003A0913 /* physical_blood_icon@2x.png */,
+				7255ADA3186D4F43003A0913 /* physical_nodata_icon@2x.png */,
+				7255ADA0186D4E8B003A0913 /* physical_?@2x.png */,
+				72A2A31F186C2B7400A504CA /* physical_fetal_unsel@2x.png */,
+				72A2A313186C106500A504CA /* hand_icon@2x.png */,
+				72A2A314186C106500A504CA /* sync_litbutton_bg@2x.png */,
+				72A2A311186C07DC00A504CA /* icon_logo@2x.png */,
+				7255AD99186D3EA1003A0913 /* horizontal_sep_line@2x.png */,
+				7255AD9A186D3EA1003A0913 /* physical_collectioncell_bg@2x.png */,
+				7255AD9B186D3EA1003A0913 /* vertical_sep_line@2x.png */,
 				729879381861716D00039E83 /* physical_sport_bg@2x.png */,
 				7298793618616A7B00039E83 /* physical_grade@2x.png */,
 				724AB22E18603CB900067CAD /* markview_ba_middle@2x.png */,
@@ -1751,6 +1811,7 @@
 			files = (
 				724AB2251860218700067CAD /* baby_weight_unsel@2x.png in Resources */,
 				729293DE1838A726007B09A7 /* physical_selected.png in Resources */,
+				7255AD9C186D3EA1003A0913 /* horizontal_sep_line@2x.png in Resources */,
 				729293E41838A726007B09A7 /* shezhi_unselected.png in Resources */,
 				723F9C48183F3DA400732359 /* sync_unselected1@2x.png in Resources */,
 				723F24A618308925001F27DA /* 4.png in Resources */,
@@ -1765,6 +1826,7 @@
 				729293F51838B2E6007B09A7 /* sep_line@2x.png in Resources */,
 				729293E21838A726007B09A7 /* shezhi_selected.png in Resources */,
 				725E9CB61868333300BD2354 /* UMShareEditViewControlleriPad.xib in Resources */,
+				72A2A315186C106500A504CA /* hand_icon@2x.png in Resources */,
 				729293DA1838A726007B09A7 /* home_selected.png in Resources */,
 				72774FE41844762F00CA034E /* tecent@2x.png in Resources */,
 				729293EB1838A726007B09A7 /* tabbar_sel@2x.png in Resources */,
@@ -1778,12 +1840,15 @@
 				72B418C518238BCA002EAD35 /* InfoPlist.strings in Resources */,
 				724AB2221860218700067CAD /* fetal_sel@2x.png in Resources */,
 				725E9CB41868333300BD2354 /* UMSCommentInputControlleriPad.xib in Resources */,
+				7255ADA2186D4E8B003A0913 /* physical_?@2x.png in Resources */,
 				723F0ED4183C5E7F005F1921 /* 家丁手环icon@2x.png in Resources */,
 				724F1CF0184F3AF800342DF7 /* MHTabBarActiveTab.png in Resources */,
 				724AB2361860832300067CAD /* markview_ba_right@2x.png in Resources */,
 				723F24AF18308925001F27DA /* checkBox_selectCheck@2x.png in Resources */,
 				729879391861716D00039E83 /* physical_sport_bg@2x.png in Resources */,
+				7255AD9D186D3EA1003A0913 /* physical_collectioncell_bg@2x.png in Resources */,
 				72774FE21844762F00CA034E /* sina@2x.png in Resources */,
+				7255ADA4186D4F43003A0913 /* physical_nodata_icon@2x.png in Resources */,
 				72A373661869435F003F5B24 /* share_platform_wechattimeline@2x.png in Resources */,
 				723F9C42183F3DA400732359 /* home_unselected1@2x.png in Resources */,
 				725E9CB21868333300BD2354 /* UMSCommentDetailController.xib in Resources */,
@@ -1807,7 +1872,9 @@
 				723ECAF1184625FD00D47DFA /* demo1@2x.png in Resources */,
 				72B67A741839E49400294A08 /* tabbar_bg.png in Resources */,
 				723F9C41183F3DA400732359 /* home_selected1@2x.png in Resources */,
+				7255ADA8186D5BE0003A0913 /* physical_blood_icon@2x.png in Resources */,
 				723F9C45183F3DA400732359 /* shezhi_selected1@2x.png in Resources */,
+				7255ADA1186D4E8B003A0913 /* prhysical_!@2x.png in Resources */,
 				725E9CAE1868333200BD2354 /* TencentOpenApi_IOS_Bundle.bundle in Resources */,
 				729293E51838A726007B09A7 /* shezhi_unselected@2x.png in Resources */,
 				72774FE11844762F00CA034E /* sina_sel@2x.png in Resources */,
@@ -1815,10 +1882,12 @@
 				72EE54671847035D00093583 /* test_bg@2x.png in Resources */,
 				72B67A7C1839EE1900294A08 /* FlatDatePicker-Icon-Check.png in Resources */,
 				729293DC1838A726007B09A7 /* home_unselected.png in Resources */,
+				72A2A320186C2B7400A504CA /* physical_fetal_sel@2x.png in Resources */,
 				72774FE31844762F00CA034E /* tecent_sel@2x.png in Resources */,
 				723F0EE3183C67D0005F1921 /* sync_btn_sel.png in Resources */,
 				723F24A818308925001F27DA /* btn_nor.png in Resources */,
 				729293F71838B2E6007B09A7 /* settingcell_bg@2x.png in Resources */,
+				72A2A312186C07DC00A504CA /* icon_logo@2x.png in Resources */,
 				72729EE018697C7F009C2EDE /* blueArrow@2x.png in Resources */,
 				72B67A7F1839EE1900294A08 /* FlatDatePicker-Icon-Close@2x.png in Resources */,
 				723F24A518308925001F27DA /* 3@2x.png in Resources */,
@@ -1838,10 +1907,12 @@
 				724AB2371860832300067CAD /* markview_ba_left@2x.png in Resources */,
 				725E9CB51868333300BD2354 /* UMShareEditViewController.xib in Resources */,
 				725E9CBA1868333300BD2354 /* UMSocialSDKResourcesNew.bundle in Resources */,
+				7255AD9E186D3EA1003A0913 /* vertical_sep_line@2x.png in Resources */,
 				729293E71838A726007B09A7 /* sync_selected@2x.png in Resources */,
 				724146771827B116008B05C5 /* 分割线@2x.png in Resources */,
 				72B67A7D1839EE1900294A08 /* FlatDatePicker-Icon-Check@2x.png in Resources */,
 				72A373641869435F003F5B24 /* share_platform_sina@2x.png in Resources */,
+				7255ADA7186D5BE0003A0913 /* physical_fetal_icon@2x.png in Resources */,
 				724AB2291860245100067CAD /* physical_top_bg@2x.png in Resources */,
 				729293E31838A726007B09A7 /* shezhi_selected@2x.png in Resources */,
 				72A2A30C186AC9F000A504CA /* btn_close_selected@2x.png in Resources */,
@@ -1854,6 +1925,7 @@
 				72B67AB3183A418B00294A08 /* zhuceshur.png in Resources */,
 				723F0EF5183CC0D3005F1921 /* refresh_btn_sel.png in Resources */,
 				729293F21838B2E6007B09A7 /* indicate.png in Resources */,
+				72A2A321186C2B7400A504CA /* physical_fetal_unsel@2x.png in Resources */,
 				72774FE51844762F00CA034E /* weizhi_sel@2x.png in Resources */,
 				729293E11838A726007B09A7 /* physical_unselected@2x.png in Resources */,
 				723F9C47183F3DA400732359 /* sync_selected1@2x.png in Resources */,
@@ -1873,6 +1945,7 @@
 				723F24A018308925001F27DA /* 1.png in Resources */,
 				729293EA1838A726007B09A7 /* tabbar_bg@2x.png in Resources */,
 				723C56C718614FFF00D4DC13 /* sync_icon@2x.png in Resources */,
+				72A2A316186C106500A504CA /* sync_litbutton_bg@2x.png in Resources */,
 				725E9CB91868333300BD2354 /* UMSShareListController.xib in Resources */,
 				724075E318488E000033BB90 /* sr_refresh.png in Resources */,
 				72774FE61844762F00CA034E /* weizhi@2x.png in Resources */,
@@ -1906,6 +1979,7 @@
 				7262FACD184DB15F005F3B67 /* BTGluViewController.m in Sources */,
 				72CFDD051856F2320008816D /* BTSettingCell.m in Sources */,
 				7262FAC7184DB105005F3B67 /* BTHeightViewController.m in Sources */,
+				72A2A319186C1C5900A504CA /* BTView.m in Sources */,
 				72B5EDB81865B0EB00FF363E /* BTCloseToBleViewController.m in Sources */,
 				72B67AA4183A335800294A08 /* NSString+MKNetworkKitAdditions.m in Sources */,
 				72B67AAE183A33C400294A08 /* BTCheckVersion.m in Sources */,
@@ -1943,7 +2017,6 @@
 				72CB9C3D182B595200C0DAF0 /* BTGlobals.m in Sources */,
 				72B67A6F1839BEBD00294A08 /* PCLineChartView.m in Sources */,
 				725E9B7B1867E30800BD2354 /* BTWarnCell.m in Sources */,
-				724AB20E185FF0CE00067CAD /* BTPhysicalCell.m in Sources */,
 				7231BE651859D8EF009A6DB5 /* NSDate+DateHelper.m in Sources */,
 				7262FB1E184DD833005F3B67 /* BTMamaDetailViewController.m in Sources */,
 				7232135B1824D52100C17EDC /* BTImageCell.m in Sources */,
@@ -1997,20 +2070,24 @@
 				7241467018277A67008B05C5 /* BTSyncViewController.m in Sources */,
 				72B67AA1183A335800294A08 /* NSData+MKBase64.m in Sources */,
 				7266B61518374C0100B1452A /* BTPhsicalData.m in Sources */,
-				724AB2111860046A00067CAD /* BTPhisicalModel.m in Sources */,
 				72B67A801839EE1900294A08 /* FlatDatePicker.m in Sources */,
+				7255AD94186D3E5B003A0913 /* BTPhysicalCell.m in Sources */,
+				7255ADAB186D66F7003A0913 /* BTUCViewController.m in Sources */,
 				723CD162183B72DA007C486D /* BTPastLinkViewController.m in Sources */,
 				723F0EF0183CB640005F1921 /* BTSyncccViewController.m in Sources */,
 				72A2A300186AAB8C00A504CA /* BTSheetPickerview.m in Sources */,
 				724544921838B8F50070F700 /* BTSettingSectionCell.m in Sources */,
 				7262FAD3184DB1B3005F3B67 /* MHTabBarController.m in Sources */,
 				72B67ABA183A42C200294A08 /* IQSegmentedNextPrevious.m in Sources */,
+				7255AD98186D3E5B003A0913 /* BTUCCell.m in Sources */,
 				7231BE551859910C009A6DB5 /* PNBarChart.m in Sources */,
 				72B67A86183A2DD700294A08 /* BTAboutViewController.m in Sources */,
 				72AFBA5718431995004F0350 /* BarChartView.m in Sources */,
 				7231BE561859910C009A6DB5 /* PNChart.m in Sources */,
 				7231BE5C1859B3FF009A6DB5 /* BTDailySportViewController.m in Sources */,
 				723D6486184CC96B008618D7 /* BTRecordFetalView.m in Sources */,
+				7255AD95186D3E5B003A0913 /* BTPhysicalCollectionView.m in Sources */,
+				7255AD96186D3E5B003A0913 /* BTPhysicalModel.m in Sources */,
 				724544951838C3110070F700 /* BTColor.m in Sources */,
 				7245449B1838C43D0070F700 /* BTSettingIndicateCell.m in Sources */,
 			);

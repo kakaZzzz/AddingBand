@@ -27,7 +27,7 @@
 {
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor whiteColor];
-    self.navigationItem.title = @"血糖";
+    self.navigationItem.title = @"孕期血糖";
 
 	// Do any additional setup after loading the view.
 }
