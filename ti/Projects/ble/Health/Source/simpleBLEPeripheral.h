@@ -62,12 +62,13 @@ extern "C"
 #define ACC_PERIODIC_EVT                                  0x0010
 #define CYCLE_LED_6_EVT                                   0x0020
 #define CLOSE_ALL_EVT                                     0x0040
-#define SLIP_TIMEOUT_EVT                                  0x0080
+#define TAP_TIMEOUT_EVT                                   0x0080
 #define BLINK_LED_EVT                                     0x0100
 #define TIME_STOP_EVT                                     0x0200
 #define LONG_PRESS_EVT                                    0x0400
 #define CYCLE_LED_12_EVT                                  0x0800
-#define RUN_TRIBLE_TAP_EVT                              0x1000
+#define RUN_TRIBLE_TAP_EVT                                0x1000
+#define READ_EVT                                          0x2000
 
 /*********************************************************************
  * MACROS
