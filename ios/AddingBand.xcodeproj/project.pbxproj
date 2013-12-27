@@ -129,9 +129,6 @@
 		725E9C87186810D100BD2354 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 725E9C86186810D100BD2354 /* MessageUI.framework */; };
 		725E9CAC1868333200BD2354 /* UMSocialLocalizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 725E9C891868333200BD2354 /* UMSocialLocalizable.strings */; };
 		725E9CAE1868333200BD2354 /* TencentOpenApi_IOS_Bundle.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 725E9C8E1868333200BD2354 /* TencentOpenApi_IOS_Bundle.bundle */; };
-		725E9CAF1868333200BD2354 /* libWeChatSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 725E9C901868333200BD2354 /* libWeChatSDK.a */; };
-		725E9CB01868333200BD2354 /* libUMSocial_Sdk_3.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 725E9C9F1868333200BD2354 /* libUMSocial_Sdk_3.2.a */; };
-		725E9CB11868333300BD2354 /* libUMSocial_Sdk_Comment_3.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 725E9CA01868333200BD2354 /* libUMSocial_Sdk_Comment_3.2.a */; };
 		725E9CB21868333300BD2354 /* UMSCommentDetailController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 725E9CA21868333200BD2354 /* UMSCommentDetailController.xib */; };
 		725E9CB31868333300BD2354 /* UMSCommentInputController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 725E9CA31868333200BD2354 /* UMSCommentInputController.xib */; };
 		725E9CB41868333300BD2354 /* UMSCommentInputControlleriPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 725E9CA41868333200BD2354 /* UMSCommentInputControlleriPad.xib */; };
@@ -288,6 +285,9 @@
 		72EE546A18470A0E00093583 /* icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 72EE546818470A0E00093583 /* icon@2x.png */; };
 		72EE546B18470A0E00093583 /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 72EE546918470A0E00093583 /* icon.png */; };
 		72EE546D18470A6600093583 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 72EE546C18470A6600093583 /* Default-568h@2x.png */; };
+		F4A6B27F186D950D007AEB12 /* libUMSocial_Sdk_3.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 725E9C9F1868333200BD2354 /* libUMSocial_Sdk_3.2.a */; };
+		F4A6B280186D9552007AEB12 /* libUMSocial_Sdk_Comment_3.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 725E9CA01868333200BD2354 /* libUMSocial_Sdk_Comment_3.2.a */; };
+		F4A6B281186D9599007AEB12 /* libWeChatSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 725E9C901868333200BD2354 /* libWeChatSDK.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -727,14 +727,14 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F4A6B281186D9599007AEB12 /* libWeChatSDK.a in Frameworks */,
+				F4A6B280186D9552007AEB12 /* libUMSocial_Sdk_Comment_3.2.a in Frameworks */,
+				F4A6B27F186D950D007AEB12 /* libUMSocial_Sdk_3.2.a in Frameworks */,
 				725E9C87186810D100BD2354 /* MessageUI.framework in Frameworks */,
 				725E9C85186810BE00BD2354 /* libsqlite3.dylib in Frameworks */,
 				725E9C83186810B100BD2354 /* libstdc++.dylib in Frameworks */,
-				725E9CB01868333200BD2354 /* libUMSocial_Sdk_3.2.a in Frameworks */,
 				72875CB718346F3D00F6D49B /* QuartzCore.framework in Frameworks */,
 				72CB9C49182B59D100C0DAF0 /* CoreBluetooth.framework in Frameworks */,
-				725E9CAF1868333200BD2354 /* libWeChatSDK.a in Frameworks */,
-				725E9CB11868333300BD2354 /* libUMSocial_Sdk_Comment_3.2.a in Frameworks */,
 				72B418BB18238BCA002EAD35 /* CoreGraphics.framework in Frameworks */,
 				72B418BF18238BCA002EAD35 /* CoreData.framework in Frameworks */,
 				72B418BD18238BCA002EAD35 /* UIKit.framework in Frameworks */,
@@ -2226,8 +2226,8 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					/Users/lanyu/dev/AddingBand/ios/UMSocial_Sdk_3.2/frameworks/Wechat,
-					/Users/lanyu/dev/AddingBand/ios/UMSocial_Sdk_3.2,
+					UMSocial_Sdk_3.2,
+					UMSocial_Sdk_3.2/frameworks/Wechat,
 				);
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = "";
@@ -2252,8 +2252,8 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					/Users/lanyu/dev/AddingBand/ios/UMSocial_Sdk_3.2/frameworks/Wechat,
-					/Users/lanyu/dev/AddingBand/ios/UMSocial_Sdk_3.2,
+					UMSocial_Sdk_3.2,
+					UMSocial_Sdk_3.2/frameworks/Wechat,
 				);
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "";
