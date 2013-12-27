@@ -128,7 +128,6 @@
 		725E9C85186810BE00BD2354 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 725E9C84186810BE00BD2354 /* libsqlite3.dylib */; };
 		725E9C87186810D100BD2354 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 725E9C86186810D100BD2354 /* MessageUI.framework */; };
 		725E9CAC1868333200BD2354 /* UMSocialLocalizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 725E9C891868333200BD2354 /* UMSocialLocalizable.strings */; };
-		725E9CAD1868333200BD2354 /* TencentOpenAPI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 725E9C8D1868333200BD2354 /* TencentOpenAPI.framework */; };
 		725E9CAE1868333200BD2354 /* TencentOpenApi_IOS_Bundle.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 725E9C8E1868333200BD2354 /* TencentOpenApi_IOS_Bundle.bundle */; };
 		725E9CAF1868333200BD2354 /* libWeChatSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 725E9C901868333200BD2354 /* libWeChatSDK.a */; };
 		725E9CB01868333200BD2354 /* libUMSocial_Sdk_3.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 725E9C9F1868333200BD2354 /* libUMSocial_Sdk_3.2.a */; };
@@ -735,7 +734,6 @@
 				72875CB718346F3D00F6D49B /* QuartzCore.framework in Frameworks */,
 				72CB9C49182B59D100C0DAF0 /* CoreBluetooth.framework in Frameworks */,
 				725E9CAF1868333200BD2354 /* libWeChatSDK.a in Frameworks */,
-				725E9CAD1868333200BD2354 /* TencentOpenAPI.framework in Frameworks */,
 				725E9CB11868333300BD2354 /* libUMSocial_Sdk_Comment_3.2.a in Frameworks */,
 				72B418BB18238BCA002EAD35 /* CoreGraphics.framework in Frameworks */,
 				72B418BF18238BCA002EAD35 /* CoreData.framework in Frameworks */,
@@ -2221,19 +2219,13 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					/Users/lanyu/dev/AddingBand/ios/UMSocial_Sdk_3.2/frameworks/TencentOpenAPI,
-				);
+				FRAMEWORK_SEARCH_PATHS = "";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "AddingBand/AddingBand-Prefix.pch";
 				INFOPLIST_FILE = "AddingBand/AddingBand-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					/Users/lanyu/dev/AddingBand/ios/ShareSDK_v2.6.1/Extend/SinaWeiboSDK,
-					/Users/lanyu/dev/AddingBand/ios/ShareSDK_v2.6.1/Extend/TencentWeiboSDK,
-					/Users/lanyu/dev/AddingBand/ios/ShareSDK_v2.6.1/Extend/WeChatSDK,
 					/Users/lanyu/dev/AddingBand/ios/UMSocial_Sdk_3.2/frameworks/Wechat,
 					/Users/lanyu/dev/AddingBand/ios/UMSocial_Sdk_3.2,
 				);
@@ -2253,19 +2245,13 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					/Users/lanyu/dev/AddingBand/ios/UMSocial_Sdk_3.2/frameworks/TencentOpenAPI,
-				);
+				FRAMEWORK_SEARCH_PATHS = "";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "AddingBand/AddingBand-Prefix.pch";
 				INFOPLIST_FILE = "AddingBand/AddingBand-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					/Users/lanyu/dev/AddingBand/ios/ShareSDK_v2.6.1/Extend/SinaWeiboSDK,
-					/Users/lanyu/dev/AddingBand/ios/ShareSDK_v2.6.1/Extend/TencentWeiboSDK,
-					/Users/lanyu/dev/AddingBand/ios/ShareSDK_v2.6.1/Extend/WeChatSDK,
 					/Users/lanyu/dev/AddingBand/ios/UMSocial_Sdk_3.2/frameworks/Wechat,
 					/Users/lanyu/dev/AddingBand/ios/UMSocial_Sdk_3.2,
 				);
