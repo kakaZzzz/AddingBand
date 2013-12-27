@@ -2238,6 +2238,7 @@
 					/Users/lanyu/dev/AddingBand/ios/UMSocial_Sdk_3.2,
 				);
 				ONLY_ACTIVE_ARCH = NO;
+				OTHER_LDFLAGS = "-all_load";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = 1;
@@ -2269,6 +2270,7 @@
 					/Users/lanyu/dev/AddingBand/ios/UMSocial_Sdk_3.2,
 				);
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = "-all_load";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = 1;
