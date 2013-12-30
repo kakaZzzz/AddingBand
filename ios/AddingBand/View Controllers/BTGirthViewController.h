@@ -11,7 +11,11 @@
  *  此页是腹围页面
  */
 #import <UIKit/UIKit.h>
-
+@class BTSheetPickerview;
 @interface BTGirthViewController : UIViewController
+@property (nonatomic, strong) UILabel *weightLabel;
+@property (nonatomic, strong) UILabel *weightConditionLabel;
 
+//输入体重 选择器
+@property(nonatomic,strong)BTSheetPickerview *actionSheetView;
 @end

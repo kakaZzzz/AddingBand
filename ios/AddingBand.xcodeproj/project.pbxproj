@@ -109,7 +109,6 @@
 		724F1CF0184F3AF800342DF7 /* MHTabBarActiveTab.png in Resources */ = {isa = PBXBuildFile; fileRef = 724F1CED184F3AF800342DF7 /* MHTabBarActiveTab.png */; };
 		7255AD94186D3E5B003A0913 /* BTPhysicalCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7255AD8B186D3E5B003A0913 /* BTPhysicalCell.m */; };
 		7255AD95186D3E5B003A0913 /* BTPhysicalCollectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7255AD8D186D3E5B003A0913 /* BTPhysicalCollectionView.m */; };
-		7255AD96186D3E5B003A0913 /* BTPhysicalModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 7255AD8F186D3E5B003A0913 /* BTPhysicalModel.m */; };
 		7255AD98186D3E5B003A0913 /* BTUCCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7255AD93186D3E5B003A0913 /* BTUCCell.m */; };
 		7255AD9C186D3EA1003A0913 /* horizontal_sep_line@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7255AD99186D3EA1003A0913 /* horizontal_sep_line@2x.png */; };
 		7255AD9D186D3EA1003A0913 /* physical_collectioncell_bg@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7255AD9A186D3EA1003A0913 /* physical_collectioncell_bg@2x.png */; };
@@ -147,6 +146,8 @@
 		7262FB1E184DD833005F3B67 /* BTMamaDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7262FB1D184DD833005F3B67 /* BTMamaDetailViewController.m */; };
 		7266B61518374C0100B1452A /* BTPhsicalData.m in Sources */ = {isa = PBXBuildFile; fileRef = 7266B61418374C0100B1452A /* BTPhsicalData.m */; };
 		726EAFCD185AE84F000A00FD /* BTBarMarkView.m in Sources */ = {isa = PBXBuildFile; fileRef = 726EAFCC185AE84F000A00FD /* BTBarMarkView.m */; };
+		727038BF187143C40021F83D /* BTPhysicalModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 727038BE187143C40021F83D /* BTPhysicalModel.m */; };
+		727038C2187144A50021F83D /* FYChartView.m in Sources */ = {isa = PBXBuildFile; fileRef = 727038C1187144A50021F83D /* FYChartView.m */; };
 		72716EE018640FE900499D76 /* BTMainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 72716EDF18640FE900499D76 /* BTMainViewController.m */; };
 		72729EDD1869792C009C2EDE /* EGORefreshTableFooterView.m in Sources */ = {isa = PBXBuildFile; fileRef = 72729ED91869792C009C2EDE /* EGORefreshTableFooterView.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		72729EDE1869792C009C2EDE /* EGORefreshTableHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 72729EDB1869792C009C2EDE /* EGORefreshTableHeaderView.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -443,8 +444,6 @@
 		7255AD8B186D3E5B003A0913 /* BTPhysicalCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTPhysicalCell.m; sourceTree = "<group>"; };
 		7255AD8C186D3E5B003A0913 /* BTPhysicalCollectionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTPhysicalCollectionView.h; sourceTree = "<group>"; };
 		7255AD8D186D3E5B003A0913 /* BTPhysicalCollectionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTPhysicalCollectionView.m; sourceTree = "<group>"; };
-		7255AD8E186D3E5B003A0913 /* BTPhysicalModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTPhysicalModel.h; sourceTree = "<group>"; };
-		7255AD8F186D3E5B003A0913 /* BTPhysicalModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTPhysicalModel.m; sourceTree = "<group>"; };
 		7255AD92186D3E5B003A0913 /* BTUCCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTUCCell.h; sourceTree = "<group>"; };
 		7255AD93186D3E5B003A0913 /* BTUCCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTUCCell.m; sourceTree = "<group>"; };
 		7255AD99186D3EA1003A0913 /* horizontal_sep_line@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "horizontal_sep_line@2x.png"; sourceTree = "<group>"; };
@@ -515,6 +514,10 @@
 		7266B61418374C0100B1452A /* BTPhsicalData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTPhsicalData.m; sourceTree = "<group>"; };
 		726EAFCB185AE84F000A00FD /* BTBarMarkView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTBarMarkView.h; sourceTree = "<group>"; };
 		726EAFCC185AE84F000A00FD /* BTBarMarkView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTBarMarkView.m; sourceTree = "<group>"; };
+		727038BD187143C40021F83D /* BTPhysicalModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTPhysicalModel.h; sourceTree = "<group>"; };
+		727038BE187143C40021F83D /* BTPhysicalModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTPhysicalModel.m; sourceTree = "<group>"; };
+		727038C0187144A50021F83D /* FYChartView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FYChartView.h; sourceTree = "<group>"; };
+		727038C1187144A50021F83D /* FYChartView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FYChartView.m; sourceTree = "<group>"; };
 		72716EDE18640FE900499D76 /* BTMainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BTMainViewController.h; path = "View Controllers/BTMainViewController.h"; sourceTree = "<group>"; };
 		72716EDF18640FE900499D76 /* BTMainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BTMainViewController.m; path = "View Controllers/BTMainViewController.m"; sourceTree = "<group>"; };
 		72729ED81869792C009C2EDE /* EGORefreshTableFooterView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EGORefreshTableFooterView.h; sourceTree = "<group>"; };
@@ -1077,8 +1080,6 @@
 				7255AD8B186D3E5B003A0913 /* BTPhysicalCell.m */,
 				7255AD8C186D3E5B003A0913 /* BTPhysicalCollectionView.h */,
 				7255AD8D186D3E5B003A0913 /* BTPhysicalCollectionView.m */,
-				7255AD8E186D3E5B003A0913 /* BTPhysicalModel.h */,
-				7255AD8F186D3E5B003A0913 /* BTPhysicalModel.m */,
 				7255AD92186D3E5B003A0913 /* BTUCCell.h */,
 				7255AD93186D3E5B003A0913 /* BTUCCell.m */,
 			);
@@ -1200,6 +1201,24 @@
 			name = "设置页面";
 			sourceTree = "<group>";
 		};
+		727038BC187143130021F83D /* DataModel */ = {
+			isa = PBXGroup;
+			children = (
+				727038BD187143C40021F83D /* BTPhysicalModel.h */,
+				727038BE187143C40021F83D /* BTPhysicalModel.m */,
+			);
+			name = DataModel;
+			sourceTree = "<group>";
+		};
+		727038C3187145030021F83D /* BTScrollChartView */ = {
+			isa = PBXGroup;
+			children = (
+				727038C0187144A50021F83D /* FYChartView.h */,
+				727038C1187144A50021F83D /* FYChartView.m */,
+			);
+			name = BTScrollChartView;
+			sourceTree = "<group>";
+		};
 		72729ED71869792C009C2EDE /* EGO */ = {
 			isa = PBXGroup;
 			children = (
@@ -1216,6 +1235,7 @@
 		727F1938182B37EE00CAD11A /* Library */ = {
 			isa = PBXGroup;
 			children = (
+				727038C3187145030021F83D /* BTScrollChartView */,
 				7255AD89186D3E5B003A0913 /* BTPhysicalCustomCollection */,
 				72A2A301186AC9F000A504CA /* BTAlert */,
 				72A2A2FD186AAB8C00A504CA /* BTSheetPickerView */,
@@ -1442,6 +1462,7 @@
 		72B418C018238BCA002EAD35 /* AddingBand */ = {
 			isa = PBXGroup;
 			children = (
+				727038BC187143130021F83D /* DataModel */,
 				724544891838AD130070F700 /* UIImagess */,
 				72CB9C2B182B58B900C0DAF0 /* BLE */,
 				7241465918274520008B05C5 /* MainCustomCell */,
@@ -2029,6 +2050,7 @@
 				72A373581869433B003F5B24 /* HYActivityView.m in Sources */,
 				724075E518488E000033BB90 /* SRRefreshView.m in Sources */,
 				723ECAED1845F9D300D47DFA /* PICircularProgressView.m in Sources */,
+				727038C2187144A50021F83D /* FYChartView.m in Sources */,
 				72AFBA5C18431995004F0350 /* UIViewSizeShortcuts.m in Sources */,
 				7231BE621859B443009A6DB5 /* BTMonthSportViewController.m in Sources */,
 				72B418C718238BCA002EAD35 /* main.m in Sources */,
@@ -2085,7 +2107,7 @@
 				7231BE5C1859B3FF009A6DB5 /* BTDailySportViewController.m in Sources */,
 				723D6486184CC96B008618D7 /* BTRecordFetalView.m in Sources */,
 				7255AD95186D3E5B003A0913 /* BTPhysicalCollectionView.m in Sources */,
-				7255AD96186D3E5B003A0913 /* BTPhysicalModel.m in Sources */,
+				727038BF187143C40021F83D /* BTPhysicalModel.m in Sources */,
 				724544951838C3110070F700 /* BTColor.m in Sources */,
 				7245449B1838C43D0070F700 /* BTSettingIndicateCell.m in Sources */,
 			);

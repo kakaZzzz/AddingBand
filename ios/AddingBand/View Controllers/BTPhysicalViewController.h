@@ -17,9 +17,7 @@
 @class PICircularProgressView;
 @class BTPhysicalCollectionView;
 @interface BTPhysicalViewController : BTScrollViewController<UIScrollViewDelegate,
-MHTabBarControllerDelegate,
-UITableViewDataSource,
-UITableViewDelegate>
+MHTabBarControllerDelegate>
 
 //视图布局
 @property(nonatomic,strong)UIView *navigationBgView;

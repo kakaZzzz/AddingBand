@@ -41,7 +41,7 @@
     //宫缩
     self.kTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(titleLabelX, titleLabelY, titleLabelWidth, titleLabelHeight)];
     self.kTitleLabel.textAlignment = NSTextAlignmentLeft;
-    self.kTitleLabel.text = @"体重";
+    self.kTitleLabel.text = @"宫缩";
     self.kTitleLabel.textColor = [UIColor colorWithRed:94/255.0 green:101/255.0 blue:113/255.0 alpha:1.0];
     self.kTitleLabel.font = [UIFont systemFontOfSize:17.0f];
    // self.kTitleLabel.backgroundColor = [UIColor redColor];

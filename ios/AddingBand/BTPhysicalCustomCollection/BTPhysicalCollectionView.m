@@ -28,7 +28,7 @@
     int left = 0;
     int top = 0;
     int index = 0;
-    for (int i = 0; i < 2; i ++) {
+    for (int i = 0; i < 1; i ++) {//判断有多少个button
         for (int j = 0; j < 3; j++) {
             
             CGRect rect = CGRectMake(left + j * 104,top + i * 110, 100, 100);

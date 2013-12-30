@@ -351,6 +351,7 @@
             }
             self.bc = [BTBandCentral sharedBandCentral];
             BTBandPeripheral* bp = [self.bc getBpByName:bpName];
+            
             //如果是正在连接的设备就断开连接
 //            if (bp.isConnected) {
                 // [self.bc togglePeripheralByIndex:i];

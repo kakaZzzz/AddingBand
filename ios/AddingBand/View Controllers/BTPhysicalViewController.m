@@ -177,14 +177,14 @@
     
     self.progressLabel = [[UILabel alloc] initWithFrame:CGRectMake(320 - sportProgressView.frame.size.height - 80,0, 130,80)];
     _progressLabel.textColor = [UIColor colorWithRed:66/255.0 green:156/255.0 blue:239/255.0 alpha:1.0];
-    // _progressLabel.backgroundColor = [UIColor greenColor];
-    _progressLabel.textAlignment = NSTextAlignmentCenter;
+     _progressLabel.backgroundColor = [UIColor clearColor];
+    _progressLabel.textAlignment = NSTextAlignmentRight;
     _progressLabel.font = [UIFont systemFontOfSize:50];
     _progressLabel.text = @"100";
     [sportProgressView addSubview:_progressLabel];
     
     //单独 百分号 label
-    UILabel *bLabel = [[UILabel alloc] initWithFrame:CGRectMake(280, 40, 20,20)];
+    UILabel *bLabel = [[UILabel alloc] initWithFrame:CGRectMake(290, 40, 20,20)];
     bLabel.backgroundColor = [UIColor clearColor];
     bLabel.textColor = [UIColor colorWithRed:66/255.0 green:156/255.0 blue:239/255.0 alpha:1.0];
     bLabel.textAlignment = NSTextAlignmentCenter;
@@ -312,10 +312,13 @@
 }
 - (void)addPhysicalViewWithDataWithYvalue:(int)yValue
 {
-    NSArray *array1 = [NSArray arrayWithObjects:@"体重",@"宫高",@"腹围",@"B超",@"血压",@"宫缩", nil];
-    NSArray *array3 = [NSArray arrayWithObjects:@"80.5",@"15.5",@"",@"异常",@"120/80",@"41.5", nil];
+//    NSArray *array1 = [NSArray arrayWithObjects:@"体重",@"宫高",@"腹围",@"B超",@"血压",@"宫缩", nil];
+//    NSArray *array3 = [NSArray arrayWithObjects:@"80.5",@"15.5",@"",@"异常",@"120/80",@"41.5", nil];
+      NSArray *array1 = [NSArray arrayWithObjects:@"体重",@"宫高",@"腹围",nil];
+      NSArray *array3 = [NSArray arrayWithObjects:@"80.5",@"15.5",@"",nil];
+
     NSMutableArray *array = [NSMutableArray arrayWithCapacity:1];
-    for (int i = 0; i < 6; i ++) {
+    for (int i = 0; i < 3; i ++) {
         BTPhysicalModel *model = [[BTPhysicalModel alloc] initWithTitle:[array1 objectAtIndex:i] content:[array3 objectAtIndex:i]];
         [array addObject:model];
     }

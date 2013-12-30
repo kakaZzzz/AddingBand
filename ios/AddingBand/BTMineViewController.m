@@ -225,7 +225,7 @@ static NSString *pregnancy = nil;//怀孕症状
 {
     
     //
-    BTAppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
+    BTAppDelegate *appDelegate = (BTAppDelegate *)[[UIApplication sharedApplication] delegate];
     UIWindow *mainWindow = appDelegate.window;
     self.flatDatePicker = [[FlatDatePicker alloc] initWithParentView:mainWindow];
     self.flatDatePicker.delegate = self;

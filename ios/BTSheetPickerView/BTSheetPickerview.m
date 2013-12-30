@@ -50,36 +50,52 @@
     
     UIWindow *shareWindow =((BTAppDelegate *)[[UIApplication sharedApplication] delegate]).window;
    // self.frame = CGRectMake(0, self.referView.frame.size.height - 320, 320, 320);
-    self.frame = CGRectMake(0, shareWindow.frame.size.height - 320, 320, 320);
+    
+    if (actionStyle == BTActionSheetPickerStyleDatePicker) {
+        self.frame = CGRectMake(0, shareWindow.frame.size.height - 320, 320, 320);
+        
+        self.backgroundColor = [UIColor whiteColor];
+        
+        //取消按钮
+        self.cancelButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        _cancelButton.frame = CGRectMake(270, 0, 50, 50);
+        [self.cancelButton setTitle:@"确定" forState:UIControlStateNormal];
+        [self.cancelButton setTitleColor:[UIColor orangeColor] forState:UIControlStateNormal];
+        [self.cancelButton addTarget:self action:@selector(closeButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
+        [self addSubview:self.cancelButton];
+        
+        //各种小标签
+        UIImageView *clockImage = [[UIImageView alloc] initWithFrame:CGRectMake(5, 5, 40, 40)];
+        clockImage.backgroundColor = [UIColor blueColor];
+        [self addSubview:clockImage];
+        
+        UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(clockImage.frame.origin.x + clockImage.frame.size.width, clockImage.frame.origin.y, 200, 40)];
+        titleLabel.backgroundColor = [UIColor yellowColor];
+        titleLabel.text = @"产检提醒设置";
+        [self addSubview:titleLabel];
+        
+        
+        UILabel *contentLabel = [[UILabel alloc] initWithFrame:CGRectMake(clockImage.frame.origin.x , clockImage.frame.origin.y + clockImage.frame.size.height + 10, 320, 60)];
+        contentLabel.backgroundColor = [UIColor orangeColor];
+        contentLabel.numberOfLines = 0;
+        contentLabel.lineBreakMode = NSLineBreakByWordWrapping;
+        contentLabel.text = @"选择下次产检时间吧，我们会为你制定贴心的提醒";
+        [self addSubview:contentLabel];
 
-    self.backgroundColor = [UIColor whiteColor];
-    
-    //取消按钮
-    self.cancelButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    _cancelButton.frame = CGRectMake(270, 0, 50, 50);
-    [self.cancelButton setTitle:@"确定" forState:UIControlStateNormal];
-    [self.cancelButton setTitleColor:[UIColor orangeColor] forState:UIControlStateNormal];
-    [self.cancelButton addTarget:self action:@selector(closeButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
-    [self addSubview:self.cancelButton];
-    
-    //各种小标签
-    UIImageView *clockImage = [[UIImageView alloc] initWithFrame:CGRectMake(5, 5, 40, 40)];
-    clockImage.backgroundColor = [UIColor blueColor];
-    [self addSubview:clockImage];
-    
-    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(clockImage.frame.origin.x + clockImage.frame.size.width, clockImage.frame.origin.y, 200, 40)];
-    titleLabel.backgroundColor = [UIColor yellowColor];
-    titleLabel.text = @"产检提醒设置";
-    [self addSubview:titleLabel];
-    
-    
-    UILabel *contentLabel = [[UILabel alloc] initWithFrame:CGRectMake(clockImage.frame.origin.x , clockImage.frame.origin.y + clockImage.frame.size.height + 10, 320, 60)];
-    contentLabel.backgroundColor = [UIColor orangeColor];
-    contentLabel.numberOfLines = 0;
-    contentLabel.lineBreakMode = NSLineBreakByWordWrapping;
-    contentLabel.text = @"选择下次产检时间吧，我们会为你制定贴心的提醒";
-    [self addSubview:contentLabel];
-    
+    }
+    if (actionStyle == BTActionSheetPickerStyleTextPicker) {
+        self.frame = CGRectMake(0, shareWindow.frame.size.height - 266, 320, 266);
+        
+        self.backgroundColor = [UIColor whiteColor];
+        self.cancelButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        _cancelButton.frame = CGRectMake(270, 0, 50, 50);
+        [self.cancelButton setTitle:@"确定" forState:UIControlStateNormal];
+        [self.cancelButton setTitleColor:[UIColor orangeColor] forState:UIControlStateNormal];
+        [self.cancelButton addTarget:self action:@selector(closeButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
+        [self addSubview:self.cancelButton];
+
+
+    }
     
     //时间选择器
     switch (actionStyle) {

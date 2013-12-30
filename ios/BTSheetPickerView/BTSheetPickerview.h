@@ -20,6 +20,8 @@ typedef enum BTActionSheetPickerStyle
 
 //如果使用系统的datePicker，则用此代理方法回调
 - (void)actionSheetPickerView:(BTSheetPickerview *)pickerView didSelectDate:(NSDate*)date;
+
+@optional
 //如果使用自己填写内容的pickerview，则使用此代理方法
 - (void)actionSheetPickerView:(BTSheetPickerview *)pickerView didSelectTitles:(NSArray*)titles;
 @end

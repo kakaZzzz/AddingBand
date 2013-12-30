@@ -21,7 +21,7 @@
 
 + (void)showBadgeAtIndex:(int)tabIndex
 {
-    BTAppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
+    BTAppDelegate *appDelegate = (BTAppDelegate *)[[UIApplication sharedApplication] delegate];
     BTCustomTabBarController *tabbarController = (BTCustomTabBarController *)appDelegate.window.rootViewController;
     UIImageView *image =(UIImageView *)[tabbarController.tabBar viewWithTag:1000 + tabIndex];
     //如果没有小红点 则创建一个小红点
@@ -38,7 +38,7 @@
 
 + (void)removeBadgeAtIndex:(int)tabIndex
 {
-    BTAppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
+    BTAppDelegate *appDelegate = (BTAppDelegate *)[[UIApplication sharedApplication] delegate];
     BTCustomTabBarController *tabbarController = (BTCustomTabBarController *)appDelegate.window.rootViewController;
     UIImageView *image =(UIImageView *)[tabbarController.tabBar viewWithTag:1000 + tabIndex];
     //如果小红点存在 则移除小红点
@@ -57,7 +57,7 @@
     [barde autoBadgeSizeWithString:badgeValue];
     NSLog(@"barde is %@",NSStringFromCGRect(barde.frame));
     
-    BTAppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
+    BTAppDelegate *appDelegate = (BTAppDelegate *)[[UIApplication sharedApplication] delegate];
     BTCustomTabBarController *tabbarController = (BTCustomTabBarController *)appDelegate.window.rootViewController;
 
     if ([badgeValue length] >= 3) {
@@ -67,14 +67,12 @@
         barde.frame = CGRectMake(BADGE_LEFT + 80 * tabIndex, barde.frame.origin.y, barde.frame.size.width, barde.frame.size.height);
     }
     [tabbarController.tabBar addSubview:barde];
-
-    
     [tabbarController.tabBar bringSubviewToFront:barde];//将小圆点永远显示在最前面
 
 }
 
 + (void)removeBadgeWithValueAtIndex:(int)tabIndex
-{   BTAppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
+{   BTAppDelegate *appDelegate = (BTAppDelegate *)[[UIApplication sharedApplication] delegate];
     BTCustomTabBarController *tabbarController = (BTCustomTabBarController *)appDelegate.window.rootViewController;
 
     BTCustomBadge * badgeView = (BTCustomBadge*)[tabbarController.tabBar viewWithTag:2000 + tabIndex];

@@ -58,6 +58,9 @@
 #define DATEPICKERDISMISSNOTICE @"datePickerDismissNotice"//时间选择器将要消失的时候的通知
 #define FETALVIEWUPDATENOTICE @"fetalViewUpdate"//胎动详情页面刷新数据
 
+//App整体布局 宏
+#define RED_BACKGROUND_HEIGHT 368/2
+
 
 /*体征页面 布局宏定义*/
 #define kPhysicalImageX 35
@@ -66,7 +69,12 @@
 #define kPhysicalImageHeight 100
 
 
-#define kSeparatorLineHeight 1.5f
+#define kSeparatorLineHeight 2.0f
+//字体大小
+
+#define FIRST_TITLE_SIZE 34/2
+#define SECOND_TITLE_SIZE 28/2
+
 //颜色转换
 #define UIColorFromRGB(rgbValue) [UIColor colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 green:((float)((rgbValue & 0xFF00) >> 8))/255.0 blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0] 
 
