@@ -106,10 +106,10 @@
 #define B_ADDR_STR_LEN                        15
 
 // Battery level is critical when it is less than this %
-#define DEFAULT_BATT_CRITICAL_LEVEL           6
+#define DEFAULT_BATT_CRITICAL_LEVEL           10
 
 // Battery measurement period in ms
-#define DEFAULT_BATT_PERIOD                   15000
+#define DEFAULT_BATT_PERIOD                   60000
 
 // Battery measurement period in ms
 #define DEFAULT_ACC_PERIOD                    100
@@ -325,9 +325,9 @@ one_data_t oneData[DATA_TYPE_COUNT];
 // define for keys
 uint8 tapWaitFor = 0, lockSlip = 0, blinkPIO = 0, blinkMinutes = 13, onTheKey = 0, ledCycleCount = 0;
 
-uint16 testAddr = 0;
+// uint16 testAddr = 0;
 
-uint8 bleConnected = 0, readTheI = 0;
+uint8 readTheI = 0;
 
 /*********************************************************************
  * LOCAL FUNCTIONS
@@ -548,6 +548,21 @@ void SimpleBLEPeripheral_Init( uint8 task_id )
 
     //close all
     closeAllPIO();
+
+    //sunshine
+    // LED0_PIO = OPEN_PIO;
+    // LED1_PIO = OPEN_PIO;
+    // LED2_PIO = OPEN_PIO;
+    // LED3_PIO = OPEN_PIO;
+    // LED4_PIO = OPEN_PIO;
+    // LED5_PIO = OPEN_PIO;
+    // LED6_PIO = OPEN_PIO;
+    // LED7_PIO = OPEN_PIO;
+    // LED8_PIO = OPEN_PIO;
+    // LED9_PIO = OPEN_PIO;
+    // LED10_PIO = OPEN_PIO;
+    // LED11_PIO = OPEN_PIO;
+
 
     // Register callback with SimpleGATTprofile
     VOID SimpleProfile_RegisterAppCBs( &simpleBLEPeripheral_SimpleProfileCBs );
@@ -931,8 +946,6 @@ static void peripheralStateNotificationCB( gaprole_States_t newState )
     
     // closeAllPIO();
 
-    bleConnected = 0;
-
     switch ( newState )
     {
     case GAPROLE_STARTED:
@@ -973,8 +986,6 @@ static void peripheralStateNotificationCB( gaprole_States_t newState )
     case GAPROLE_CONNECTED:
     {
         // LED3_PIO = OPEN_PIO;
-
-        bleConnected = 1;
     }
     break;
 
@@ -1840,7 +1851,7 @@ static void eepromWrite(uint8 type){
 
 static uint8 eepromRead(void){
 
-    if (!bleConnected)
+    if (gapProfileState != GAPROLE_CONNECTED)
     {
         return FALSE;
     }
