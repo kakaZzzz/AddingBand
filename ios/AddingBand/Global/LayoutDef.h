@@ -84,7 +84,8 @@
 #define contentLabelColor @"999999"
 
 #define kGlobalColor [UIColor colorWithRed:255/255.0 green:35/255.0 blue:80/255.0 alpha:1.0]
-#define kBigTextColor [UIColor colorWithRed:94/255.0 green:101/255.0 blue:113/255.0 alpha:1.0];
+#define kBigTextColor [UIColor colorWithRed:94/255.0 green:101/255.0 blue:113/255.0 alpha:1.0]
+#define kContentTextColor [UIColor colorWithRed:145/255.0 green:154/255.0 blue:170/255.0 alpha:1.0]
 //程序中各种tag值
 #define BREAK_CONNECT_ALERT 100
 #define TIME_OUT_ALERT 101
@@ -94,6 +95,9 @@
 #define PHYSICAL_BUTTON_TAG 1050
 //体征页面的tag值
 #define PHYSICAL_CONTROL_TAG 3000
+
+//首次输入体重，宫高，腹围等 textField的tag值
+#define TEXTFIELD_TAG 500
 //刷新小雨滴
 #define POINT_X 40 //小雨滴距离X轴的距离
 #define POINT_LARGE 12.0f //小雨滴大小
@@ -109,4 +113,16 @@
 
 //蓝牙同步 连接部分宏
 #define SCAN_PERIPHERAL_TIMEOUT 10.0
+
+//修改设置日期的宏  生日 预产期 末次月经时间
+#define MODIFY_BIRTHDAY_TYPE 1//生日
+#define MODIFY_DUEDATE_TYPE 2//预产期
+#define MODIFY_MENSTRUATION_TYPE 3//末次月经时间
+
+
+//
+#define FUNDALHEIGHT @"fundalHeight"
+#define GIRTH @"girth"
+#define ON_LIMIT @"onLimit"
+#define OFF_LIMIT @"offLimit"
 #endif

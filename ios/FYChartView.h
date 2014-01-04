@@ -17,7 +17,12 @@ enum HorizontalTitleAlignment
     HorizontalTitleAlignmentCenter,
     HorizontalTitleAlignmentRight
 };
-
+typedef enum BTChartStyle
+{
+    BTChartWeight = 0,
+    BTChartFuntalHeight,
+    BTChartGirth
+}BTChartStyle;
 typedef enum HorizontalTitleAlignment HorizontalTitleAlignment;
 
 @class FYChartView;
@@ -70,8 +75,16 @@ typedef enum HorizontalTitleAlignment HorizontalTitleAlignment;
  *  数据来源
  */
 @property (nonatomic, retain) NSArray *modelArray;
+/**
+ *  上限
+ */
+@property (nonatomic, retain) NSArray *onLimit;
+/**
+ *  下限
+ */
+@property (nonatomic, retain) NSArray *offLimit;
 
-
+@property (nonatomic, assign) BTChartStyle style;
 /**
  *  rectangle line color
  *  default is blackColor

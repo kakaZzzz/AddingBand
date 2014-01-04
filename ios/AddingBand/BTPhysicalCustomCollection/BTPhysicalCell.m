@@ -8,6 +8,10 @@
 
 #import "BTPhysicalCell.h"
 #import "LayoutDef.h"
+#import "NSDate+DateHelper.h"
+#import "BTGetData.h"
+#import "BTPhysicalStandard.h"
+#import "BTGirthStandard.h"
 //#import "LayoutDef.h"
 #define titleLabelX 12
 #define titleLabelY 22
@@ -44,7 +48,7 @@
     self.kTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(titleLabelX, titleLabelY, titleLabelWidth, titleLabelHeight)];
     self.kTitleLabel.textAlignment = NSTextAlignmentLeft;
     self.kTitleLabel.text = @"体重";
-    self.kTitleLabel.textColor = [UIColor colorWithRed:94/255.0 green:101/255.0 blue:113/255.0 alpha:1.0];
+    self.kTitleLabel.textColor = kBigTextColor;
     self.kTitleLabel.font = [UIFont systemFontOfSize:17.0f];
   //  self.kTitleLabel.backgroundColor = [UIColor redColor];
      self.kTitleLabel.opaque = NO;
@@ -77,7 +81,7 @@
     _conditiontLabel.font = [UIFont systemFontOfSize:17.0f];
     _conditiontLabel.textAlignment = NSTextAlignmentLeft;
    
-    _conditiontLabel.textColor = [UIColor colorWithRed:94/255.0 green:101.0/255.0 blue:113/255.0 alpha:1.0];
+    _conditiontLabel.textColor = kBigTextColor;
     _conditiontLabel.opaque = NO;
     [self addSubview:_conditiontLabel];
     
@@ -115,7 +119,7 @@
                 self.warnImage.image = [UIImage imageNamed:@"physical_?"];
             }
             else{
-                if ([_physicalModel.content floatValue] > 20.0 || [_physicalModel.content floatValue] < 5.0) {
+                if ([self judgeFundalCondition:_physicalModel]) {
                     
                     self.contentLabel.hidden = NO;
                     self.conditiontLabel.hidden = NO;
@@ -123,13 +127,15 @@
                      self.warnImage.hidden = NO;
                     self.contentLabel.textColor = kGlobalColor;
                     self.conditiontLabel.textColor = kGlobalColor;
+                    self.warnImage.image = [UIImage imageNamed:@"prhysical_!"];
                 }
                 else{
                     self.contentLabel.hidden = NO;
                     self.conditiontLabel.hidden = NO;
                     self.noDataImage.hidden = YES;
                     self.warnImage.hidden = YES;
-                    self.contentLabel.textColor = [UIColor colorWithRed:94/255.0 green:101.0/255.0 blue:113/255.0 alpha:1.0];
+                    self.contentLabel.textColor = kBigTextColor;
+                     self.conditiontLabel.textColor = kBigTextColor;
                 }
 
             }
@@ -139,7 +145,7 @@
         else if ([_physicalModel.title isEqualToString:@"宫高"])
         {
             
-            if ([_physicalModel.content floatValue] == 0.0) {
+            if ([_physicalModel.content floatValue] == 0.0) {//无数据
                 
                 self.contentLabel.hidden = YES;
                 self.conditiontLabel.hidden = YES;
@@ -147,8 +153,8 @@
                  self.warnImage.hidden = NO;
                 self.warnImage.image = [UIImage imageNamed:@"physical_?"];
             }
-            else{
-                if ([_physicalModel.content floatValue] > 20.0 || [_physicalModel.content floatValue] < 5.0) {
+            else{//不正常
+                if ([self judgeGirthCondition:_physicalModel]) {
                     
                     self.contentLabel.hidden = NO;
                     self.conditiontLabel.hidden = NO;
@@ -156,13 +162,16 @@
                      self.warnImage.hidden = NO;
                     self.contentLabel.textColor = kGlobalColor;
                     self.conditiontLabel.textColor = kGlobalColor;
+                    self.warnImage.image = [UIImage imageNamed:@"prhysical_!"];
                 }
-                else{
+                else{//正常
                     self.contentLabel.hidden = NO;
                     self.conditiontLabel.hidden = NO;
                     self.noDataImage.hidden = YES;
                      self.warnImage.hidden = YES;
-                    self.contentLabel.textColor = [UIColor colorWithRed:94/255.0 green:101.0/255.0 blue:113/255.0 alpha:1.0];
+                    self.contentLabel.textColor = kBigTextColor;
+                    self.conditiontLabel.textColor = kBigTextColor;
+
                 }
                 
             }
@@ -189,13 +198,15 @@
                     self.warnImage.hidden = NO;
                     self.contentLabel.textColor = kGlobalColor;
                     self.conditiontLabel.textColor = kGlobalColor;
+                    self.warnImage.image = [UIImage imageNamed:@"prhysical_!"];
                 }
                 else{
                     self.contentLabel.hidden = NO;
                     self.conditiontLabel.hidden = NO;
                     self.noDataImage.hidden = YES;
                     self.warnImage.hidden = YES;
-                    self.contentLabel.textColor = [UIColor colorWithRed:94/255.0 green:101.0/255.0 blue:113/255.0 alpha:1.0];
+                    self.contentLabel.textColor = kBigTextColor;
+                    self.conditiontLabel.textColor = kBigTextColor;
                 }
                 
             }
@@ -213,7 +224,7 @@
                 [self.conditiontLabel setHidden:YES];
                 self.noDataImage.hidden = YES;
                 self.warnImage.hidden = YES;
-                self.contentLabel.textColor = [UIColor colorWithRed:94/255.0 green:101.0/255.0 blue:113/255.0 alpha:1.0];
+                self.contentLabel.textColor = kBigTextColor;
             }
             
             else if ([_physicalModel.content isEqualToString:@"异常"])
@@ -223,6 +234,7 @@
                 self.noDataImage.hidden = YES;
                 self.warnImage.hidden = NO;
                 self.contentLabel.textColor = self.contentLabel.textColor = kGlobalColor;
+                self.warnImage.image = [UIImage imageNamed:@"prhysical_!"];
             }
             else{
                 self.warnImage.image = [UIImage imageNamed:@"physical_?"];
@@ -253,7 +265,7 @@
                 self.contentLabel.font = [UIFont systemFontOfSize:20];
                 CGRect rect = self.contentLabel.frame;
                 self.contentLabel.frame = CGRectMake(rect.origin.x, rect.origin.y, rect.size.width + 50, rect.size.height);
-                self.contentLabel.textColor = [UIColor colorWithRed:94/255.0 green:101.0/255.0 blue:113/255.0 alpha:1.0];
+                self.contentLabel.textColor = kBigTextColor;
                 
 
             }
@@ -262,9 +274,86 @@
 
         self.kTitleLabel.text = self.physicalModel.title;
         self.contentLabel.text = self.physicalModel.content;
-        NSLog(@"拉拉拉拉拉拉阿拉拉拉");
+       
     }
     
 }
+
+#pragma mark - 判断数据是否正常
+- (BOOL)judgeFundalCondition:(BTPhysicalModel *)model
+{
+    float onLimit = 0.0;
+    float offLimit = 0.0;
+    float now = [model.content floatValue];
+
+    
+    NSDate *localDate = [NSDate dateFromString:[NSString stringWithFormat:@"%@.%@.%@",model.year,model.month,model.day] withFormat:@"yyyy.MM.dd"];
+    
+        int day1 = [BTGetData getPregnancyDaysWithDate:localDate];//怀孕天数
+        
+        if ((day1/7 + 1 >= 20) && (day1/7 + 1 <= 40)) {
+            NSArray *array = [BTGetData getFromCoreDataWithPredicate:nil entityName:@"BTPhysicalStandard" sortKey:nil];
+            for (int i = 0; i < [array count]; i ++) {
+                BTPhysicalStandard *one = [array objectAtIndex:i];
+                if (([one.day intValue]/7 + 1) == (day1/7 + 1)) {
+                    if (i < [array count] - 1) {
+                        BTPhysicalStandard *nextModel =  [array objectAtIndex:i+1];
+                        onLimit = (([nextModel.onLimit floatValue] - [one.onLimit floatValue])/6) * (day1 - [one.day intValue]) +[one.onLimit floatValue];
+                        offLimit = (([nextModel.offLimit floatValue] - [one.offLimit floatValue])/6) * (day1 - [one.day intValue]) +[one.offLimit floatValue];
+                        if (now > onLimit || now > offLimit) {
+                            return  YES;
+                        }
+                        else{
+                            return NO;
+                        }
+                    }
+            }
+                break;
+
+       }
+    }
+    
+         return NO;
+    
+}
+
+
+- (BOOL)judgeGirthCondition:(BTPhysicalModel *)model
+{
+    float onLimit = 0.0;
+    float offLimit = 0.0;
+    float now = [model.content floatValue];
+    
+    
+    NSDate *localDate = [NSDate dateFromString:[NSString stringWithFormat:@"%@.%@.%@",model.year,model.month,model.day] withFormat:@"yyyy.MM.dd"];
+    
+    int day1 = [BTGetData getPregnancyDaysWithDate:localDate];//怀孕天数
+    
+    if ((day1/7 + 1 >= 20) && (day1/7 + 1 <= 40)) {
+        NSArray *array = [BTGetData getFromCoreDataWithPredicate:nil entityName:@"BTGirthStandard" sortKey:nil];
+        for (int i = 0; i < [array count]; i ++) {
+            BTGirthStandard *one = [array objectAtIndex:i];
+            if (([one.day intValue]/7 + 1) == (day1/7 + 1)) {
+                if (i < [array count] - 1) {
+                    BTGirthStandard *nextModel =  [array objectAtIndex:i+1];
+                    onLimit = (([nextModel.onLimit floatValue] - [one.onLimit floatValue])/6) * (day1 - [one.day intValue]) +[one.onLimit floatValue];
+                    offLimit = (([nextModel.offLimit floatValue] - [one.offLimit floatValue])/6) * (day1 - [one.day intValue]) +[one.offLimit floatValue];
+                    if (now > onLimit || now > offLimit) {
+                        return  YES;
+                    }
+                    else{
+                        return NO;
+                    }
+                }
+            }
+            break;
+            
+        }
+    }
+    
+    return NO;
+    
+}
+
 
 @end

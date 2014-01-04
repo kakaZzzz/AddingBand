@@ -17,5 +17,6 @@
 //根据设备绑定时间 返回设备使用时间
 + (NSString *)getBLEuseTime:(long)usetime;
 
-
+//根据任意日期 得出是怀孕第几天
++ (int)getPregnancyDaysWithDate:(NSDate *)date;
 @end

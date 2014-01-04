@@ -7,7 +7,7 @@
 //
 
 #import "BTUCCell.h"
-
+#import "LayoutDef.h"
 #define titleLabelX 12
 #define titleLabelY 22
 #define titleLabelWidth 40
@@ -42,7 +42,7 @@
     self.kTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(titleLabelX, titleLabelY, titleLabelWidth, titleLabelHeight)];
     self.kTitleLabel.textAlignment = NSTextAlignmentLeft;
     self.kTitleLabel.text = @"宫缩";
-    self.kTitleLabel.textColor = [UIColor colorWithRed:94/255.0 green:101/255.0 blue:113/255.0 alpha:1.0];
+    self.kTitleLabel.textColor = kBigTextColor;
     self.kTitleLabel.font = [UIFont systemFontOfSize:17.0f];
    // self.kTitleLabel.backgroundColor = [UIColor redColor];
     self.kTitleLabel.opaque = NO;
@@ -61,7 +61,7 @@
     self.contentLabel.text = @"持续 00:53";
     _contentLabel.font = [UIFont systemFontOfSize:14.0f];
  //   _contentLabel.backgroundColor = [UIColor blueColor];
-    _contentLabel.textColor = [UIColor colorWithRed:94/255.0 green:101.0/255.0 blue:113/255.0 alpha:1.0];
+    _contentLabel.textColor = kBigTextColor;
     _contentLabel.textAlignment = NSTextAlignmentLeft;
     _contentLabel.opaque = NO;
     [self addSubview:_contentLabel];
@@ -75,7 +75,7 @@
     _conditiontLabel.font = [UIFont systemFontOfSize:14.0f];
     _conditiontLabel.textAlignment = NSTextAlignmentLeft;
     
-    _conditiontLabel.textColor = [UIColor colorWithRed:94/255.0 green:101.0/255.0 blue:113/255.0 alpha:1.0];
+    _conditiontLabel.textColor = kBigTextColor;
     _conditiontLabel.opaque = NO;
     [self addSubview:_conditiontLabel];
     
@@ -98,7 +98,7 @@
     else{
         _physicalModel = physicalModel;
         
-        NSLog(@"拉拉拉拉拉拉阿拉拉拉");
+        
     }
     
 }

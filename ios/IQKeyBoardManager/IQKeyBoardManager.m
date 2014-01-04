@@ -41,13 +41,14 @@ static IQKeyBoardManager *kbManager;
 
 #pragma mark - Initializing
 //Call it on our App Delegate.
-+(void)installKeyboardManager
++(id)installKeyboardManager
 {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         kbManager = [[IQKeyBoardManager alloc] init];
         [IQKeyBoardManager enableKeyboardManger];
     });
+    return kbManager;
 }
 
 +(void)setTextFieldDistanceFromKeyboard:(CGFloat)distance
@@ -116,6 +117,7 @@ static IQKeyBoardManager *kbManager;
     while (topController.presentedViewController)
         topController = topController.presentedViewController;
 
+    NSLog(@"啦啦啦啦啦%@",topController);
     return topController;
 }
 
@@ -126,8 +128,18 @@ static IQKeyBoardManager *kbManager;
 {
     UIViewController *controller = [IQKeyBoardManager topMostController];
     [UIView animateWithDuration:animationDuration animations:^{
-        [controller.view setFrame:frame];
-    }];
+        
+        if (self.scrollView) {
+            CGPoint point = frame.origin;
+            float y = point.y;
+            self.scrollView.contentOffset = CGPointMake(0, -y);
+
+        }
+        
+        else{
+            [controller.view setFrame:frame];
+        }
+     }];
 }
 
 #pragma mark - UIKeyboad Delegate methods

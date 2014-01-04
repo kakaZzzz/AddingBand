@@ -38,7 +38,7 @@
 {
     // self.contentView.backgroundColor = [UIColor grayColor];
     
-    self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(titleLabelX,titleLabelY, titleLabelWidth, titleLabelHeight)];
+    self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(titleLabelX,(self.frame.size.height - titleLabelHeight)/2, titleLabelWidth, titleLabelHeight)];
     _titleLabel.font = [UIFont systemFontOfSize:16.0f];
     _titleLabel.textColor = [BTColor getColor:titleLabelColor];
     _titleLabel.backgroundColor = [UIColor clearColor];
@@ -48,7 +48,7 @@
      
     
     self.lineImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"sep_line.png"]];
-    _lineImage.frame = CGRectMake(lineImageX, lineImageY, lineImageWidth, lineImageHeight);
+    _lineImage.frame = CGRectMake(lineImageX, self.frame.size.height - lineImageHeight, lineImageWidth, lineImageHeight);
     [self.contentView addSubview:_lineImage];
     
 }

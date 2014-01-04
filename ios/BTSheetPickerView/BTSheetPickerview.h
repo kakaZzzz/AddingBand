@@ -11,8 +11,9 @@
 #define kModalViewAnimationDuration 0.25f
 typedef enum BTActionSheetPickerStyle
 {
-    BTActionSheetPickerStyleTextPicker,//自定义
-    BTActionSheetPickerStyleDatePicker//系统datePicker
+    BTActionSheetPickerStyleTextPicker = 0,//自定义
+    BTActionSheetPickerStyleDateAndTimePicker,//系统datePicker
+    BTActionSheetPickerStyleDatePicker
 }BTActionSheetPickerStyle;
 
 @class BTSheetPickerview;
@@ -32,7 +33,7 @@ typedef enum BTActionSheetPickerStyle
 //将要显示在该视图上
 @property (nonatomic, weak) UIView *referView;
 //取消 确定按钮
-@property (nonatomic, strong) UIButton *cancelButton;
+@property (nonatomic, strong) UIButton *enterButton;
 //是否正在显示
 @property (nonatomic,assign) BOOL isShow;
 

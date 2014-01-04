@@ -16,6 +16,9 @@
 #import "BTUtils.h"
 #import "BTRawData.h"
 #import "BTView.h"
+#import "BTUserData.h"
+#import "BTUserSetting.h"//设置数据
+#import "NSDate+DateHelper.h"
 
 #import "MHTabBarController.h"
 #import "BTWeightViewController.h"
@@ -46,6 +49,8 @@
 
 #define kGradeImageWidth 200
 #define kGradeImageHeight 160
+
+static int selectedTag = 0;
 @interface BTPhysicalViewController ()
 
 @property(nonatomic,strong)NSArray *textLabelArray;
@@ -76,9 +81,9 @@
 - (void)viewDidLoad
 {
     
-    
     [super viewDidLoad];
-    
+   self.scrollView.contentSize = CGSizeMake(320, 800);
+   
     [self addSubviews];//加载子视图
     
     // Do any additional setup after loading the view.
@@ -142,7 +147,7 @@
     //_lastSyncTimeLabel.backgroundColor = [UIColor redColor];
     _lastSyncTimeLabel.font = [UIFont systemFontOfSize:14];
     _lastSyncTimeLabel.textAlignment = NSTextAlignmentLeft;
-    _lastSyncTimeLabel.textColor = [UIColor colorWithRed:145/255.0 green:154/255.0 blue:170/255.0 alpha:1.0];
+    _lastSyncTimeLabel.textColor = kContentTextColor;
     _lastSyncTimeLabel.text = @"手环上次同步时间: 14:23";
     [syncBg addSubview:_lastSyncTimeLabel];
     
@@ -160,7 +165,7 @@
     [self.scrollView addSubview:sportProgressView];
     
     UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(sportProgressView.frame.origin.x + 36/2, 10, 150, 30)];
-    titleLabel.textColor = [UIColor colorWithRed:94/255.0 green:101.0/255.0 blue:113/255.0 alpha:1.0];
+    titleLabel.textColor = kBigTextColor;
     titleLabel.backgroundColor = [UIColor clearColor];
     titleLabel.textAlignment = NSTextAlignmentLeft;
     titleLabel.font = [UIFont systemFontOfSize:17];
@@ -168,7 +173,7 @@
     [sportProgressView addSubview:titleLabel];
     
     self.goalLabel = [[UILabel alloc] initWithFrame:CGRectMake(sportProgressView.frame.origin.x + 36/2, titleLabel.frame.origin.y + 30, 170, 30)];
-    _goalLabel.textColor = [UIColor colorWithRed:145/255.0 green:154/255.0 blue:170/255.0 alpha:1.0];
+    _goalLabel.textColor = kContentTextColor;
     _goalLabel.backgroundColor = [UIColor clearColor];
     _goalLabel.textAlignment = NSTextAlignmentLeft;
     _goalLabel.font = [UIFont systemFontOfSize:14];
@@ -200,7 +205,7 @@
     
     
     titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(fetalView.frame.origin.x + 36/2, 10, 150, 30)];
-    titleLabel.textColor = [UIColor colorWithRed:94/255.0 green:101.0/255.0 blue:113/255.0 alpha:1.0];
+    titleLabel.textColor = kBigTextColor;
     titleLabel.backgroundColor = [UIColor clearColor];
     titleLabel.textAlignment = NSTextAlignmentLeft;
     titleLabel.font = [UIFont systemFontOfSize:17];
@@ -208,7 +213,7 @@
     [fetalView addSubview:titleLabel];
     
     self.fetalLabel = [[UILabel alloc] initWithFrame:CGRectMake(fetalView.frame.origin.x + 36/2, titleLabel.frame.origin.y + 30, 170, 30)];
-    _fetalLabel.textColor = [UIColor colorWithRed:145/255.0 green:154/255.0 blue:170/255.0 alpha:1.0];
+    _fetalLabel.textColor = kContentTextColor;
     _fetalLabel.backgroundColor = [UIColor clearColor];
     _fetalLabel.textAlignment = NSTextAlignmentLeft;
     _fetalLabel.font = [UIFont systemFontOfSize:14];
@@ -253,7 +258,7 @@
     [bloodButton addSubview:bloodIconImage];
     
     UILabel *bloodLabel = [[UILabel alloc] initWithFrame:CGRectMake(bloodIconImage.frame.origin.x + bloodIconImage.frame.size.width + 18, bloodIconImage.frame.origin.y, 100, 26)];
-    bloodLabel.textColor = [UIColor colorWithRed:94/255.0 green:101.0/255.0 blue:113/255.0 alpha:1.0];
+    bloodLabel.textColor = kBigTextColor;
     bloodLabel.backgroundColor = [UIColor clearColor];
     bloodLabel.textAlignment = NSTextAlignmentLeft;
     bloodLabel.font = [UIFont systemFontOfSize:17];
@@ -278,48 +283,118 @@
     [fetalButton addSubview:fetalIconImage];
     
     UILabel *fetalLabel = [[UILabel alloc] initWithFrame:CGRectMake(bloodIconImage.frame.origin.x + bloodIconImage.frame.size.width + 18, bloodIconImage.frame.origin.y, 100, 26)];
-    fetalLabel.textColor = [UIColor colorWithRed:94/255.0 green:101.0/255.0 blue:113/255.0 alpha:1.0];
+    fetalLabel.textColor = kBigTextColor;
     fetalLabel.backgroundColor = [UIColor clearColor];
     fetalLabel.textAlignment = NSTextAlignmentLeft;
     fetalLabel.font = [UIFont systemFontOfSize:17];
     fetalLabel.text = @"胎心检测";
     [fetalButton addSubview:fetalLabel];
+    
+}
+#pragma mark - 从coredata中获取数据 用于显示体重 宫高 腹围
+- (NSArray *)configureDataModelArray
+{
+    NSManagedObjectContext *contex = [BTGetData getAppContex];
+    NSMutableArray *weightArray = [NSMutableArray arrayWithCapacity:1];
+    NSMutableArray *heighttArray = [NSMutableArray arrayWithCapacity:1];
+    NSMutableArray *girthArray = [NSMutableArray arrayWithCapacity:1];
+   
+    NSArray *dataArray = [BTGetData getFromCoreDataWithPredicate:nil entityName:@"BTUserData" sortKey:nil];
+    BTUserData *one = [[BTUserData alloc] initWithEntity:[NSEntityDescription entityForName:@"BTUserData" inManagedObjectContext:contex] insertIntoManagedObjectContext:contex];
+    if (dataArray.count > 0) {
+        for (BTUserData *userData in dataArray) {
+            if (userData.weight) {
+                [weightArray addObject:userData];
+            }
+            
+            if (userData.fundalHeight) {
+                [heighttArray addObject:userData];
+            }
+            
+            if (userData.girth) {
+                [girthArray addObject:userData];
+            }
+        }
+        
 
-    
+    if ([weightArray count] == 0) {
+        [weightArray addObject:one];
+        
+    }
+    if ([heighttArray count] == 0) {
+        [heighttArray addObject:one];
+        
+    }
+    if ([girthArray count] == 0) {
+        [girthArray addObject:one];
+        
+    }
+        NSArray *resultArray = [NSArray arrayWithObjects:[weightArray lastObject], [heighttArray lastObject],[girthArray lastObject],nil];
+        
+        return resultArray;
 
+}
     
-    
-    
-    
-    //
-    //    goalLabel = [[UILabel alloc] initWithFrame:CGRectMake(sportProgressView.frame.origin.x + 36/2, titleLabel.frame.origin.y + 30, 170, 30)];
-    //    goalLabel.text = @"月平均:30 次/每天";
-    //    [sportProgressView addSubview:goalLabel];
-    
-    //    self.progressLabel = [[UILabel alloc] initWithFrame:CGRectMake(320 - sportProgressView.frame.size.height - 80,0, 130,80)];
-    //    _progressLabel.textColor = [UIColor colorWithRed:66/255.0 green:156/255.0 blue:239/255.0 alpha:1.0];
-    //    // _progressLabel.backgroundColor = [UIColor greenColor];
-    //    _progressLabel.textAlignment = NSTextAlignmentCenter;
-    //    _progressLabel.font = [UIFont systemFontOfSize:50];
-    //    _progressLabel.text = @"100";
-    //    [sportProgressView addSubview:_progressLabel];
-    
-    
-    
-    
-    
-    
+    return nil;
 }
 - (void)addPhysicalViewWithDataWithYvalue:(int)yValue
 {
+    
+
 //    NSArray *array1 = [NSArray arrayWithObjects:@"体重",@"宫高",@"腹围",@"B超",@"血压",@"宫缩", nil];
 //    NSArray *array3 = [NSArray arrayWithObjects:@"80.5",@"15.5",@"",@"异常",@"120/80",@"41.5", nil];
       NSArray *array1 = [NSArray arrayWithObjects:@"体重",@"宫高",@"腹围",nil];
-      NSArray *array3 = [NSArray arrayWithObjects:@"80.5",@"15.5",@"",nil];
-
+      NSArray *array3 = [self configureDataModelArray];
+    NSLog(@"^^^^^^^^^^^^^^^^^^%@",array3);
     NSMutableArray *array = [NSMutableArray arrayWithCapacity:1];
     for (int i = 0; i < 3; i ++) {
-        BTPhysicalModel *model = [[BTPhysicalModel alloc] initWithTitle:[array1 objectAtIndex:i] content:[array3 objectAtIndex:i]];
+        
+        BTUserData *one = [array3 objectAtIndex:i];
+        NSString *content = nil;
+       
+        switch (i) {
+            case 0:
+            {
+                if (one.weight == nil) {
+                    content = @"";
+                }
+                else{
+                    content = [NSString stringWithString:one.weight];
+                }
+
+               
+            }
+                break;
+            case 1:
+            {
+                if (one.fundalHeight == nil) {
+                    content = @"";
+                }
+                else{
+                    content = [NSString stringWithString:one.fundalHeight];
+                }
+
+                
+            }
+                break;
+            case 2:
+            {
+                if (one.girth == nil) {
+                    content = @"";
+                }
+                else{
+                    content = [NSString stringWithString:one.girth];
+                }
+
+                
+            }
+                break;
+    
+            default:
+                break;
+        }
+        
+        BTPhysicalModel *model = [[BTPhysicalModel alloc] initWithTitle:[array1 objectAtIndex:i] content:content year:[NSString stringWithFormat:@"%@",one.year] month:[NSString stringWithFormat:@"%@",one.month] day:[NSString stringWithFormat:@"%@",one.day]];
         [array addObject:model];
     }
     
@@ -334,6 +409,7 @@
         switch (tag) {
             case PHYSICAL_BUTTON_TAG + 0://体重
             {
+                selectedTag = tag;
                 BTWeightViewController *weightVC = [[BTWeightViewController alloc] init];
                 weightVC.hidesBottomBarWhenPushed = YES;
                 [physicalVC.navigationController pushViewController:weightVC animated:YES];
@@ -341,6 +417,7 @@
                 break;
             case PHYSICAL_BUTTON_TAG + 1://宫高
             {
+                selectedTag = tag;
                 BTHeightViewController *heightVC = [[BTHeightViewController alloc] init];
                 heightVC.hidesBottomBarWhenPushed = YES;
                 [physicalVC.navigationController pushViewController:heightVC animated:YES];
@@ -348,6 +425,7 @@
                 break;
             case PHYSICAL_BUTTON_TAG + 2://腹围
             {
+                selectedTag = tag;
                 BTGirthViewController *girthVC = [[BTGirthViewController alloc] init];
                 girthVC.hidesBottomBarWhenPushed = YES;
                 [physicalVC.navigationController pushViewController:girthVC animated:YES];
@@ -386,7 +464,7 @@
     
     [self.scrollView addSubview:_physicalView];
     
-    self.scrollView.contentSize = CGSizeMake(320, 800);
+    
     
 }
 #pragma mark - 各种button的event事件
@@ -465,23 +543,120 @@
 
 
 
-#pragma mark - 视图将要出现的时候页面数据
+#pragma mark - 视图将要出现的时候  刷新页面数据
 - (void)viewWillAppear:(BOOL)animated
 
 {
+   
     [super viewWillAppear:animated];
-    NSLog(@"视图出现出现出现.....");
-    
     [self.navigationController setNavigationBarHidden:YES animated:NO];
-    
     
     
     [self updateSportsProgress];
     //self.fetalLabel
-    //[self.physicalView updateDataWithSubViewTag:<#(int)#> Model:<#(BTPhysicalModel *)#>]
     
-}
+    //更新体重 或宫高 或腹围
+    
+    if (selectedTag != 0) {
+        
+        
+        int index = selectedTag - PHYSICAL_BUTTON_TAG;
+        
+        NSArray *array1 = [NSArray arrayWithObjects:@"体重",@"宫高",@"腹围",nil];
+        NSArray *array3 = [self configureDataModelArray];
+        NSMutableArray *array = [NSMutableArray arrayWithCapacity:1];
+        for (int i = 0; i < 3; i ++) {
+            
+            BTUserData *one = [array3 objectAtIndex:i];
+            NSString *content = nil;
+            
+            switch (i) {
+                case 0:
+                {
+                    if (one.weight == nil) {
+                        content = @"";
+                    }
+                    else{
+                        content = [NSString stringWithString:one.weight];
+                    }
+                    
+                }
+                    break;
+                case 1:
+                {
+                    if (one.fundalHeight == nil) {
+                        content = @"";
+                    }
+                    else{
+                        content = [NSString stringWithString:one.fundalHeight];
+                    }
+                    
+                }
+                    break;
+                case 2:
+                {
+                    if (one.girth == nil) {
+                        content = @"";
+                    }
+                    else{
+                        content = [NSString stringWithString:one.girth];
+                    }
 
+                    
+                }
+                    break;
+                    
+                default:
+                    break;
+            }
+            BTPhysicalModel *model = [[BTPhysicalModel alloc] initWithTitle:[array1 objectAtIndex:i] content:content year:[NSString stringWithFormat:@"%@",one.year] month:[NSString stringWithFormat:@"%@",one.month] day:[NSString stringWithFormat:@"%@",one.day]];
+            [array addObject:model];
+        }
+        
+        [self.physicalView updateDataWithSubViewTag:selectedTag Model:[array objectAtIndex:index]];
+
+    }
+    
+    //更新自定义的navigationBar的怀孕时间
+    [self updatePregnancyTime];
+}
+#pragma mark - 更新导航栏上显示的怀孕时间
+- (void)updatePregnancyTime
+{
+    NSArray *data = [BTGetData getFromCoreDataWithPredicate:nil entityName:@"BTUserSetting" sortKey:nil];
+    if (data.count > 0) {
+        BTUserSetting *userData = [data objectAtIndex:0];
+        int day = [self intervalSinceNow:userData.dueDate];
+        self.countLabel.text = [NSString stringWithFormat:@"预产期倒计时: %d天",day];
+        
+        //根据怀孕天数 算出是第几周 第几天
+        int week = (280 - day)/7 + 1;
+        int day1 = (280 - day)%7;
+        self.dateLabel.text = [NSString stringWithFormat:@"%d周%d天",week,day1];
+      }
+
+}
+- (int)intervalSinceNow:(NSString *)theDate
+{
+    
+    NSDate *localdate = [NSDate localdate];
+    NSNumber *year = [BTUtils getYear:localdate];
+    NSNumber *month = [BTUtils getMonth:localdate];
+    NSNumber *day = [BTUtils getDay:localdate];
+    
+    NSDate *gmtDate = [NSDate dateFromString:[NSString stringWithFormat:@"%@.%@.%@",year,month,day] withFormat:@"yyyy.MM.dd"];
+    NSDate *dueDate = [NSDate dateFromString:theDate withFormat:@"yyyy.MM.dd"];
+    
+    NSLog(@"现在时间 %@  预产期时间 %@",gmtDate,dueDate);
+    
+    NSTimeInterval now = [gmtDate timeIntervalSince1970];
+    NSTimeInterval due = [dueDate timeIntervalSince1970];
+    NSTimeInterval cha = due - now;
+    
+    int day1 = cha/(24 * 60 * 60);
+    
+    return day1;
+}
 - (void)viewWillDisappear:(BOOL)animated
 {
     

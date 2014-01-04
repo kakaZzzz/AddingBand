@@ -12,12 +12,21 @@
 #import "LayoutDef.h"
 #import "BTView.h"
 #import "BTSheetPickerview.h"
+#import "BTGetData.h"
+#import "NSDate+DateHelper.h"
+#import "BTUtils.h"
+#import "BTUserData.h"
 
+#import "IQKeyBoardManager.h"
+#import "BTNavicationController.h"
+#import "BTPresentInputViewController.h"
 @interface BTGirthViewController ()<FYChartViewDataSource>
 @property(nonatomic,strong)UIScrollView *chartScrollView;
-@property (nonatomic, retain) FYChartView *chartView;
-@property (nonatomic, retain) NSArray *values;
-
+@property (nonatomic, retain) FYChartView *chartView;//折线图
+@property (nonatomic, retain) NSMutableArray *values;
+@property (nonatomic, strong) NSManagedObjectContext *context;
+@property(nonatomic,strong)NSMutableArray *onLimit;
+@property(nonatomic,strong)NSMutableArray *offLimit;
 @end
 
 #define ARC4RANDOM_MAX  0x100000000
@@ -29,10 +38,18 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
+        //创建 IQKeyBoardManager的实例对象
+        [IQKeyBoardManager installKeyboardManager];
+        //注册通知 监控键盘的状态
+        [IQKeyBoardManager enableKeyboardManger];
+
     }
     return self;
 }
-
+- (void)dealloc
+{
+    [IQKeyBoardManager disableKeyboardManager];
+}
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -41,18 +58,26 @@
     self.view.backgroundColor = [UIColor whiteColor];
     self.navigationItem.title = @"腹围";
     
+    
     self.chartScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, 320, RED_BACKGROUND_HEIGHT)];
     _chartScrollView.contentSize = CGSizeMake(1200, 200);
     _chartScrollView.scrollEnabled = NO;
     _chartScrollView.backgroundColor = [UIColor greenColor];
     [self.view addSubview:_chartScrollView];
     
-    [self drawLineChartView];
     
+    //配置数据
     
-    
-    
-  
+    self.values = [NSMutableArray arrayWithCapacity:1];
+    self.values = [NSMutableArray arrayWithArray:[self configureDrawCharValue]];
+    [self getOnLimitAndOffLimitArray];//得到上限 下限数组
+    [self drawLineChartViewWithModelArray:self.values onLimit:self.onLimit offLimit:self.offLimit];
+
+    //如果没有数据 拉出一个页面要求输入
+    if ([self.values count] == 0) {
+        [self performSelector:@selector(presentInputView) withObject:nil afterDelay:1.0];//延迟1秒模态出页面
+    }
+
     
     //腹围
     BTView *weightView = [[BTView alloc] initWithFrame:CGRectMake(0, _chartScrollView.frame.origin.y + _chartScrollView.frame.size.height, 320, 112/2)];
@@ -61,20 +86,31 @@
     [self.view addSubview:weightView];
     
     UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(weightView.frame.origin.x + 36/2, 10, 80, 30)];
-    titleLabel.textColor = [UIColor colorWithRed:94/255.0 green:101.0/255.0 blue:113/255.0 alpha:1.0];
+    titleLabel.textColor = kBigTextColor;
     titleLabel.backgroundColor = [UIColor blueColor];
     titleLabel.textAlignment = NSTextAlignmentLeft;
     titleLabel.font = [UIFont systemFontOfSize:FIRST_TITLE_SIZE];
     titleLabel.text = @"目前腹围:";
     [weightView addSubview:titleLabel];
     
-    self.weightLabel = [[UILabel alloc] initWithFrame:CGRectMake(titleLabel.frame.origin.x + titleLabel.frame.size.width, titleLabel.frame.origin.y, 170, 30)];
-    _weightLabel.textColor = [UIColor colorWithRed:145/255.0 green:154/255.0 blue:170/255.0 alpha:1.0];
-    _weightLabel.backgroundColor = [UIColor yellowColor];
-    _weightLabel.textAlignment = NSTextAlignmentLeft;
-    _weightLabel.font = [UIFont systemFontOfSize:SECOND_TITLE_SIZE];
-    _weightLabel.text = @"15cm";
-    [weightView addSubview:_weightLabel];
+    self.weightField = [[UITextField alloc] initWithFrame:CGRectMake(titleLabel.frame.origin.x + titleLabel.frame.size.width, titleLabel.frame.origin.y, 170, 30)];
+    _weightField.textColor = kContentTextColor;
+    _weightField.backgroundColor = [UIColor yellowColor];
+    _weightField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
+    _weightField.returnKeyType = UIReturnKeyDone;
+    _weightField.delegate = self;
+    [[IQKeyBoardManager installKeyboardManager] setScrollView:self.scrollView];//监听键盘通知 改变scrollview的偏移量
+    _weightField.font = [UIFont systemFontOfSize:SECOND_TITLE_SIZE];
+    _weightField.text = [self getWeight];
+    [weightView addSubview:_weightField];
+    
+    UILabel *kiloLabel = [[UILabel alloc] initWithFrame:CGRectMake(_weightField.frame.origin.x + _weightField.frame.size.width - 30, _weightField.frame.origin.y, 30, 30)];
+    kiloLabel.textColor = kBigTextColor;
+    kiloLabel.backgroundColor = [UIColor blueColor];
+    kiloLabel.textAlignment = NSTextAlignmentLeft;
+    kiloLabel.font = [UIFont systemFontOfSize:SECOND_TITLE_SIZE];
+    kiloLabel.text = @"cm";
+    [weightView addSubview:kiloLabel];
     
     //修改按钮
     UIButton *modifyButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -94,71 +130,308 @@
     
     //是否正常label
     self.weightConditionLabel = [[UILabel alloc] initWithFrame:CGRectMake((320 - weightConditionView.frame.size.height)/2, 0, weightConditionView.frame.size.height, weightConditionView.frame.size.height)];
-    _weightConditionLabel.textColor = [UIColor colorWithRed:145/255.0 green:154/255.0 blue:170/255.0 alpha:1.0];
+    _weightConditionLabel.textColor = kContentTextColor;
     _weightConditionLabel.backgroundColor = [UIColor redColor];
     _weightConditionLabel.textAlignment = NSTextAlignmentLeft;
     _weightConditionLabel.font = [UIFont systemFontOfSize:40];
-    _weightConditionLabel.text = @"正常";
+    [self updateConditionLabel:nil];
     [weightConditionView addSubview:_weightConditionLabel];
     
     
  	// Do any additional setup after loading the view.
 }
-
-#pragma mark - event
-- (void)modifyData:(UIButton *)btn
+#pragma mark - 得到上限和下限的数组
+- (void)getOnLimitAndOffLimitArray
 {
-    if (self.actionSheetView == nil) {
-        self.actionSheetView = [[BTSheetPickerview alloc] initWithPikerType:BTActionSheetPickerStyleTextPicker referView:self.view delegate:self];
-        //[_actionSheetView setIsRangePickerView:YES];
-        NSMutableArray *array1 = [NSMutableArray arrayWithCapacity:1];
-        NSMutableArray *array2 = [NSMutableArray arrayWithCapacity:1];
-        for (int i =50; i <= 150; i ++) {
-            [array1 addObject:[NSString stringWithFormat:@"%d",i]];
-        }
-        
-        for (int i = 0; i < 10; i ++) {
-            [array2 addObject:[NSString stringWithFormat:@".%d",i]];
-        }
-        [_actionSheetView setTitlesForComponenets:[NSArray arrayWithObjects:
-                                                   array1,
-                                                   array2,
-                                                   [NSArray arrayWithObjects:@"cm", nil],
-                                                   nil]];
+    self.onLimit = [NSMutableArray arrayWithCapacity:1];
+    self.offLimit = [NSMutableArray arrayWithCapacity:1];
+    NSMutableArray *array1 = [NSMutableArray arrayWithCapacity:1];
+    for (int i = 20; i < 42; i ++) {
+        [array1 addObject:[NSString stringWithFormat:@"%d",(i - 1)*7]];
+    }
+    NSArray *array2 = [NSArray arrayWithObjects:@"76",@"77",@"78",@"79",@"80",@"80.5",@"81",@"81.5",@"82",@"82.5",@"83",@"83.5",@"84",@"84.5",@"85",@"85.5",@"86",@"87",@"88",@"89",@"89",@"89",nil];
+    
+    NSArray *array3 = [NSArray arrayWithObjects:@"89",@"89.5",@"90",@"90.5",@"91",@"91",@"92",@"93",@"94",@"94.5",@"94.5",@"95",@"95",@"96.5",@"97",@"97.5",@"98",@"98.5",@"99",@"99.5",@"100",@"100",nil];
+    
+    for (int i = 0; i < 22; i ++) {
+        BTPhysicalModel *modelOff = [[BTPhysicalModel alloc] initWithTitle:@"腹围" content:[array2 objectAtIndex:i] day:[array1 objectAtIndex:i]];
+        [self.offLimit addObject:modelOff];
+        BTPhysicalModel *modelOn = [[BTPhysicalModel alloc] initWithTitle:@"腹围" content:[array3 objectAtIndex:i] day:[array1 objectAtIndex:i]];
+        [self.onLimit addObject:modelOn];
         
     }
     
-    [_actionSheetView show];
+}
+
+#pragma mark - 如果是第一次进入此页面 木有数据 模态出输入数据页面
+- (void)presentInputView
+{
+    BTPresentInputViewController *presentVC = [[BTPresentInputViewController alloc]
+                                               initWithPresentInputTypeStyle:BTPresentInputGirth
+                                               Complete:^(NSString *str1, NSString *str2, NSString *str3)
+                                               {
+                                                   [self updateUIWithValue:str1];
+                                               }];
+    self.nav = [[BTNavicationController alloc] initWithRootViewController:presentVC];
+    presentVC.navigationItem.title = @"填写腹围";
+    [self presentViewController:_nav animated:YES completion:nil];
+
+}
+
+#pragma mark - 增加代码的鲁棒性 在此只允许输入数字和小数点
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
+{
+    
+    NSCharacterSet *cs;
+    cs = [[NSCharacterSet characterSetWithCharactersInString:@"0123456789.\n"] invertedSet];
+    //NUMBERS在这里指@“0123456789\n”
+    NSString *filtered = [[string componentsSeparatedByCharactersInSet:cs] componentsJoinedByString:@""]; //按cs分离出数组,数组按@""分离出字符串
+    
+    BOOL canChange = [string isEqualToString:filtered];
+    
+    if(!canChange)
+    {
+        UIAlertView * alertview = [[UIAlertView alloc]initWithTitle:@"提示" message:@"这里只能输入数字" delegate:self cancelButtonTitle:nil otherButtonTitles:@"我知道了", nil ,nil];
+        [alertview show];
+    }
+    return canChange;
+}
+
+#pragma mark - 按键盘retrn 键之后触发的方法
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+    [textField resignFirstResponder];
+    
+    NSLog(@"====+++++++++%@",textField.text);
+    
+    [self updateUIWithValue:textField.text];
+    [self writeToCoredataWithWeight:textField.text];
+    
+    
+    return YES;
+}
+#pragma mark - event
+- (void)modifyData:(UIButton *)btn
+{
     
     
 }
 
-#pragma mark - 输入宫高 选择器delegate
-- (void)actionSheetPickerView:(BTSheetPickerview *)pickerView didSelectTitles:(NSArray*)titles
+#pragma mark - 更新页面UI
+- (void)updateUIWithValue:(NSString *)weight
+{
+    //更新折线图和页面显示
+    //1）更新折线
+    [self.chartView removeFromSuperview];
+    //改变self.values 的值即可
+    
+    NSDate *localDate = [NSDate localdate];
+    NSNumber *minute = [BTUtils getMinutes:localDate];
+    BTPhysicalModel *model = [[BTPhysicalModel alloc] initWithTitle:@"腹围" content:weight day:[NSString stringWithFormat:@"%@",minute]];
+    [self.values addObject:model];
+    [self drawLineChartViewWithModelArray:self.values onLimit:self.onLimit offLimit:self.offLimit];
+    //2)更新"正常 异常显示"
+    self.weightField.text = weight;
+
+    
+    
+}
+#pragma mark - 判断数据是否正常
+- (void)updateConditionLabel:(NSString *)weight
+{
+    //如果weight有值，就不要再从coredata里取 提高效率
+    if (weight) {
+        NSDate *localDate = [NSDate localdate];
+        
+        int day1 = [BTGetData getPregnancyDaysWithDate:localDate];//怀孕天数
+        //20周到40周之间才显示数据
+        if ((day1/7 + 1 >= 20) && (day1/7 + 1 <= 39)) {
+            [self judgeConditionWithDay:day1 weight:weight];
+            
+        }
+        else{
+            self.weightConditionLabel.hidden = YES;
+        }
+    }
+    
+    else{
+        NSArray *dataArray = [self getNewdataFromCoredata];
+        if (dataArray.count > 0) {
+            BTUserData * one = [dataArray lastObject];
+            NSDate *lastDate = [NSDate dateFromString:[NSString stringWithFormat:@"%@.%@.%@",one.year,one.month,one.day] withFormat:@"yyyy.MM.dd"];
+            
+            int day1 = [BTGetData getPregnancyDaysWithDate:lastDate];//怀孕天数
+            
+            if ((day1/7 + 1 >= 20) && (day1/7 + 1 <= 39)) {
+                [self judgeConditionWithDay:day1 weight:one.girth];
+                
+            }
+            else{
+                self.weightConditionLabel.hidden = YES;
+            }
+            
+        }
+        
+    }
+    
+}
+
+- (void)judgeConditionWithDay:(int)day1 weight:(NSString *)weight
 {
     
-    //对选择结果进行处理
-    NSString *str = [NSString stringWithFormat:@"%@%@%@",[titles objectAtIndex:0],[titles objectAtIndex:1],[titles objectAtIndex:2]];
-    self.weightLabel.text = str;
+    self.weightConditionLabel.hidden = NO;
+    float onLimit = 0.0;
+    float offLimit = 0.0;
+    float now = 0.0;
+    
+    
+    for (int i = 0; i < [self.onLimit count]; i ++) {
+        BTPhysicalModel *modelOn = [self.onLimit objectAtIndex:i];
+        if (([modelOn.day intValue]/7 + 1) == (day1/7 + 1)) {
+            if (i < [self.onLimit count] - 1) {
+                BTPhysicalModel *nextModel =  [self.onLimit objectAtIndex:i+1];
+                onLimit = (([nextModel.content floatValue] - [modelOn.content floatValue])/6) * (day1 - [modelOn.day intValue]) +[modelOn.content floatValue];
+            }
+            else{
+                onLimit = [modelOn.content floatValue];
+            }
+        }
+    }
+    
+    
+    
+    for (int i = 0; i < [self.offLimit count]; i ++) {
+        BTPhysicalModel *modelOff = [self.offLimit objectAtIndex:i];
+        if (([modelOff.day intValue]/7 + 1) == (day1/7 + 1)) {
+            if (i < [self.offLimit count] - 1) {
+                BTPhysicalModel *nextModel =  [self.offLimit objectAtIndex:i+1];
+                offLimit = (([nextModel.content floatValue] - [modelOff.content floatValue])/6) * (day1 - [modelOff.day intValue]) +[modelOff.content floatValue];
+            }
+            else{
+                offLimit = [modelOff.content floatValue];
+            }
+        }
+    }
+    
+    
+    now = [weight floatValue];
+    
+    
+    if (now >= offLimit && now <= onLimit) {
+        self.weightConditionLabel.text = @"正常";
+        self.weightConditionLabel.textColor = kBigTextColor;
+    }
+    else{
+        self.weightConditionLabel.text = @"异常";
+        self.weightConditionLabel.textColor = kGlobalColor;
+    }
+    
+}
 
-    NSLog(@"选择的宫高是%@",titles);
+#pragma mark - 往coredata里面写入数据
+- (void)writeToCoredataWithWeight:(NSString *)height
+{
+    
+    NSDate *localDate = [NSDate localdate];
+    NSNumber *year = [BTUtils getYear:localDate];
+    NSNumber *month = [BTUtils getMonth:localDate];
+    NSNumber *day = [BTUtils getDay:localDate];
+    NSNumber *minute = [BTUtils getMinutes:localDate];
+    _context = [BTGetData getAppContex];
+    //设置查询条件
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"year == %@ AND month == %@ AND day == %@ AND minute == %@",year, month, day,minute];
+    NSError *error;
+    NSArray *dataArray = [BTGetData getFromCoreDataWithPredicate:predicate entityName:@"BTUserData" sortKey:nil];
+    
+    if (dataArray.count == 1) {
+        
+        //已经有条目了
+        //进行coredata的更改数据操作
+        BTUserData* one = [dataArray objectAtIndex:0];
+        one.girth = height;
+        
+        
+    }else if(dataArray.count == 0){
+        
+        //木有啊,就新建一条  进行coredata的插入数据操作
+        
+        NSLog(@"there no");
+        
+        BTUserData* new = [NSEntityDescription insertNewObjectForEntityForName:@"BTUserData" inManagedObjectContext:_context];
+        
+        new.year = year;
+        new.month = month;
+        new.day = day;
+        new.girth = height;
+        new.minute = minute;
+    }
+    
+    [_context save:&error];
+    // 及时保存
+    if(![_context save:&error]){
+        NSLog(@"%@", [error localizedDescription]);
+    }
+    
+}
+
+#pragma mark - 得到绘制折线用的数据
+- (NSArray *)configureDrawCharValue
+{
+    NSMutableArray *resultArray = [NSMutableArray arrayWithCapacity:1];
+    NSArray *array = [self getNewdataFromCoredata];
+    for (BTUserData *one in array) {
+        NSLog(@"数据数组是%@",one.minute);
+        BTPhysicalModel *model = [[BTPhysicalModel alloc] initWithTitle:@"腹围" content:one.girth day:[NSString stringWithFormat:@"%@",one.minute]];
+        [resultArray addObject:model];
+        
+    }
+    
+    
+    return resultArray;
+    
+}
+
+#pragma mark - 从coredata 里面取数据
+- (NSArray *)getNewdataFromCoredata
+{
+    NSMutableArray *weightArray = [NSMutableArray arrayWithCapacity:1];
+    NSArray *dataArray = [BTGetData getFromCoreDataWithPredicate:nil entityName:@"BTUserData" sortKey:nil];
+    
+    if (dataArray.count > 0) {
+        for (BTUserData *userData in dataArray) {
+            if (userData.girth) {
+                [weightArray addObject:userData];
+            }
+        }
+        return weightArray;
+    }
+    
+    
+    return nil;
+}
+
+- (NSString *)getWeight
+{
+    
+    NSArray *dataArray = [self getNewdataFromCoredata];
+    if (dataArray.count > 0) {
+        BTUserData * one = [dataArray lastObject];
+        
+        return one.girth;
+        
+    }
+    
+    
+    return [NSString stringWithFormat:@"%@",@"还未记录"];
+    
     
 }
 
 #pragma mark - 绘制折线图
-- (void)drawLineChartView
+- (void)drawLineChartViewWithModelArray:(NSArray *)array onLimit:(NSArray *)onLimit offLimit:(NSArray *)offLimit
+
 {
     
-    NSMutableArray *array = [NSMutableArray array];
-    
-    for (int i = 0; i < 280; i++)
-    {
-        double val = floorf(((double)arc4random() / ARC4RANDOM_MAX) * 100.0f);
-        
-        BTPhysicalModel *model = [[BTPhysicalModel alloc] initWithTitle:@"体重" content:[NSString stringWithFormat:@"%0.2f",val] day:[NSString stringWithFormat:@"%d",i+1]];
-        [array addObject:model];
-    }
-    self.values = array;
     
     self.chartView = [[FYChartView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 1200.0f, RED_BACKGROUND_HEIGHT)];
     self.chartView.hideDescriptionViewWhenTouchesEnd = YES;
@@ -166,8 +439,10 @@
     self.chartView.rectangleLineColor = [UIColor grayColor];
     self.chartView.lineColor = [UIColor whiteColor];
     self.chartView.dataSource = self;
-    
-    self.chartView.modelArray = self.values;
+    self.chartView.onLimit = onLimit;
+    self.chartView.offLimit = offLimit;
+    self.chartView.style = BTChartGirth;
+    self.chartView.modelArray = array;
     [self.chartScrollView addSubview:self.chartView];
     
     

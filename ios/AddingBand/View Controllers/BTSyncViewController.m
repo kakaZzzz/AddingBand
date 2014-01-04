@@ -14,7 +14,7 @@
 #import "BTSyncTwoViewController.h"//自动连接上设备页面
 #import "BTPastLinkViewController.h"//搜索到上次连接过设备 但未连接上
 #import "BTGetData.h"
-#import "BTUserData.h"
+
 #import "BTSettingSectionCell.h"
 #import "DDIndicator.h"
 @interface BTSyncViewController ()

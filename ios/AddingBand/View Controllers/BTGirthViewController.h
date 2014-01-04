@@ -11,11 +11,14 @@
  *  此页是腹围页面
  */
 #import <UIKit/UIKit.h>
+#import "BTScrollViewController.h"
 @class BTSheetPickerview;
-@interface BTGirthViewController : UIViewController
-@property (nonatomic, strong) UILabel *weightLabel;
-@property (nonatomic, strong) UILabel *weightConditionLabel;
+@class BTNavicationController;
+@interface BTGirthViewController : BTScrollViewController<UITextFieldDelegate>
 
+@property (nonatomic, strong) UITextField *weightField;//输入框
+@property (nonatomic, strong) UILabel *weightConditionLabel;
+@property (nonatomic,strong)BTNavicationController *nav;//设置成属性 要不然会deallocated
 //输入体重 选择器
 @property(nonatomic,strong)BTSheetPickerview *actionSheetView;
 @end

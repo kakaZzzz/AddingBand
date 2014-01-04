@@ -8,7 +8,9 @@
 
 #import "BTGetData.h"
 #import "BTAppDelegate.h"
-
+#import "BTUserSetting.h"
+#import "NSDate+DateHelper.h"
+#import "LayoutDef.h"
 @implementation BTGetData
 
 + (NSArray *)getFromCoreDataWithPredicate:(NSPredicate *)predicate entityName:(NSString *)entityName sortKey:(NSString *)sortKey
@@ -94,4 +96,78 @@
    }
            
 }
+
++ (int)getPregnancyDaysWithDate:(NSDate *)date
+{
+     NSArray *data = [BTGetData getFromCoreDataWithPredicate:nil entityName:@"BTUserSetting" sortKey:nil];
+    if (data.count > 0) {
+        BTUserSetting *userData = [data objectAtIndex:0];
+   
+        NSDate *dueDate = [NSDate dateFromString:userData.dueDate withFormat:@"yyyy.MM.dd"];
+        NSTimeInterval due = [dueDate timeIntervalSince1970];
+        NSTimeInterval now = [date timeIntervalSince1970];
+        NSTimeInterval cha = due - now;
+        
+        int day1 = cha/(24 * 60 * 60);
+        int day2 = 280 - day1;
+        return day2;
+     }
+    
+    return 0;
+
+}
+
+//将数据存放在plist文件中
++ (void)writeMusicToPlistFile:(NSString *)name data:(NSDictionary *)dic
+{
+     //寻取文件路径
+    //找到Documents文件所在的路径
+    NSArray *path = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    //取得第一个Documents文件夹的路径
+    NSString *filePath = [path objectAtIndex:0];
+    //把TestPlist文件加入
+    NSString *plistPath = [filePath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.plist",name]];//名字
+    
+    if (![[NSFileManager defaultManager]fileExistsAtPath:plistPath]) {
+        
+        [[NSFileManager defaultManager] createFileAtPath:plistPath contents:nil attributes:nil];
+        NSLog(@"创建一个新的plist");
+        
+    }
+    
+    [dic writeToFile:plistPath atomically:YES];
+    
+}
+
+//从plist文件中读取东西
++ (NSArray *)getOnlimitFromPlistpath:(NSString *)name
+{
+    NSArray *path = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    //取得第一个Documents文件夹的路径
+    NSString *filePath = [path objectAtIndex:0];
+    //把TestPlist文件加入
+    NSString *plistPath = [filePath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.plist",name]];
+    
+    NSDictionary *dic = [NSArray arrayWithContentsOfFile:plistPath];//外层字典
+    NSDictionary *dic1 = [dic objectForKey:name];//对应的数组
+    NSArray *arrayOnlimit = [dic1 objectForKey:ON_LIMIT];
+    
+    return arrayOnlimit;
+}
+
++ (NSArray *)getOfflimitFromPlistpath:(NSString *)name
+{
+    NSArray *path = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    //取得第一个Documents文件夹的路径
+    NSString *filePath = [path objectAtIndex:0];
+    //把TestPlist文件加入
+    NSString *plistPath = [filePath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.plist",name]];
+    
+    NSDictionary *dic = [NSArray arrayWithContentsOfFile:plistPath];//外层字典
+    NSDictionary *dic1 = [dic objectForKey:name];//对应的数组
+    NSArray *arrayOnlimit = [dic1 objectForKey:OFF_LIMIT];
+    
+    return arrayOnlimit;
+}
+
 @end

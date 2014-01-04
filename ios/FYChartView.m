@@ -47,10 +47,13 @@
 
 - (void)drawRect:(CGRect)rect
 {
-    if (isLoaded)   return;
+    if (isLoaded)
+        return;
     
+    //绘制上下限折线
+    [self drawOnLimitAndOffLimitLine:rect];
     //draw data line
-    [self drawValueLine:rect];
+    [self drawValueLine:rect];//绘制折线
     
     [self drawHorizontalTitle:rect];
     
@@ -106,6 +109,100 @@
     }
 }
 
+- (void)drawOnLimitAndOffLimitLine:(CGRect)rect
+{
+    
+    verticalTextSize = CGSizeMake(xMargin,yMargin);//边距都有了
+    switch (self.style) {
+        case BTChartWeight:
+            maxVerticalValue = 100;
+            break;
+        case BTChartFuntalHeight:
+            maxVerticalValue = 50;
+            break;
+        case BTChartGirth:
+            maxVerticalValue = 150;
+            break;
+        default:
+            break;
+    }
+    
+
+    //横坐标最小刻度之间间隔
+    horizontalItemWidth = (rect.size.width - verticalTextSize.width) / (280 - 1);
+    //纵坐标最小刻度之间的间隔
+    verticalItemHeight = (rect.size.height - verticalTextSize.height * 2) / maxVerticalValue;
+    
+
+    if ([self.onLimit count] > 0) {
+        
+        
+            for (int i = 0; i < [self.onLimit count] - 1; i++)
+            {
+                
+                BTPhysicalModel *model = [self.onLimit objectAtIndex:i];
+                float value = [model.content floatValue];
+                int day = [model.day intValue];
+                
+                //   float value = [(NSNumber *)valueItems[i] floatValue];
+                CGPoint point = [self valuePoint:value atIndex:day];
+                
+                NSLog(@"点得位置%@",NSStringFromCGPoint(point));
+                
+                BTPhysicalModel *nextModel = [self.onLimit objectAtIndex:i+1];
+                float nextValue = [nextModel.content floatValue];
+                int nextDay = [nextModel.day intValue];
+                CGPoint nextPoint = [self valuePoint:nextValue atIndex:nextDay];
+                
+                CGContextRef context = UIGraphicsGetCurrentContext();
+                CGContextMoveToPoint(context, point.x, point.y);
+                CGContextAddLineToPoint(context, nextPoint.x, nextPoint.y);
+                CGContextSetStrokeColorWithColor(context, [UIColor blueColor].CGColor);
+                
+                CGContextSetLineWidth(context, self.lineWidth);
+                CGContextClosePath(context);
+                CGContextStrokePath(context);
+                
+            }
+            
+      }
+    
+
+    if ([self.offLimit count] > 0) {
+        
+        
+        for (int i = 0; i < [self.offLimit count] - 1; i++)
+        {
+            
+            BTPhysicalModel *model = [self.offLimit objectAtIndex:i];
+            float value = [model.content floatValue];
+            int day = [model.day intValue];
+            
+            //   float value = [(NSNumber *)valueItems[i] floatValue];
+            CGPoint point = [self valuePoint:value atIndex:day];
+            
+            NSLog(@"点得位置%@",NSStringFromCGPoint(point));
+            
+            BTPhysicalModel *nextModel = [self.offLimit objectAtIndex:i+1];
+            float nextValue = [nextModel.content floatValue];
+            int nextDay = [nextModel.day intValue];
+            CGPoint nextPoint = [self valuePoint:nextValue atIndex:nextDay];
+            
+            CGContextRef context = UIGraphicsGetCurrentContext();
+            CGContextMoveToPoint(context, point.x, point.y);
+            CGContextAddLineToPoint(context, nextPoint.x, nextPoint.y);
+            CGContextSetStrokeColorWithColor(context, [UIColor yellowColor].CGColor);
+            
+            CGContextSetLineWidth(context, self.lineWidth);
+            CGContextClosePath(context);
+            CGContextStrokePath(context);
+            
+        }
+        
+    }
+
+}
+
 /**
  *  draw data line
  */
@@ -118,42 +215,84 @@
     NSMutableArray *valueItems = [NSMutableArray array];
 
     verticalTextSize = CGSizeMake(xMargin,yMargin);//边距都有了
-    maxVerticalValue = 100;
+    switch (self.style) {
+        case BTChartWeight:
+            maxVerticalValue = 100;
+            break;
+        case BTChartFuntalHeight:
+            maxVerticalValue = 50;
+            break;
+        case BTChartGirth:
+            maxVerticalValue = 150;
+            break;
+        default:
+            break;
+    }
+
     self.valueItemArray = valueItems;
     //横坐标最小刻度之间间隔
-    horizontalItemWidth = (rect.size.width - verticalTextSize.width) / ([self.modelArray count] - 1);
+    horizontalItemWidth = (rect.size.width - verticalTextSize.width) / (280 - 1);
     //纵坐标最小刻度之间的间隔
     verticalItemHeight = (rect.size.height - verticalTextSize.height * 2) / maxVerticalValue;
     
-
-        for (int i = 0; i < [self.modelArray count] - 1; i++)
-        {
+    NSLog(@"---------------%d",[self.modelArray count]);
+    if ([self.modelArray count] > 0) {
+        
+        //如果只有一个点 就画一个圆
+        if ([self.modelArray count] == 1) {
             
-            BTPhysicalModel *model = [self.modelArray objectAtIndex:i];
+            BTPhysicalModel *model = [self.modelArray objectAtIndex:0];
             float value = [model.content floatValue];
             int day = [model.day intValue];
-            
-           //   float value = [(NSNumber *)valueItems[i] floatValue];
             CGPoint point = [self valuePoint:value atIndex:day];
-    
-            
-             BTPhysicalModel *nextModel = [self.modelArray objectAtIndex:i+1];
-            
-            //float nextValue = [(NSNumber *)valueItems[day + 1] floatValue];
-            float nextValue = [nextModel.content floatValue];
-            int nextDay = [nextModel.day intValue];
-            CGPoint nextPoint = [self valuePoint:nextValue atIndex:nextDay];
-    
             CGContextRef context = UIGraphicsGetCurrentContext();
-    
-            CGContextMoveToPoint(context, point.x, point.y);
-            CGContextAddLineToPoint(context, nextPoint.x, nextPoint.y);
-            CGContextSetStrokeColorWithColor(context, self.lineColor.CGColor);
-            CGContextSetLineWidth(context, self.lineWidth);
-            CGContextClosePath(context);
-            CGContextStrokePath(context);
+            CGContextAddEllipseInRect(context, CGRectMake(point.x, point.y, 5.0, 5.0));
+            
+            CGContextSetFillColorWithColor(context, [UIColor whiteColor].CGColor);
+            
+            CGContextFillPath(context);
+         
         }
-    
+        
+        
+        //如果大于一个数据 就画线
+        else{
+            for (int i = 0; i < [self.modelArray count] - 1; i++)
+            {
+                
+                BTPhysicalModel *model = [self.modelArray objectAtIndex:i];
+                float value = [model.content floatValue];
+                int day = [model.day intValue];
+                
+                //   float value = [(NSNumber *)valueItems[i] floatValue];
+                CGPoint point = [self valuePoint:value atIndex:day];
+                
+                NSLog(@"点得位置%@",NSStringFromCGPoint(point));
+                
+                BTPhysicalModel *nextModel = [self.modelArray objectAtIndex:i+1];
+                
+                //float nextValue = [(NSNumber *)valueItems[day + 1] floatValue];
+                float nextValue = [nextModel.content floatValue];
+                int nextDay = [nextModel.day intValue];
+                CGPoint nextPoint = [self valuePoint:nextValue atIndex:nextDay];
+                
+                CGContextRef context = UIGraphicsGetCurrentContext();
+                CGContextMoveToPoint(context, point.x, point.y);
+                CGContextAddLineToPoint(context, nextPoint.x, nextPoint.y);
+                CGContextSetStrokeColorWithColor(context, self.lineColor.CGColor);
+                
+                CGContextSetLineWidth(context, self.lineWidth);
+                CGContextClosePath(context);
+                CGContextStrokePath(context);
+                
+                
+            }
+
+        }
+        
+        
+        
+     }
     
  }
 
@@ -211,7 +350,7 @@
                     [title drawAtPoint:CGPointMake(point.x - size.width, rect.size.height - size.height) withFont:font];
                 }
             }
-//        }
+
 
 
 }
@@ -239,7 +378,7 @@
   
     CGSize size = self.frame.size;
     
-    NSLog(@"大小大小      %@",NSStringFromCGSize(size));
+   // NSLog(@"大小大小      %@",NSStringFromCGSize(size));
     UITouch *touch = [touches anyObject];
     CGPoint location = [[touches anyObject] locationInView:self];
     

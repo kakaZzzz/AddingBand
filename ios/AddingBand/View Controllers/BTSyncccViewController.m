@@ -342,15 +342,15 @@
             
             //断开连接
             _isBreak = YES;
-            NSString *bpName = nil;
-            self.context =[BTGetData getAppContex];
-            NSArray *data1 = [BTGetData getFromCoreDataWithPredicate:nil entityName:@"BTUserData" sortKey:nil];
-            if (data1.count > 0) {
-                BTUserData *userData = [data1 objectAtIndex:0];
-                bpName = userData.selectedName;
-            }
-            self.bc = [BTBandCentral sharedBandCentral];
-            BTBandPeripheral* bp = [self.bc getBpByName:bpName];
+//            NSString *bpName = nil;
+//            self.context =[BTGetData getAppContex];
+//            NSArray *data1 = [BTGetData getFromCoreDataWithPredicate:nil entityName:@"BTUserData" sortKey:nil];
+//            if (data1.count > 0) {
+//                BTUserData *userData = [data1 objectAtIndex:0];
+//                bpName = userData.selectedName;
+//            }
+//            self.bc = [BTBandCentral sharedBandCentral];
+//            BTBandPeripheral* bp = [self.bc getBpByName:bpName];
             
             //如果是正在连接的设备就断开连接
 //            if (bp.isConnected) {
@@ -735,14 +735,14 @@
     BTBluetoothFindCell *findCell = (BTBluetoothFindCell *)[self tableView:tableView cellForRowAtIndexPath:indexPath];
     findCell.backgroundColor = [UIColor grayColor];
     findCell.contentView.backgroundColor =  [UIColor blueColor];
-    //往coredata里面存放选择的设备  名字
-    self.context =[BTGetData getAppContex];
-    NSArray *data = [BTGetData getFromCoreDataWithPredicate:nil entityName:@"BTUserData" sortKey:nil];
-    if (data.count > 0) {
-        BTUserData *userData = [data objectAtIndex:0];
-        userData.selectedName = findCell.titleLabel.text;
-        [_context save:nil];
-    }
+//    //往coredata里面存放选择的设备  名字
+//    self.context =[BTGetData getAppContex];
+//    NSArray *data = [BTGetData getFromCoreDataWithPredicate:nil entityName:@"BTUserData" sortKey:nil];
+//    if (data.count > 0) {
+//        BTUserData *userData = [data objectAtIndex:0];
+//        userData.selectedName = findCell.titleLabel.text;
+//        [_context save:nil];
+//    }
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         NSLog(@"连接设备；；；；；；；%@",findCell.titleLabel.text);

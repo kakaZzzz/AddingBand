@@ -131,7 +131,7 @@
         NSLog(@"right button clicked");
         //弹出输入预产期选择器
         if (self.actionSheetView == nil) {
-            self.actionSheetView = [[BTSheetPickerview alloc] initWithPikerType:BTActionSheetPickerStyleDatePicker referView:self.view delegate:self];
+            self.actionSheetView = [[BTSheetPickerview alloc] initWithPikerType:BTActionSheetPickerStyleDateAndTimePicker referView:self.view delegate:self];
         }
         
         [_actionSheetView show];
@@ -154,7 +154,7 @@
 - (void)inputYourPreproduction:(UIButton *)button
 {
     if (self.actionSheetView == nil) {
-        self.actionSheetView = [[BTSheetPickerview alloc] initWithPikerType:BTActionSheetPickerStyleDatePicker referView:self.view delegate:self];
+        self.actionSheetView = [[BTSheetPickerview alloc] initWithPikerType:BTActionSheetPickerStyleDateAndTimePicker referView:self.view delegate:self];
     }
     
     [_actionSheetView show];

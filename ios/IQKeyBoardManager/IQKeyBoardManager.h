@@ -30,10 +30,14 @@
     UIView *textFieldView;
     
     CGFloat animationDuration;
+    
+    UIScrollView *scrollView;
+    
 }
 
+@property(nonatomic,strong)UIScrollView *scrollView;
 //Call it on your AppDelegate;
-+(void)installKeyboardManager;
++(id)installKeyboardManager;
 
 +(void)setTextFieldDistanceFromKeyboard:(CGFloat)distance;  /*can't be less than zero. Default is 10.0*/
 

@@ -118,9 +118,9 @@
 +(NSDate*)dateFromString:(NSString *)string withFormat:(NSString*)format {
     NSDateFormatter*inputFormatter =[[NSDateFormatter alloc]init];
     [inputFormatter setDateFormat:format];
-    NSDate*date =[inputFormatter dateFromString:string];
- 
-    return date;
+    NSDate * date =[inputFormatter dateFromString:string];
+    NSDate *localDate= [NSDate localdateByDate:date];
+    return localDate;
 }
 //时间转换成字符串
 +(NSString*)stringFromDate:(NSDate*)date withFormat:(NSString*)format {

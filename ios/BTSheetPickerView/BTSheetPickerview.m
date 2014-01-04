@@ -51,18 +51,18 @@
     UIWindow *shareWindow =((BTAppDelegate *)[[UIApplication sharedApplication] delegate]).window;
    // self.frame = CGRectMake(0, self.referView.frame.size.height - 320, 320, 320);
     
-    if (actionStyle == BTActionSheetPickerStyleDatePicker) {
+    if (actionStyle == BTActionSheetPickerStyleDateAndTimePicker) {
         self.frame = CGRectMake(0, shareWindow.frame.size.height - 320, 320, 320);
         
         self.backgroundColor = [UIColor whiteColor];
         
         //取消按钮
-        self.cancelButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _cancelButton.frame = CGRectMake(270, 0, 50, 50);
-        [self.cancelButton setTitle:@"确定" forState:UIControlStateNormal];
-        [self.cancelButton setTitleColor:[UIColor orangeColor] forState:UIControlStateNormal];
-        [self.cancelButton addTarget:self action:@selector(closeButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
-        [self addSubview:self.cancelButton];
+        self.enterButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        _enterButton.frame = CGRectMake(270, 0, 50, 50);
+        [self.enterButton setTitle:@"确定" forState:UIControlStateNormal];
+        [self.enterButton setTitleColor:[UIColor orangeColor] forState:UIControlStateNormal];
+        [self.enterButton addTarget:self action:@selector(closeButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
+        [self addSubview:self.enterButton];
         
         //各种小标签
         UIImageView *clockImage = [[UIImageView alloc] initWithFrame:CGRectMake(5, 5, 40, 40)];
@@ -83,23 +83,47 @@
         [self addSubview:contentLabel];
 
     }
+    if (actionStyle == BTActionSheetPickerStyleDatePicker) {
+        self.frame = CGRectMake(0, shareWindow.frame.size.height - 266, 320, 266);
+        
+        self.backgroundColor = [UIColor whiteColor];
+        
+        UIButton *cancelButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        cancelButton.frame = CGRectMake(0, 0, 50, 50);
+        [cancelButton setTitle:@"取消" forState:UIControlStateNormal];
+        [cancelButton setTitleColor:[UIColor orangeColor] forState:UIControlStateNormal];
+        [cancelButton addTarget:self action:@selector(cancelButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
+        [self addSubview:cancelButton];
+
+        
+        self.enterButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        _enterButton.frame = CGRectMake(270, 0, 50, 50);
+        [self.enterButton setTitle:@"确定" forState:UIControlStateNormal];
+        [self.enterButton setTitleColor:[UIColor orangeColor] forState:UIControlStateNormal];
+        [self.enterButton addTarget:self action:@selector(closeButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
+        [self addSubview:self.enterButton];
+        
+        
+        
+    }
+
     if (actionStyle == BTActionSheetPickerStyleTextPicker) {
         self.frame = CGRectMake(0, shareWindow.frame.size.height - 266, 320, 266);
         
         self.backgroundColor = [UIColor whiteColor];
-        self.cancelButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _cancelButton.frame = CGRectMake(270, 0, 50, 50);
-        [self.cancelButton setTitle:@"确定" forState:UIControlStateNormal];
-        [self.cancelButton setTitleColor:[UIColor orangeColor] forState:UIControlStateNormal];
-        [self.cancelButton addTarget:self action:@selector(closeButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
-        [self addSubview:self.cancelButton];
+        self.enterButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        _enterButton.frame = CGRectMake(270, 0, 50, 50);
+        [self.enterButton setTitle:@"确定" forState:UIControlStateNormal];
+        [self.enterButton setTitleColor:[UIColor orangeColor] forState:UIControlStateNormal];
+        [self.enterButton addTarget:self action:@selector(closeButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
+        [self addSubview:self.enterButton];
 
 
     }
     
     //时间选择器
     switch (actionStyle) {
-        case BTActionSheetPickerStyleDatePicker:
+        case BTActionSheetPickerStyleDateAndTimePicker:
         {
             self.datePicker = [[UIDatePicker alloc] init];
             _datePicker.frame = CGRectMake(0, self.frame.size.height - 216, 320, 216);
@@ -109,6 +133,17 @@
 
         }
             break;
+        case BTActionSheetPickerStyleDatePicker:
+        {
+            self.datePicker = [[UIDatePicker alloc] init];
+            _datePicker.frame = CGRectMake(0, self.frame.size.height - 216, 320, 216);
+            NSLog(@"--------------%@",NSStringFromCGRect(_datePicker.frame));
+            _datePicker.datePickerMode = UIDatePickerModeDate;
+            [self addSubview:_datePicker];
+            
+        }
+            break;
+
         case BTActionSheetPickerStyleTextPicker:
         {
             self.pickerView = [[UIPickerView alloc] initWithFrame:CGRectMake(0, self.frame.size.height - 216, 320, 216)];
@@ -125,12 +160,16 @@
 
  
 }
+- (void)cancelButtonClicked:(UIButton *)button
+{
+    [self hide];
+}
 - (void)closeButtonClicked:(UIButton *)button
 {
     //确定 了日期
     
      switch (self.actionSheetPickerStyle) {
-        case BTActionSheetPickerStyleDatePicker:
+        case BTActionSheetPickerStyleDateAndTimePicker:
         {
             if (_delegate && [_delegate respondsToSelector:@selector(actionSheetPickerView:didSelectDate:)]) {
                 [_delegate performSelector:@selector(actionSheetPickerView:didSelectDate:) withObject:self withObject:_datePicker.date];
@@ -138,6 +177,14 @@
             
         }
             break;
+         case BTActionSheetPickerStyleDatePicker:
+         {
+             if (_delegate && [_delegate respondsToSelector:@selector(actionSheetPickerView:didSelectDate:)]) {
+                 [_delegate performSelector:@selector(actionSheetPickerView:didSelectDate:) withObject:self withObject:_datePicker.date];
+             }
+             
+         }
+             break;
         case BTActionSheetPickerStyleTextPicker:
         {
             if ([self.delegate respondsToSelector:@selector(actionSheetPickerView:didSelectTitles:)])
@@ -242,14 +289,16 @@
 
     UIWindow *shareWindow =((BTAppDelegate *)[[UIApplication sharedApplication] delegate]).window;
     
-    //灰色遮挡层
-    self.coverView = [[UIView alloc] initWithFrame:shareWindow.bounds];
-    self.coverView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
-    self.coverView.backgroundColor = [UIColor colorWithRed:00/255.0 green:00/255.0 blue:00/255.0 alpha:0.5];
-    [shareWindow addSubview:self.coverView];
+        self.coverView = [[UIView alloc] initWithFrame:shareWindow.bounds];
+        self.coverView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+        self.coverView.backgroundColor = [UIColor colorWithRed:00/255.0 green:00/255.0 blue:00/255.0 alpha:0.5];
+        [shareWindow addSubview:self.coverView];
+
+   
     
     
      [shareWindow addSubview:self];
+    
       self.isShow = YES;
        [UIView animateWithDuration:kModalViewAnimationDuration animations:^{
            

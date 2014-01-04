@@ -34,5 +34,19 @@
     return self;
     
 }
+- (id)initWithTitle:(NSString *)title content:(NSString *)content year:(NSString *)year month:(NSString *)month day:(NSString *)day
+{
+    if (self == [super init]) {
+        
+        self.title = title;
+        self.content = content;
+        self.day = day;
+        self.year = year;
+        self.month = month;
+    }
+    
+    return self;
+
+}
 
 @end

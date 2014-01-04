@@ -187,7 +187,6 @@
 -(UIViewController*)popViewControllerAnimated:(BOOL)animated
 {
     
-    
     [_animationLayer removeFromSuperlayer];
     [self.view.layer insertSublayer:_animationLayer above:self.view.layer];
     if(animated)

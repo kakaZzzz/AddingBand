@@ -13,10 +13,12 @@
 //同步页面
 #import "BTSyncTwoViewController.h"
 #import "BTGetData.h"
-#import "BTUserData.h"
+#import "BTUserSetting.h"
 #import "UMSocialData.h"//友盟分享组件
 #import "UMSocial.h"
 #import "UMSocialConfig.h"
+#import "BTPhysicalStandard.h"
+#import "BTGirthStandard.h"
 @implementation BTAppDelegate
 
 @synthesize managedObjectContext = _managedObjectContext;
@@ -26,6 +28,9 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    
+    
+     
     // Override point for customization after application launch.
     //同步页面
     [BTSyncTwoViewController shareSyncTwoview];
@@ -52,15 +57,27 @@
     
     //往context中插入一个对象
     
-    NSArray *data = [BTGetData getFromCoreDataWithPredicate:nil entityName:@"BTUserData" sortKey:nil];
+    NSArray *data = [BTGetData getFromCoreDataWithPredicate:nil entityName:@"BTUserSetting" sortKey:nil];
     if (data.count == 0) {
-        BTUserData *userData = [NSEntityDescription insertNewObjectForEntityForName:@"BTUserData" inManagedObjectContext:context];
-        userData.birthday = @"2012.12.24";
-        userData.dueDate =  @"2013.12.24";
-        userData.pregnancy =@"高血压";
+        BTUserSetting *userSetting = [NSEntityDescription insertNewObjectForEntityForName:@"BTUserSetting" inManagedObjectContext:context];
+        userSetting.birthday = @"2012.12.24";
+        userSetting.dueDate =  @"2013.12.24";
+        userSetting.menstruation =@"2013.12.24";
         // self.contentArray = [NSArray arrayWithObjects:@"",@"13466668888",@"yitu@126.com",@"修改密码",@"",userData.birthday,userData.dueDate,userData.pregnancy,@"",@"",@"",@"", nil];
         [context save:nil];
     }
+    
+    
+    /**
+     *  将宫高和腹围数据 写入数据库文件
+     */
+    //
+    [self writeToCoredataWithFundalHeightLimit];
+    [self writeToCoredataWithGirthLimit];
+   
+    
+ 
+    
     
     
 //    //分享 注册
@@ -83,6 +100,78 @@
     
    // [UMSocialConfig setQQAppId:@"100424468" url:nil importClasses:@[[QQApiInterface class],[TencentOAuth class]]];
     return YES;
+}
+//将宫高写入coredata文件
+- (void)writeToCoredataWithFundalHeightLimit
+{
+    
+    
+    //宫高 
+    NSMutableArray *array1 = [NSMutableArray arrayWithCapacity:1];
+    for (int i = 20; i < 42; i ++) {
+        [array1 addObject:[NSNumber numberWithInt:(i - 1)*7]];
+    }
+    
+    NSArray *array2 = [NSArray arrayWithObjects:@"16",@"17",@"18",@"19",@"20",@"21",@"21.5",@"22.5",@"23",@"23.5",@"24",@"25",@"26",@"27",@"27.5",@"28.5",@"29.8",@"29.8",@"29.8",@"29.8",@"29.8",@"29.8", nil];
+    
+    NSArray *array3 = [NSArray arrayWithObjects:@"20.5",@"21.5",@"22.5",@"23.5",@"24.5",@"25.5",@"26.5",@"27.5",@"28.5",@"29.5",@"30.5",@"31.5",@"32.5",@"33.5",@"34.5",@"34.5",@"34.5",@"34.5",@"34.5",@"34.5",@"34.5",@"34.5", nil];
+    
+   
+    
+    NSError *error;
+    for (int i = 0; i<22; i ++) {
+        BTPhysicalStandard *new = [NSEntityDescription insertNewObjectForEntityForName:@"BTPhysicalStandard" inManagedObjectContext:_managedObjectContext];
+        
+        new.title = @"宫高";
+        new.day = [array1 objectAtIndex:i];
+        new.offLimit = [array2 objectAtIndex:i];
+        new.onLimit = [array3 objectAtIndex:i];
+        
+        
+        [_managedObjectContext save:&error];
+        // 及时保存
+        if(![_managedObjectContext save:&error]){
+            NSLog(@"%@", [error localizedDescription]);
+        }
+
+    }
+    
+}
+//将腹围写入coredata文件
+- (void)writeToCoredataWithGirthLimit
+{
+    
+    
+    //腹围
+     NSMutableArray *array1 = [NSMutableArray arrayWithCapacity:1];
+    for (int i = 20; i < 42; i ++) {
+        [array1 addObject:[NSNumber numberWithInt:(i - 1)*7]];
+    }
+    NSArray *array2 = [NSArray arrayWithObjects:@"76",@"77",@"78",@"79",@"80",@"80.5",@"81",@"81.5",@"82",@"82.5",@"83",@"83.5",@"84",@"84.5",@"85",@"85.5",@"86",@"87",@"88",@"89",@"89",@"89",nil];
+    
+    NSArray *array3 = [NSArray arrayWithObjects:@"89",@"89.5",@"90",@"90.5",@"91",@"91",@"92",@"93",@"94",@"94.5",@"94.5",@"95",@"95",@"96.5",@"97",@"97.5",@"98",@"98.5",@"99",@"99.5",@"100",@"100",nil];
+    
+    
+    
+    
+    NSError *error;
+    for (int i = 0; i<22; i ++) {
+        BTGirthStandard *new = [NSEntityDescription insertNewObjectForEntityForName:@"BTGirthStandard" inManagedObjectContext:_managedObjectContext];
+        
+        new.title = @"宫高";
+        new.day = [array1 objectAtIndex:i];
+        new.offLimit = [array2 objectAtIndex:i];
+        new.onLimit = [array3 objectAtIndex:i];
+        
+        
+        [_managedObjectContext save:&error];
+        // 及时保存
+        if(![_managedObjectContext save:&error]){
+            NSLog(@"%@", [error localizedDescription]);
+        }
+        
+    }
+    
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application
