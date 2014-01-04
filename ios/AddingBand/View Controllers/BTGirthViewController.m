@@ -245,7 +245,7 @@
         
         int day1 = [BTGetData getPregnancyDaysWithDate:localDate];//怀孕天数
         //20周到40周之间才显示数据
-        if ((day1/7 + 1 >= 20) && (day1/7 + 1 <= 39)) {
+        if ((day1/7 + 1 >= 20) && (day1/7 + 1 <= 40)) {
             [self judgeConditionWithDay:day1 weight:weight];
             
         }
@@ -262,7 +262,7 @@
             
             int day1 = [BTGetData getPregnancyDaysWithDate:lastDate];//怀孕天数
             
-            if ((day1/7 + 1 >= 20) && (day1/7 + 1 <= 39)) {
+            if ((day1/7 + 1 >= 20) && (day1/7 + 1 <= 40)) {
                 [self judgeConditionWithDay:day1 weight:one.girth];
                 
             }

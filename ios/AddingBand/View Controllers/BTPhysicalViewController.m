@@ -539,10 +539,7 @@ static int selectedTag = 0;
     
 }
 
-
-
-
-
+//
 #pragma mark - 视图将要出现的时候  刷新页面数据
 - (void)viewWillAppear:(BOOL)animated
 
