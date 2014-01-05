@@ -80,7 +80,24 @@ AddingBand
 
 通知（Notify）的作用是：读、写操作都是主机（Central）发起对周边（Peripheral）里的特征进行操作，通知则是周边自己对特征进行修改后主动告知主机
 
-####程序流程
+####记录胎动
+
+    1. 长按电容屏（详见simpleBLEPeripheral_ProcessOSALMsg）
+    2. 记下时间戳，存在缓存或eepROM里（详见eepromWrite）
+    
+####记录胎动1小时开始时间
+
+    1. 三击电容屏（详见simpleBLEPeripheral_ProcessOSALMsg）
+    2. 记下时间戳，存在缓存或eepROM里（详见eepromWrite）
+    3. app里处理胎动1小时记录的展示（计算在1小时范围内胎动的总数）
+    
+####运动量
+
+    1. 加速计设为fifo模式（详见accInit）
+    2. 每2.5s读取一次数据，读出数据后调用accGetAccData进行数据处理，算法见“走路识别算法说明文档”
+    3. 每检测到一次走路行为，调用eepromWrite储存
+
+####设备和app交互程序流程
 
 主机：指手机App  
 周边：指手环设备
@@ -94,3 +111,29 @@ AddingBand
     7. 周边收到同步密钥后，修改2303通知给主机，所有数据的总长度（多少个uint8）
     8. 周边每100ms发送1个uint8的数据片段，通过修改2304来通知给主机
     9. 主机收到所有数据后，断开连接，等待下一次自动同步
+    
+####函数的作用
+
+    SimpleBLEPeripheral_Init：函数入口，初始化广播参数、io、加速计，读取eeprOM里保存的数据下标，然后发起SBP_START_DEVICE_EVT事件，让设备开始工作
+    SimpleBLEPeripheral_ProcessEvent：所有通过osal_set_event、osal_start_timerEx发起的事件，都在这个函数里处理
+    simpleBLEPeripheral_ProcessOSALMsg：处理按键事件
+    peripheralStateNotificationCB：蓝牙广播状态发生改变时的回调
+    battCB：注册电量通知后的回调
+    battPeriodicTask：检测电池电量的周期函数
+    performPeriodicTask：目前没用
+    simpleProfileChangeCB：特征值被app改变后的回调
+    closeAllPIO：关闭所有io
+    toggleLEDWithTime：传入参数，开关指定的io
+    blinkLED：分针的io闪烁
+    time：显示时间
+    cycleLED6：长按电容屏1s后，led分两侧点亮
+    cycleLED12：三击后，led按顺时针点亮
+    tribleTap：三击后，过400ms再点亮led
+    dataLength：计算数据总数（1条长度为8byte）
+    accInit：初始化加速计
+    accLoop：处理加速器返回的每条数据
+    accGetAccData：读取xyz三轴加速度
+    eepromWrite：往eepROM里写入数据，每1m（胎动）或1h（运动量）一次
+    eepromRead：从eepROM里读取数据，并通过SimpleProfile_SetParameter传到app里
+    saveRawDataIndex：将数据下标存到eepROM里
+    loadRawDataIndex：从eepROM里读取下标
