@@ -50,13 +50,13 @@
     //横坐标元素
     /*   在此传入横坐标名称  柱子表示的数值  柱子颜色  以及label中字体颜色 */
     
-    self.lineScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, 320,200)];
+    self.lineScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, 320,368/2)];
     _lineScrollView.contentSize = CGSizeMake(320, _lineScrollView.frame.size.height);
     _lineScrollView.backgroundColor = kGlobalColor;
     [self.view addSubview:_lineScrollView];
  
     
-    _barChart = [[BarChartView alloc] initWithFrame:CGRectMake(-20, 0, 320, 200)];//柱形图背景大小
+    _barChart = [[BarChartView alloc] initWithFrame:CGRectMake(-20, 0, 320, 368/2)];//柱形图背景大小
     _barChart.backgroundColor = [UIColor clearColor];
     _barChart.customBarWidth = 40.0f;//柱子宽度 ，外部可以修改  根据柱子的个数灵活改变柱子的宽度
     [self.lineScrollView addSubview:_barChart];

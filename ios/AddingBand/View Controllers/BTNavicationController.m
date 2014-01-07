@@ -75,11 +75,14 @@
             UIGraphicsEndImageContext();
         
             [[UINavigationBar appearance] setBackgroundImage:image forBarMetrics: UIBarMetricsDefault];
-    }
-      //
+        
+            }
+    
     [[UINavigationBar appearance] setTitleTextAttributes: @{UITextAttributeTextColor: titleColor,
                                      UITextAttributeFont: [UIFont systemFontOfSize:20.0]}];
-   
+  //  [[UINavigationBar appearance] setTitleTextAttributes: @{UITextAttributeTextColor: titleColor}];
+
+
     self.navigationBar.translucent =NO;
 
 }

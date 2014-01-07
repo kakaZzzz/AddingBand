@@ -17,5 +17,7 @@
 
 #define IOS7_OR_LATER ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0 ? YES:NO)
 
+#define IOS7_OR_EARLIER ([[[UIDevice currentDevice] systemVersion] floatValue] < 7.0 ? YES:NO)
+
 #define IPHONE_5_OR_LATER ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? CGSizeEqualToSize(CGSizeMake(640, 1136), [[UIScreen mainScreen] currentMode].size) : NO)
 #endif

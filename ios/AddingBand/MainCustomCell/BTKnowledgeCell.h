@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "BTKnowledgeModel.h"
 @interface BTKnowledgeCell : UITableViewCell
 @property(nonatomic,strong)UILabel *dayLabel;
 @property(nonatomic,strong)UIImageView *iconImage;
@@ -15,5 +15,6 @@
 @property(nonatomic,strong)UIImageView *accessoryImage;
 @property(nonatomic,strong)UILabel *contentLabel;
 
-+ (CGFloat)cellHeightWithisHasTimeFlag:(BOOL)timeFlag;
+@property(nonatomic,strong)BTKnowledgeModel *knowledgeModel;
++ (CGFloat)cellHeightWithMode:(BTKnowledgeModel *)model;
 @end

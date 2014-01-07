@@ -14,5 +14,6 @@
 @property(nonatomic,assign)int modifyType;
 // 选择器
 @property(nonatomic,strong)BTSheetPickerview *actionSheetView;
+@property(nonatomic,strong)UIButton *backButton;
 
 @end

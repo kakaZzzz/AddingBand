@@ -8,7 +8,7 @@
 
 #import "BTSheetPickerview.h"
 #import "BTAppDelegate.h"
-
+#import "LayoutDef.h"
 
 @implementation BTSheetPickerview
 
@@ -37,12 +37,38 @@
             self.delegate = delegate;
         }
         
+       
         [self setupWithPickerType:actionStyle];
         
         
     }
     return self;
     
+}
+- (id)initWithPikerType:(BTActionSheetPickerStyle)actionStyle referView:(UIView *)referView delegate:(id)delegate title:(NSString *)title
+{
+    self = [super init];
+    if (self) {
+        self.actionSheetPickerStyle = actionStyle;
+        
+        if (referView) {
+            self.referView = referView;
+            
+        }
+        
+        if (delegate) {
+            self.delegate = delegate;
+        }
+        if (title) {
+            self.title = title;
+        }
+       
+        [self setupWithPickerType:actionStyle];
+        
+        
+    }
+    return self;
+
 }
 - (void)setupWithPickerType:(BTActionSheetPickerStyle)actionStyle;
 {
@@ -88,13 +114,20 @@
         
         self.backgroundColor = [UIColor whiteColor];
         
-        UIButton *cancelButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        cancelButton.frame = CGRectMake(0, 0, 50, 50);
-        [cancelButton setTitle:@"取消" forState:UIControlStateNormal];
-        [cancelButton setTitleColor:[UIColor orangeColor] forState:UIControlStateNormal];
-        [cancelButton addTarget:self action:@selector(cancelButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
-        [self addSubview:cancelButton];
-
+//        UIButton *cancelButton = [UIButton buttonWithType:UIButtonTypeCustom];
+//        cancelButton.frame = CGRectMake(0, 0, 50, 50);
+//        [cancelButton setTitle:@"取消" forState:UIControlStateNormal];
+//        [cancelButton setTitleColor:[UIColor orangeColor] forState:UIControlStateNormal];
+//        [cancelButton addTarget:self action:@selector(cancelButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
+//        [self addSubview:cancelButton];
+        
+        self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(36/2, 10, 200, 30)];
+        _titleLabel.backgroundColor = [UIColor clearColor];
+        _titleLabel.font = [UIFont systemFontOfSize:FIRST_TITLE_SIZE];
+        _titleLabel.textColor = kBigTextColor;
+        _titleLabel.text = _title;
+        [self addSubview:_titleLabel];
+        NSLog(@"标题到底是多少呢 啊-----  %@",_title);
         
         self.enterButton = [UIButton buttonWithType:UIButtonTypeCustom];
         _enterButton.frame = CGRectMake(270, 0, 50, 50);
@@ -292,7 +325,10 @@
         self.coverView = [[UIView alloc] initWithFrame:shareWindow.bounds];
         self.coverView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
         self.coverView.backgroundColor = [UIColor colorWithRed:00/255.0 green:00/255.0 blue:00/255.0 alpha:0.5];
-        [shareWindow addSubview:self.coverView];
+    if (self.actionSheetPickerStyle == BTActionSheetPickerStyleDateAndTimePicker) {
+         [shareWindow addSubview:self.coverView];
+    }
+    
 
    
     

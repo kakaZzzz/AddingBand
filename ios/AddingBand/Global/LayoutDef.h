@@ -116,8 +116,8 @@
 
 //修改设置日期的宏  生日 预产期 末次月经时间
 #define MODIFY_BIRTHDAY_TYPE 1//生日
-#define MODIFY_DUEDATE_TYPE 2//预产期
-#define MODIFY_MENSTRUATION_TYPE 3//末次月经时间
+#define MODIFY_DUEDATE_TYPE 3//预产期
+#define MODIFY_MENSTRUATION_TYPE 2//末次月经时间
 
 
 //

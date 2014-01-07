@@ -35,19 +35,38 @@
 {
     [super viewDidLoad];
 
+    [self configureNavigationbar];
     self.view.backgroundColor = [UIColor yellowColor];
     BTView *aView= [[BTView alloc] initWithFrame:CGRectMake(0, 0, 320, 50)];
     aView.backgroundColor = [UIColor whiteColor];
     [self.view addSubview:aView];
     //
-    self.iconImage = [[UIImageView alloc] initWithFrame:CGRectMake(36/2, (aView.frame.size.height - 40)/2, 40, 40)];
+    self.iconImage = [[UIImageView alloc] initWithFrame:CGRectMake(36/2, (aView.frame.size.height - 20)/2, 20, 20)];
     //根据selfmodifytype显示图片
-    _iconImage.backgroundColor = [UIColor blueColor];
+    switch (self.modifyType) {
+        case MODIFY_BIRTHDAY_TYPE:
+        {
+            self.iconImage.image = [UIImage imageNamed:@"setting_birthday_icon"];
+        }
+                 break;
+        case MODIFY_DUEDATE_TYPE:
+        {
+         self.iconImage.image = [UIImage imageNamed:@"setting_duedate_icon"];
+        }
+            break;
+        case MODIFY_MENSTRUATION_TYPE:
+        {
+       self.iconImage.image = [UIImage imageNamed:@"setting_menstrual_icon"];
+        }
+            break;
+        default:
+            break;
+    }
     [aView addSubview:_iconImage];
-    
+
     //
     self.dateTextLabel = [[UILabel alloc] initWithFrame:CGRectMake((aView.frame.size.width - 100)/2, (aView.frame.size.height - 40)/2, 100, 40)];
-    _dateTextLabel.backgroundColor = [UIColor redColor];
+    _dateTextLabel.backgroundColor = [UIColor clearColor];
     _dateTextLabel.textAlignment = NSTextAlignmentCenter;
     _dateTextLabel.text = [self getNewDataFromCoredataWithModifyType:self.modifyType];
     _dateTextLabel.userInteractionEnabled = YES;
@@ -59,6 +78,29 @@
     [self showDatePicker];
 
 }
+#pragma mark - 设置导航栏上面的按钮
+- (void)configureNavigationbar
+{
+    self.backButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    _backButton.frame = CGRectMake(250, 5, 65, 30);
+    
+    [_backButton setTitle:@"返回" forState:UIControlStateNormal];//title的值根据定位和和选择而改变
+    [_backButton setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
+    
+    
+    // [_deleteButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [_backButton addTarget:self action:@selector(backToUpperView:) forControlEvents:UIControlEventTouchUpInside];
+    // [_deleteButton setBackgroundImage:[UIImage imageNamed:@"透明.png"] forState:UIControlStateNormal];
+    _backButton.tintColor = [UIColor colorWithRed:70/255.0 green:163/255.0 blue:210/255.0 alpha:1];
+    
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:(UIView *)_backButton];
+}
+
+- (void)backToUpperView:(UIButton *)button
+{
+    [self.navigationController popViewControllerAnimated:YES];
+    [self.actionSheetView hide];
+}
 - (void)inputDate:(UITapGestureRecognizer *)tap
 {
     [self showDatePicker];
@@ -67,6 +109,39 @@
 {
     if (self.actionSheetView == nil) {
         self.actionSheetView = [[BTSheetPickerview alloc] initWithPikerType:BTActionSheetPickerStyleDatePicker referView:nil delegate:self];
+        
+        switch (self.modifyType) {
+                
+                    case MODIFY_BIRTHDAY_TYPE:
+                    {
+                        self.actionSheetView = [[BTSheetPickerview alloc] initWithPikerType:BTActionSheetPickerStyleDatePicker
+                                                                                  referView:nil
+                                                                                   delegate:self
+                                                                                      title:@"选择生日日期"];
+                    }
+                        break;
+                    case MODIFY_DUEDATE_TYPE:
+                    {
+                        self.actionSheetView = [[BTSheetPickerview alloc] initWithPikerType:BTActionSheetPickerStyleDatePicker
+                                                                                  referView:nil
+                                                                                   delegate:self
+                                                                                      title:@"选择预产期日期"];
+
+                    }
+                        break;
+                    case MODIFY_MENSTRUATION_TYPE:
+                    {
+                        self.actionSheetView = [[BTSheetPickerview alloc] initWithPikerType:BTActionSheetPickerStyleDatePicker
+                                                                                  referView:nil
+                                                                                   delegate:self
+                                                                                      title:@"选择末次月经日期"];
+
+                    }
+                        break;
+                    default:
+                        break;
+                }
+    
     }
     
     [_actionSheetView show];

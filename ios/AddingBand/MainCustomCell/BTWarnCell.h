@@ -7,13 +7,15 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "BTKnowledgeModel.h"
 @interface BTWarnCell : UITableViewCell
 @property(nonatomic,strong)UILabel *dayLabel;
 @property(nonatomic,strong)UIImageView *iconImage;
 @property(nonatomic,strong)UILabel *titleLabel;
 @property(nonatomic,strong)UIImageView *accessoryImage;
 @property(nonatomic,strong)UILabel *contentLabel;
+@property(nonatomic,strong)UIButton *todoButton;
+@property(nonatomic,strong)BTKnowledgeModel *knowledgeModel;
++ (CGFloat)cellHeightWithMode:(BTKnowledgeModel *)model;
 
-+ (CGFloat)cellHeightWithisHasTimeFlag:(BOOL)timeFlag;
 @end

@@ -52,14 +52,14 @@ static int offsetX = 0;
     /*   在此传入横坐标名称  柱子表示的数值  柱子颜色  以及label中字体颜色 */
     //可左右滑动视图
         
-    self.lineScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, 320,200)];
+    self.lineScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, 320,368/2)];
     _lineScrollView.contentSize = CGSizeMake(klineScrollViewContentSizeX, _lineScrollView.frame.size.height);
     _lineScrollView.backgroundColor = kGlobalColor;
     [self.view addSubview:_lineScrollView];
     //动画效果 改变偏移量
     [self changeScrollViewContentOffsetWithOffset:offsetX animated:YES];
   
-    _barChart = [[BarChartView alloc] initWithFrame:CGRectMake(-20, 0, 640 + 100, 200)];//柱形图背景大小
+    _barChart = [[BarChartView alloc] initWithFrame:CGRectMake(-20, 0, 640 + 100, 368/2)];//柱形图背景大小
     _barChart.target = self;
     _barChart.backgroundColor = [UIColor clearColor];
     _barChart.customBarWidth = 21.0f;//柱子宽度 ，外部可以修改  根据柱子的个数灵活改变柱子的宽度

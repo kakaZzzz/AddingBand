@@ -17,4 +17,5 @@
 @property(nonatomic,strong)UILabel *titleLabel;//
 @property(nonatomic,strong)UILabel *goalLabel;//目标量
 @property(nonatomic,strong)UILabel *progressLabel;//完成进度label
+@property(nonatomic,strong)UIImageView *progressImage;//完成进度label
 @end

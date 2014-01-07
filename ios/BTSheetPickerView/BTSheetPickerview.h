@@ -34,6 +34,10 @@ typedef enum BTActionSheetPickerStyle
 @property (nonatomic, weak) UIView *referView;
 //取消 确定按钮
 @property (nonatomic, strong) UIButton *enterButton;
+//选择器上的标签
+@property (nonatomic, strong) NSString *title;
+//选择器上的标签
+@property (nonatomic, strong) UILabel *titleLabel;
 //是否正在显示
 @property (nonatomic,assign) BOOL isShow;
 
@@ -50,6 +54,8 @@ typedef enum BTActionSheetPickerStyle
 
 //初始化
 - (id)initWithPikerType:(BTActionSheetPickerStyle)actionStyle referView:(UIView *)referView delegate:(id)delegate;
+//初始化
+- (id)initWithPikerType:(BTActionSheetPickerStyle)actionStyle referView:(UIView *)referView delegate:(id)delegate title:(NSString *)title;
 //显示
 - (void)show;
 //移除 隐藏

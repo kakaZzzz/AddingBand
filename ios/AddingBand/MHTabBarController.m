@@ -2,10 +2,10 @@
 
 #import "MHTabBarController.h"
 
-static const float TAB_BAR_HEIGHT = 44.0f;
+static const float TAB_BAR_HEIGHT = 41.0f;
 static const NSInteger TAG_OFFSET = 1000;
 
-#define CONTENTVIEW_HEIGHT 200.0f
+#define CONTENTVIEW_HEIGHT (368/2)
 @implementation MHTabBarController
 {
 	UIView *tabButtonsContainerView;
@@ -53,7 +53,7 @@ static const NSInteger TAG_OFFSET = 1000;
     [button setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];//字体颜色
     }
     else{
-	[button setTitleColor:[UIColor colorWithRed:175/255.0f green:85/255.0f blue:58/255.0f alpha:1.0f] forState:UIControlStateNormal];
+	[button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     }
 	//[button setTitleShadowColor:[UIColor whiteColor] forState:UIControlStateNormal];
     

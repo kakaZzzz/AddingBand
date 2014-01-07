@@ -53,7 +53,7 @@ static NSString *version = nil;//版本号
         
         //cell标题内容
         self.titleArray = [NSArray arrayWithObjects:@"关于用户",@"生日",@"末次月经时间",@"预产期",@"系统设置",@"检查更新",@"评分",@"关于",@"意见反馈",nil];
-        
+        self.iconArray = [NSArray arrayWithObjects:@"",@"setting_birthday_icon",@"setting_menstrual_icon",@"setting_duedate_icon",@"",@"setting_version_icon",@"setting_grade_icon",@"setting_about_icon",@"setting_feedback_icon" ,nil];
         
          
     }
@@ -137,7 +137,9 @@ static NSString *version = nil;//版本号
         if (cellIndicate == nil ) {
             cellIndicate = [[ BTCustomSettingCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifierIndicate];
         }
-        cellIndicate.iconImage.image = [UIImage imageNamed:@"baby_weight_unsel@2x"];
+        
+        cellIndicate.iconImage.image = [UIImage imageNamed:[self.iconArray objectAtIndex:indexPath.row]];
+        
         //cellIndicate.indicateImage = UITableViewCellAccessoryDisclosureIndicator;
         cellIndicate.titleLabel.text = [_titleArray objectAtIndex:indexPath.row];
         cellIndicate.contentLabel.text = [_contentArray objectAtIndex:indexPath.row];
@@ -160,6 +162,8 @@ static NSString *version = nil;//版本号
             BTModifyDateViewController *modifyVC = [[BTModifyDateViewController alloc] init];
             modifyVC.modifyType = MODIFY_BIRTHDAY_TYPE;
             modifyVC.hidesBottomBarWhenPushed = YES;
+           [modifyVC.navigationItem setHidesBackButton:YES];//隐藏系统的返回按钮
+            
             [self.navigationController pushViewController:modifyVC animated:YES];
         }
             break;
@@ -167,6 +171,7 @@ static NSString *version = nil;//版本号
         {
             BTModifyDateViewController *modifyVC = [[BTModifyDateViewController alloc] init];
             modifyVC.modifyType = MODIFY_MENSTRUATION_TYPE;
+            [modifyVC.navigationItem setHidesBackButton:YES];
             modifyVC.hidesBottomBarWhenPushed = YES;
             [self.navigationController pushViewController:modifyVC animated:YES];
         }
@@ -175,6 +180,7 @@ static NSString *version = nil;//版本号
         {
             BTModifyDateViewController *modifyVC = [[BTModifyDateViewController alloc] init];
             modifyVC.modifyType = MODIFY_DUEDATE_TYPE;
+            [modifyVC.navigationItem setHidesBackButton:YES];
             modifyVC.hidesBottomBarWhenPushed = YES;
             [self.navigationController pushViewController:modifyVC animated:YES];
         }

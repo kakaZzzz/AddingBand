@@ -129,7 +129,7 @@ static int selectedTag = 0;
     
     //分数背景view
     self.headView = [[UIView alloc] initWithFrame:CGRectMake(0, 90/2, 320, (406-90)/2)];
-    _headView.backgroundColor = [UIColor blueColor];
+    _headView.backgroundColor = kGlobalColor;
     [self.scrollView addSubview:_headView];
     
     
@@ -168,16 +168,24 @@ static int selectedTag = 0;
     titleLabel.textColor = kBigTextColor;
     titleLabel.backgroundColor = [UIColor clearColor];
     titleLabel.textAlignment = NSTextAlignmentLeft;
-    titleLabel.font = [UIFont systemFontOfSize:17];
+    titleLabel.font = [UIFont systemFontOfSize:FIRST_TITLE_SIZE];
     titleLabel.text = @"今日目标完成情况";
     [sportProgressView addSubview:titleLabel];
     
-    self.goalLabel = [[UILabel alloc] initWithFrame:CGRectMake(sportProgressView.frame.origin.x + 36/2, titleLabel.frame.origin.y + 30, 170, 30)];
+    UILabel *labelGoal = [[UILabel alloc] initWithFrame:CGRectMake(sportProgressView.frame.origin.x + 36/2, titleLabel.frame.origin.y + 30, 70, 30)];
+    labelGoal.textColor = kContentTextColor;
+    labelGoal.backgroundColor = [UIColor clearColor];
+    labelGoal.textAlignment = NSTextAlignmentLeft;
+    labelGoal.font = [UIFont systemFontOfSize:SECOND_TITLE_SIZE];
+    labelGoal.text = @"今日目标:";
+    [sportProgressView addSubview:labelGoal];
+    
+    self.goalLabel = [[UILabel alloc] initWithFrame:CGRectMake(labelGoal.frame.origin.x + labelGoal.frame.size.width, labelGoal.frame.origin.y, 100, 30)];
     _goalLabel.textColor = kContentTextColor;
     _goalLabel.backgroundColor = [UIColor clearColor];
     _goalLabel.textAlignment = NSTextAlignmentLeft;
-    _goalLabel.font = [UIFont systemFontOfSize:14];
-    _goalLabel.text = @"目标运动量:10000步";
+    _goalLabel.font = [UIFont systemFontOfSize:SECOND_TITLE_SIZE];
+    _goalLabel.text = @"7000步";
     [sportProgressView addSubview:_goalLabel];
     
     self.progressLabel = [[UILabel alloc] initWithFrame:CGRectMake(320 - sportProgressView.frame.size.height - 80,0, 130,80)];
@@ -208,17 +216,36 @@ static int selectedTag = 0;
     titleLabel.textColor = kBigTextColor;
     titleLabel.backgroundColor = [UIColor clearColor];
     titleLabel.textAlignment = NSTextAlignmentLeft;
-    titleLabel.font = [UIFont systemFontOfSize:17];
+    titleLabel.font = [UIFont systemFontOfSize:FIRST_TITLE_SIZE];
     titleLabel.text = @"胎动次数";
     [fetalView addSubview:titleLabel];
     
-    self.fetalLabel = [[UILabel alloc] initWithFrame:CGRectMake(fetalView.frame.origin.x + 36/2, titleLabel.frame.origin.y + 30, 170, 30)];
+    
+    UILabel *label1 = [[UILabel alloc] initWithFrame:CGRectMake(fetalView.frame.origin.x + 36/2, titleLabel.frame.origin.y + 30, 50, 30)];
+    label1.textColor = kContentTextColor;
+    label1.backgroundColor = [UIColor clearColor];
+    label1.textAlignment = NSTextAlignmentLeft;
+    label1.font = [UIFont systemFontOfSize:SECOND_TITLE_SIZE];
+    label1.text = @"月平均";
+    [fetalView addSubview:label1];
+    
+    
+    self.fetalLabel = [[UILabel alloc] initWithFrame:CGRectMake(label1.frame.origin.x + label1.frame.size.width, label1.frame.origin.y, 30, 30)];
     _fetalLabel.textColor = kContentTextColor;
     _fetalLabel.backgroundColor = [UIColor clearColor];
     _fetalLabel.textAlignment = NSTextAlignmentLeft;
-    _fetalLabel.font = [UIFont systemFontOfSize:14];
-    _fetalLabel.text = @"月平均:30 次/每天";
+    _fetalLabel.font = [UIFont systemFontOfSize:FIRST_TITLE_SIZE];
+    _fetalLabel.text = @"30";
     [fetalView addSubview:_fetalLabel];
+    
+    UILabel *label2 = [[UILabel alloc] initWithFrame:CGRectMake(_fetalLabel.frame.origin.x + _fetalLabel.frame.size.width, _fetalLabel.frame.origin.y, 50, 30)];
+    label2.textColor = kContentTextColor;
+    label2.backgroundColor = [UIColor clearColor];
+    label2.textAlignment = NSTextAlignmentLeft;
+    label2.font = [UIFont systemFontOfSize:SECOND_TITLE_SIZE];
+    label2.text = @"次/每天";
+    [fetalView addSubview:label2];
+
     
     UIButton *recordFetal = [UIButton  buttonWithType:UIButtonTypeCustom];
     recordFetal.tag = PHYSICAL_CONTROL_TAG + 1;
@@ -248,7 +275,7 @@ static int selectedTag = 0;
     
     //孕期血糖按钮
     UIButton *bloodButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    bloodButton.backgroundColor = [UIColor blueColor];
+    bloodButton.backgroundColor = [UIColor whiteColor];
     bloodButton.frame = CGRectMake(0, 0, 304/2, 96/2);
     [bloodButton addTarget:self action:@selector(enterBloodView:) forControlEvents:UIControlEventTouchUpInside];
     [bloodView addSubview:bloodButton];
@@ -273,7 +300,7 @@ static int selectedTag = 0;
     //胎心监测按钮
     
     UIButton *fetalButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    fetalButton.backgroundColor = [UIColor blueColor];
+    fetalButton.backgroundColor = [UIColor whiteColor];
     [fetalButton addTarget:self action:@selector(enterFetalView:) forControlEvents:UIControlEventTouchUpInside];
     fetalButton.frame = CGRectMake(bloodView.frame.size.width - 304/2, 0, 304/2, 96/2);
     [bloodView addSubview:fetalButton];
@@ -399,7 +426,7 @@ static int selectedTag = 0;
     }
     
     
-    self.physicalView = [[BTPhysicalCollectionView alloc] initWithFrame:CGRectMake(6 , yValue, 320 - 12,210) modelArray:array];
+    self.physicalView = [[BTPhysicalCollectionView alloc] initWithFrame:CGRectMake(6 , yValue, 320 - 12,100) modelArray:array];
     
     __weak BTPhysicalViewController *physicalVC = self;
     _physicalView.choosePhysicalBlock = ^(int tag)
