@@ -1,12 +1,12 @@
 //
-//  BTKnowledgeCell.m
+//  BTUGCCell.m
 //  AddingBand
 //
-//  Created by wangpeng on 13-12-23.
-//  Copyright (c) 2013年 kaka'. All rights reserved.
+//  Created by wangpeng on 14-1-8.
+//  Copyright (c) 2014年 kaka'. All rights reserved.
 //
 
-#import "BTKnowledgeCell.h"
+#import "BTUGCCell.h"
 #import "LayoutDef.h"
 #define kDayLabelX 24/2
 #define kDayLabelY 5
@@ -24,14 +24,14 @@
 #define kTitleLabelHeight 20
 
 #define kContentLabelHeight 50
-@implementation BTKnowledgeCell
+@implementation BTUGCCell
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
         // Initialization code
-        [self createCustomCell];
+     [self createCustomCell];
     }
     return self;
 }
@@ -83,48 +83,50 @@
     
     
 }
-+ (CGFloat)cellHeightWithMode:(BTKnowledgeModel *)model
-{
-    
-    NSLog(@"返回高度.........");
-    
-    CGSize size = CGSizeMake(kTitleLabelWidth,2000);
-    UIFont *font = [UIFont systemFontOfSize:FIRST_TITLE_SIZE];
-    //计算实际frame大小，并将label的frame变成实际大小
-    CGSize labelSize = [model.title sizeWithFont:font constrainedToSize:size lineBreakMode:NSLineBreakByWordWrapping];
-    
-    return (kTitleLabelY + labelSize.height+ kContentLabelHeight + 10 + 10);
-}
+//+ (CGFloat)cellHeightWithMode:(BTKnowledgeModel *)model
+//{
+//    
+//    NSLog(@"返回高度.........");
+//    
+//    CGSize size = CGSizeMake(kTitleLabelWidth,2000);
+//    UIFont *font = [UIFont systemFontOfSize:FIRST_TITLE_SIZE];
+//    //计算实际frame大小，并将label的frame变成实际大小
+//    CGSize labelSize = [model.title sizeWithFont:font constrainedToSize:size lineBreakMode:NSLineBreakByWordWrapping];
+//    
+//    return (kTitleLabelY + labelSize.height+ kContentLabelHeight + 10 + 10);
+//}
+//
+//- (void)setKnowledgeModel:(BTKnowledgeModel *)knowledgeModel
+//{
+//    NSLog(@"走设置方法.........");
+//    _knowledgeModel = knowledgeModel;
+//    
+//    //标题label
+//    CGSize size = CGSizeMake(_titleLabel.frame.size.width,2000);
+//    //计算实际frame大小，并将label的frame变成实际大小
+//    CGSize labelSize = [_knowledgeModel.title sizeWithFont:_titleLabel.font constrainedToSize:size lineBreakMode:NSLineBreakByWordWrapping];
+//    self.titleLabel.frame = CGRectMake(_titleLabel.frame.origin.x, _titleLabel.frame.origin.y, labelSize.width, labelSize.height);
+//    
+//    
+//    self.accessoryImage.frame = CGRectMake(_titleLabel.frame.origin.x + _titleLabel.frame.size.width + 5, _titleLabel.frame.origin.y, 30, 30);
+//    
+//    
+//    self.contentLabel.frame = CGRectMake(_contentLabel.frame.origin.x, _titleLabel.frame.origin.y + _titleLabel.frame.size.height + 10, _contentLabel.frame.size.width, _contentLabel.frame.size.height);
+//    
+//    self.titleLabel.text = _knowledgeModel.title;
+//    self.contentLabel.text = _knowledgeModel.description;
+//    self.dayLabel.text = _knowledgeModel.date;
+//    
+//    
+//    
+//    
+//}
 
-- (void)setKnowledgeModel:(BTKnowledgeModel *)knowledgeModel
-{
-    NSLog(@"走设置方法.........");
-    _knowledgeModel = knowledgeModel;
-    
-    //标题label
-    CGSize size = CGSizeMake(_titleLabel.frame.size.width,2000);
-    //计算实际frame大小，并将label的frame变成实际大小
-    CGSize labelSize = [_knowledgeModel.title sizeWithFont:_titleLabel.font constrainedToSize:size lineBreakMode:NSLineBreakByWordWrapping];
-    self.titleLabel.frame = CGRectMake(_titleLabel.frame.origin.x, _titleLabel.frame.origin.y, labelSize.width, labelSize.height);
-    
-    
-    self.accessoryImage.frame = CGRectMake(_titleLabel.frame.origin.x + _titleLabel.frame.size.width + 5, _titleLabel.frame.origin.y, 30, 30);
-    
-    
-    self.contentLabel.frame = CGRectMake(_contentLabel.frame.origin.x, _titleLabel.frame.origin.y + _titleLabel.frame.size.height + 10, _contentLabel.frame.size.width, _contentLabel.frame.size.height);
-    
-    self.titleLabel.text = _knowledgeModel.title;
-    self.contentLabel.text = _knowledgeModel.description;
-    self.dayLabel.text = _knowledgeModel.date;
-    
-    
-    
-    
-}
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated
 {
     [super setSelected:selected animated:animated];
-    
+
     // Configure the view for the selected state
 }
+
 @end

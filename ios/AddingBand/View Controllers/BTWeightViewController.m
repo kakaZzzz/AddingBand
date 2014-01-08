@@ -80,7 +80,7 @@
     [self drawLineChartViewWithModelArray:self.values onLimit:_onLimit];
     
     if ([self.values count] == 0) {
-        [self performSelector:@selector(presentInputView) withObject:nil afterDelay:10.0];//延迟1秒模态出页面
+        [self performSelector:@selector(presentInputView) withObject:nil afterDelay:1.0];//延迟1秒模态出页面
     }
     
     //

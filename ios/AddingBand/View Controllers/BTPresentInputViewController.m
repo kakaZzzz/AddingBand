@@ -82,6 +82,7 @@
     _inputField.tag = TEXTFIELD_TAG + 0;
     _inputField.returnKeyType = UIReturnKeyDone;
     _inputField.delegate = self;
+    _inputField.keyboardType = UIKeyboardTypeDecimalPad;
     [[IQKeyBoardManager installKeyboardManager] setScrollView:self.scrollView];//监听键盘通知 改变scrollview的偏移量
     _inputField.font = [UIFont systemFontOfSize:SECOND_TITLE_SIZE];
     _inputField.placeholder = @"目前体重";
@@ -112,6 +113,7 @@
     _heightTextField.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
     _heightTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
     _heightTextField.tag = TEXTFIELD_TAG + 1;
+    _heightTextField.keyboardType = UIKeyboardTypeDecimalPad;
     _heightTextField.returnKeyType = UIReturnKeyDone;
     _heightTextField.delegate = self;
     [[IQKeyBoardManager installKeyboardManager] setScrollView:self.scrollView];//监听键盘通知 改变scrollview的偏移量
@@ -141,6 +143,7 @@
     _previousWeightField.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
     _previousWeightField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
     _previousWeightField.tag = TEXTFIELD_TAG + 2;
+    _previousWeightField.keyboardType = UIKeyboardTypeDecimalPad;
     _previousWeightField.returnKeyType = UIReturnKeyDone;
     _previousWeightField.delegate = self;
     [[IQKeyBoardManager installKeyboardManager] setScrollView:self.scrollView];//监听键盘通知 改变scrollview的偏移量

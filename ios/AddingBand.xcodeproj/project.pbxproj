@@ -227,6 +227,10 @@
 		72AFBA5E18431995004F0350 /* XMLParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 72AFBA5218431995004F0350 /* XMLParser.m */; };
 		72AFBA5F18431995004F0350 /* XMLParserDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 72AFBA5418431995004F0350 /* XMLParserDelegate.m */; };
 		72AFBA6018431995004F0350 /* PlotChartView.m in Sources */ = {isa = PBXBuildFile; fileRef = 72AFBA5618431995004F0350 /* PlotChartView.m */; };
+		72B3F854187D407400549408 /* BTUGCCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 72B3F853187D407400549408 /* BTUGCCell.m */; };
+		72B3F857187D5DEA00549408 /* BTBleOffViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 72B3F856187D5DEA00549408 /* BTBleOffViewController.m */; };
+		72B3F85A187D761E00549408 /* bluetooth_setting_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 72B3F858187D761E00549408 /* bluetooth_setting_icon@2x.png */; };
+		72B3F85B187D761E00549408 /* bluetooth_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 72B3F859187D761E00549408 /* bluetooth_icon@2x.png */; };
 		72B418B918238BCA002EAD35 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72B418B818238BCA002EAD35 /* Foundation.framework */; };
 		72B418BB18238BCA002EAD35 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72B418BA18238BCA002EAD35 /* CoreGraphics.framework */; };
 		72B418BD18238BCA002EAD35 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72B418BC18238BCA002EAD35 /* UIKit.framework */; };
@@ -633,6 +637,12 @@
 		72AFBA5418431995004F0350 /* XMLParserDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XMLParserDelegate.m; sourceTree = "<group>"; };
 		72AFBA5518431995004F0350 /* PlotChartView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlotChartView.h; sourceTree = "<group>"; };
 		72AFBA5618431995004F0350 /* PlotChartView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlotChartView.m; sourceTree = "<group>"; };
+		72B3F852187D407400549408 /* BTUGCCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BTUGCCell.h; path = MainCustomCell/BTUGCCell.h; sourceTree = "<group>"; };
+		72B3F853187D407400549408 /* BTUGCCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BTUGCCell.m; path = MainCustomCell/BTUGCCell.m; sourceTree = "<group>"; };
+		72B3F855187D5DEA00549408 /* BTBleOffViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BTBleOffViewController.h; path = "View Controllers/BTBleOffViewController.h"; sourceTree = "<group>"; };
+		72B3F856187D5DEA00549408 /* BTBleOffViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BTBleOffViewController.m; path = "View Controllers/BTBleOffViewController.m"; sourceTree = "<group>"; };
+		72B3F858187D761E00549408 /* bluetooth_setting_icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bluetooth_setting_icon@2x.png"; sourceTree = "<group>"; };
+		72B3F859187D761E00549408 /* bluetooth_icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bluetooth_icon@2x.png"; sourceTree = "<group>"; };
 		72B418B518238BCA002EAD35 /* AddingBand.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AddingBand.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		72B418B818238BCA002EAD35 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		72B418BA18238BCA002EAD35 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -838,6 +848,8 @@
 				723CD161183B72DA007C486D /* BTPastLinkViewController.m */,
 				72B5EDB61865B0EB00FF363E /* BTCloseToBleViewController.h */,
 				72B5EDB71865B0EB00FF363E /* BTCloseToBleViewController.m */,
+				72B3F855187D5DEA00549408 /* BTBleOffViewController.h */,
+				72B3F856187D5DEA00549408 /* BTBleOffViewController.m */,
 			);
 			name = "同步页面";
 			sourceTree = "<group>";
@@ -854,6 +866,8 @@
 		723F0ECA183C5DFE005F1921 /* Sync */ = {
 			isa = PBXGroup;
 			children = (
+				72B3F858187D761E00549408 /* bluetooth_setting_icon@2x.png */,
+				72B3F859187D761E00549408 /* bluetooth_icon@2x.png */,
 				72269015183DAC2700D6405E /* uestime_bg.png */,
 				72269016183DAC2700D6405E /* uestime_bg@2x.png */,
 				723C56C418614E1000D4DC13 /* red_bg@2x.png */,
@@ -1190,6 +1204,7 @@
 				7255ADAA186D66F7003A0913 /* BTUCViewController.m */,
 				72359724187559DF00713619 /* BTPresentInputViewController.h */,
 				72359725187559DF00713619 /* BTPresentInputViewController.m */,
+				72A3735518694319003F5B24 /* 分享 */,
 			);
 			name = "妈妈体征页面";
 			sourceTree = "<group>";
@@ -1352,7 +1367,6 @@
 		72A37351186940FD003F5B24 /* 知识详情 */ = {
 			isa = PBXGroup;
 			children = (
-				72A3735518694319003F5B24 /* 分享 */,
 				72A3735218694199003F5B24 /* BTKnowledgeViewController.h */,
 				72A3735318694199003F5B24 /* BTKnowledgeViewController.m */,
 			);
@@ -1717,6 +1731,8 @@
 				725E9B7A1867E30800BD2354 /* BTWarnCell.m */,
 				725E9B7C1867E3F900BD2354 /* BTKnowledgeCell.h */,
 				725E9B7D1867E3F900BD2354 /* BTKnowledgeCell.m */,
+				72B3F852187D407400549408 /* BTUGCCell.h */,
+				72B3F853187D407400549408 /* BTUGCCell.m */,
 			);
 			name = "首页自定义cell";
 			sourceTree = "<group>";
@@ -1873,6 +1889,7 @@
 				72316AC51878182700A166BD /* setting_feedback_icon@2x.png in Resources */,
 				723F24AC18308925001F27DA /* checkBox_blankCheck.png in Resources */,
 				723F0ED3183C5E7F005F1921 /* 家丁手环icon.png in Resources */,
+				72B3F85B187D761E00549408 /* bluetooth_icon@2x.png in Resources */,
 				72A373601869435F003F5B24 /* share_platform_email@2x.png in Resources */,
 				72A9EC2618795756006EEB28 /* tabbar_bg@2x.png in Resources */,
 				724075E418488E000033BB90 /* sr_refresh@2X.png in Resources */,
@@ -1970,6 +1987,7 @@
 				72A9EC4418795AF6006EEB28 /* home_unselected1@2x.png in Resources */,
 				72A2A321186C2B7400A504CA /* physical_fetal_unsel@2x.png in Resources */,
 				723F24AA18308925001F27DA /* btn_press.png in Resources */,
+				72B3F85A187D761E00549408 /* bluetooth_setting_icon@2x.png in Resources */,
 				72A9EC30187959C9006EEB28 /* shezhi_selected@2x.png in Resources */,
 				72A2A309186AC9F000A504CA /* btn_close_normal.png in Resources */,
 				723F24AB18308925001F27DA /* btn_press@2x.png in Resources */,
@@ -2092,7 +2110,9 @@
 				7231BE571859910C009A6DB5 /* PNChartLabel.m in Sources */,
 				72B419041823904B002EAD35 /* BTCustomTabBarController.m in Sources */,
 				728ECC0B1823B64F005053FE /* RBParallaxTableVC.m in Sources */,
+				72B3F854187D407400549408 /* BTUGCCell.m in Sources */,
 				725E018D182CDF0B00022A15 /* BTGetData.m in Sources */,
+				72B3F857187D5DEA00549408 /* BTBleOffViewController.m in Sources */,
 				723D643B184C765F008618D7 /* BTFetalViewController.m in Sources */,
 				72316A9F1877D15D00A166BD /* BTGirthStandard.m in Sources */,
 				72359726187559DF00713619 /* BTPresentInputViewController.m in Sources */,

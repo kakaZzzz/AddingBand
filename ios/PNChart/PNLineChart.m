@@ -10,7 +10,7 @@
 #import "PNChartLabel.h"
 #define DISTANCE_X 2.5f//x轴坐标label之间的距离
 #define xLabelHeight 30.0f//x轴坐标label的高度
-#define xLabelWidth 13.0f//x轴坐标label的宽度
+#define xLabelWidth 30.0f//x轴坐标label的宽度
 #define LINE_COLOR [UIColor colorWithRed:77.0/255.0 green:186.0/255.0 blue:122.0/255.0 alpha:1.0f]//折线颜色
 #define LABELY_GRADE 5.0f//Y轴左边等级级数
 #define xLabelDistanceyLabel 5.0f//x轴和y轴左边之间的缝隙大小
@@ -46,21 +46,22 @@ static CGFloat distance = 0;
 
 -(void)setYLabels:(NSArray *)yLabels
 {
-    NSInteger max = 0;
-    for (NSString * valueString in yLabels) {
-        NSInteger value = [valueString integerValue];
-        if (value > max) {
-            max = value;
-        }
-        
-    }
+//    NSInteger max = 0;
+//    for (NSString * valueString in yLabels) {
+//        NSInteger value = [valueString integerValue];
+//        if (value > max) {
+//            max = value;
+//        }
+//        
+//    }
+//    
+//    // max = 200;//可以认为设定最大值
+//    //Min value for Y label
+//    if (max < 5) {
+//        max = 5;
+//    }
     
-    // max = 200;//可以认为设定最大值
-    //Min value for Y label
-    if (max < 5) {
-        max = 5;
-    }
-    
+    NSInteger max = 10;
     _yValueMax = (int)max;
     
     float level = max /LABELY_GRADE;//纵坐标分级 有多少等级
@@ -91,11 +92,15 @@ static CGFloat distance = 0;
      distance = (self.frame.size.width - xLabelMargin - [xLabels count]*xLabelWidth)/([xLabels count]);
     for (NSString * labelText in xLabels) {
         NSInteger index = [xLabels indexOfObject:labelText];
-        PNChartLabel * label = [[PNChartLabel alloc] initWithFrame:CGRectMake(index * (distance + _xLabelWidth) + xLabelMargin,self.frame.size.height - xLabelHeight, _xLabelWidth, xLabelHeight)];//两个label之间的距离应该是 xLabelMargin + _xLabelWidth
-        [label setTextAlignment:NSTextAlignmentLeft];
-        label.text = labelText;
-        [self addSubview:label];
-        NSLog(@"Label的X轴距离%f",label.frame.origin.x);
+        if (index%3 == 0) {
+            PNChartLabel * label = [[PNChartLabel alloc] initWithFrame:CGRectMake(index * (distance + _xLabelWidth) + xLabelMargin,self.frame.size.height - xLabelHeight, _xLabelWidth, xLabelHeight)];//两个label之间的距离应该是 xLabelMargin + _xLabelWidth
+            [label setTextAlignment:NSTextAlignmentLeft];
+            label.backgroundColor = [UIColor clearColor];
+            label.text = labelText;
+            [self addSubview:label];
+
+        }
+      //  NSLog(@"Label的X轴距离%f",label.frame.origin.x);
     }
     NSLog(@"X轴宽度是%f",_xLabelWidth);
 }
@@ -127,7 +132,6 @@ static CGFloat distance = 0;
     NSInteger index = 0;
     for (NSString * valueString in _yValues) {
         NSInteger value = [valueString integerValue];
-        
         float grade = (float)value / (float)_yValueMax;
         
         if (index != 0) {

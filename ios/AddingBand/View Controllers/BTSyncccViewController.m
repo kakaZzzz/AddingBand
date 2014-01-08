@@ -20,7 +20,7 @@
 #import "BTColor.h"
 #import "BTConstants.h"//存放外设设备的各种宏的头文件
 #import "BTCloseToBleViewController.h"//靠近设备 提示页面
-
+#import "BTBleOffViewController.h"//蓝牙开关未打开
 #define kTitleX 10
 #define kTitleY 20
 #define kTitleWidth 250
@@ -118,7 +118,21 @@
     
     //设置导航栏上的右边按钮
     [self configureNavigationbar];
+    
+    
+    //如果设备蓝牙没有打开 加载打开蓝牙页面
+    if (self.bc.cm.state == CBCentralManagerStatePoweredOff) {
+        [self addBluetoothNotpower];
+    }
 	// Do any additional setup after loading the view.
+}
+#pragma mark - 加载蓝牙没有打开的页面
+- (void)addBluetoothNotpower
+{
+    BTBleOffViewController *offBleVC = [[BTBleOffViewController alloc] init];
+    offBleVC.view.frame = CGRectMake(0, 0, offBleVC.view.frame.size.width, offBleVC.view.frame.size.height);
+   
+    [self.view addSubview:offBleVC.view];
 }
 #pragma mark - 连接蓝牙设备提示语句 “可连接设备”
 - (void)addLinkBLELabel

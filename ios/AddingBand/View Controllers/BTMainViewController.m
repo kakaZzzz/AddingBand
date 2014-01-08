@@ -154,7 +154,7 @@ static int week = 0;
     //用MKNetworkKit进行异步网络请求
     /*GET请求 示例*/
     MKNetworkEngine *engine = [[MKNetworkEngine alloc] initWithHostName:@"addinghome.com" customHeaderFields:nil];
-    MKNetworkOperation *op = [engine operationWithPath:[NSString stringWithFormat:@"/api/schedule?p=2013-12-30&m=%d+%d",week,week + 1] params:nil httpMethod:@"GET" ssl:NO];
+    MKNetworkOperation *op = [engine operationWithPath:[NSString stringWithFormat:@"/api/schedule?p=2013-12-30&W=%d+%d",week,week + 1] params:nil httpMethod:@"GET" ssl:NO];
     [op addCompletionHandler:^(MKNetworkOperation *operation) {
         NSLog(@"[operation responseData]-->>%@", [operation responseString]);
         
@@ -173,13 +173,14 @@ static int week = 0;
 }
 - (void)handleDataByGetNetworkSuccessfullyWithJsonData:(NSData *)data
 {
+    week = 3;
     NSDictionary *resultDic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:nil];
     
-    NSDictionary *weekPreviousDic = [resultDic objectForKey:[NSString stringWithFormat:@"m%d",week]];
+    NSDictionary *weekPreviousDic = [resultDic objectForKey:[NSString stringWithFormat:@"w%d",week]];
     NSArray *resultPreviousArray = [weekPreviousDic objectForKey:@"results"];
     BTRowOfSectionModel *model1 = [[BTRowOfSectionModel alloc] initWithSectionTitle:[NSString stringWithFormat:@"%d周",week] row:[resultPreviousArray count]];
-    
-    NSDictionary *weekCurrentDic = [resultDic objectForKey:[NSString stringWithFormat:@"m%d",week + 1]];
+    NSLog(@"resultPreviousArray==%@",resultPreviousArray);
+    NSDictionary *weekCurrentDic = [resultDic objectForKey:[NSString stringWithFormat:@"w%d",week + 1]];
     NSArray *resultCurrentArray = [weekCurrentDic objectForKey:@"results"];
     
     BTRowOfSectionModel *model2 = [[BTRowOfSectionModel alloc] initWithSectionTitle:[NSString stringWithFormat:@"%d周",week + 1] row:[resultCurrentArray count]];
@@ -224,7 +225,7 @@ static int week = 0;
             dictionary  = [NSDictionary dictionaryWithObjectsAndKeys:@"3",@"event_id",@"103",@"event_type",@"该吃药了哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈",@"title", @"",@"hash",@"丫今儿该吃苹果了",@"description",@"2014-1-2",@"date",@"2014-1-4",@"expire",@"",@"icon",nil];
         }
         if (i == 1) {
-            dictionary  = [NSDictionary dictionaryWithObjectsAndKeys:@"2",@"event_id",@"103",@"event_type",@"什么是叶酸？",@"title", @"",@"hash",@"叶酸是维生素B9的水溶形式。叶酸的名字来源于拉丁文folium。由米切尔及其同事 首次从菠菜叶中提取纯化出来，命名为叶酸。叶酸作为重要的一碳载体，在核苷酸合成，同型半胱氨酸的再甲基化等诸多重要生理代谢功能方面有重要作用。因此叶酸在快速的细胞分裂和生长过程中有尤其重要的作用。",@"description",@"2014-1-2",@"date",@"2014-1-4",@"expire",@"",@"icon",nil];
+            dictionary  = [NSDictionary dictionaryWithObjectsAndKeys:@"2",@"event_id",@"103",@"event_type",@"什么是叶酸什么是叶酸什么是叶酸什么是叶酸什么是叶酸什么是叶酸什么是叶酸什么是叶酸什么是叶酸什么是叶酸什么是叶酸什么是叶酸？",@"title", @"",@"hash",@"叶酸是维生素B9的水溶形式。叶酸的名字来源于拉丁文folium。由米切尔及其同事 首次从菠菜叶中提取纯化出来，命名为叶酸。叶酸作为重要的一碳载体，在核苷酸合成，同型半胱氨酸的再甲基化等诸多重要生理代谢功能方面有重要作用。因此叶酸在快速的细胞分裂和生长过程中有尤其重要的作用。",@"description",@"2014-1-2",@"date",@"2014-1-4",@"expire",@"",@"icon",nil];
             
         }
         BTKnowledgeModel * knowledge = [[BTKnowledgeModel alloc] initWithDictionary:dictionary];

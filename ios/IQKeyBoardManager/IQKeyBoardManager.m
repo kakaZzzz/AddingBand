@@ -27,7 +27,7 @@
 
 //Singleton object.
 static IQKeyBoardManager *kbManager;
-
+static CGRect customRootRect = {0,0,0,0};
 @interface IQKeyBoardManager()
 
 @property(nonatomic, assign) CGFloat keyboardDistanceFromTextField;
@@ -117,28 +117,39 @@ static IQKeyBoardManager *kbManager;
     while (topController.presentedViewController)
         topController = topController.presentedViewController;
 
-    NSLog(@"啦啦啦啦啦%@",topController);
+   
     return topController;
 }
 
 
 #pragma mark - Helper Animation function
 //Helper function to manipulate RootViewController's frame with animation.
--(void)setRootViewFrame:(CGRect)frame
+-(void)setRootViewFrame:(CGRect)frame show:(BOOL)isShow
 {
     UIViewController *controller = [IQKeyBoardManager topMostController];
     [UIView animateWithDuration:animationDuration animations:^{
         
+        
+       
         if (self.scrollView) {
             CGPoint point = frame.origin;
             float y = point.y;
-            self.scrollView.contentOffset = CGPointMake(0, -y);
+            if (isShow) {
+                self.scrollView.contentOffset = CGPointMake(0, self.scrollView.contentOffset.y - y);
+             }
+            else{
+                self.scrollView.contentOffset = CGPointMake(0, 0);
 
+            }
+          
         }
         
         else{
             [controller.view setFrame:frame];
         }
+ 
+       
+        
      }];
 }
 
@@ -166,7 +177,7 @@ static IQKeyBoardManager *kbManager;
     }
 
     //Setting rootViewController frame to it's original position.
-    [self setRootViewFrame:resetFrame];
+    [self setRootViewFrame:resetFrame show:NO];
 }
 
 //UIKeyboard Did shown. Adjusting RootViewController's frame according to device orientation.
@@ -187,11 +198,15 @@ static IQKeyBoardManager *kbManager;
     //Getting UIKeyboardSize.
     CGSize kbSize = [[[aNotification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue].size;
     
-    //Converting Rectangle according to window bounds.
-    CGRect textFieldViewRect = [textFieldView.superview convertRect:textFieldView.frame toView:window];
-    //Getting RootViewRect.
-    CGRect rootViewRect = rootController.view.frame;
     
+    //Converting Rectangle according to window bounds.
+    
+    CGRect textFieldViewRect = [textFieldView.superview convertRect:textFieldView.frame toView:window];
+
+    NSLog(@"textFieldViewRect-------%@",NSStringFromCGRect(textFieldViewRect));
+        //Getting RootViewRect.
+    CGRect rootViewRect = rootController.view.frame;
+    NSLog(@"rootController.view.frame----%@",NSStringFromCGRect(rootViewRect));
     CGFloat move;
     //Move positive = textField is hidden.
     //Move negative = textField is showing.
@@ -202,18 +217,22 @@ static IQKeyBoardManager *kbManager;
         case UIInterfaceOrientationLandscapeLeft:
             kbSize.width += keyboardDistanceFromTextField;
             move = CGRectGetMaxX(textFieldViewRect)-(CGRectGetWidth(window.frame)-kbSize.width);
+            NSLog(@"!!!!!!!!!!!!move%0.1f",move);
             break;
         case UIInterfaceOrientationLandscapeRight:
             kbSize.width += keyboardDistanceFromTextField;
             move = kbSize.width-CGRectGetMinX(textFieldViewRect);
+             NSLog(@"!!!!!!!!!!!!move%0.1f",move);
             break;
         case UIInterfaceOrientationPortrait:
             kbSize.height += keyboardDistanceFromTextField;
             move = CGRectGetMaxY(textFieldViewRect)-(CGRectGetHeight(window.frame)-kbSize.height);
+             NSLog(@"!!!!!!!!!!!!---move%0.1f",move);
             break;
         case UIInterfaceOrientationPortraitUpsideDown:
             kbSize.height += keyboardDistanceFromTextField;
             move = kbSize.height-CGRectGetMinY(textFieldViewRect);
+             NSLog(@"!!!!!!!!!!!!move%0.1f",move);
             break;
         default:
             break;
@@ -227,8 +246,8 @@ static IQKeyBoardManager *kbManager;
         if (move>=0)
         {
             //We should only manipulate y.
-            rootViewRect.origin.y -= move;
-            [self setRootViewFrame:rootViewRect];
+            rootViewRect.origin.y -= move;//擦 在这里改了一下
+            [self setRootViewFrame:rootViewRect show:YES];
         }
         //Negative
         else
@@ -241,7 +260,7 @@ static IQKeyBoardManager *kbManager;
             if(disturbDistance<0)
             {
                 rootViewRect.origin.y -= MAX(move, disturbDistance); 
-                [self setRootViewFrame:rootViewRect];
+                [self setRootViewFrame:rootViewRect show:YES];
             }
         }
     }
@@ -250,6 +269,7 @@ static IQKeyBoardManager *kbManager;
         //Positive or zero.
         if (move>=0)
         {
+         
             //        switch ([[UIApplication sharedApplication] statusBarOrientation])
             switch (rootController.interfaceOrientation)
             {
@@ -259,8 +279,9 @@ static IQKeyBoardManager *kbManager;
                 case UIInterfaceOrientationPortraitUpsideDown:  rootViewRect.origin.y += move;  break;
                 default:    break;
             }
-            
-            [self setRootViewFrame:rootViewRect];
+          
+           
+            [self setRootViewFrame:rootViewRect show:YES];
         }
         //Negative
         else

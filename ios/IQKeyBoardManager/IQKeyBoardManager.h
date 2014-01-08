@@ -31,11 +31,10 @@
     
     CGFloat animationDuration;
     
-    UIScrollView *scrollView;
     
 }
 
-@property(nonatomic,strong)UIScrollView *scrollView;
+@property(nonatomic,weak)UIScrollView *scrollView;
 //Call it on your AppDelegate;
 +(id)installKeyboardManager;
 
