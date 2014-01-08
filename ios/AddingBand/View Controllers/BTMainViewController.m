@@ -154,7 +154,7 @@ static int week = 0;
     //用MKNetworkKit进行异步网络请求
     /*GET请求 示例*/
     MKNetworkEngine *engine = [[MKNetworkEngine alloc] initWithHostName:@"addinghome.com" customHeaderFields:nil];
-    MKNetworkOperation *op = [engine operationWithPath:[NSString stringWithFormat:@"/api/schedule?p=2013-12-30&W=%d+%d",week,week + 1] params:nil httpMethod:@"GET" ssl:NO];
+    MKNetworkOperation *op = [engine operationWithPath:[NSString stringWithFormat:@"/api/schedule?p=2013-12-30&w=%d+%d",week,week + 1] params:nil httpMethod:@"GET" ssl:NO];
     [op addCompletionHandler:^(MKNetworkOperation *operation) {
         NSLog(@"[operation responseData]-->>%@", [operation responseString]);
         
@@ -176,11 +176,11 @@ static int week = 0;
     week = 3;
     NSDictionary *resultDic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:nil];
     
-    NSDictionary *weekPreviousDic = [resultDic objectForKey:[NSString stringWithFormat:@"w%d",week]];
+    NSDictionary *weekPreviousDic = [resultDic objectForKey:[NSString stringWithFormat:@"w%d",3]];
     NSArray *resultPreviousArray = [weekPreviousDic objectForKey:@"results"];
     BTRowOfSectionModel *model1 = [[BTRowOfSectionModel alloc] initWithSectionTitle:[NSString stringWithFormat:@"%d周",week] row:[resultPreviousArray count]];
     NSLog(@"resultPreviousArray==%@",resultPreviousArray);
-    NSDictionary *weekCurrentDic = [resultDic objectForKey:[NSString stringWithFormat:@"w%d",week + 1]];
+    NSDictionary *weekCurrentDic = [resultDic objectForKey:[NSString stringWithFormat:@"w%d",3 + 1]];
     NSArray *resultCurrentArray = [weekCurrentDic objectForKey:@"results"];
     
     BTRowOfSectionModel *model2 = [[BTRowOfSectionModel alloc] initWithSectionTitle:[NSString stringWithFormat:@"%d周",week + 1] row:[resultCurrentArray count]];
