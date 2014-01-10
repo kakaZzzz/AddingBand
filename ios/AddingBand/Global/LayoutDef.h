@@ -113,8 +113,8 @@
 
 //蓝牙同步 连接部分宏
 #define SCAN_PERIPHERAL_TIMEOUT 10.0
-#define UPDATE_PREVIOUSSYNC_TIME 1.0
-
+#define UPDATE_PREVIOUSSYNC_TIME 2.0
+#define LINkBLE_TIMEOUT 30.0
 //修改设置日期的宏  生日 预产期 末次月经时间
 #define MODIFY_BIRTHDAY_TYPE 1//生日
 #define MODIFY_DUEDATE_TYPE 3//预产期

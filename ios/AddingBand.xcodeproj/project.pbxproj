@@ -256,11 +256,6 @@
 		72B3F88E187FD91800549408 /* prhysical_exclamationMark@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 72B3F88D187FD91800549408 /* prhysical_exclamationMark@2x.png */; };
 		72B3F899188002C900549408 /* 37x-Checkmark.png in Resources */ = {isa = PBXBuildFile; fileRef = 72B3F890188002C900549408 /* 37x-Checkmark.png */; };
 		72B3F89A188002C900549408 /* 37x-Checkmark@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 72B3F891188002C900549408 /* 37x-Checkmark@2x.png */; };
-		72B3F89B188002C900549408 /* Icon-iOS7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 72B3F892188002C900549408 /* Icon-iOS7@2x.png */; };
-		72B3F89C188002C900549408 /* Icon-Small.png in Resources */ = {isa = PBXBuildFile; fileRef = 72B3F893188002C900549408 /* Icon-Small.png */; };
-		72B3F89D188002C900549408 /* Icon-Small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 72B3F894188002C900549408 /* Icon-Small@2x.png */; };
-		72B3F89E188002C900549408 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 72B3F895188002C900549408 /* Icon.png */; };
-		72B3F89F188002C900549408 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 72B3F896188002C900549408 /* Icon@2x.png */; };
 		72B3F8A0188002C900549408 /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 72B3F898188002C900549408 /* MBProgressHUD.m */; };
 		72B418B918238BCA002EAD35 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72B418B818238BCA002EAD35 /* Foundation.framework */; };
 		72B418BB18238BCA002EAD35 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72B418BA18238BCA002EAD35 /* CoreGraphics.framework */; };
@@ -699,11 +694,6 @@
 		72B3F88D187FD91800549408 /* prhysical_exclamationMark@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "prhysical_exclamationMark@2x.png"; sourceTree = "<group>"; };
 		72B3F890188002C900549408 /* 37x-Checkmark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "37x-Checkmark.png"; sourceTree = "<group>"; };
 		72B3F891188002C900549408 /* 37x-Checkmark@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "37x-Checkmark@2x.png"; sourceTree = "<group>"; };
-		72B3F892188002C900549408 /* Icon-iOS7@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-iOS7@2x.png"; sourceTree = "<group>"; };
-		72B3F893188002C900549408 /* Icon-Small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-Small.png"; sourceTree = "<group>"; };
-		72B3F894188002C900549408 /* Icon-Small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-Small@2x.png"; sourceTree = "<group>"; };
-		72B3F895188002C900549408 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
-		72B3F896188002C900549408 /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon@2x.png"; sourceTree = "<group>"; };
 		72B3F897188002C900549408 /* MBProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBProgressHUD.h; sourceTree = "<group>"; };
 		72B3F898188002C900549408 /* MBProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBProgressHUD.m; sourceTree = "<group>"; };
 		72B418B518238BCA002EAD35 /* AddingBand.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AddingBand.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1551,11 +1541,6 @@
 			children = (
 				72B3F890188002C900549408 /* 37x-Checkmark.png */,
 				72B3F891188002C900549408 /* 37x-Checkmark@2x.png */,
-				72B3F892188002C900549408 /* Icon-iOS7@2x.png */,
-				72B3F893188002C900549408 /* Icon-Small.png */,
-				72B3F894188002C900549408 /* Icon-Small@2x.png */,
-				72B3F895188002C900549408 /* Icon.png */,
-				72B3F896188002C900549408 /* Icon@2x.png */,
 				72B3F897188002C900549408 /* MBProgressHUD.h */,
 				72B3F898188002C900549408 /* MBProgressHUD.m */,
 			);
@@ -2100,13 +2085,11 @@
 				72A373641869435F003F5B24 /* share_platform_sina@2x.png in Resources */,
 				7255ADA7186D5BE0003A0913 /* physical_fetal_icon@2x.png in Resources */,
 				72B3F873187EAB2000549408 /* sync_image8@2x.png in Resources */,
-				72B3F89B188002C900549408 /* Icon-iOS7@2x.png in Resources */,
 				72B3F881187EB2C300549408 /* delete_button_selected@2x.png in Resources */,
 				724AB2291860245100067CAD /* physical_top_bg@2x.png in Resources */,
 				72A2A30C186AC9F000A504CA /* btn_close_selected@2x.png in Resources */,
 				724AB216186007FD00067CAD /* accessory_gray@2x.png in Resources */,
 				72A373631869435F003F5B24 /* share_platform_qqfriends@2x.png in Resources */,
-				72B3F89D188002C900549408 /* Icon-Small@2x.png in Resources */,
 				72B418D018238BCA002EAD35 /* Images.xcassets in Resources */,
 				72EE546A18470A0E00093583 /* icon@2x.png in Resources */,
 				723F24A718308925001F27DA /* 4@2x.png in Resources */,
@@ -2117,7 +2100,6 @@
 				72A9EC4418795AF6006EEB28 /* home_unselected1@2x.png in Resources */,
 				72B3F88A187FAE4500549408 /* sync_image0@2x.png in Resources */,
 				72B3F877187EAB2000549408 /* sync_image11@2x.png in Resources */,
-				72B3F89C188002C900549408 /* Icon-Small.png in Resources */,
 				72A2A321186C2B7400A504CA /* physical_fetal_unsel@2x.png in Resources */,
 				72B3F882187EB2C300549408 /* delete_button_unselected@2x.png in Resources */,
 				723F24AA18308925001F27DA /* btn_press.png in Resources */,
@@ -2144,9 +2126,7 @@
 				728B7962187BF64E0076CE93 /* appointment_bt_unselected@2x.png in Resources */,
 				725E9CB91868333300BD2354 /* UMSShareListController.xib in Resources */,
 				724075E318488E000033BB90 /* sr_refresh.png in Resources */,
-				72B3F89F188002C900549408 /* Icon@2x.png in Resources */,
 				723F0EF7183CC0D3005F1921 /* refresh_btn.png in Resources */,
-				72B3F89E188002C900549408 /* Icon.png in Resources */,
 				724AB22D18602F5A00067CAD /* fetal_record_sel@2x.png in Resources */,
 				723F0EF8183CC0D3005F1921 /* refresh_btn@2x.png in Resources */,
 				723F24A318308925001F27DA /* 2@2x.png in Resources */,
