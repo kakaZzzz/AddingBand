@@ -55,7 +55,7 @@
     [self addSubview:self.kTitleLabel];
     
     //提醒图片
-    self.warnImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"prhysical_!"]];
+    self.warnImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"prhysical_exclamationMark"]];
   //  _warnImage.backgroundColor = [UIColor grayColor];
     _warnImage.frame = CGRectMake(titleLabelX  + titleLabelWidth, titleLabelY + 2, warnImageWidth, warnImageHeight);
     [self addSubview:_warnImage];
@@ -116,7 +116,7 @@
                 self.conditiontLabel.hidden = YES;
                 self.noDataImage.hidden = NO;
                 self.warnImage.hidden = NO;
-                self.warnImage.image = [UIImage imageNamed:@"physical_?"];
+                self.warnImage.image = [UIImage imageNamed:@"physical_askMark"];
             }
             else{
                 if ([self judgeFundalCondition:_physicalModel]) {
@@ -127,7 +127,7 @@
                      self.warnImage.hidden = NO;
                     self.contentLabel.textColor = kGlobalColor;
                     self.conditiontLabel.textColor = kGlobalColor;
-                    self.warnImage.image = [UIImage imageNamed:@"prhysical_!"];
+                    self.warnImage.image = [UIImage imageNamed:@"prhysical_exclamationMark"];
                 }
                 else{
                     self.contentLabel.hidden = NO;
@@ -151,7 +151,7 @@
                 self.conditiontLabel.hidden = YES;
                 self.noDataImage.hidden = NO;
                  self.warnImage.hidden = NO;
-                self.warnImage.image = [UIImage imageNamed:@"physical_?"];
+                self.warnImage.image = [UIImage imageNamed:@"physical_askMark"];
             }
             else{//不正常
                 if ([self judgeGirthCondition:_physicalModel]) {
@@ -162,7 +162,7 @@
                      self.warnImage.hidden = NO;
                     self.contentLabel.textColor = kGlobalColor;
                     self.conditiontLabel.textColor = kGlobalColor;
-                    self.warnImage.image = [UIImage imageNamed:@"prhysical_!"];
+                    self.warnImage.image = [UIImage imageNamed:@"prhysical_exclamationMark"];
                 }
                 else{//正常
                     self.contentLabel.hidden = NO;
@@ -187,7 +187,7 @@
                 self.conditiontLabel.hidden = YES;
                 self.noDataImage.hidden = NO;
                 self.warnImage.hidden = NO;
-                self.warnImage.image = [UIImage imageNamed:@"physical_?"];
+                self.warnImage.image = [UIImage imageNamed:@"physical_askMark"];
             }
             else{
                 if ([_physicalModel.content floatValue] > 20.0 || [_physicalModel.content floatValue] < 5.0) {
@@ -198,7 +198,7 @@
                     self.warnImage.hidden = NO;
                     self.contentLabel.textColor = kGlobalColor;
                     self.conditiontLabel.textColor = kGlobalColor;
-                    self.warnImage.image = [UIImage imageNamed:@"prhysical_!"];
+                    self.warnImage.image = [UIImage imageNamed:@"prhysical_exclamationMark"];
                 }
                 else{
                     self.contentLabel.hidden = NO;
@@ -234,10 +234,10 @@
                 self.noDataImage.hidden = YES;
                 self.warnImage.hidden = NO;
                 self.contentLabel.textColor = self.contentLabel.textColor = kGlobalColor;
-                self.warnImage.image = [UIImage imageNamed:@"prhysical_!"];
+                self.warnImage.image = [UIImage imageNamed:@"prhysical_exclamationMark"];
             }
             else{
-                self.warnImage.image = [UIImage imageNamed:@"physical_?"];
+                self.warnImage.image = [UIImage imageNamed:@"physical_askMark"];
                 [self.contentLabel setHidden:YES];
                 [self.conditiontLabel setHidden:YES];
                 self.noDataImage.hidden = NO;
@@ -254,7 +254,7 @@
                 [self.conditiontLabel setHidden:YES];
                 self.noDataImage.hidden = NO;
                 self.warnImage.hidden = NO;
-                self.warnImage.image = [UIImage imageNamed:@"physical_?"];
+                self.warnImage.image = [UIImage imageNamed:@"physical_askMark"];
             }
             else{
                 
