@@ -58,7 +58,9 @@
     [super viewDidLoad];
     NSLog(@"视图加载加载");
     
-    
+    self.scrollView.tag = 500;
+    NSLog(@"滚动视图地址是%@",self.scrollView);
+
     
     
     self.view.backgroundColor = [UIColor whiteColor];
@@ -102,6 +104,7 @@
     _weightField.textColor = kContentTextColor;
     _weightField.backgroundColor = [UIColor yellowColor];
     _weightField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
+    _weightField.keyboardType = UIKeyboardTypeDecimalPad;
     _weightField.returnKeyType = UIReturnKeyDone;
     _weightField.delegate = self;
     [[IQKeyBoardManager installKeyboardManager] setScrollView:self.scrollView];//监听键盘通知 改变scrollview的偏移量

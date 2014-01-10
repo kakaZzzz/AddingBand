@@ -303,8 +303,7 @@
 {
     //加载靠近页面
     
-    
-    [self.indicator stopAnimating];
+      [self.indicator stopAnimating];
 }
 #pragma mark - Table view data source
 

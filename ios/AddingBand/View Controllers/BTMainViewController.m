@@ -345,11 +345,68 @@ static int week = 0;
 }
 
 #pragma mark - 各种button event
+
+#pragma MARK - 打开webview
 //点击分区头上的按钮 进入下一页
 - (void)pushNextView:(UIButton *)button
 {
     NSLog(@"点击分区头，进入下一页");
+   
+    NSURL *strUrl = [NSURL URLWithString:@"http://www.addinghome.com/blog/app/45"];
+    NSURLRequest *request = [NSURLRequest requestWithURL:strUrl];
+    self.webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, 320, 460)];
+    [self.view addSubview:self.webView];
+    [self.webView loadRequest:request];
+    self.webView.scalesPageToFit = YES;
+
+    UIToolbar *toolBar = [[UIToolbar alloc]initWithFrame:CGRectMake(0, 360, 320, 44)];
+    toolBar.backgroundColor = [UIColor blueColor];
+    [self.webView addSubview:toolBar];
+
+    UIBarButtonItem *barBack = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRewind target:self action:@selector(goBack)];
+    UIBarButtonItem *barForward = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop target:self action:@selector(goForward)];
+    UIBarButtonItem *barSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
+    //barSpace.width = 240;
+    
+    NSArray *arr = [NSArray arrayWithObjects:barBack,barSpace,barForward,nil];
+    toolBar.items = arr;
+
 }
+
+- (void)goBack
+
+{
+    [_webView goBack];
+}
+- (void)goForward
+{
+    [_webView stopLoading];
+    [_webView removeFromSuperview];
+}
+- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
+{
+    return YES;
+    NSLog(@"shouldStartLoadWithRequest");
+}
+- (void)webViewDidStartLoad:(UIWebView *)webView
+{
+    NSLog(@"ViewDidStartLoad---");
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+  //  [_activityIndicatorView startAnimating];
+}
+- (void)webViewDidFinishLoad:(UIWebView *)webView
+{
+    NSLog(@"webViewDidFinishLoad---");
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+    
+   // [_activityIndicatorView stopAnimating];
+}
+- (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error
+{
+    NSLog(@"didFailLoadWithError---");
+}
+
+
 
 //输入预产期
 - (void)inputYourPreproduction:(UIButton *)button

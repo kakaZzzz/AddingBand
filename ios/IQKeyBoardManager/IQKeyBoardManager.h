@@ -35,6 +35,7 @@
 }
 
 @property(nonatomic,weak)UIScrollView *scrollView;
+
 //Call it on your AppDelegate;
 +(id)installKeyboardManager;
 

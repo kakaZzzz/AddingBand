@@ -32,4 +32,6 @@ BTSheetPickerviewDelegate>
 @property(nonatomic,strong)NSString *dueDate;
 //输入预产期 选择器
 @property(nonatomic,strong)BTSheetPickerview *actionSheetView;
+
+@property(nonatomic,retain)UIWebView *webView;
 @end

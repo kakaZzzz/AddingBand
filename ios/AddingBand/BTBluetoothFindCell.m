@@ -10,16 +10,15 @@
 #import "LayoutDef.h"
 #import "BTColor.h"
 
-#define titleLabelX 20
-#define titleLabelY 10
+#define titleLabelX 24/2
+#define titleLabelY 0
 #define titleLabelWidth 200
-#define titleLabelHeight 30
 
 
 
-#define lineImageX 0
-#define lineImageY 49
-#define lineImageWidth 320
+
+#define lineImageX 24/2
+#define lineImageWidth (320 - 24)
 #define lineImageHeight 1
 
 #define indicateX  300
@@ -47,17 +46,18 @@
     // self.contentView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"settingcell_bg.png"]];
     
     //title
-    self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(titleLabelX,titleLabelY, titleLabelWidth, titleLabelHeight)];
-    _titleLabel.font = [UIFont systemFontOfSize:16.0f];
-    _titleLabel.textColor = [BTColor getColor:titleLabelColor];
+    self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(titleLabelX,titleLabelY, titleLabelWidth, self.frame.size.height)];
+    _titleLabel.font = [UIFont systemFontOfSize:FIRST_TITLE_SIZE];
+    _titleLabel.textColor = kBigTextColor;
     _titleLabel.backgroundColor = [UIColor clearColor];
+    _titleLabel.textAlignment = NSTextAlignmentLeft;
     _titleLabel.opaque = NO;
     [self.contentView addSubview:_titleLabel];
     
     
     //分割线
     self.lineImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"sep_line.png"]];
-    _lineImage.frame = CGRectMake(lineImageX, lineImageY, lineImageWidth, lineImageHeight);
+    _lineImage.frame = CGRectMake(lineImageX, self.frame.size.height, lineImageWidth, lineImageHeight);
     [self.contentView addSubview:_lineImage];
     //指示图标
     self.indicateImage = [[UIImageView alloc] initWithFrame:CGRectMake(indicateX, indicateY, indicateWidth, indicateHeight)];

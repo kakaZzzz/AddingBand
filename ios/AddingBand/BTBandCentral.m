@@ -50,6 +50,7 @@
         case CBCentralManagerStatePoweredOn:
             
         {
+            self.isBleOFF = NO;
             //设置nil查找任何设备
             [self scan];
             
@@ -96,6 +97,8 @@
             
         case CBCentralManagerStatePoweredOff:
             
+            NSLog(@"蓝牙关闭,,,,,,");
+            self.isBleOFF = YES;
             //关掉蓝牙开关时清零
             self.globals.bleListCount = 0;
             

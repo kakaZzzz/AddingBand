@@ -127,7 +127,7 @@
         _titleLabel.textColor = kBigTextColor;
         _titleLabel.text = _title;
         [self addSubview:_titleLabel];
-        NSLog(@"标题到底是多少呢 啊-----  %@",_title);
+    
         
         self.enterButton = [UIButton buttonWithType:UIButtonTypeCustom];
         _enterButton.frame = CGRectMake(270, 0, 50, 50);
@@ -160,7 +160,6 @@
         {
             self.datePicker = [[UIDatePicker alloc] init];
             _datePicker.frame = CGRectMake(0, self.frame.size.height - 216, 320, 216);
-            NSLog(@"--------------%@",NSStringFromCGRect(_datePicker.frame));
             _datePicker.datePickerMode = UIDatePickerModeDateAndTime;
             [self addSubview:_datePicker];
 
@@ -170,7 +169,7 @@
         {
             self.datePicker = [[UIDatePicker alloc] init];
             _datePicker.frame = CGRectMake(0, self.frame.size.height - 216, 320, 216);
-            NSLog(@"--------------%@",NSStringFromCGRect(_datePicker.frame));
+            [_datePicker addTarget:self action:@selector(dateChanged) forControlEvents:UIControlEventValueChanged];
             _datePicker.datePickerMode = UIDatePickerModeDate;
             [self addSubview:_datePicker];
             
@@ -301,15 +300,19 @@
     return [[_titlesForComponenets objectAtIndex:component] objectAtIndex:row];
 }
 
-//滚轮的时候调用
+//UIPickerView 滚轮的时候调用
 - (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
 {
    
    
 }
 
-
-
+- (void)dateChanged
+{
+    if (_delegate && [_delegate respondsToSelector:@selector(actionSheetPickerView:didScrollDate:)]) {
+    [_delegate performSelector:@selector(actionSheetPickerView:didScrollDate:) withObject:self withObject:_datePicker.date];
+    }
+}
 
 - (void)show
 {

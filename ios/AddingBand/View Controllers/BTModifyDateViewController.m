@@ -36,7 +36,7 @@
     [super viewDidLoad];
 
     [self configureNavigationbar];
-    self.view.backgroundColor = [UIColor yellowColor];
+    self.view.backgroundColor = [UIColor whiteColor];
     BTView *aView= [[BTView alloc] initWithFrame:CGRectMake(0, 0, 320, 50)];
     aView.backgroundColor = [UIColor whiteColor];
     [self.view addSubview:aView];
@@ -165,6 +165,24 @@
     
 
 }
+#pragma mark - 日期边滚动 边触发的方法
+- (void)actionSheetPickerView:(BTSheetPickerview *)pickerView didScrollDate:(NSDate*)date
+{
+    
+    NSDate *localDate = [NSDate localdateByDate:date];
+    // NSString *dateAndTime = [NSDate stringFromDate:date withFormat:@"yy-MM-dd HH:mm:ss"];
+    NSNumber *year = [BTUtils getYear:localDate];
+    NSNumber *month = [BTUtils getMonth:localDate];
+    NSNumber *day = [BTUtils getDay:localDate];
+    
+    NSString *dateString = [NSString stringWithFormat:@"%@.%@.%@",year,month,day];
+    
+    //刷新UI
+    self.dateTextLabel.text = dateString;
+    
+}
+
+
 #pragma mark - 往coredata里面写入数据
 - (void)writeToCoredataWithModifyType:(int)modifyType date:(NSString *)dateString
 {

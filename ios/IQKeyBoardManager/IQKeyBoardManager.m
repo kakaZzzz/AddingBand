@@ -27,7 +27,7 @@
 
 //Singleton object.
 static IQKeyBoardManager *kbManager;
-static CGRect customRootRect = {0,0,0,0};
+
 @interface IQKeyBoardManager()
 
 @property(nonatomic, assign) CGFloat keyboardDistanceFromTextField;
@@ -130,27 +130,28 @@ static CGRect customRootRect = {0,0,0,0};
     [UIView animateWithDuration:animationDuration animations:^{
         
         
-       
+        
         if (self.scrollView) {
             CGPoint point = frame.origin;
             float y = point.y;
             if (isShow) {
                 self.scrollView.contentOffset = CGPointMake(0, self.scrollView.contentOffset.y - y);
-             }
+                
+            }
             else{
                 self.scrollView.contentOffset = CGPointMake(0, 0);
-
+                
             }
-          
+            
         }
         
         else{
             [controller.view setFrame:frame];
         }
- 
-       
         
-     }];
+        
+        
+    }];
 }
 
 #pragma mark - UIKeyboad Delegate methods

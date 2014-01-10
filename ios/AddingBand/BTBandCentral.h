@@ -33,7 +33,7 @@
 
 @property(assign, nonatomic) Boolean syncLocker;
 @property(assign, nonatomic) Boolean waitForNextSync;
-
+@property(assign, nonatomic) BOOL isBleOFF;//蓝牙关闭
 @property(strong, nonatomic) void(^timeoutBlock)(void);
 
 +(BTBandCentral*)sharedBandCentral;

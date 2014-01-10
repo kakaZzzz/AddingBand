@@ -42,6 +42,7 @@
         [IQKeyBoardManager installKeyboardManager];
         //注册通知 监控键盘的状态
         [IQKeyBoardManager enableKeyboardManger];
+        
 
     }
     return self;
@@ -58,12 +59,15 @@
     self.view.backgroundColor = [UIColor whiteColor];
     self.navigationItem.title = @"腹围";
     
+    self.scrollView.tag = 502;
+    NSLog(@"滚动视图地址是%@",self.scrollView);
+
     
     self.chartScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, 320, RED_BACKGROUND_HEIGHT)];
     _chartScrollView.contentSize = CGSizeMake(1200, 200);
     _chartScrollView.scrollEnabled = NO;
     _chartScrollView.backgroundColor = [UIColor greenColor];
-    [self.view addSubview:_chartScrollView];
+    [self.scrollView addSubview:_chartScrollView];
     
     
     //配置数据
@@ -83,7 +87,7 @@
     BTView *weightView = [[BTView alloc] initWithFrame:CGRectMake(0, _chartScrollView.frame.origin.y + _chartScrollView.frame.size.height, 320, 112/2)];
     weightView.backgroundColor = [UIColor whiteColor];
     
-    [self.view addSubview:weightView];
+    [self.scrollView addSubview:weightView];
     
     UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(weightView.frame.origin.x + 36/2, 10, 80, 30)];
     titleLabel.textColor = kBigTextColor;
@@ -97,6 +101,7 @@
     _weightField.textColor = kContentTextColor;
     _weightField.backgroundColor = [UIColor yellowColor];
     _weightField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
+    _weightField.keyboardType = UIKeyboardTypeDecimalPad;
     _weightField.returnKeyType = UIReturnKeyDone;
     _weightField.delegate = self;
     [[IQKeyBoardManager installKeyboardManager] setScrollView:self.scrollView];//监听键盘通知 改变scrollview的偏移量
@@ -125,7 +130,7 @@
     BTView *weightConditionView = [[BTView alloc] initWithFrame:CGRectMake(0, weightView.frame.origin.y + weightView.frame.size.height, 320, 170/2)];
     weightConditionView.backgroundColor = [UIColor whiteColor];
     
-    [self.view addSubview:weightConditionView];
+    [self.scrollView addSubview:weightConditionView];
     
     
     //是否正常label
