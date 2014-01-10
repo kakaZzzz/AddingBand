@@ -13,7 +13,7 @@
 #import "LayoutDef.h"
 @implementation BTGetData
 
-+ (NSArray *)getFromCoreDataWithPredicate:(NSPredicate *)predicate entityName:(NSString *)entityName sortKey:(NSString *)sortKey
++ (NSArray *)getFromCoreDataWithPredicate:(NSPredicate *)predicate entityName:(NSString *)entityName sortKey:(NSDictionary *)sortKey
 {
     //获取上下文··
     NSManagedObjectContext *context =[(BTAppDelegate *) [UIApplication sharedApplication].delegate managedObjectContext];
@@ -30,9 +30,11 @@
     
     //排序
     if (sortKey) {
-        NSMutableArray *sortDescriptors = [NSMutableArray array];
-        [sortDescriptors addObject:[[NSSortDescriptor alloc] initWithKey:sortKey ascending:YES] ];
-        
+        NSArray *sortValues = [sortKey allValues];
+        NSMutableArray *sortDescriptors = [NSMutableArray arrayWithCapacity:1];
+        for (NSString *sort in sortValues) {
+            [sortDescriptors addObject:[[NSSortDescriptor alloc] initWithKey:sort ascending:YES] ];
+        }
         [request setSortDescriptors:sortDescriptors];
     }
 

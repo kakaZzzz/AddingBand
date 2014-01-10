@@ -69,12 +69,7 @@
         
         [self.g addObserver:self forKeyPath:@"displayBleList" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:NULL];
         
-        //菊花
-        self.indicator = [[DDIndicator alloc] initWithFrame:CGRectMake((self.view.frame.size.width - _indicator.frame.size.width - 50)/2 , 150, 50, 50)];
-        [self.view addSubview:_indicator];
-        _indicator.hidden = YES;
-        [_indicator startAnimating];
-        //动画是否超时
+           //动画是否超时
         if (!self.timerAnimation.isValid) {
             self.timerAnimation =[NSTimer timerWithTimeInterval:SCAN_PERIPHERAL_TIMEOUT target:self selector:@selector(stopIndicatorAnimation) userInfo:nil repeats:NO];
             [[NSRunLoop currentRunLoop] addTimer:self.timerAnimation forMode:NSRunLoopCommonModes];
@@ -101,6 +96,13 @@
 {
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor whiteColor];
+    
+    //菊花
+    self.indicator = [[MBProgressHUD alloc] initWithView:self.navigationController.view];
+    _indicator.labelText = @"正在搜索";
+    [self.navigationController.view addSubview:_indicator];
+    [_indicator show:YES];
+
     //加载scrollview
     self.aScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, -20, self.view.frame.size.width, self.view.frame.size.height)];
     _aScrollView.contentSize = CGSizeMake(self.view.frame.size.width, self.view.frame.size.height + 100);
@@ -356,7 +358,7 @@
         }
         if (self.g.bleListCount > 0) {
             
-            [self.indicator stopAnimating];
+            [self.indicator hide:YES];
             [self removeWarnningViewFromSuperview];
             [self.timerAnimation invalidate];
             
@@ -446,8 +448,8 @@
                 //[self.navigationItem.rightBarButtonItem setEnabled:NO];
                 [self removeWarnningViewFromSuperview];
                 [self.syncTwoVC.view removeFromSuperview];
-                self.indicator.contentLabel.text = @"正在搜索设备";
-                [self.indicator startAnimating];
+                self.indicator.labelText = @"正在搜索设备";
+                [self.indicator show:YES];
 
                                //菊花显示
 //                self.indicator.contentLabel.text = @"正在搜索设备";
@@ -543,7 +545,7 @@ if (!self.bc.isBleOFF) {
     {
         [self addBluetoothNotpowerView];
     }
-     [self.indicator stopAnimating];
+     [self.indicator hide:YES];
 }
 #pragma mark - Table view data source
 
@@ -791,14 +793,6 @@ if (!self.bc.isBleOFF) {
     BTBluetoothFindCell *findCell = (BTBluetoothFindCell *)[self tableView:tableView cellForRowAtIndexPath:indexPath];
     findCell.backgroundColor = [UIColor grayColor];
     findCell.contentView.backgroundColor =  [UIColor blueColor];
-//    //往coredata里面存放选择的设备  名字
-//    self.context =[BTGetData getAppContex];
-//    NSArray *data = [BTGetData getFromCoreDataWithPredicate:nil entityName:@"BTUserData" sortKey:nil];
-//    if (data.count > 0) {
-//        BTUserData *userData = [data objectAtIndex:0];
-//        userData.selectedName = findCell.titleLabel.text;
-//        [_context save:nil];
-//    }
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         NSLog(@"连接设备；；；；；；；%@",findCell.titleLabel.text);
@@ -807,8 +801,8 @@ if (!self.bc.isBleOFF) {
     });
     
     //菊花显示
-    self.indicator.contentLabel.text = @"正在连接设备";
-    [self.indicator startAnimating];
+    self.indicator.labelText = @"正在连接设备";
+    [self.indicator show:YES];
     
 }
 //判断是否是历史设备

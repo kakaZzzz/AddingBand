@@ -56,7 +56,7 @@
     
     self.view.backgroundColor = [UIColor whiteColor];
     self.navigationItem.title = @"宫高";
-  
+    self.scrollView.scrollEnabled = NO;
     
     
     self.chartScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, 320, RED_BACKGROUND_HEIGHT)];
@@ -88,7 +88,7 @@
     
     UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(weightView.frame.origin.x + 36/2, 10, 80, 30)];
     titleLabel.textColor = kBigTextColor;
-    titleLabel.backgroundColor = [UIColor blueColor];
+    titleLabel.backgroundColor = [UIColor clearColor];
     titleLabel.textAlignment = NSTextAlignmentLeft;
     titleLabel.font = [UIFont systemFontOfSize:FIRST_TITLE_SIZE];
     titleLabel.text = @"目前宫高:";
@@ -96,7 +96,7 @@
     
     self.weightField = [[UITextField alloc] initWithFrame:CGRectMake(titleLabel.frame.origin.x + titleLabel.frame.size.width, titleLabel.frame.origin.y, 170, 30)];
     _weightField.textColor = kContentTextColor;
-    _weightField.backgroundColor = [UIColor yellowColor];
+    _weightField.backgroundColor = [UIColor clearColor];
     _weightField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
     _weightField.keyboardType = UIKeyboardTypeDecimalPad;
     _weightField.returnKeyType = UIReturnKeyDone;
@@ -108,7 +108,7 @@
     
     UILabel *kiloLabel = [[UILabel alloc] initWithFrame:CGRectMake(_weightField.frame.origin.x + _weightField.frame.size.width - 30, _weightField.frame.origin.y, 30, 30)];
     kiloLabel.textColor = kBigTextColor;
-    kiloLabel.backgroundColor = [UIColor blueColor];
+    kiloLabel.backgroundColor = [UIColor clearColor];
     kiloLabel.textAlignment = NSTextAlignmentLeft;
     kiloLabel.font = [UIFont systemFontOfSize:SECOND_TITLE_SIZE];
     kiloLabel.text = @"cm";
@@ -134,7 +134,7 @@
     //是否正常label
     self.weightConditionLabel = [[UILabel alloc] initWithFrame:CGRectMake((320 - weightConditionView.frame.size.height)/2, 0, weightConditionView.frame.size.height, weightConditionView.frame.size.height)];
     _weightConditionLabel.textColor = kContentTextColor;
-    _weightConditionLabel.backgroundColor = [UIColor redColor];
+    _weightConditionLabel.backgroundColor = [UIColor clearColor];
     _weightConditionLabel.textAlignment = NSTextAlignmentLeft;
     _weightConditionLabel.font = [UIFont systemFontOfSize:40];
      [self updateConditionLabel:nil];
@@ -218,7 +218,7 @@
 - (void)modifyData:(UIButton *)btn
 {
     
-    
+    [_weightField becomeFirstResponder];
 }
 
 #pragma mark - 更新页面UI
@@ -399,8 +399,8 @@
 - (NSArray *)getNewdataFromCoredata
 {
     NSMutableArray *weightArray = [NSMutableArray arrayWithCapacity:1];
-    NSArray *dataArray = [BTGetData getFromCoreDataWithPredicate:nil entityName:@"BTUserData" sortKey:nil];
-    
+    NSDictionary *sortDic = [[NSDictionary alloc] initWithObjectsAndKeys:@"minute",@"sortkey1", nil];
+    NSArray *dataArray = [BTGetData getFromCoreDataWithPredicate:nil entityName:@"BTUserData" sortKey:sortDic];
     if (dataArray.count > 0) {
         for (BTUserData *userData in dataArray) {
             if (userData.fundalHeight) {
@@ -445,10 +445,23 @@
     self.chartView.onLimit = onLimit;
     self.chartView.offLimit = offLimit;
     self.chartView.modelArray = array;
+    
+    //在图标上添加手势 取消键盘
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(closeKeyboard:)];
+    [self.chartView addGestureRecognizer:tap];
     [self.chartScrollView addSubview:self.chartView];
     
-    
 }
+#pragma mark - 关闭键盘
+- (void)closeKeyboard:(UITapGestureRecognizer *)tap
+{
+    [self updateUIWithValue:_weightField.text];
+    [self writeToCoredataWithWeight:_weightField.text];
+
+    [_weightField resignFirstResponder];
+}
+
+
 
 #pragma mark - FYChartViewDataSource
 

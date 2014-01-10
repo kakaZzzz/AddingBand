@@ -12,6 +12,8 @@
  */
 #import <UIKit/UIKit.h>
 #import "BTBandCentral.h"
+#import "MBProgressHUD.h"
+
 @class BTSyncTwoViewController;
 @class BTPastLinkViewController;
 @class BTCloseToBleViewController;
@@ -40,7 +42,8 @@
 @property(nonatomic,assign)int selectedRow;//选择的设备行数
 @property(nonatomic,strong)NSManagedObjectContext *context;
 
-@property(nonatomic,strong)DDIndicator *indicator;//加载指示图
+@property(nonatomic,strong)MBProgressHUD *indicator;//加载指示图
+//@property(nonatomic,strong)DDIndicator *indicator;//加载指示图
 @property(nonatomic,strong)UITableView *tableView;//
 @property(nonatomic,strong)UIScrollView *aScrollView;//背景视图要是一个可以滚动的视图
 

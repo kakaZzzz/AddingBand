@@ -10,7 +10,7 @@
 
 @interface BTGetData : NSObject
 //从coredata中取出实体
-+ (NSArray *)getFromCoreDataWithPredicate:(NSPredicate *)predicate entityName:(NSString *)entityName sortKey:(NSString *)sortKey;
++ (NSArray *)getFromCoreDataWithPredicate:(NSPredicate *)predicate entityName:(NSString *)entityName sortKey:(NSDictionary *)sortKey;
 //获取程序上下文
 + (NSManagedObjectContext *)getAppContex;
 

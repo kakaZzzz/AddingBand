@@ -517,17 +517,18 @@ static int week = 0;
     warnCell.selectionStyle = UITableViewCellSelectionStyleNone;
     BTKnowledgeModel *model = [self.modelArray objectAtIndex:indexPath.row];
     //现在2是知识类  3是提醒类
-    if ([model.eventId intValue] == 2) {
-        cell.knowledgeModel = model;
-        return cell;
-        
-    }
-    else if([model.eventId intValue] == 3)
+    if  ([model.eventId intValue] == 3)
     {
         warnCell.knowledgeModel = model;
         return warnCell;
         
     }
+   else {
+        cell.knowledgeModel = model;
+        return cell;
+        
+    }
+
     return nil;
     
 }

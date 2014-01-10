@@ -326,8 +326,10 @@ static int selectedTag = 0;
     NSMutableArray *heighttArray = [NSMutableArray arrayWithCapacity:1];
     NSMutableArray *girthArray = [NSMutableArray arrayWithCapacity:1];
    
-    NSArray *dataArray = [BTGetData getFromCoreDataWithPredicate:nil entityName:@"BTUserData" sortKey:nil];
+    NSDictionary *sortDic = [[NSDictionary alloc] initWithObjectsAndKeys:@"minute",@"sortkey1", nil];
+    NSArray *dataArray = [BTGetData getFromCoreDataWithPredicate:nil entityName:@"BTUserData" sortKey:sortDic];
     BTUserData *one = [[BTUserData alloc] initWithEntity:[NSEntityDescription entityForName:@"BTUserData" inManagedObjectContext:contex] insertIntoManagedObjectContext:contex];
+    
     if (dataArray.count > 0) {
         for (BTUserData *userData in dataArray) {
             if (userData.weight) {
