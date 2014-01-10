@@ -72,7 +72,7 @@
 #define SBP_PERIODIC_EVT_PERIOD               5000
 
 // What is the advertising interval when device is discoverable (units of 625us, 160=100ms)
-#define DEFAULT_ADVERTISING_INTERVAL          2000
+#define DEFAULT_ADVERTISING_INTERVAL          16000
 
 // Limited discoverable mode advertises for 30.72s, and then stops
 // General discoverable mode advertises indefinitely
@@ -985,7 +985,7 @@ static void peripheralStateNotificationCB( gaprole_States_t newState )
 
     case GAPROLE_CONNECTED:
     {
-        // LED3_PIO = OPEN_PIO;
+        // LED3_PIO = OPEN_PIO;  
     }
     break;
 
