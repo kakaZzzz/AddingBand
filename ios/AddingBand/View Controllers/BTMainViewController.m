@@ -89,7 +89,29 @@ static int week = 0;
     [self addChageScrollViewToTopButton];
     
     [self getNetworkDataWithWeekOfPregnancy:3];
+    [self showRefreshHeader:YES];
 	// Do any additional setup after loading the view.
+}
+#pragma mark - 代码触发下拉刷新
+-(void)showRefreshHeader:(BOOL)animated
+{
+    if (animated)
+    {
+        [UIView beginAnimations:nil context:NULL];
+        [UIView setAnimationDuration:0.3];
+        self.tableView.contentInset = UIEdgeInsetsMake(65.0f, 0.0f, 0.0f, 0.0f);
+        [self.tableView scrollRectToVisible:CGRectMake(0, 0.0f, 1, 1) animated:NO];
+        [UIView commitAnimations];
+    }
+    else
+    {
+        self.tableView.contentInset = UIEdgeInsetsMake(65.0f, 0.0f, 0.0f, 0.0f);
+        [self.tableView scrollRectToVisible:CGRectMake(0, 0.0f, 1, 1) animated:NO];
+    }
+    
+    [_refreshHeaderView setState:EGOOPullRefreshLoading];
+    [_refreshHeaderView egoRefreshScrollViewDidEndDragging:self.tableView];
+    
 }
 
 #pragma mark - 根据预产期 的出今天处于第几周
