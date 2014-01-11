@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "EGORefreshTableHeaderView.h"
+#import "EGORefreshTableFooterView.h"
 #import "BTSheetPickerview.h"
 @interface BTMainViewController : UIViewController<UITableViewDataSource,
 UITableViewDelegate,
@@ -16,6 +17,7 @@ BTSheetPickerviewDelegate>
 {
     //EGOHeader
     EGORefreshTableHeaderView *_refreshHeaderView;
+    EGORefreshTableFooterView *_refreshFooterView;
     BOOL _reloading;
     BOOL _isFirst;
     

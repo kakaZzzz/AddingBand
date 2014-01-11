@@ -78,34 +78,38 @@
    // self.frame = CGRectMake(0, self.referView.frame.size.height - 320, 320, 320);
     
     if (actionStyle == BTActionSheetPickerStyleDateAndTimePicker) {
-        self.frame = CGRectMake(0, shareWindow.frame.size.height - 320, 320, 320);
+        self.frame = CGRectMake(0, shareWindow.frame.size.height - 300, 320, 300);
         
         self.backgroundColor = [UIColor whiteColor];
         
         //取消按钮
         self.enterButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _enterButton.frame = CGRectMake(270, 0, 50, 50);
-        [self.enterButton setTitle:@"确定" forState:UIControlStateNormal];
-        [self.enterButton setTitleColor:[UIColor orangeColor] forState:UIControlStateNormal];
+        _enterButton.frame = CGRectMake(320 - 22 - 20, 10,22, 22);
+        [self.enterButton setBackgroundImage:[UIImage imageNamed:@"warn_selected"] forState:UIControlStateNormal];
         [self.enterButton addTarget:self action:@selector(closeButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:self.enterButton];
         
         //各种小标签
-        UIImageView *clockImage = [[UIImageView alloc] initWithFrame:CGRectMake(5, 5, 40, 40)];
-        clockImage.backgroundColor = [UIColor blueColor];
+        UIImageView *clockImage = [[UIImageView alloc] initWithFrame:CGRectMake(5, 10, 44/2, 44/2)];
+        clockImage.image = [UIImage imageNamed:@"appointment_bt_selected"];
+       // clockImage.backgroundColor = [UIColor blueColor];
         [self addSubview:clockImage];
         
-        UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(clockImage.frame.origin.x + clockImage.frame.size.width, clockImage.frame.origin.y, 200, 40)];
-        titleLabel.backgroundColor = [UIColor yellowColor];
+        UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(clockImage.frame.origin.x + clockImage.frame.size.width, clockImage.frame.origin.y, 200, 20)];
+        titleLabel.textColor = kBigTextColor;
+        titleLabel.font = [UIFont systemFontOfSize:FIRST_TITLE_SIZE];
+        titleLabel.backgroundColor = [UIColor clearColor];
         titleLabel.text = @"产检提醒设置";
         [self addSubview:titleLabel];
         
         
-        UILabel *contentLabel = [[UILabel alloc] initWithFrame:CGRectMake(clockImage.frame.origin.x , clockImage.frame.origin.y + clockImage.frame.size.height + 10, 320, 60)];
-        contentLabel.backgroundColor = [UIColor orangeColor];
+        UILabel *contentLabel = [[UILabel alloc] initWithFrame:CGRectMake(clockImage.frame.origin.x , clockImage.frame.origin.y + clockImage.frame.size.height + 10, 320 - 2 * clockImage.frame.origin.x, 40)];
+        contentLabel.backgroundColor = [UIColor clearColor];
         contentLabel.numberOfLines = 0;
         contentLabel.lineBreakMode = NSLineBreakByWordWrapping;
-        contentLabel.text = @"选择下次产检时间吧，我们会为你制定贴心的提醒";
+        contentLabel.textColor = kGlobalColor;
+        contentLabel.font = [UIFont systemFontOfSize:SECOND_TITLE_SIZE];
+        contentLabel.text = @"选择下次产检时间吧，我们会为你制定贴心的提醒服务哦!";
         [self addSubview:contentLabel];
 
     }

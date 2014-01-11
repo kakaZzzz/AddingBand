@@ -9,7 +9,7 @@
 #import "BTAlertView.h"
 #import "BTAppDelegate.h"
 #import <QuartzCore/QuartzCore.h>
-
+#import "LayoutDef.h"
 
 #define kAlertWidth 245.0f
 #define kAlertHeight 160.0f
@@ -66,24 +66,24 @@
         self.layer.cornerRadius = 5.0;
         self.backgroundColor = [UIColor whiteColor];
         
-        self.iconImage = [[UIImageView alloc] initWithFrame:CGRectMake(kTitleXOffset, kTitleYOffset, kTitleHeight, kTitleHeight)];
-        _iconImage.backgroundColor = [UIColor redColor];
+        self.iconImage = [[UIImageView alloc] initWithFrame:CGRectMake(kTitleXOffset, kTitleYOffset, 44/2, 44/2)];
+        _iconImage.backgroundColor = [UIColor clearColor];
         _iconImage.image = iconImage;
         [self addSubview:_iconImage];
         
         
-        self.alertTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(kTitleXOffset +kTitleHeight, kTitleYOffset, kAlertWidth - kTitleHeight, kTitleHeight)];
-        self.alertTitleLabel.font = [UIFont boldSystemFontOfSize:20.0f];
+        self.alertTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(kTitleXOffset +kTitleHeight, kTitleYOffset, kAlertWidth - kTitleHeight -kTitleXOffset, kTitleHeight)];
+        self.alertTitleLabel.font = [UIFont boldSystemFontOfSize:17.0f];
         self.alertTitleLabel.textAlignment = NSTextAlignmentLeft;
-        self.alertTitleLabel.textColor = [UIColor colorWithRed:56.0/255.0 green:64.0/255.0 blue:71.0/255.0 alpha:1];
+        self.alertTitleLabel.textColor = kBigTextColor;
         [self addSubview:self.alertTitleLabel];
         
         CGFloat contentLabelWidth = kAlertWidth - 16;
         self.alertContentLabel = [[UILabel alloc] initWithFrame:CGRectMake((kAlertWidth - contentLabelWidth) * 0.5, CGRectGetMaxY(self.alertTitleLabel.frame), contentLabelWidth, 60)];
         self.alertContentLabel.numberOfLines = 0;
         self.alertContentLabel.textAlignment = NSTextAlignmentCenter;
-        self.alertContentLabel.textColor = [UIColor colorWithRed:127.0/255.0 green:127.0/255.0 blue:127.0/255.0 alpha:1];
-        self.alertContentLabel.font = [UIFont systemFontOfSize:15.0f];
+        self.alertContentLabel.textColor = kBigTextColor;
+        self.alertContentLabel.font = [UIFont systemFontOfSize:17.0f];
         [self addSubview:self.alertContentLabel];
         
         CGRect leftBtnFrame;
@@ -106,13 +106,16 @@
             self.rightBtn.frame = rightBtnFrame;
         }
         //颜色 按钮颜色
-        [self.rightBtn setBackgroundImage:[UIImage imageWithColor:[UIColor colorWithRed:87.0/255.0 green:135.0/255.0 blue:173.0/255.0 alpha:1]] forState:UIControlStateNormal];
+//        [self.rightBtn setBackgroundImage:[UIImage imageWithColor:[UIColor colorWithRed:87.0/255.0 green:135.0/255.0 blue:173.0/255.0 alpha:1]] forState:UIControlStateNormal];
+         
+        [self.rightBtn setBackgroundImage:[UIImage imageWithColor:[UIColor whiteColor]] forState:UIControlStateNormal];
+
         [self.leftBtn setBackgroundImage:[UIImage imageWithColor:[UIColor colorWithRed:227.0/255.0 green:100.0/255.0 blue:83.0/255.0 alpha:1]] forState:UIControlStateNormal];
         [self.rightBtn setTitle:rigthTitle forState:UIControlStateNormal];
         [self.leftBtn setTitle:leftTitle forState:UIControlStateNormal];
         self.leftBtn.titleLabel.font = self.rightBtn.titleLabel.font = [UIFont boldSystemFontOfSize:14];
         [self.leftBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        [self.rightBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        [self.rightBtn setTitleColor:kBigTextColor forState:UIControlStateNormal];
         
         [self.leftBtn addTarget:self action:@selector(leftBtnClicked:) forControlEvents:UIControlEventTouchUpInside];
         [self.rightBtn addTarget:self action:@selector(rightBtnClicked:) forControlEvents:UIControlEventTouchUpInside];
@@ -128,7 +131,7 @@
         [xButton setImage:[UIImage imageNamed:@"btn_close_normal.png"] forState:UIControlStateNormal];
         [xButton setImage:[UIImage imageNamed:@"btn_close_selected.png"] forState:UIControlStateHighlighted];
         xButton.frame = CGRectMake(kAlertWidth - 32, 0, 32, 32);
-        [self addSubview:xButton];
+       // [self addSubview:xButton];
         [xButton addTarget:self action:@selector(dismissAlert) forControlEvents:UIControlEventTouchUpInside];
     }
     return self;

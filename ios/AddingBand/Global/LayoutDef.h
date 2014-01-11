@@ -122,6 +122,7 @@
 
 
 //
+#define ANTENATEL_DATE @"antenatelDate"
 #define FUNDALHEIGHT @"fundalHeight"
 #define GIRTH @"girth"
 #define ON_LIMIT @"onLimit"

@@ -19,6 +19,9 @@
 #import "UMSocialConfig.h"
 #import "BTPhysicalStandard.h"
 #import "BTGirthStandard.h"
+#import "BTAlertView.h"
+#import "LayoutDef.h"
+#import "BTUtils.h"
 @implementation BTAppDelegate
 
 @synthesize managedObjectContext = _managedObjectContext;
@@ -173,11 +176,48 @@
     }
     
 }
+- (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification*)notification{
+    
+//    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"LocalNotification" message:notification.alertBody delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+//    [alert show];
+    [self popAntenatalAlertView];
+    NSDictionary* dic = [[NSDictionary alloc]init];
+    //这里可以接受到本地通知中心发送的消息
+    dic = notification.userInfo;
+    NSLog(@"user info = %@",[dic objectForKey:@"key"]);
+    
+    // 图标上的数字减1
+    application.applicationIconBadgeNumber -= 1;
+}
+
+#pragma mark - popview 请输入预产期
+- (void)popAntenatalAlertView
+{
+    
+    NSDate *antenatalDate = [[NSUserDefaults standardUserDefaults] objectForKey:ANTENATEL_DATE];
+    NSNumber *month = [BTUtils getMonth:antenatalDate];
+    NSNumber *day = [BTUtils getMonth:antenatalDate];
+    NSNumber *hour = [BTUtils getHour:antenatalDate];
+    NSNumber *minute = [BTUtils getMinutes:antenatalDate];
+    
+    NSString *content = [NSString stringWithFormat:@"记得%@月%@日%@:%@产检哦！",month,day,hour,minute];
+    BTAlertView *alert = [[BTAlertView alloc] initWithTitle:@"产检提醒" iconImage:[UIImage imageNamed:@"antenatel_icon"] contentText:content leftButtonTitle:nil rightButtonTitle:@"知道了"];
+    [alert show];
+    alert.rightBlock = ^() {
+       
+        
+    };
+    alert.dismissBlock = ^() {
+            };
+    
+}
 
 - (void)applicationWillResignActive:(UIApplication *)application
 {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
     // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
+    // 图标上的数字减1
+    application.applicationIconBadgeNumber -= 1;
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application

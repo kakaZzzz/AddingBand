@@ -83,11 +83,11 @@ static int week = 0;
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor yellowColor];
     
-    [self popAlertView];
+    //[self popAlertView];
     [self getCurrentWeekOfPregnancy];//得到今天是怀孕第几周
     [self addSubviews];
     [self addChageScrollViewToTopButton];
-    [self createHeaderView];
+    
     [self getNetworkDataWithWeekOfPregnancy:3];
 	// Do any additional setup after loading the view.
 }
@@ -305,9 +305,6 @@ static int week = 0;
     clockButton.frame = CGRectMake(320 - 50, 10, 60/2, 60/2);
     [_navigationBgView addSubview:clockButton];
     
-    //    self.tableViewBackgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, _navigationBgView.frame.origin.y + _navigationBgView.frame.size.height, 320, self.view.frame.size.height - NAVIGATIONBAR_HEIGHT)];
-    //    _tableViewBackgroundView.backgroundColor = [UIColor redColor];
-    //    [self.view addSubview:_tableViewBackgroundView];
     
     self.headView = [[UIView alloc] initWithFrame:CGRectMake(0, NAVIGATIONBAR_HEIGHT, 320, 40)];
     _headView.backgroundColor = kGlobalColor;
@@ -319,6 +316,9 @@ static int week = 0;
     _tableView.dataSource = self;
     _tableView.delegate = self;
     [self.view addSubview:_tableView];
+    
+    [self createHeaderView];
+    [self setFooterView];
 }
 
 #pragma mark - popview 请输入预产期
@@ -326,7 +326,7 @@ static int week = 0;
 {
     
     
-    BTAlertView *alert = [[BTAlertView alloc] initWithTitle:@"美妈美妈" iconImage:nil contentText:@"请输入宝宝预产期" leftButtonTitle:nil rightButtonTitle:@"好的"];
+    BTAlertView *alert = [[BTAlertView alloc] initWithTitle:@"产检提醒" iconImage:[UIImage imageNamed:@"antenatel_icon"] contentText:@"请输入产检日期" leftButtonTitle:nil rightButtonTitle:@"知道了"];
     [alert show];
     alert.rightBlock = ^() {
         NSLog(@"right button clicked");
@@ -423,7 +423,6 @@ static int week = 0;
 {
     
     NSDate *localDate = [NSDate localdateByDate:date];
-    NSString *dateAndTime = [NSDate stringFromDate:date withFormat:@"yy-MM-dd HH:mm:ss"];
     NSNumber *year = [BTUtils getYear:localDate];
     NSNumber *month = [BTUtils getMonth:localDate];
     NSNumber *day = [BTUtils getDay:localDate];
@@ -431,8 +430,39 @@ static int week = 0;
     NSNumber *minute = [BTUtils getMinutes:localDate];
     
     
-    NSLog(@"选择的日期是。。。。。%@",dateAndTime);
+    [[NSUserDefaults standardUserDefaults] setObject:localDate forKey:ANTENATEL_DATE];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    
+    [self registerLocalNotificationWithDate:localDate];
+    NSLog(@"选择的日期是。。。。。%@",localDate);
     NSLog(@"选泽的年：%@,月：%@，日：%@,小时：%@,分钟：%@",year,month,day,hour,minute);
+    
+}
+- (void)registerLocalNotificationWithDate:(NSDate *)date
+{
+    
+       NSLog(@"注册通知");
+       UILocalNotification *notification=[[UILocalNotification alloc] init];
+    
+       NSTimeInterval inteval = [date timeIntervalSinceDate:[NSDate localdate]];
+       NSDate *now=[NSDate new];
+       notification.fireDate=[now dateByAddingTimeInterval:inteval];//10秒后通知        notification.fireDate=date; //触发通知的时间
+        notification.repeatInterval=0; //循环次数，kCFCalendarUnitWeekday一周一次
+        notification.timeZone=[NSTimeZone localTimeZone];
+        notification.soundName = UILocalNotificationDefaultSoundName;
+        notification.alertBody=@"美妈，该产检了";
+        
+        notification.alertAction = @"打开";  //提示框按钮
+        notification.hasAction = YES; //是否显示额外的按钮，为no时alertAction消失
+        
+        notification.applicationIconBadgeNumber +=1; //设置app图标右上角的数字
+        
+        //下面设置本地通知发送的消息，这个消息可以接受
+        NSDictionary* infoDic = [NSDictionary dictionaryWithObject:@"value" forKey:@"key"];
+        notification.userInfo = infoDic;
+        //发送通知
+        [[UIApplication sharedApplication] scheduleLocalNotification:notification];
+
 }
 
 #pragma mark - Table view data source
@@ -557,7 +587,7 @@ static int week = 0;
     //                          CGRectMake(0.0f, 0.0f - self.view.bounds.size.height,
     //                                     self.view.frame.size.width, self.view.bounds.size.height) orientation:YES];
     _refreshHeaderView = [[EGORefreshTableHeaderView alloc]initWithFrame:
-                          CGRectMake(0.0f, 0.0f - self.view.bounds.size.height,self.view.frame.size.width, self.view.bounds.size.height) arrowImageName:@"blueArrow.png" textColor:[UIColor whiteColor] orientation:YES];
+                          CGRectMake(0.0f, 0.0f - self.view.bounds.size.height,self.view.frame.size.width, self.view.bounds.size.height) arrowImageName:@"pull_down.png" textColor:[UIColor whiteColor] orientation:YES];
     _refreshHeaderView.delegate = self;
    	[self.tableView addSubview:_refreshHeaderView];
     
@@ -571,6 +601,43 @@ static int week = 0;
 }
 //===============
 //刷新delegate
+-(void)setFooterView{
+	//    UIEdgeInsets test = self.aoView.contentInset;
+    // if the footerView is nil, then create it, reset the position of the footer
+    CGFloat height = MAX(self.tableView.contentSize.height, self.tableView.frame.size.height);
+    if (_refreshFooterView && [_refreshFooterView superview])
+	{
+        // reset position
+        _refreshFooterView.frame = CGRectMake(0.0f,
+                                              height,
+                                              self.tableView.frame.size.width,
+                                              self.view.bounds.size.height);
+    }else
+	{
+        // create the footerView
+        _refreshFooterView = [[EGORefreshTableFooterView alloc] initWithFrame:
+                              CGRectMake(0.0f, height,
+                                         self.tableView.frame.size.width, self.view.bounds.size.height)];
+        _refreshFooterView.delegate = self;
+        [self.tableView addSubview:_refreshFooterView];
+    }
+    
+    if (_refreshFooterView)
+	{
+        [_refreshFooterView refreshLastUpdatedDate];
+    }
+}
+
+
+-(void)removeFooterView
+{
+    if (_refreshFooterView && [_refreshFooterView superview])
+	{
+        [_refreshFooterView removeFromSuperview];
+    }
+    _refreshFooterView = nil;
+}
+
 #pragma mark -
 #pragma mark data reloading methods that must be overide by the subclass
 
@@ -584,6 +651,12 @@ static int week = 0;
         // pull down to refresh data
         [self performSelector:@selector(refreshView) withObject:nil afterDelay:2.0];
  	}
+    else if(aRefreshPos == EGORefreshFooter)
+	{
+        // pull up to load more data
+        [self performSelector:@selector(getNextPageView) withObject:nil afterDelay:2.0];
+    }
+
 }
 
 //刷新调用的方法
@@ -602,6 +675,11 @@ static int week = 0;
     
 }
 
+- (void)getNextPageView
+{
+    NSLog(@"上拉加载更多了....");
+    [self finishReloadingData];
+}
 #pragma mark -
 #pragma mark method that should be called when the refreshing is finished
 - (void)finishReloadingData{
@@ -613,7 +691,11 @@ static int week = 0;
         [_refreshHeaderView egoRefreshScrollViewDataSourceDidFinishedLoading:self.tableView];
     }
     
-    
+    if (_refreshFooterView) {
+        [_refreshFooterView egoRefreshScrollViewDataSourceDidFinishedLoading:self.tableView];
+        [self setFooterView];
+    }
+
     
 }
 
@@ -622,36 +704,6 @@ static int week = 0;
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
-    //    if (scrollView.contentOffset.y >= 0 && scrollView.contentOffset.y <= 40) {
-    //        // static CGRect rect = _headView.frame;
-    //        NSLog(@"..........%f",_tableView.contentOffset.y);
-    //
-    //        [UIView animateWithDuration:0.1 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
-    //            _headView.frame = CGRectMake(0,NAVIGATIONBAR_HEIGHT - scrollView.contentOffset.y, 320, 40);
-    //            self.tableView.frame = CGRectMake(0, NAVIGATIONBAR_HEIGHT - scrollView.contentOffset.y + 40, 320, self.view.frame.size.height);
-    //
-    //        } completion:nil];
-    //        [self.view bringSubviewToFront:_navigationBgView];
-    //    }
-    //
-    //
-    //    else if (scrollView.contentOffset.y > 40) {
-    //        [UIView animateWithDuration:0.1 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
-    //            _headView.frame = CGRectMake(0,NAVIGATIONBAR_HEIGHT - 40, 320, 40);
-    //            self.tableView.frame = CGRectMake(0, NAVIGATIONBAR_HEIGHT - 40 + 40, 320, self.view.frame.size.height - 59);
-    //
-    //        } completion:nil];
-    //
-    //    }
-    //
-    //    else{
-    //        //[UIView animateWithDuration:0.1 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
-    //        _headView.frame = CGRectMake(0,NAVIGATIONBAR_HEIGHT, 320, 40);
-    //
-    //        //} completion:nil];
-    //
-    //    }
-    //    NSLog(@"..........%f",_tableView.contentOffset.y);
     
     //刷新数据
     if (_refreshHeaderView)
@@ -659,6 +711,12 @@ static int week = 0;
         [_refreshHeaderView egoRefreshScrollViewDidScroll:scrollView];
     }
     
+    if (_refreshFooterView)
+	{
+        [_refreshFooterView egoRefreshScrollViewDidScroll:scrollView];
+    }
+
+  
 }
 
 //
@@ -668,6 +726,10 @@ static int week = 0;
         [_refreshHeaderView egoRefreshScrollViewDidEndDragging:scrollView];
     }
 	
+    if (_refreshFooterView)
+	{
+        [_refreshFooterView egoRefreshScrollViewDidEndDragging:scrollView];
+    }
 }
 
 

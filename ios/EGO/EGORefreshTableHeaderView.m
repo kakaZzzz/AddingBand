@@ -84,7 +84,7 @@
 		if (vertical) {
             CALayer *layer = [CALayer layer];
            // layer.frame = CGRectMake(25.0f, frame.size.height - 65.0f, 30.0f, 55.0f);//坐标自己改
-            layer.frame = CGRectMake((frame.size.width-30)/2, frame.size.height - 30.0f, 30.0f, 30.0f);//坐标自己改
+            layer.frame = CGRectMake((frame.size.width-10)/2, frame.size.height - 20.0f, 10.0f, 10.0f);//坐标自己改
             
             NSLog(@"-------------%@",NSStringFromCGRect(layer.frame));
 
@@ -128,7 +128,7 @@
 }
 
 - (id)initWithFrame:(CGRect)frame orientation:(BOOL) vertical {
-  return [self initWithFrame:frame arrowImageName:@"blueArrow.png" textColor:TEXT_COLOR  orientation:(BOOL) vertical];
+  return [self initWithFrame:frame arrowImageName:@"pull_down.png" textColor:TEXT_COLOR  orientation:(BOOL) vertical];
 }
 
 #pragma mark -
