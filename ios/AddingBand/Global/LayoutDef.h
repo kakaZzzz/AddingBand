@@ -123,8 +123,14 @@
 
 //
 #define ANTENATEL_DATE @"antenatelDate"
-#define FUNDALHEIGHT @"fundalHeight"
-#define GIRTH @"girth"
+#define FUNDAL_HEIGHT @"fundalHeight"
+#define MAMA_GIRTH @"girth"
+#define MAMA_WEIGHT @"weight"
+
+#define FUNDAL_HEIGHT_CONDITION @"fundalHeightCondition"
+#define MAMA_GIRTH_CONDITION @"girthCondition"
+#define MAMA_WEIGHT_CONDITION @"weightCondition"
+
 #define ON_LIMIT @"onLimit"
 #define OFF_LIMIT @"offLimit"
 #endif

@@ -12,7 +12,7 @@
  */
 
 #import <UIKit/UIKit.h>
-
-@interface BTGluViewController : UIViewController
+#import "BTScrollViewController.h"
+@interface BTGluViewController : BTScrollViewController
 
 @end

@@ -65,8 +65,9 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    self.backButton.hidden = YES;//隐藏返回按钮
      self.view.backgroundColor = [UIColor yellowColor];
-    [self configureNavigationbar];
+    [self configureNavigationbarRightbar];
     //体重
     BTView *weightView = [[BTView alloc] initWithFrame:CGRectMake(0, 368/2, 320, 112/2)];
     weightView.backgroundColor = [UIColor whiteColor];
@@ -168,16 +169,14 @@
   	// Do any additional setup after loading the view.
 }
 #pragma mark - 设置导航栏上面的按钮
-- (void)configureNavigationbar
+- (void)configureNavigationbarRightbar
 {
     self.completeButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    _completeButton.frame = CGRectMake(250, 5, 65, 30);
-    
-    [_completeButton setTitle:@"完成" forState:UIControlStateNormal];//title的值根据定位和和选择而改变
-    [_completeButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    _completeButton.frame = CGRectMake(250, 5, 100/2, 48/2);
+    [_completeButton setBackgroundImage:[UIImage imageNamed:@"navigationbar_complete_unselected"] forState:UIControlStateNormal];
+    [_completeButton setBackgroundImage:[UIImage imageNamed:@"navigationbar_complete_selected"] forState:UIControlStateSelected];
+    [_completeButton setBackgroundImage:[UIImage imageNamed:@"navigationbar_complete_selected"] forState:UIControlStateHighlighted];
     [_completeButton addTarget:self action:@selector(completeInput:) forControlEvents:UIControlEventTouchUpInside];
-  //  [_completeButton setBackgroundImage:[UIImage imageNamed:@"透明.png"] forState:UIControlStateNormal];
-    _completeButton.tintColor = [UIColor colorWithRed:70/255.0 green:163/255.0 blue:210/255.0 alpha:1];
     [self.view addSubview:_completeButton];
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:(UIView *)_completeButton];
 }
@@ -342,11 +341,11 @@
     NSNumber *year = [BTUtils getYear:localDate];
     NSNumber *month = [BTUtils getMonth:localDate];
     NSNumber *day = [BTUtils getDay:localDate];
-    NSNumber *minute = [BTUtils getMinutes:localDate];
+
    
     NSManagedObjectContext *context = [BTGetData getAppContex];
     //设置查询条件
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"year == %@ AND month == %@ AND day == %@ AND minute == %@",year, month, day,minute];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"year == %@ AND month == %@ AND day == %@",year, month, day];
     NSError *error;
     NSArray *dataArray = [BTGetData getFromCoreDataWithPredicate:predicate entityName:@"BTUserData" sortKey:nil];
     
@@ -398,7 +397,7 @@
                 break;
         }
 
-        new.minute = minute;
+     
     }
     
     [context save:&error];

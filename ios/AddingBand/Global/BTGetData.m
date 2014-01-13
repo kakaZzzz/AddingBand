@@ -105,7 +105,8 @@
     if (data.count > 0) {
         BTUserSetting *userData = [data objectAtIndex:0];
    
-        NSDate *dueDate = [NSDate dateFromString:userData.dueDate withFormat:@"yyyy.MM.dd"];
+        NSDate *dueDate = [NSDate dateFromString:userData.dueDate withFormat:@"yyyy.MM.dd"];//duedate为00：00：00
+        
         NSTimeInterval due = [dueDate timeIntervalSince1970];
         NSTimeInterval now = [date timeIntervalSince1970];
         NSTimeInterval cha = due - now;

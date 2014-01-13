@@ -8,7 +8,8 @@
 
 #import <UIKit/UIKit.h>
 #import "BTSheetPickerview.h"
-@interface BTModifyDateViewController : UIViewController<BTSheetPickerviewDelegate>
+#import "BTScrollViewController.h"
+@interface BTModifyDateViewController : BTScrollViewController<BTSheetPickerviewDelegate>
 @property(nonatomic,strong)UIImageView *iconImage;
 @property(nonatomic,strong)UILabel *dateTextLabel;
 @property(nonatomic,assign)int modifyType;

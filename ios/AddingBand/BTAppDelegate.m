@@ -196,7 +196,7 @@
     
     NSDate *antenatalDate = [[NSUserDefaults standardUserDefaults] objectForKey:ANTENATEL_DATE];
     NSNumber *month = [BTUtils getMonth:antenatalDate];
-    NSNumber *day = [BTUtils getMonth:antenatalDate];
+    NSNumber *day = [BTUtils getDay:antenatalDate];
     NSNumber *hour = [BTUtils getHour:antenatalDate];
     NSNumber *minute = [BTUtils getMinutes:antenatalDate];
     

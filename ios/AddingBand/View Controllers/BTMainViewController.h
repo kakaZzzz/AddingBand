@@ -10,6 +10,7 @@
 #import "EGORefreshTableHeaderView.h"
 #import "EGORefreshTableFooterView.h"
 #import "BTSheetPickerview.h"
+@class MKNetworkEngine;
 @interface BTMainViewController : UIViewController<UITableViewDataSource,
 UITableViewDelegate,
 EGORefreshTableDelegate,
@@ -30,10 +31,12 @@ BTSheetPickerviewDelegate>
 @property(nonatomic,strong)NSMutableArray *modelArray;//行数据
 @property(nonatomic,strong)NSMutableArray *sectionArray;//分区头数据
 @property(nonatomic,strong)NSMutableArray *rowOfSectionArray;//每个分区有多少行
-
 @property(nonatomic,strong)NSString *dueDate;
 //输入预产期 选择器
 @property(nonatomic,strong)BTSheetPickerview *actionSheetView;
 
 @property(nonatomic,retain)UIWebView *webView;
+//网络请求
+@property(nonatomic,strong)MKNetworkEngine *engine;
+@property(nonatomic,assign)BOOL isLoadNextData;//加载未来数据标识符
 @end

@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "UMSocial.h"
-@interface BTKnowledgeViewController : UIViewController<UMSocialUIDelegate>
+#import "BTScrollViewController.h"
+@interface BTKnowledgeViewController : BTScrollViewController<UMSocialUIDelegate>
 
 @end

@@ -114,10 +114,11 @@
     
     //修改按钮
     UIButton *modifyButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [modifyButton setTitle:@"修改" forState:UIControlStateNormal];
-    modifyButton.backgroundColor = [UIColor redColor];
+    [modifyButton setBackgroundImage:[UIImage imageNamed:@"physical_edit_unselected"] forState:UIControlStateNormal];
+    [modifyButton setBackgroundImage:[UIImage imageNamed:@"physical_edit_selected"] forState:UIControlStateSelected];
+    [modifyButton setBackgroundImage:[UIImage imageNamed:@"physical_edit_selected"] forState:UIControlStateHighlighted];
     [modifyButton addTarget:self action:@selector(modifyData:) forControlEvents:UIControlEventTouchUpInside];
-    modifyButton.frame = CGRectMake(320 - 10 - 40, (weightView.frame.size.height - 40)/2, 40, 40);
+    modifyButton.frame = CGRectMake(320 - 10 - 48/2, (weightView.frame.size.height - 48/2)/2, 48/2, 48/2);
     [weightView addSubview:modifyButton];
 
     //腹围情况
@@ -222,17 +223,33 @@
 {
     //更新折线图和页面显示
     //1）更新折线
-    [self.chartView removeFromSuperview];
+    //1）更新折线
+    if (self.chartView) {
+        [self.chartView removeFromSuperview];
+    }
     //改变self.values 的值即可
-    
     NSDate *localDate = [NSDate localdate];
-    NSNumber *minute = [BTUtils getMinutes:localDate];
-    BTPhysicalModel *model = [[BTPhysicalModel alloc] initWithTitle:@"腹围" content:weight day:[NSString stringWithFormat:@"%@",minute]];
-    [self.values addObject:model];
+    NSNumber *year = [BTUtils getYear:localDate];
+    NSNumber *month = [BTUtils getMonth:localDate];
+    NSNumber *dayLocal = [BTUtils getDay:localDate];
+    NSDate *gmtDate = [NSDate dateFromString:[NSString stringWithFormat:@"%@.%@.%@",year,month,dayLocal] withFormat:@"yyyy.MM.dd"];
+    
+    //算出怀孕第几天
+    int day = [BTGetData getPregnancyDaysWithDate:gmtDate];
+    BTPhysicalModel *model = [[BTPhysicalModel alloc] initWithTitle:@"腹围" content:weight day:[NSString stringWithFormat:@"%d",day]];
+    BTPhysicalModel *model1 = [self.values lastObject];
+    if (day == [model1.day intValue]) {
+        
+        [self.values replaceObjectAtIndex:[self.values count]-1 withObject:model];
+    }
+    else
+    {
+        [self.values addObject:model];
+    }
     [self drawLineChartViewWithModelArray:self.values onLimit:self.onLimit offLimit:self.offLimit];
     //2)更新"正常 异常显示"
     self.weightField.text = weight;
-
+    [self updateConditionLabel:weight];
     
     
 }
@@ -242,14 +259,21 @@
     //如果weight有值，就不要再从coredata里取 提高效率
     if (weight) {
         NSDate *localDate = [NSDate localdate];
+        NSNumber *year = [BTUtils getYear:localDate];
+        NSNumber *month = [BTUtils getMonth:localDate];
+        NSNumber *dayLocal = [BTUtils getDay:localDate];
+        NSDate *gmtDate = [NSDate dateFromString:[NSString stringWithFormat:@"%@.%@.%@",year,month,dayLocal] withFormat:@"yyyy.MM.dd"];
         
-        int day1 = [BTGetData getPregnancyDaysWithDate:localDate];//怀孕天数
+        int day1 = [BTGetData getPregnancyDaysWithDate:gmtDate];//怀孕天数
         //20周到40周之间才显示数据
         if ((day1/7 + 1 >= 20) && (day1/7 + 1 <= 40)) {
             [self judgeConditionWithDay:day1 weight:weight];
             
         }
         else{
+            [[NSUserDefaults standardUserDefaults] setBool:YES forKey:MAMA_GIRTH_CONDITION];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+
             self.weightConditionLabel.hidden = YES;
         }
     }
@@ -267,6 +291,8 @@
                 
             }
             else{
+                [[NSUserDefaults standardUserDefaults] setBool:YES forKey:MAMA_GIRTH_CONDITION];
+                [[NSUserDefaults standardUserDefaults] synchronize];
                 self.weightConditionLabel.hidden = YES;
             }
             
@@ -320,10 +346,17 @@
     if (now >= offLimit && now <= onLimit) {
         self.weightConditionLabel.text = @"正常";
         self.weightConditionLabel.textColor = kBigTextColor;
+        
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:MAMA_GIRTH_CONDITION];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+
     }
     else{
         self.weightConditionLabel.text = @"异常";
         self.weightConditionLabel.textColor = kGlobalColor;
+        [[NSUserDefaults standardUserDefaults] setBool:NO forKey:MAMA_GIRTH_CONDITION];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+
     }
     
 }
@@ -336,10 +369,10 @@
     NSNumber *year = [BTUtils getYear:localDate];
     NSNumber *month = [BTUtils getMonth:localDate];
     NSNumber *day = [BTUtils getDay:localDate];
-    NSNumber *minute = [BTUtils getMinutes:localDate];
+
     _context = [BTGetData getAppContex];
     //设置查询条件
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"year == %@ AND month == %@ AND day == %@ AND minute == %@",year, month, day,minute];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"year == %@ AND month == %@ AND day == %@",year, month, day];
     NSError *error;
     NSArray *dataArray = [BTGetData getFromCoreDataWithPredicate:predicate entityName:@"BTUserData" sortKey:nil];
     
@@ -363,7 +396,7 @@
         new.month = month;
         new.day = day;
         new.girth = height;
-        new.minute = minute;
+  
     }
     
     [_context save:&error];
@@ -380,8 +413,11 @@
     NSMutableArray *resultArray = [NSMutableArray arrayWithCapacity:1];
     NSArray *array = [self getNewdataFromCoredata];
     for (BTUserData *one in array) {
-        NSLog(@"数据数组是%@",one.minute);
-        BTPhysicalModel *model = [[BTPhysicalModel alloc] initWithTitle:@"腹围" content:one.girth day:[NSString stringWithFormat:@"%@",one.minute]];
+        
+        NSDate *date = [NSDate dateFromString:[NSString stringWithFormat:@"%@.%@.%@",one.year,one.month,one.day] withFormat:@"yyyy.MM.dd"];
+        //算出怀孕第几天
+        int day = [BTGetData getPregnancyDaysWithDate:date];
+        BTPhysicalModel *model = [[BTPhysicalModel alloc] initWithTitle:@"腹围" content:one.girth day:[NSString stringWithFormat:@"%d",day]];
         [resultArray addObject:model];
         
     }
@@ -395,7 +431,7 @@
 - (NSArray *)getNewdataFromCoredata
 {
     NSMutableArray *weightArray = [NSMutableArray arrayWithCapacity:1];
-    NSDictionary *sortDic = [[NSDictionary alloc] initWithObjectsAndKeys:@"minute",@"sortkey1", nil];
+    NSDictionary *sortDic = [[NSDictionary alloc] initWithObjectsAndKeys:@"year",@"sortkey1",@"month",@"sortkey2",@"day",@"sortkey3", nil];
     NSArray *dataArray = [BTGetData getFromCoreDataWithPredicate:nil entityName:@"BTUserData" sortKey:sortDic];
     if (dataArray.count > 0) {
         for (BTUserData *userData in dataArray) {
@@ -452,10 +488,14 @@
 #pragma mark - 关闭键盘
 - (void)closeKeyboard:(UITapGestureRecognizer *)tap
 {
-    [self updateUIWithValue:_weightField.text];
-    [self writeToCoredataWithWeight:_weightField.text];
-
-    [_weightField resignFirstResponder];
+    if ([_weightField isFirstResponder]) {
+        NSLog(@"存了数据.....");
+        [self updateUIWithValue:_weightField.text];
+        [self writeToCoredataWithWeight:_weightField.text];
+        
+        [_weightField resignFirstResponder];
+    }
+ 
 }
 #pragma mark - FYChartViewDataSource
 

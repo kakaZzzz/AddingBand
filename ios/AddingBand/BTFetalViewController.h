@@ -7,9 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "BTScrollViewController.h"
 @class BTRecordFetalView;
 @class PNChart;
-@interface BTFetalViewController : UIViewController
+@interface BTFetalViewController : BTScrollViewController
 @property(nonatomic,strong)BTRecordFetalView *recordVC;
 @property(nonatomic,strong)UILabel *contentLabel;
 @property(nonatomic,strong)UILabel *aLabel;

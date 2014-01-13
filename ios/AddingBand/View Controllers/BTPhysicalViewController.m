@@ -82,8 +82,7 @@ static int selectedTag = 0;
 {
     
     [super viewDidLoad];
-   self.scrollView.contentSize = CGSizeMake(320, 800);
-   
+    self.scrollView.contentSize = CGSizeMake(320, 700);
     [self addSubviews];//加载子视图
     
     // Do any additional setup after loading the view.
@@ -318,6 +317,7 @@ static int selectedTag = 0;
     [fetalButton addSubview:fetalLabel];
     
 }
+
 #pragma mark - 从coredata中获取数据 用于显示体重 宫高 腹围
 - (NSArray *)configureDataModelArray
 {
@@ -326,7 +326,7 @@ static int selectedTag = 0;
     NSMutableArray *heighttArray = [NSMutableArray arrayWithCapacity:1];
     NSMutableArray *girthArray = [NSMutableArray arrayWithCapacity:1];
    
-    NSDictionary *sortDic = [[NSDictionary alloc] initWithObjectsAndKeys:@"minute",@"sortkey1", nil];
+    NSDictionary *sortDic = [[NSDictionary alloc] initWithObjectsAndKeys:@"year",@"sortkey1",@"month",@"sortkey2",@"day",@"sortkey3", nil];
     NSArray *dataArray = [BTGetData getFromCoreDataWithPredicate:nil entityName:@"BTUserData" sortKey:sortDic];
     BTUserData *one = [[BTUserData alloc] initWithEntity:[NSEntityDescription entityForName:@"BTUserData" inManagedObjectContext:contex] insertIntoManagedObjectContext:contex];
     
@@ -366,6 +366,15 @@ static int selectedTag = 0;
     
     return nil;
 }
+
+//- (NSArray *)configureDataModelArray
+//{
+//    
+//}
+
+
+
+
 - (void)addPhysicalViewWithDataWithYvalue:(int)yValue
 {
     
@@ -649,40 +658,42 @@ static int selectedTag = 0;
 #pragma mark - 更新导航栏上显示的怀孕时间
 - (void)updatePregnancyTime
 {
-    NSArray *data = [BTGetData getFromCoreDataWithPredicate:nil entityName:@"BTUserSetting" sortKey:nil];
-    if (data.count > 0) {
-        BTUserSetting *userData = [data objectAtIndex:0];
-        int day = [self intervalSinceNow:userData.dueDate];
-        self.countLabel.text = [NSString stringWithFormat:@"预产期倒计时: %d天",day];
-        
-        //根据怀孕天数 算出是第几周 第几天
-        int week = (280 - day)/7 + 1;
-        int day1 = (280 - day)%7;
-        self.dateLabel.text = [NSString stringWithFormat:@"%d周%d天",week,day1];
-      }
 
-}
-- (int)intervalSinceNow:(NSString *)theDate
-{
-    
     NSDate *localdate = [NSDate localdate];
     NSNumber *year = [BTUtils getYear:localdate];
     NSNumber *month = [BTUtils getMonth:localdate];
-    NSNumber *day = [BTUtils getDay:localdate];
-    
-    NSDate *gmtDate = [NSDate dateFromString:[NSString stringWithFormat:@"%@.%@.%@",year,month,day] withFormat:@"yyyy.MM.dd"];
-    NSDate *dueDate = [NSDate dateFromString:theDate withFormat:@"yyyy.MM.dd"];
-    
-    NSLog(@"现在时间 %@  预产期时间 %@",gmtDate,dueDate);
-    
-    NSTimeInterval now = [gmtDate timeIntervalSince1970];
-    NSTimeInterval due = [dueDate timeIntervalSince1970];
-    NSTimeInterval cha = due - now;
-    
-    int day1 = cha/(24 * 60 * 60);
-    
-    return day1;
+    NSNumber *dayLocal = [BTUtils getDay:localdate];
+    NSDate *gmtDate = [NSDate dateFromString:[NSString stringWithFormat:@"%@.%@.%@",year,month,dayLocal] withFormat:@"yyyy.MM.dd"];
+    int day = [BTGetData getPregnancyDaysWithDate:gmtDate];
+    //根据怀孕天数 算出是第几周 第几天
+        int week = day/7 + 1;
+        int day1 = day%7;
+        self.countLabel.text = [NSString stringWithFormat:@"预产期倒计时: %d天",(280 - day)];
+        self.dateLabel.text = [NSString stringWithFormat:@"%d周%d天",week,day1];
+
+
 }
+//- (int)intervalSinceNow:(NSString *)theDate
+//{
+//    
+//    NSDate *localdate = [NSDate localdate];
+//    NSNumber *year = [BTUtils getYear:localdate];
+//    NSNumber *month = [BTUtils getMonth:localdate];
+//    NSNumber *day = [BTUtils getDay:localdate];
+//    
+//    NSDate *gmtDate = [NSDate dateFromString:[NSString stringWithFormat:@"%@.%@.%@",year,month,day] withFormat:@"yyyy.MM.dd"];
+//    NSDate *dueDate = [NSDate dateFromString:theDate withFormat:@"yyyy.MM.dd"];
+//    
+//    NSLog(@"现在时间 %@  预产期时间 %@",gmtDate,dueDate);
+//    
+//    NSTimeInterval now = [gmtDate timeIntervalSince1970];
+//    NSTimeInterval due = [dueDate timeIntervalSince1970];
+//    NSTimeInterval cha = due - now;
+//    
+//    int day1 = cha/(24 * 60 * 60);
+//    
+//    return day1;
+//}
 - (void)viewWillDisappear:(BOOL)animated
 {
     

@@ -7,14 +7,17 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "BTKnowledgeModel.h"
+
+@class BTKnowledgeModel;
+@class EGOImageView;
 @interface BTKnowledgeCell : UITableViewCell
 @property(nonatomic,strong)UILabel *dayLabel;
 @property(nonatomic,strong)UIImageView *iconImage;
 @property(nonatomic,strong)UILabel *titleLabel;
-@property(nonatomic,strong)UIImageView *accessoryImage;
+@property(nonatomic,strong)UILabel *accessLabel;
+@property(nonatomic,strong)UIImageView *accessImage;
 @property(nonatomic,strong)UILabel *contentLabel;
-
+@property(nonatomic,retain)EGOImageView *contentImage;
 @property(nonatomic,strong)BTKnowledgeModel *knowledgeModel;
 + (CGFloat)cellHeightWithMode:(BTKnowledgeModel *)model;
 @end

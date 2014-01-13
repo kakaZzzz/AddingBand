@@ -116,7 +116,7 @@
     if (actionStyle == BTActionSheetPickerStyleDatePicker) {
         self.frame = CGRectMake(0, shareWindow.frame.size.height - 266, 320, 266);
         
-        self.backgroundColor = [UIColor whiteColor];
+        self.backgroundColor = [UIColor grayColor];
         
 //        UIButton *cancelButton = [UIButton buttonWithType:UIButtonTypeCustom];
 //        cancelButton.frame = CGRectMake(0, 0, 50, 50);
@@ -134,8 +134,8 @@
     
         
         self.enterButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _enterButton.frame = CGRectMake(270, 0, 50, 50);
-        [self.enterButton setTitle:@"确定" forState:UIControlStateNormal];
+        _enterButton.frame = CGRectMake(320 - 22 - 20, 15,22, 22);
+        [self.enterButton setBackgroundImage:[UIImage imageNamed:@"warn_selected"] forState:UIControlStateNormal];
         [self.enterButton setTitleColor:[UIColor orangeColor] forState:UIControlStateNormal];
         [self.enterButton addTarget:self action:@selector(closeButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:self.enterButton];

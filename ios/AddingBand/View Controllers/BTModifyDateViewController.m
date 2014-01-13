@@ -34,8 +34,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-
-    [self configureNavigationbar];
+    self.scrollView.scrollEnabled = NO;
     self.view.backgroundColor = [UIColor whiteColor];
     BTView *aView= [[BTView alloc] initWithFrame:CGRectMake(0, 0, 320, 50)];
     aView.backgroundColor = [UIColor whiteColor];
@@ -78,27 +77,11 @@
     [self showDatePicker];
 
 }
-#pragma mark - 设置导航栏上面的按钮
-- (void)configureNavigationbar
+#pragma mark - 返回上一个页面
+//父类方法 子类重写
+- (void)backToPreviousViewController
 {
-    self.backButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    _backButton.frame = CGRectMake(250, 5, 65, 30);
-    
-    [_backButton setTitle:@"返回" forState:UIControlStateNormal];//title的值根据定位和和选择而改变
-    [_backButton setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
-    
-    
-    // [_deleteButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    [_backButton addTarget:self action:@selector(backToUpperView:) forControlEvents:UIControlEventTouchUpInside];
-    // [_deleteButton setBackgroundImage:[UIImage imageNamed:@"透明.png"] forState:UIControlStateNormal];
-    _backButton.tintColor = [UIColor colorWithRed:70/255.0 green:163/255.0 blue:210/255.0 alpha:1];
-    
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:(UIView *)_backButton];
-}
-
-- (void)backToUpperView:(UIButton *)button
-{
-    [self.navigationController popViewControllerAnimated:YES];
+    [super backToPreviousViewController];
     [self.actionSheetView hide];
 }
 - (void)inputDate:(UITapGestureRecognizer *)tap

@@ -7,9 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "BTScrollViewController.h"
 @class BTRecordFetalView;
 @class PNChart;
-@interface BTFetalDailyViewController : UIViewController
+@interface BTFetalDailyViewController : BTScrollViewController
 //视图布局
 @property(nonatomic,strong)BTRecordFetalView *recordVC;
 @property(nonatomic,strong)UILabel *lastTimeLabel;//胎动记录时间

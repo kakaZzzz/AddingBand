@@ -119,7 +119,7 @@
                 self.warnImage.image = [UIImage imageNamed:@"physical_askMark"];
             }
             else{
-                if ([self judgeFundalCondition:_physicalModel]) {
+                if (![[NSUserDefaults standardUserDefaults] boolForKey:MAMA_WEIGHT_CONDITION]) {//不正常
                     
                     self.contentLabel.hidden = NO;
                     self.conditiontLabel.hidden = NO;
@@ -154,7 +154,7 @@
                 self.warnImage.image = [UIImage imageNamed:@"physical_askMark"];
             }
             else{//不正常
-                if ([self judgeGirthCondition:_physicalModel]) {
+                if (![[NSUserDefaults standardUserDefaults] boolForKey:FUNDAL_HEIGHT_CONDITION]) {
                     
                     self.contentLabel.hidden = NO;
                     self.conditiontLabel.hidden = NO;
@@ -189,8 +189,8 @@
                 self.warnImage.hidden = NO;
                 self.warnImage.image = [UIImage imageNamed:@"physical_askMark"];
             }
-            else{
-                if ([_physicalModel.content floatValue] > 20.0 || [_physicalModel.content floatValue] < 5.0) {
+            else{//不正常
+                if (![[NSUserDefaults standardUserDefaults] boolForKey:MAMA_GIRTH_CONDITION]) {
                     
                     self.contentLabel.hidden = NO;
                     self.conditiontLabel.hidden = NO;

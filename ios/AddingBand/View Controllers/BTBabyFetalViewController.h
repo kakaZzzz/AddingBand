@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-
-@interface BTBabyFetalViewController : UIViewController
+#import "BTScrollViewController.h"
+@interface BTBabyFetalViewController : BTScrollViewController
 
 @end

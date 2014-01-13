@@ -98,7 +98,7 @@
 //
 //- (void)setKnowledgeModel:(BTKnowledgeModel *)knowledgeModel
 //{
-//    NSLog(@"走设置方法.........");
+//   
 //    _knowledgeModel = knowledgeModel;
 //    
 //    //标题label

@@ -14,8 +14,7 @@
     self = [super init];
     if (self)
     {
-        self.eventId = [dic objectForKey:@"event_id"];
-        self.eventType = [dic objectForKey:@"event_type"];
+        self.remind = [dic objectForKey:@"remind"];
         self.title = [dic objectForKey:@"title"];
         self.hash = [dic objectForKey:@"hash"];
         self.title = [dic objectForKey:@"title"];
@@ -23,6 +22,7 @@
         self.date = [dic objectForKey:@"date"];
         self.expire = [dic objectForKey:@"expire"];
         self.icon = [dic objectForKey:@"icon"];
+        self.contentImage = [dic objectForKey:@"image"];
    
     }
     return self;

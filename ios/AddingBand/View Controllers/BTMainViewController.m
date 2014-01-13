@@ -8,7 +8,6 @@
 
 #import "BTMainViewController.h"
 #import "LayoutDef.h"
-#import "BTMainViewCell.h"
 #import "UMSocialSnsService.h"//友盟分享
 #import "UMSocial.h"
 #import "NSDate+DateHelper.h"
@@ -28,7 +27,7 @@
 #define NAVIGATIONBAR_Y 0
 #define NAVIGATIONBAR_HEIGHT 65
 
-static int week = 0;
+static int currentWeek = 0;
 @interface BTMainViewController ()
 @property(nonatomic,strong)UILabel *dateLabel;//3周4天
 @property(nonatomic,strong)UILabel *countLabel;//预产期倒计时
@@ -43,6 +42,7 @@ static int week = 0;
     if (self) {
         // Custom initialization
         self.modelArray = [NSMutableArray arrayWithCapacity:1];
+        self.sectionArray = [NSMutableArray arrayWithCapacity:1];
         
     }
     return self;
@@ -88,8 +88,8 @@ static int week = 0;
     [self addSubviews];
     [self addChageScrollViewToTopButton];
     
-    [self getNetworkDataWithWeekOfPregnancy:3];
-    [self showRefreshHeader:YES];
+    //[self getNetworkDataWithWeekOfPregnancy:3];
+    [self showRefreshHeader:YES];//代码触发刷新
 	// Do any additional setup after loading the view.
 }
 #pragma mark - 代码触发下拉刷新
@@ -123,9 +123,9 @@ static int week = 0;
         int day = [self intervalSinceNow:userData.dueDate];
         self.dueDate = [userData.dueDate stringByReplacingOccurrencesOfString:@"." withString:@"-"];//把预产期取出来 存下来 避免反复操作coredata
         //根据怀孕天数 算出是第几周 第几天
-        int currentWeek = (280 - day)/7 + 1;
-        week = currentWeek;
-        return currentWeek;
+        int week = (280 - day)/7 + 1;
+        currentWeek = week;
+        return week;
     }
     return 0;
 }
@@ -133,17 +133,17 @@ static int week = 0;
 #pragma mark - 更新导航栏上显示的怀孕时间
 - (void)updatePregnancyTime
 {
-    NSArray *data = [BTGetData getFromCoreDataWithPredicate:nil entityName:@"BTUserSetting" sortKey:nil];
-    if (data.count > 0) {
-        BTUserSetting *userData = [data objectAtIndex:0];
-        int day = [self intervalSinceNow:userData.dueDate];
-        self.countLabel.text = [NSString stringWithFormat:@"预产期倒计时: %d天",day];
-        
-        //根据怀孕天数 算出是第几周 第几天
-        int week = (280 - day)/7 + 1;
-        int day1 = (280 - day)%7;
-        self.dateLabel.text = [NSString stringWithFormat:@"%d周%d天",week,day1];
-    }
+    NSDate *localdate = [NSDate localdate];
+    NSNumber *year = [BTUtils getYear:localdate];
+    NSNumber *month = [BTUtils getMonth:localdate];
+    NSNumber *dayLocal = [BTUtils getDay:localdate];
+    NSDate *gmtDate = [NSDate dateFromString:[NSString stringWithFormat:@"%@.%@.%@",year,month,dayLocal] withFormat:@"yyyy.MM.dd"];
+    int day = [BTGetData getPregnancyDaysWithDate:gmtDate];
+    //根据怀孕天数 算出是第几周 第几天
+    int week = day/7 + 1;
+    int day1 = day%7;
+    self.countLabel.text = [NSString stringWithFormat:@"预产期倒计时: %d天",(280 - day)];
+    self.dateLabel.text = [NSString stringWithFormat:@"%d周%d天",week,day1];
     
 }
 
@@ -175,13 +175,21 @@ static int week = 0;
     
     //用MKNetworkKit进行异步网络请求
     /*GET请求 示例*/
-    MKNetworkEngine *engine = [[MKNetworkEngine alloc] initWithHostName:@"addinghome.com" customHeaderFields:nil];
-    MKNetworkOperation *op = [engine operationWithPath:[NSString stringWithFormat:@"/api/schedule?p=2013-12-30&w=%d+%d",week,week + 1] params:nil httpMethod:@"GET" ssl:NO];
+  
+    
+    self.engine = [[MKNetworkEngine alloc] initWithHostName:@"addinghome.com" customHeaderFields:nil];
+    [self.engine useCache];//使用缓存
+    MKNetworkOperation *op = [self.engine operationWithPath:[NSString stringWithFormat:@"/api/schedule?p=2013-12-30&w=%d+%d",week,week + 1] params:nil httpMethod:@"GET" ssl:NO];
     [op addCompletionHandler:^(MKNetworkOperation *operation) {
         NSLog(@"[operation responseData]-->>%@", [operation responseString]);
         
-        [self handleDataByGetNetworkSuccessfullyWithJsonData:[operation responseData]];
-        
+        if (_isLoadNextData) {
+            [self handleNextDataByGetNetworkSuccessfullyWithJsonData:[operation responseData]];
+        }
+        else{
+            [self handlePastDataByGetNetworkSuccessfullyWithJsonData:[operation responseData]];
+        }
+      
         
         //请求数据错误
     }errorHandler:^(MKNetworkOperation *errorOp, NSError* err) {
@@ -189,23 +197,24 @@ static int week = 0;
         [self handleDataByGetNetworkFailly];
         
     }];
-    [engine enqueueOperation:op];
+    [self.engine enqueueOperation:op];
     
     
 }
-- (void)handleDataByGetNetworkSuccessfullyWithJsonData:(NSData *)data
+- (void)handlePastDataByGetNetworkSuccessfullyWithJsonData:(NSData *)data
 {
-    week = 3;
+    currentWeek = 3;
     NSDictionary *resultDic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:nil];
     
     NSDictionary *weekPreviousDic = [resultDic objectForKey:[NSString stringWithFormat:@"w%d",3]];
     NSArray *resultPreviousArray = [weekPreviousDic objectForKey:@"results"];
-    BTRowOfSectionModel *model1 = [[BTRowOfSectionModel alloc] initWithSectionTitle:[NSString stringWithFormat:@"%d周",week] row:[resultPreviousArray count]];
+    BTRowOfSectionModel *model1 = [[BTRowOfSectionModel alloc] initWithSectionTitle:[NSString stringWithFormat:@"%d周",currentWeek] row:[resultPreviousArray count]];
     NSLog(@"resultPreviousArray==%@",resultPreviousArray);
+    NSLog(@"_____%@",model1);
     NSDictionary *weekCurrentDic = [resultDic objectForKey:[NSString stringWithFormat:@"w%d",3 + 1]];
     NSArray *resultCurrentArray = [weekCurrentDic objectForKey:@"results"];
     
-    BTRowOfSectionModel *model2 = [[BTRowOfSectionModel alloc] initWithSectionTitle:[NSString stringWithFormat:@"%d周",week + 1] row:[resultCurrentArray count]];
+    BTRowOfSectionModel *model2 = [[BTRowOfSectionModel alloc] initWithSectionTitle:[NSString stringWithFormat:@"%d周",currentWeek + 1] row:[resultCurrentArray count]];
     
     //骚年 这里是分区数据
     NSMutableArray *section = [NSMutableArray arrayWithObjects:model1,model2, nil];
@@ -221,8 +230,6 @@ static int week = 0;
     NSMutableArray *resultArray = [NSMutableArray arrayWithArray:resultPreviousArray];
     [resultArray addObjectsFromArray:resultCurrentArray];
     
-    NSLog(@"&&&&&&&&&&&&&%@",resultArray);
-    
     
     for (int i = resultArray.count - 1;i >= 0;i--)
     {
@@ -231,11 +238,53 @@ static int week = 0;
         //把一个个的knowledge存入可变数组 modelArray(类初始化的时候应经开辟空间)
         [self.modelArray insertObject:knowledge atIndex:0];//这是行数据
         
+    }
+    
+    [self.tableView reloadData];
+    [self finishReloadingData];//刷新完成
+}
+
+- (void)handleNextDataByGetNetworkSuccessfullyWithJsonData:(NSData *)data
+{
+    currentWeek = 3;
+    NSDictionary *resultDic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:nil];
+    
+    NSDictionary *weekPreviousDic = [resultDic objectForKey:[NSString stringWithFormat:@"w%d",3]];
+    NSArray *resultPreviousArray = [weekPreviousDic objectForKey:@"results"];
+    BTRowOfSectionModel *model1 = [[BTRowOfSectionModel alloc] initWithSectionTitle:[NSString stringWithFormat:@"%d周",currentWeek] row:[resultPreviousArray count]];
+    NSLog(@"resultPreviousArray==%@",resultPreviousArray);
+    NSLog(@"_____%@",model1);
+    NSDictionary *weekCurrentDic = [resultDic objectForKey:[NSString stringWithFormat:@"w%d",3 + 1]];
+    NSArray *resultCurrentArray = [weekCurrentDic objectForKey:@"results"];
+    
+    BTRowOfSectionModel *model2 = [[BTRowOfSectionModel alloc] initWithSectionTitle:[NSString stringWithFormat:@"%d周",currentWeek + 1] row:[resultCurrentArray count]];
+    
+    //骚年 这里是分区数据
+    NSMutableArray *section = [NSMutableArray arrayWithObjects:model1,model2, nil];
+    
+    for (int i = 0; i < [section count];i++) {
+        
+        [self.sectionArray addObject:[section objectAtIndex:i]];//这是分区数据
         
     }
-    [self finishReloadingData];//刷新完成
-    [self.tableView reloadData];
     
+    
+    //下面是每行数据
+    NSMutableArray *resultArray = [NSMutableArray arrayWithArray:resultPreviousArray];
+    [resultArray addObjectsFromArray:resultCurrentArray];
+    
+    
+    for (int i = 0;i < [resultArray count];i++)
+    {
+        NSDictionary * dictionary = [resultArray objectAtIndex:i];
+        BTKnowledgeModel * knowledge = [[BTKnowledgeModel alloc] initWithDictionary:dictionary];
+        //把一个个的knowledge存入可变数组 modelArray(类初始化的时候应经开辟空间)
+        [self.modelArray addObject:knowledge];//这是行数据
+        
+    }
+    
+    [self.tableView reloadData];
+    [self finishReloadingData];//刷新完成
 }
 
 
@@ -276,7 +325,7 @@ static int week = 0;
 //返回到首页
 - (void)toTop:(UIButton *)button
 {
-    [UIView animateWithDuration:0.1 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+    [UIView animateWithDuration:0.5 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
         self.tableView.contentOffset = CGPointMake(0, 0);
     } completion:nil];
     
@@ -373,18 +422,18 @@ static int week = 0;
 - (void)pushNextView:(UIButton *)button
 {
     NSLog(@"点击分区头，进入下一页");
-   
+    
     NSURL *strUrl = [NSURL URLWithString:@"http://www.addinghome.com/blog/app/45"];
     NSURLRequest *request = [NSURLRequest requestWithURL:strUrl];
     self.webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, 320, 460)];
     [self.view addSubview:self.webView];
     [self.webView loadRequest:request];
     self.webView.scalesPageToFit = YES;
-
+    
     UIToolbar *toolBar = [[UIToolbar alloc]initWithFrame:CGRectMake(0, 360, 320, 44)];
     toolBar.backgroundColor = [UIColor blueColor];
     [self.webView addSubview:toolBar];
-
+    
     UIBarButtonItem *barBack = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRewind target:self action:@selector(goBack)];
     UIBarButtonItem *barForward = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop target:self action:@selector(goForward)];
     UIBarButtonItem *barSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
@@ -392,7 +441,7 @@ static int week = 0;
     
     NSArray *arr = [NSArray arrayWithObjects:barBack,barSpace,barForward,nil];
     toolBar.items = arr;
-
+    
 }
 
 - (void)goBack
@@ -414,14 +463,14 @@ static int week = 0;
 {
     NSLog(@"ViewDidStartLoad---");
     [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
-  //  [_activityIndicatorView startAnimating];
+    //  [_activityIndicatorView startAnimating];
 }
 - (void)webViewDidFinishLoad:(UIWebView *)webView
 {
     NSLog(@"webViewDidFinishLoad---");
     [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
     
-   // [_activityIndicatorView stopAnimating];
+    // [_activityIndicatorView stopAnimating];
 }
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error
 {
@@ -463,28 +512,28 @@ static int week = 0;
 - (void)registerLocalNotificationWithDate:(NSDate *)date
 {
     
-       NSLog(@"注册通知");
-       UILocalNotification *notification=[[UILocalNotification alloc] init];
+    NSLog(@"注册通知");
+    UILocalNotification *notification=[[UILocalNotification alloc] init];
     
-       NSTimeInterval inteval = [date timeIntervalSinceDate:[NSDate localdate]];
-       NSDate *now=[NSDate new];
-       notification.fireDate=[now dateByAddingTimeInterval:inteval];//10秒后通知        notification.fireDate=date; //触发通知的时间
-        notification.repeatInterval=0; //循环次数，kCFCalendarUnitWeekday一周一次
-        notification.timeZone=[NSTimeZone localTimeZone];
-        notification.soundName = UILocalNotificationDefaultSoundName;
-        notification.alertBody=@"美妈，该产检了";
-        
-        notification.alertAction = @"打开";  //提示框按钮
-        notification.hasAction = YES; //是否显示额外的按钮，为no时alertAction消失
-        
-        notification.applicationIconBadgeNumber +=1; //设置app图标右上角的数字
-        
-        //下面设置本地通知发送的消息，这个消息可以接受
-        NSDictionary* infoDic = [NSDictionary dictionaryWithObject:@"value" forKey:@"key"];
-        notification.userInfo = infoDic;
-        //发送通知
-        [[UIApplication sharedApplication] scheduleLocalNotification:notification];
-
+    NSTimeInterval inteval = [date timeIntervalSinceDate:[NSDate localdate]];
+    NSDate *now=[NSDate new];
+    notification.fireDate=[now dateByAddingTimeInterval:inteval];//10秒后通知        notification.fireDate=date; //触发通知的时间
+    notification.repeatInterval=0; //循环次数，kCFCalendarUnitWeekday一周一次
+    notification.timeZone=[NSTimeZone localTimeZone];
+    notification.soundName = UILocalNotificationDefaultSoundName;
+    notification.alertBody=@"美妈，该产检了";
+    
+    notification.alertAction = @"打开";  //提示框按钮
+    notification.hasAction = YES; //是否显示额外的按钮，为no时alertAction消失
+    
+    notification.applicationIconBadgeNumber +=1; //设置app图标右上角的数字
+    
+    //下面设置本地通知发送的消息，这个消息可以接受
+    NSDictionary* infoDic = [NSDictionary dictionaryWithObject:@"value" forKey:@"key"];
+    notification.userInfo = infoDic;
+    //发送通知
+    [[UIApplication sharedApplication] scheduleLocalNotification:notification];
+    
 }
 
 #pragma mark - Table view data source
@@ -492,11 +541,12 @@ static int week = 0;
 {
     //在这里判断 用哪个cell进行展示 然后调用cell的自动调整高度的方法
     BTKnowledgeModel *model = [self.modelArray objectAtIndex:indexPath.row];
-    switch ([model.eventId intValue]) {
+    switch ([model.remind intValue]) {
         case 3://提醒
             return [BTWarnCell cellHeightWithMode:model];
             break;
-        case 2://知识类
+        case 0://知识类
+            
             return [BTKnowledgeCell cellHeightWithMode:model];
             break;
             
@@ -507,15 +557,15 @@ static int week = 0;
 }
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    //return [self.sectionArray count];
-    return 1;
+    return [self.sectionArray count];
+    //return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    //    BTRowOfSectionModel *model = [self.rowOfSectionArray objectAtIndex:section];
-    //    return model.row;
-    return [self.modelArray count];
+    BTRowOfSectionModel *model = [self.sectionArray objectAtIndex:section];
+    return model.row;
+    // return [self.modelArray count];
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
@@ -525,12 +575,12 @@ static int week = 0;
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     UIView *aView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 150)];
-    aView.backgroundColor = [UIColor greenColor];
+    aView.backgroundColor = [UIColor whiteColor];
     
     UILabel *lable = [[UILabel alloc] initWithFrame:CGRectMake(5, 5, 60, (44 - 5*2))];
-    lable.backgroundColor = [UIColor blueColor];
+    lable.backgroundColor = [UIColor clearColor];
     lable.textAlignment = NSTextAlignmentCenter;
-    lable.textColor =[UIColor whiteColor];
+    lable.textColor =kGlobalColor;
     
     UIButton *button  = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     button.frame = CGRectMake(320 - 100, 10,100, (44 - 10*2));
@@ -539,12 +589,12 @@ static int week = 0;
     [button addTarget:self action:@selector(pushNextView:) forControlEvents:UIControlEventTouchUpInside];
     [aView addSubview:button];
     
-    // BTRowOfSectionModel *model = [self.rowOfSectionArray objectAtIndex:section];
-    if (section == 0) {
-        lable.text = @"3周";
-        
-        //    lable.text = model.sectionTile;
-    }
+    BTRowOfSectionModel *model = [self.sectionArray objectAtIndex:section];
+    //    if (section == 0) {
+    //        lable.text = @"3周";
+    
+    lable.text = model.sectionTile;
+    //    }
     [aView addSubview: lable];
     
     static int tag = 1001;
@@ -569,18 +619,18 @@ static int week = 0;
     warnCell.selectionStyle = UITableViewCellSelectionStyleNone;
     BTKnowledgeModel *model = [self.modelArray objectAtIndex:indexPath.row];
     //现在2是知识类  3是提醒类
-    if  ([model.eventId intValue] == 3)
-    {
-        warnCell.knowledgeModel = model;
-        return warnCell;
-        
-    }
-   else {
-        cell.knowledgeModel = model;
-        return cell;
-        
-    }
-
+    //    if  ([model.eventId intValue] == 3)
+    //    {
+    //        warnCell.knowledgeModel = model;
+    //        return warnCell;
+    //
+    //    }
+    //   else {
+    cell.knowledgeModel = model;
+    return cell;
+    
+    //    }
+    
     return nil;
     
 }
@@ -678,29 +728,36 @@ static int week = 0;
         // pull up to load more data
         [self performSelector:@selector(getNextPageView) withObject:nil afterDelay:2.0];
     }
-
+    
 }
 
 //刷新调用的方法
 -(void)refreshView
 {
-    week =  week - 2;
-    if (week > 0) {
-        [self getNetworkDataWithWeekOfPregnancy:week];
-    }
-    else
-    {
-        [self finishReloadingData];
-        
-    }
+    //判断到什么时候就没有更多数据了
+    
+    //    currentWeek =  currentWeek - 2;
+    //    if (currentWeek > 0) {
+    //        [self getNetworkDataWithWeekOfPregnancy:currentWeek];
+    //    }
+    //    else
+    //    {
+    //        [self finishReloadingData];
+    //
+    //    }
+    self.isLoadNextData = NO;
+    [self getNetworkDataWithWeekOfPregnancy:3];
     
     
 }
 
 - (void)getNextPageView
 {
-    NSLog(@"上拉加载更多了....");
-    [self finishReloadingData];
+    //判断到什么时候就没有更多数据了
+    
+    self.isLoadNextData = YES;
+    [self getNetworkDataWithWeekOfPregnancy:3];
+  
 }
 #pragma mark -
 #pragma mark method that should be called when the refreshing is finished
@@ -715,9 +772,10 @@ static int week = 0;
     
     if (_refreshFooterView) {
         [_refreshFooterView egoRefreshScrollViewDataSourceDidFinishedLoading:self.tableView];
+        [self removeFooterView];//先移除
         [self setFooterView];
     }
-
+    
     
 }
 
@@ -737,8 +795,8 @@ static int week = 0;
 	{
         [_refreshFooterView egoRefreshScrollViewDidScroll:scrollView];
     }
-
-  
+    
+    
 }
 
 //
@@ -760,7 +818,7 @@ static int week = 0;
 
 - (void)egoRefreshTableDidTriggerRefresh:(EGORefreshPos)aRefreshPos
 {
-	
+
 	[self beginToReloadData:aRefreshPos];
 	
 }

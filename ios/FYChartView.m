@@ -118,10 +118,10 @@
             maxVerticalValue = 100;
             break;
         case BTChartFuntalHeight:
-            maxVerticalValue = 50;
+            maxVerticalValue = 35;
             break;
         case BTChartGirth:
-            maxVerticalValue = 150;
+            maxVerticalValue = 110;
             break;
         default:
             break;
@@ -220,10 +220,10 @@
             maxVerticalValue = 100;
             break;
         case BTChartFuntalHeight:
-            maxVerticalValue = 50;
+            maxVerticalValue = 35;
             break;
         case BTChartGirth:
-            maxVerticalValue = 150;
+            maxVerticalValue = 110;
             break;
         default:
             break;
@@ -300,7 +300,7 @@
 
 
 #pragma mark - 绘制出横坐标
-//只绘制 1周 3周 ...
+//只绘制 1周 4周 7周...
 - (void)drawHorizontalTitle:(CGRect)rect
 
 {
@@ -316,7 +316,7 @@
             NSString *title = nil;
             int remainder = (i+1)%7;
             int week = (i+1)/7 + 1;
-            if ((remainder == 1 && week%3 == 0) || (week == 1 && remainder == 1)) {
+            if ((remainder == 1 && (week - 1)%3 == 0) || (week == 1 && remainder == 1)) {
                 title = [NSString stringWithFormat:@"%d周",(i+1)/7 + 1];
             }
             else{

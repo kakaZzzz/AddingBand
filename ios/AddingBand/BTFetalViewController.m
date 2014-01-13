@@ -39,6 +39,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    self.scrollView.scrollEnabled = NO;
     self.navigationItem.title = @"胎动记录";
     self.view.backgroundColor = [UIColor whiteColor];//有时候，白色的底色也是需要设置的哦
     [self createSubviews];

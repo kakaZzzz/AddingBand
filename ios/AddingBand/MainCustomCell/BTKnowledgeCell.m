@@ -8,6 +8,9 @@
 
 #import "BTKnowledgeCell.h"
 #import "LayoutDef.h"
+#import "EGOImageView.h"
+#import "BTKnowledgeModel.h"
+
 #define kDayLabelX 24/2
 #define kDayLabelY 5
 #define kDayLabelWidth 100
@@ -60,33 +63,46 @@
     //内容标题标签
     self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(kTitleLabelX, kTitleLabelY, kTitleLabelWidth, kTitleLabelHeight)];
     _titleLabel.font = [UIFont systemFontOfSize:FIRST_TITLE_SIZE];
+    _titleLabel.textColor = kBigTextColor;
     _titleLabel.textAlignment = NSTextAlignmentLeft;
     _titleLabel.numberOfLines = 0;
     _titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
     _titleLabel.backgroundColor = [UIColor redColor];
     [self.contentView addSubview:_titleLabel];
     
+    //图片
+    self.contentImage = [[EGOImageView alloc] initWithPlaceholderImage:[UIImage imageNamed:@"main_placeholder_image"]];
+    _contentImage.frame = CGRectMake(_titleLabel.frame.origin.x , _titleLabel.frame.origin.y + _titleLabel.frame.size.height + 10, kContentLabelHeight, kContentLabelHeight);
+     _contentImage.backgroundColor = [UIColor clearColor];
+    [self.contentView addSubview:_contentImage];
+    
     //内容标签
-    self.contentLabel = [[UILabel alloc] initWithFrame:CGRectMake(_titleLabel.frame.origin.x , _titleLabel.frame.origin.y + _titleLabel.frame.size.height + 10, 320 - _titleLabel.frame.origin.x - 24/2, kContentLabelHeight)];
-    _contentLabel.font = [UIFont systemFontOfSize:17.0f];
+    self.contentLabel = [[UILabel alloc] initWithFrame:CGRectMake(_contentImage.frame.origin.x + _contentImage.frame.size.width , _contentImage.frame.origin.y, 320 - _contentImage.frame.origin.x - _contentImage.frame.size.width - 24/2, kContentLabelHeight)];
+    _contentLabel.font = [UIFont systemFontOfSize:SECOND_TITLE_SIZE];
+    _contentLabel.textColor = kContentTextColor;
     _contentLabel.backgroundColor = [UIColor yellowColor];
     _contentLabel.textAlignment = NSTextAlignmentLeft;
     _contentLabel.numberOfLines = 0;
     _contentLabel.lineBreakMode = NSLineBreakByTruncatingTail;
     [self.contentView addSubview:_contentLabel];
     
-    //    //指示图标
-    self.accessoryImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"accessory_gray@2x"]];
-    _accessoryImage.frame = CGRectMake(_titleLabel.frame.origin.x + _titleLabel.frame.size.width,_titleLabel.frame.origin.y, 30, 30);
-    [self.contentView addSubview:_accessoryImage];
+    //指示图标
+    self.accessLabel = [[UILabel alloc] initWithFrame:CGRectMake(320 - 50 , _titleLabel.frame.origin.y, 35, 20)];
+    _accessLabel.font = [UIFont systemFontOfSize:SECOND_TITLE_SIZE];
+    _contentLabel.textColor = kContentTextColor;
+    _accessLabel.backgroundColor = [UIColor yellowColor];
+   _accessLabel.text = @"详情";
+    [self.contentView addSubview:_accessLabel];
+
+    self.accessImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"accessory_gray@2x"]];
+    _accessImage.frame = CGRectMake(_accessLabel.frame.origin.x + _accessLabel.frame.size.width,_accessLabel.frame.origin.y + (_accessLabel.frame.size.height - 15)/2, 15, 15);
+    [self.contentView addSubview:_accessImage];
     
     
     
 }
 + (CGFloat)cellHeightWithMode:(BTKnowledgeModel *)model
 {
-    
-    NSLog(@"返回高度.........");
     
     CGSize size = CGSizeMake(kTitleLabelWidth,2000);
     UIFont *font = [UIFont systemFontOfSize:FIRST_TITLE_SIZE];
@@ -98,20 +114,37 @@
 
 - (void)setKnowledgeModel:(BTKnowledgeModel *)knowledgeModel
 {
-    NSLog(@"走设置方法.........");
+    
     _knowledgeModel = knowledgeModel;
     
     //标题label
     CGSize size = CGSizeMake(_titleLabel.frame.size.width,2000);
     //计算实际frame大小，并将label的frame变成实际大小
     CGSize labelSize = [_knowledgeModel.title sizeWithFont:_titleLabel.font constrainedToSize:size lineBreakMode:NSLineBreakByWordWrapping];
-    self.titleLabel.frame = CGRectMake(_titleLabel.frame.origin.x, _titleLabel.frame.origin.y, labelSize.width, labelSize.height);
+    self.titleLabel.frame = CGRectMake(_titleLabel.frame.origin.x, _titleLabel.frame.origin.y, _titleLabel.frame.size.width, labelSize.height);
     
     
-    self.accessoryImage.frame = CGRectMake(_titleLabel.frame.origin.x + _titleLabel.frame.size.width + 5, _titleLabel.frame.origin.y, 30, 30);
+   // self.accessImage.frame = CGRectMake(_titleLabel.frame.origin.x + _titleLabel.frame.size.width + 5, _titleLabel.frame.origin.y, 30, 30);
     
+    //图片
+    //有图片
+    if (![_knowledgeModel.contentImage isEqualToString:@""]) {
+        self.contentImage.frame = CGRectMake(_contentImage.frame.origin.x, _titleLabel.frame.origin.y + _titleLabel.frame.size.height + 10, kContentLabelHeight, kContentLabelHeight);
+        
+        self.contentImage.imageURL = [NSURL URLWithString:_knowledgeModel.contentImage];//异步加载图片
+        
+        self.contentLabel.frame = CGRectMake(_contentImage.frame.origin.x + _contentImage.frame.size.width , _contentImage.frame.origin.y, 320 - _contentImage.frame.origin.x - _contentImage.frame.size.width - 24/2, kContentLabelHeight);
+
+
+    }
+    //没图片
+    else{
+         _contentImage.frame = CGRectZero;
+        self.contentLabel.frame = CGRectMake(_titleLabel.frame.origin.x  , _titleLabel.frame.origin.y + _titleLabel.frame.size.height + 10, 320 - _titleLabel.frame.origin.x - 24/2, kContentLabelHeight);
+        
+
+    }
     
-    self.contentLabel.frame = CGRectMake(_contentLabel.frame.origin.x, _titleLabel.frame.origin.y + _titleLabel.frame.size.height + 10, _contentLabel.frame.size.width, _contentLabel.frame.size.height);
     
     self.titleLabel.text = _knowledgeModel.title;
     self.contentLabel.text = _knowledgeModel.description;

@@ -82,8 +82,8 @@
                                      UITextAttributeFont: [UIFont systemFontOfSize:20.0]}];
   //  [[UINavigationBar appearance] setTitleTextAttributes: @{UITextAttributeTextColor: titleColor}];
 
-
-    self.navigationBar.translucent =NO;
+   
+     self.navigationBar.translucent =NO;
 
 }
 #pragma mark - push 和 pop 动画效果
@@ -180,6 +180,13 @@
 //    [super pushViewController:viewController animated:NO];
 //}
 
+
+- (void)pushViewController:(UIViewController *)viewController animated:(BOOL)animated
+{
+    [super pushViewController:viewController animated:YES];
+
+     [viewController.navigationItem setHidesBackButton:YES];//隐藏系统的返回按钮
+}
 /**
  *  返回上一级页面
  *
