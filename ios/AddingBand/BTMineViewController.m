@@ -50,7 +50,7 @@ static NSString *version = nil;//版本号
         self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
         self.tableView.separatorColor = [UIColor clearColor];
         self.tableView.showsVerticalScrollIndicator = NO;
-        
+       
         //cell标题内容
         self.titleArray = [NSArray arrayWithObjects:@"关于用户",@"生日",@"末次月经时间",@"预产期",@"系统设置",@"检查更新",@"评分",@"关于",@"意见反馈",nil];
         self.iconArray = [NSArray arrayWithObjects:@"",@"setting_birthday_icon",@"setting_menstrual_icon",@"setting_duedate_icon",@"",@"setting_version_icon",@"setting_grade_icon",@"setting_about_icon",@"setting_feedback_icon" ,nil];

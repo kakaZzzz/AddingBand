@@ -63,6 +63,10 @@
 #define UUID_BATTERY_SERVICE            @"180F"
 #define UUID_BATTERY_LEVEL              @"2A19"
 
+//当前操作的蓝牙设备的状态
+#define CONNECTED_BLE_HAS_GONE          0
+#define CONNECTED_BLE_FINED             1
+
 //同步标志，和设备中的一致
 #define SYNC_CODE                       22
 

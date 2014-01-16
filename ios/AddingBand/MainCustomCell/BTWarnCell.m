@@ -94,6 +94,7 @@
     
     if ([_todoButton.currentBackgroundImage isEqual:[UIImage imageNamed:@"warn_unselected"]]) {
         
+        NSLog(@"点击了button");
         [_todoButton setBackgroundImage:[UIImage imageNamed:@"warn_selected"] forState:UIControlStateNormal];
         
     }

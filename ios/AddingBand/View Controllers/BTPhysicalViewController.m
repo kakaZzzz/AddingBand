@@ -212,6 +212,7 @@ static int selectedTag = 0;
     //记录胎动
     BTView *fetalView = [[BTView alloc] initWithFrame:CGRectMake(0, sportProgressView.frame.origin.y + sportProgressView.frame.size.height, 320, 80)];
     fetalView.backgroundColor = [UIColor whiteColor];
+    [fetalView addTarget:self action:@selector(enterFetalView:) forControlEvents:UIControlEventTouchUpInside];
     [self.scrollView addSubview:fetalView];
     
     
@@ -517,6 +518,13 @@ static int selectedTag = 0;
     sportVC.hidesBottomBarWhenPushed = YES;
     [self.navigationController pushViewController:sportVC animated:YES];
 }
+- (void)enterFetalView:(UIButton *)button
+{
+    BTFetalDailyViewController *fetalDailyVC = [[BTFetalDailyViewController alloc] init];
+    fetalDailyVC.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:fetalDailyVC animated:YES];
+
+}
 //进入胎动记录
 - (void)enterFetalCountView:(UIButton *)button
 {
@@ -532,13 +540,13 @@ static int selectedTag = 0;
     [self.navigationController pushViewController:gluVC animated:YES];
 
 }
-//进入胎心监测
-- (void)enterFetalView:(UIButton *)button
-{
-    BTBabyFetalViewController *babyFetalVC = [[BTBabyFetalViewController alloc] init];
-    babyFetalVC.hidesBottomBarWhenPushed = YES;
-    [self.navigationController pushViewController:babyFetalVC animated:YES];
-}
+////进入胎心监测
+//- (void)enterFetalView:(UIButton *)button
+//{
+//    BTBabyFetalViewController *babyFetalVC = [[BTBabyFetalViewController alloc] init];
+//    babyFetalVC.hidesBottomBarWhenPushed = YES;
+//    [self.navigationController pushViewController:babyFetalVC animated:YES];
+//}
 #pragma mark - 添加弧形的进度条
 - (void)addGradeCircular
 {

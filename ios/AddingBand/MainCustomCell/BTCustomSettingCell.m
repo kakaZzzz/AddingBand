@@ -54,7 +54,7 @@
     
     
     self.lineImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"seperator_line"]];
-    _lineImage.frame = CGRectMake(50, self.frame.size.height-kSeparatorLineHeight , 320-50, kSeparatorLineHeight);
+    _lineImage.frame = CGRectMake(50, self.frame.size.height + 0.5 , 320-50, kSeparatorLineHeight);
     [self.contentView addSubview:_lineImage];
 
 }

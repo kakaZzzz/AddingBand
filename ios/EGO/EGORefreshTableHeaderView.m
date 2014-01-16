@@ -52,7 +52,7 @@
         }
         label.autoresizingMask = UIViewAutoresizingFlexibleWidth;
 		label.font = [UIFont systemFontOfSize:12.0f];
-		label.textColor = textColor;
+		label.textColor = kContentTextColor;
 		label.shadowColor = [UIColor colorWithWhite:0.9f alpha:1.0f];
 		label.shadowOffset = CGSizeMake(0.0f, 1.0f);
 		label.backgroundColor = [UIColor clearColor];
@@ -70,12 +70,12 @@
         }
 		label.autoresizingMask = UIViewAutoresizingFlexibleWidth;
 		label.font = [UIFont boldSystemFontOfSize:13.0f];
-		label.textColor = textColor;
+		label.textColor = kWhiteColor;
 //		label.shadowColor = [UIColor colorWithWhite:0.9f alpha:1.0f];
 //		label.shadowOffset = CGSizeMake(0.0f, 1.0f);
 		label.backgroundColor = [UIColor clearColor];
 		label.textAlignment = NSTextAlignmentCenter;
-		[self addSubview:label];
+		[self addSubview:label];//废话内容
 		_statusLabel=label;
         
         [_statusLabel setFont:[UIFont systemFontOfSize:15]];
@@ -103,7 +103,7 @@
 		_arrowImage=layer;
 		}
         
-        UIActivityIndicatorView *view = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+        UIActivityIndicatorView *view = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
         if (vertical) {
            // view.frame = CGRectMake(25.0f, frame.size.height - 38.0f, 20.0f, 20.0f);
             view.frame = CGRectMake((frame.size.width-20)/2, frame.size.height - 30.0f, 20.0f, 20.0f);

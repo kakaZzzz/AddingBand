@@ -35,6 +35,7 @@
         self.waitForNextSync = YES;
         
         self.globals.displayBleList = NO;
+        self.globals.connectedBleStatus = CONNECTED_BLE_HAS_GONE;
         
          [NSTimer scheduledTimerWithTimeInterval:SCAN_INTERVAL target:self selector:@selector(doScan:) userInfo:nil repeats:YES];
     }
@@ -146,6 +147,8 @@
                     
                     //sn也一致的话，直接连接
                     // rightOne = NO;//不让列表再刷新  直接在历史页面进行设备连接
+                    
+                    self.globals.connectedBleStatus = CONNECTED_BLE_FINED;
                     
                     isLast = YES;
                     
@@ -670,6 +673,8 @@
             new.isConnecting = NO;
             
             [_allPeripherals setObject:new forKey:new.name];
+            
+            self.globals.connectedBleStatus = CONNECTED_BLE_HAS_GONE;
             
             //把coredata里的数据删除
             //            [_context delete:old];

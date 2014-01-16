@@ -201,7 +201,7 @@ static BTSyncTwoViewController *syncTwoVC = nil;
     UILabel *contentLabel = [[UILabel alloc] initWithFrame:CGRectMake((320 - 300)/2, _syncIcon.frame.origin.y + _syncIcon.frame.size.height + 30, 300, 20)];
     contentLabel.backgroundColor = [UIColor clearColor];
     contentLabel.font = [UIFont systemFontOfSize:SECOND_TITLE_SIZE];
-    contentLabel.textColor = [UIColor colorWithRed:255/255.0 green:180/255.0 blue:195/255.0 alpha:1.0];
+    contentLabel.textColor = kWhiteColor;
     contentLabel.textAlignment = NSTextAlignmentCenter;
     contentLabel.text = @"美妈，我们会5分钟为您自动同步一次哦";
     contentLabel.lineBreakMode = NSLineBreakByTruncatingTail;
@@ -227,6 +227,7 @@ static BTSyncTwoViewController *syncTwoVC = nil;
 {
     
     NSLog(@"自己点击同步");
+    [[NSNotificationCenter defaultCenter] postNotificationName:HANDLETOSYNCNOTICE object:nil];
     [self.bc scanAndSync];
     if ([_syncIcon isAnimating]) {
         [_syncIcon stopAnimating];

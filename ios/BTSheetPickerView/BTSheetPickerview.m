@@ -352,8 +352,8 @@
       self.isShow = YES;
        [UIView animateWithDuration:kModalViewAnimationDuration animations:^{
            
-     CGAffineTransform t = CGAffineTransformScale(CGAffineTransformIdentity, 0.9, 0.9);
-    [self.referView setTransform:t];
+//     CGAffineTransform t = CGAffineTransformScale(CGAffineTransformIdentity, 0.9, 0.9);
+//    [self.referView setTransform:t];
 
         self.alpha = 1;
         self.coverView.alpha = 1;
@@ -374,9 +374,9 @@
         self.alpha = 0;
         self.coverView.alpha = 0;
        // CGAffineTransform t = CGAffineTransformScale(CGAffineTransformIdentity, 1.0, 1.0);
-        CGAffineTransform t = CGAffineTransformIdentity;
-
-        [self.referView setTransform:t];
+//        CGAffineTransform t = CGAffineTransformIdentity;
+//
+//        [self.referView setTransform:t];
 
         
     } completion:^(BOOL finished) {
