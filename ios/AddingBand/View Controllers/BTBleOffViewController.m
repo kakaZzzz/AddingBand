@@ -62,8 +62,12 @@
     
     
     UIView *aView = [[UIView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 49 - 100/2 - 50, 320, 100/2)];
+    if (IOS7_OR_LATER) {
+        aView.frame = CGRectMake(0, self.view.frame.size.height - 49 - 100/2 - 70, 320, 100/2);
+    }
+
     aView.backgroundColor = kGlobalColor;
-    [self.view addSubview:aView];
+  //  [self.view addSubview:aView];
     
     UILabel *aLabel = [[UILabel alloc] initWithFrame:CGRectMake(24/2, (aView.frame.size.height - 30)/2 , 150, 30)];
     aLabel.textColor = [UIColor whiteColor];
@@ -79,7 +83,7 @@
     [detailButton setBackgroundImage:[UIImage imageNamed:@"detain_button_unselected"] forState:UIControlStateNormal];
     [detailButton setBackgroundImage:[UIImage imageNamed:@"detain_button_selected"] forState:UIControlStateSelected];
     [detailButton setBackgroundImage:[UIImage imageNamed:@"detain_button_selected"] forState:UIControlStateHighlighted];
-    [aView addSubview:detailButton];
+   [aView addSubview:detailButton];
     
     UILabel *buttonLabel = [[UILabel alloc] initWithFrame:CGRectMake((detailButton.frame.size.width - 70)/2, (detailButton.frame.size.height - 30)/2, 70, 30)];
     buttonLabel.font = [UIFont systemFontOfSize:FIRST_TITLE_SIZE];
@@ -89,8 +93,8 @@
     buttonLabel.textAlignment = NSTextAlignmentCenter;
     [detailButton addSubview:buttonLabel];
     
-    UIImageView *accessorImage = [[UIImageView alloc] initWithFrame:CGRectMake((detailButton.frame.size.width - 20), (detailButton.frame.size.height - 20)/2, 20, 20)];
-    accessorImage.image = [UIImage imageNamed:@"accessory_gray"];
+    UIImageView *accessorImage = [[UIImageView alloc] initWithFrame:CGRectMake((detailButton.frame.size.width - 20), (detailButton.frame.size.height - 20/2)/2, 12/2, 20/2)];
+    accessorImage.image = [UIImage imageNamed:@"accessory_white"];
     [detailButton addSubview:accessorImage];
 
     

@@ -58,6 +58,7 @@
 -(Boolean)isConnectedByModel:(NSString*)model;
 
 -(void)restartScan;
+-(void)cleanBLECache;
 
 -(void)scanAndSync;
 

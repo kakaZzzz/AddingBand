@@ -24,7 +24,7 @@
 
 #define kTitleX 24/2
 #define kTitleY 20
-#define kTitleWidth 250
+#define kTitleWidth 100
 #define kTitleHeight 60/2
 
 #define kTableViewX 0
@@ -100,18 +100,22 @@
     
     //菊花
     self.indicator = [[MBProgressHUD alloc] initWithView:self.navigationController.view];
-    _indicator.labelText = @"正在搜索";
+   // _indicator.labelText = @"正在搜索";
     [self.navigationController.view addSubview:_indicator];
-    [_indicator show:YES];
+   // [_indicator show:YES];
 
     //加载scrollview
     self.aScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, -20, self.view.frame.size.width, self.view.frame.size.height)];
     _aScrollView.contentSize = CGSizeMake(self.view.frame.size.width, self.view.frame.size.height + 100);
     _aScrollView.backgroundColor = [UIColor whiteColor];
     _aScrollView.showsVerticalScrollIndicator = NO;
+    _aScrollView.scrollEnabled = NO;
     [self.view addSubview:_aScrollView];
     //加载tableview
     self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(kTableViewX, kTableViewY, kTableViewWidth,kTableViewHeight)];
+    if (IPHONE_5_OR_LATER) {
+    self.tableView.frame = CGRectMake(kTableViewX, kTableViewY, kTableViewWidth,380);
+    }
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     _tableView.dataSource = self;
     _tableView.delegate = self;
@@ -175,6 +179,13 @@
     _labelSection.text = @"可连接设备";
     _labelSection.textAlignment = NSTextAlignmentLeft;
     [self.aScrollView addSubview:_labelSection];
+    
+    //系统菊花
+    
+    UIActivityIndicatorView *activeView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    activeView.frame = CGRectMake(_labelSection.frame.origin.x + _labelSection.frame.size.width, _labelSection.frame.origin.y + 15, 1.0, 1.0);
+    [self.aScrollView addSubview:activeView];
+    [activeView startAnimating];
     //下面加一道线
 //    UIImageView *lineImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"sep_line.png"]];
 //    lineImage.frame = CGRectMake(0, _labelSection.frame.origin.y + _labelSection.frame.size.height -2 , 320, 2);
@@ -184,7 +195,7 @@
     
     
     
-    UILabel *warnLabel = [[UILabel alloc]initWithFrame:CGRectMake((320 - kWarningLableWidth)/2, kWarningLableY,kWarningLableWidth,kWarningLableHeight)];
+    UILabel *warnLabel = [[UILabel alloc]initWithFrame:CGRectMake((320 - kWarningLableWidth)/2, kWarningLableY,kWarningLableWidth,self.tableView.frame.size.height)];
     warnLabel.backgroundColor = [UIColor clearColor];
     warnLabel.font = [UIFont systemFontOfSize:FIRST_TITLE_SIZE];
     warnLabel.textColor = [BTColor getColor:contentLabelColor];
@@ -196,9 +207,13 @@
     [self.aScrollView addSubview:warnLabel];
     
     
-    UIView *aView = [[UIView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 49 - 100/2 - 30, 320, 100/2)];
+    UIView *aView = [[UIView alloc] initWithFrame:CGRectMake(0, self.aScrollView.frame.size.height - 49 - 100/2 - 30, 320, 100/2)];
+    if (IOS7_OR_LATER) {
+        aView.frame = CGRectMake(0, self.aScrollView.frame.size.height - 49 - 100/2 - 50, 320, 100/2);
+    }
+
     aView.backgroundColor = kGlobalColor;
-    [self.aScrollView addSubview:aView];
+  //  [self.aScrollView addSubview:aView];
     
     UILabel *aLabel = [[UILabel alloc] initWithFrame:CGRectMake(24/2, (aView.frame.size.height - 30)/2 , 150, 30)];
     aLabel.textColor = [UIColor whiteColor];
@@ -224,9 +239,10 @@
     buttonLabel.textAlignment = NSTextAlignmentCenter;
     [detailButton addSubview:buttonLabel];
 
-    UIImageView *accessorImage = [[UIImageView alloc] initWithFrame:CGRectMake((detailButton.frame.size.width - 20), (detailButton.frame.size.height - 20)/2, 20, 20)];
-    accessorImage.image = [UIImage imageNamed:@"accessory_gray"];
+    UIImageView *accessorImage = [[UIImageView alloc] initWithFrame:CGRectMake((detailButton.frame.size.width - 20), (detailButton.frame.size.height - 20/2)/2, 12/2, 20/2)];
+    accessorImage.image = [UIImage imageNamed:@"accessory_white"];
     [detailButton addSubview:accessorImage];
+
 
 }
 
@@ -396,8 +412,8 @@
                 [self removeWarnningViewFromSuperview];
                 [self.syncTwoVC.view removeFromSuperview];
             
-                self.indicator.labelText = @"正在搜索设备";
-                [self.indicator show:YES];
+               // self.indicator.labelText = @"正在搜索设备";
+               // [self.indicator show:YES];
 
             
                 //移除页面
@@ -408,6 +424,12 @@
                 
             }
         }
+    
+    if (alertView.tag == TIME_OUT_ALERT) {
+        [self.bc restartScan];
+        [self.bc cleanBLECache];
+        [self.indicator show:YES];
+    }
 
 }
 
@@ -587,7 +609,7 @@ if (!self.bc.isBleOFF) {
                     self.syncTwoVC.peripheralName.text = bp.name;
                     self.syncTwoVC.batteryLabel.text = [NSString stringWithFormat:@"电量:%@%@",batteryLevel,@"%"];
                     [self changeBatteryIconWithBattery:[batteryLevel intValue]];
-                    self.syncTwoVC.syncButton.userInteractionEnabled = YES;//手动同步按钮可用
+                    self.syncTwoVC.syncButton.userInteractionEnabled = NO;//手动同步按钮可用
                     // self.syncTwoVC.batteryLabel.text = [NSString stringWithFormat:@"电量:%@%@",batteryLevel,@"%"];
                     //停止动画
                     [self.syncTwoVC.syncIcon stopAnimating];
@@ -602,10 +624,9 @@ if (!self.bc.isBleOFF) {
                     [self addLinkSuccessfulView];
                     self.syncTwoVC.linkLabel.text = [NSString stringWithFormat:@"正在搜索.."];
                     self.syncTwoVC.peripheralName.text = bp.name;
-                    self.syncTwoVC.syncButton.userInteractionEnabled = YES;//手动同步按钮可用
+                    self.syncTwoVC.syncButton.userInteractionEnabled = NO;//手动同步按钮可用
                    self.syncTwoVC.batteryLabel.text = [NSString stringWithFormat:@"电量:%@%@",batteryLevel,@"%"];
                    [self changeBatteryIconWithBattery:[batteryLevel intValue]];
-
                     // self.syncTwoVC.batteryLabel.text = [NSString stringWithFormat:@"电量:%@%@",batteryLevel,@"%"];
                     //停止动画
                     [self.syncTwoVC.syncIcon stopAnimating];
@@ -625,6 +646,7 @@ if (!self.bc.isBleOFF) {
     else{
             [self removeWarnningViewFromSuperview];
             [self addLinkSuccessfulView];
+            _lastSyncTime = [self.bc getLastSyncDesc:MAM_BAND_MODEL];
             self.syncTwoVC.linkLabel.text = _lastSyncTime;//上次同步
             self.syncTwoVC.peripheralName.text = bp.name;
           //到这里之所以不改变电量图标 是为了不让用户感觉到又断开了连接
@@ -645,19 +667,20 @@ if (!self.bc.isBleOFF) {
     
     
 }
+#pragma mark - 根据电量调整电量图标
 - (void)changeBatteryIconWithBattery:(int)battery
 {
+    
     if (battery == 0) {
-        self.syncTwoVC.batteryImage.image = [UIImage imageNamed:@"battery_unkonwn_icon"];
+         self.syncTwoVC.batteryImage.image = [UIImage imageNamed:@"battery_icon0"];
     }
-    else if (battery >0 && battery <80)
+    else if (battery > 0 && battery <10)
     {
-        self.syncTwoVC.batteryImage.image = [UIImage imageNamed:@"battery_lowpower_icon"];
-        
+        self.syncTwoVC.batteryImage.image = [UIImage imageNamed:@"battery_icon1"];
     }
-    else
-    {
-        self.syncTwoVC.batteryImage.image = [UIImage imageNamed:@"battery_hignpower_icon"];
+    else{
+        self.syncTwoVC.batteryImage.image = [UIImage imageNamed:[NSString stringWithFormat:@"battery_icon%d",(battery/10)]];
+
     }
 
 }
@@ -690,7 +713,7 @@ if (!self.bc.isBleOFF) {
 - (void)linkBleTimout
 {
     //弹出提醒框
-    UIAlertView *aLart = [[UIAlertView alloc] initWithTitle:@"连接超时" message:@"请检查设备,靠近您的手机和手环,并重新连接" delegate:self cancelButtonTitle:@"知道了" otherButtonTitles:@"取消", nil];
+    UIAlertView *aLart = [[UIAlertView alloc] initWithTitle:@"连接超时" message:@"请检查设备,靠近您的手机和手环,并重新连接" delegate:self cancelButtonTitle:@"知道了" otherButtonTitles:nil, nil];
     aLart.tag = TIME_OUT_ALERT;
     [aLart show];
 

@@ -16,7 +16,7 @@
     if (self) {
         // Initialization code
         
-        self.separationLine = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"horizontal_sep_line"]];
+        self.separationLine = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"seperator_line"]];
         _separationLine.frame = CGRectMake(4, self.frame.size.height - kSeparatorLineHeight, (320 - 4*2), kSeparatorLineHeight);
         [self addSubview:_separationLine];
     }

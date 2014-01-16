@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		72269017183DAC2700D6405E /* uestime_bg.png in Resources */ = {isa = PBXBuildFile; fileRef = 72269015183DAC2700D6405E /* uestime_bg.png */; };
 		72269018183DAC2700D6405E /* uestime_bg@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 72269016183DAC2700D6405E /* uestime_bg@2x.png */; };
+		722E1F631886247F0090E287 /* seperator_line@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 722E1F621886247F0090E287 /* seperator_line@2x.png */; };
 		722EDEF9182A3D43006B25EE /* BTBluetoothLinkCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 722EDEF8182A3D43006B25EE /* BTBluetoothLinkCell.m */; };
 		72316A9F1877D15D00A166BD /* BTGirthStandard.m in Sources */ = {isa = PBXBuildFile; fileRef = 72316A9E1877D15D00A166BD /* BTGirthStandard.m */; };
 		72316AAB1877D2BC00A166BD /* BTPhysicalStandard.m in Sources */ = {isa = PBXBuildFile; fileRef = 72316AAA1877D2BC00A166BD /* BTPhysicalStandard.m */; };
@@ -51,7 +52,6 @@
 		723F0EE4183C67D0005F1921 /* sync_btn_sel@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 723F0EE0183C67D0005F1921 /* sync_btn_sel@2x.png */; };
 		723F0EE5183C67D0005F1921 /* sync_btn.png in Resources */ = {isa = PBXBuildFile; fileRef = 723F0EE1183C67D0005F1921 /* sync_btn.png */; };
 		723F0EE6183C67D0005F1921 /* sync_btn@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 723F0EE2183C67D0005F1921 /* sync_btn@2x.png */; };
-		723F0EF0183CB640005F1921 /* BTSyncccViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 723F0EEF183CB640005F1921 /* BTSyncccViewController.m */; };
 		723F0EF5183CC0D3005F1921 /* refresh_btn_sel.png in Resources */ = {isa = PBXBuildFile; fileRef = 723F0EF1183CC0D3005F1921 /* refresh_btn_sel.png */; };
 		723F0EF6183CC0D3005F1921 /* refresh_btn_sel@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 723F0EF2183CC0D3005F1921 /* refresh_btn_sel@2x.png */; };
 		723F0EF7183CC0D3005F1921 /* refresh_btn.png in Resources */ = {isa = PBXBuildFile; fileRef = 723F0EF3183CC0D3005F1921 /* refresh_btn.png */; };
@@ -124,6 +124,16 @@
 		7255ADA7186D5BE0003A0913 /* physical_fetal_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7255ADA5186D5BE0003A0913 /* physical_fetal_icon@2x.png */; };
 		7255ADA8186D5BE0003A0913 /* physical_blood_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7255ADA6186D5BE0003A0913 /* physical_blood_icon@2x.png */; };
 		7255ADAB186D66F7003A0913 /* BTUCViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7255ADAA186D66F7003A0913 /* BTUCViewController.m */; };
+		72560C981884E959006F9B22 /* accessory_white@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 72560C971884E959006F9B22 /* accessory_white@2x.png */; };
+		72560C9D1884EB17006F9B22 /* guide_iphone5earlier1@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 72560C9A1884EB17006F9B22 /* guide_iphone5earlier1@2x.png */; };
+		72560CA01884EE4C006F9B22 /* guide_iphone5earlier3@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 72560C9F1884EE4C006F9B22 /* guide_iphone5earlier3@2x.png */; };
+		72560CA21884F041006F9B22 /* guide_accessory@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 72560CA11884F041006F9B22 /* guide_accessory@2x.png */; };
+		72560CA61884F139006F9B22 /* guide_iphone5later1@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 72560CA31884F139006F9B22 /* guide_iphone5later1@2x.png */; };
+		72560CA71884F139006F9B22 /* guide_iphone5later2@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 72560CA41884F139006F9B22 /* guide_iphone5later2@2x.png */; };
+		72560CA81884F139006F9B22 /* guide_iphone5later3@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 72560CA51884F139006F9B22 /* guide_iphone5later3@2x.png */; };
+		72560CAA1884FAFA006F9B22 /* guide_iphone5earlier2@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 72560CA91884FAFA006F9B22 /* guide_iphone5earlier2@2x.png */; };
+		72560CAD18850246006F9B22 /* BTPersonalDataView.m in Sources */ = {isa = PBXBuildFile; fileRef = 72560CAC18850246006F9B22 /* BTPersonalDataView.m */; };
+		72560CF8188565A0006F9B22 /* sport_progress@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 72560CF7188565A0006F9B22 /* sport_progress@2x.png */; };
 		7257F04C1880F14C002E9D31 /* antenatel_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7257F04B1880F14C002E9D31 /* antenatel_icon@2x.png */; };
 		725E018D182CDF0B00022A15 /* BTGetData.m in Sources */ = {isa = PBXBuildFile; fileRef = 725E018C182CDF0B00022A15 /* BTGetData.m */; };
 		725E9B7B1867E30800BD2354 /* BTWarnCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 725E9B7A1867E30800BD2354 /* BTWarnCell.m */; };
@@ -162,8 +172,6 @@
 		728B794D187BF4360076CE93 /* BTKnowledgeModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 728B794A187BF4360076CE93 /* BTKnowledgeModel.m */; };
 		728B7956187BF4640076CE93 /* knowledge_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 728B7950187BF4640076CE93 /* knowledge_icon@2x.png */; };
 		728B7957187BF4640076CE93 /* anchor_unselected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 728B7951187BF4640076CE93 /* anchor_unselected@2x.png */; };
-		728B7958187BF4640076CE93 /* warn_unselected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 728B7952187BF4640076CE93 /* warn_unselected@2x.png */; };
-		728B7959187BF4640076CE93 /* warn_selected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 728B7953187BF4640076CE93 /* warn_selected@2x.png */; };
 		728B795A187BF4640076CE93 /* anchor_selected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 728B7954187BF4640076CE93 /* anchor_selected@2x.png */; };
 		728B795B187BF4640076CE93 /* warn_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 728B7955187BF4640076CE93 /* warn_icon@2x.png */; };
 		728B795E187BF4A90076CE93 /* BTRowOfSectionModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 728B795D187BF4A90076CE93 /* BTRowOfSectionModel.m */; };
@@ -173,7 +181,6 @@
 		728C60841855C47900232B4F /* BTBadgeManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 728C60831855C47900232B4F /* BTBadgeManager.m */; };
 		728ECC0318239AB0005053FE /* BTNavicationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 728ECC0218239AB0005053FE /* BTNavicationController.m */; };
 		728ECC0B1823B64F005053FE /* RBParallaxTableVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 728ECC0A1823B64F005053FE /* RBParallaxTableVC.m */; };
-		729293F91838D149007B09A7 /* 透明.png in Resources */ = {isa = PBXBuildFile; fileRef = 729293F81838D149007B09A7 /* 透明.png */; };
 		7298793718616A7B00039E83 /* physical_grade@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7298793618616A7B00039E83 /* physical_grade@2x.png */; };
 		729879391861716D00039E83 /* physical_sport_bg@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 729879381861716D00039E83 /* physical_sport_bg@2x.png */; };
 		7298793C18618B4200039E83 /* BTScrollViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7298793B18618B4200039E83 /* BTScrollViewController.m */; };
@@ -317,13 +324,37 @@
 		72CB9C41182B599E00C0DAF0 /* BTEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 72CB9C40182B599E00C0DAF0 /* BTEntity.m */; };
 		72CB9C49182B59D100C0DAF0 /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72CB9C48182B59D100C0DAF0 /* CoreBluetooth.framework */; };
 		72CFDD051856F2320008816D /* BTSettingCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 72CFDD041856F2320008816D /* BTSettingCell.m */; };
+		72D5DEC41886345D00E6EB33 /* BTBlogDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 72D5DEC31886345D00E6EB33 /* BTBlogDetailViewController.m */; };
+		72D5DEC6188642A200E6EB33 /* grade_demo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 72D5DEC5188642A200E6EB33 /* grade_demo@2x.png */; };
+		72D5DEC9188651ED00E6EB33 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 72D5DEC7188651ED00E6EB33 /* Default@2x.png */; };
+		72D5DECA188651ED00E6EB33 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 72D5DEC8188651ED00E6EB33 /* Default-568h@2x.png */; };
+		72D5DED718867FDB00E6EB33 /* icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 72D5DED518867FDB00E6EB33 /* icon@2x.png */; };
+		72D5DED818867FDB00E6EB33 /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 72D5DED618867FDB00E6EB33 /* icon.png */; };
+		72D5DEDA188685D500E6EB33 /* navigation_logo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 72D5DED9188685D500E6EB33 /* navigation_logo@2x.png */; };
+		72D5DEEB188690A200E6EB33 /* loading4@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 72D5DEE6188690A200E6EB33 /* loading4@2x.png */; };
+		72D5DEEC188690A200E6EB33 /* loading1@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 72D5DEE7188690A200E6EB33 /* loading1@2x.png */; };
+		72D5DEED188690A200E6EB33 /* loading2@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 72D5DEE8188690A200E6EB33 /* loading2@2x.png */; };
+		72D5DEEE188690A200E6EB33 /* loading5@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 72D5DEE9188690A200E6EB33 /* loading5@2x.png */; };
+		72D5DEEF188690A200E6EB33 /* loading3@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 72D5DEEA188690A200E6EB33 /* loading3@2x.png */; };
+		72D947BD1887C2BE0096276C /* BTSyncccViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 72D947BC1887C2BE0096276C /* BTSyncccViewController.m */; };
+		72D947C01887C4DC0096276C /* warn_unselected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 72D947BE1887C4DC0096276C /* warn_unselected@2x.png */; };
+		72D947C11887C4DC0096276C /* warn_selected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 72D947BF1887C4DC0096276C /* warn_selected@2x.png */; };
+		72D947CF1887C6820096276C /* battery_icon0@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 72D947C31887C6820096276C /* battery_icon0@2x.png */; };
+		72D947D01887C6820096276C /* battery_icon10@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 72D947C41887C6820096276C /* battery_icon10@2x.png */; };
+		72D947D11887C6820096276C /* battery_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 72D947C51887C6820096276C /* battery_icon@2x.png */; };
+		72D947D21887C6820096276C /* battery_icon2@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 72D947C61887C6820096276C /* battery_icon2@2x.png */; };
+		72D947D31887C6820096276C /* battery_icon3@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 72D947C71887C6820096276C /* battery_icon3@2x.png */; };
+		72D947D41887C6820096276C /* battery_icon4@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 72D947C81887C6820096276C /* battery_icon4@2x.png */; };
+		72D947D51887C6820096276C /* battery_icon5@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 72D947C91887C6820096276C /* battery_icon5@2x.png */; };
+		72D947D61887C6820096276C /* battery_icon6@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 72D947CA1887C6820096276C /* battery_icon6@2x.png */; };
+		72D947D71887C6820096276C /* battery_icon7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 72D947CB1887C6820096276C /* battery_icon7@2x.png */; };
+		72D947D81887C6820096276C /* battery_icon8@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 72D947CC1887C6820096276C /* battery_icon8@2x.png */; };
+		72D947D91887C6820096276C /* battery_icon9@x.png in Resources */ = {isa = PBXBuildFile; fileRef = 72D947CD1887C6820096276C /* battery_icon9@x.png */; };
+		72D947DA1887C6820096276C /* battery_icon_unknown@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 72D947CE1887C6820096276C /* battery_icon_unknown@2x.png */; };
 		72E3E50A182B8C040062DA3D /* BTBluetoothConnectedCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 72E3E509182B8C040062DA3D /* BTBluetoothConnectedCell.m */; };
 		72E3E50D182B9A360062DA3D /* BTBluetoothFindCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 72E3E50C182B9A360062DA3D /* BTBluetoothFindCell.m */; };
 		72EE54601846F9EB00093583 /* lace_bg@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 72EE545E1846F9EB00093583 /* lace_bg@2x.png */; };
 		72EE54671847035D00093583 /* test_bg@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 72EE54661847035D00093583 /* test_bg@2x.png */; };
-		72EE546A18470A0E00093583 /* icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 72EE546818470A0E00093583 /* icon@2x.png */; };
-		72EE546B18470A0E00093583 /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 72EE546918470A0E00093583 /* icon.png */; };
-		72EE546D18470A6600093583 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 72EE546C18470A6600093583 /* Default-568h@2x.png */; };
 		F4A6B27F186D950D007AEB12 /* libUMSocial_Sdk_3.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 725E9C9F1868333200BD2354 /* libUMSocial_Sdk_3.2.a */; };
 		F4A6B280186D9552007AEB12 /* libUMSocial_Sdk_Comment_3.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 725E9CA01868333200BD2354 /* libUMSocial_Sdk_Comment_3.2.a */; };
 		F4A6B281186D9599007AEB12 /* libWeChatSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 725E9C901868333200BD2354 /* libWeChatSDK.a */; };
@@ -342,6 +373,7 @@
 /* Begin PBXFileReference section */
 		72269015183DAC2700D6405E /* uestime_bg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = uestime_bg.png; sourceTree = "<group>"; };
 		72269016183DAC2700D6405E /* uestime_bg@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "uestime_bg@2x.png"; sourceTree = "<group>"; };
+		722E1F621886247F0090E287 /* seperator_line@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "seperator_line@2x.png"; sourceTree = "<group>"; };
 		722EDEF7182A3D43006B25EE /* BTBluetoothLinkCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTBluetoothLinkCell.h; sourceTree = "<group>"; };
 		722EDEF8182A3D43006B25EE /* BTBluetoothLinkCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTBluetoothLinkCell.m; sourceTree = "<group>"; };
 		72316A9D1877D15D00A166BD /* BTGirthStandard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BTGirthStandard.h; path = AddingBand/BTGirthStandard.h; sourceTree = "<group>"; };
@@ -409,7 +441,6 @@
 		723F0EE1183C67D0005F1921 /* sync_btn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sync_btn.png; sourceTree = "<group>"; };
 		723F0EE2183C67D0005F1921 /* sync_btn@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sync_btn@2x.png"; sourceTree = "<group>"; };
 		723F0EEE183CB640005F1921 /* BTSyncccViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BTSyncccViewController.h; path = "View Controllers/BTSyncccViewController.h"; sourceTree = "<group>"; };
-		723F0EEF183CB640005F1921 /* BTSyncccViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BTSyncccViewController.m; path = "View Controllers/BTSyncccViewController.m"; sourceTree = "<group>"; };
 		723F0EF1183CC0D3005F1921 /* refresh_btn_sel.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = refresh_btn_sel.png; sourceTree = "<group>"; };
 		723F0EF2183CC0D3005F1921 /* refresh_btn_sel@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "refresh_btn_sel@2x.png"; sourceTree = "<group>"; };
 		723F0EF3183CC0D3005F1921 /* refresh_btn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = refresh_btn.png; sourceTree = "<group>"; };
@@ -506,6 +537,17 @@
 		7255ADA6186D5BE0003A0913 /* physical_blood_icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "physical_blood_icon@2x.png"; sourceTree = "<group>"; };
 		7255ADA9186D66F7003A0913 /* BTUCViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BTUCViewController.h; path = "View Controllers/BTUCViewController.h"; sourceTree = "<group>"; };
 		7255ADAA186D66F7003A0913 /* BTUCViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BTUCViewController.m; path = "View Controllers/BTUCViewController.m"; sourceTree = "<group>"; };
+		72560C971884E959006F9B22 /* accessory_white@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "accessory_white@2x.png"; sourceTree = "<group>"; };
+		72560C9A1884EB17006F9B22 /* guide_iphone5earlier1@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "guide_iphone5earlier1@2x.png"; sourceTree = "<group>"; };
+		72560C9F1884EE4C006F9B22 /* guide_iphone5earlier3@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "guide_iphone5earlier3@2x.png"; sourceTree = "<group>"; };
+		72560CA11884F041006F9B22 /* guide_accessory@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "guide_accessory@2x.png"; sourceTree = "<group>"; };
+		72560CA31884F139006F9B22 /* guide_iphone5later1@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "guide_iphone5later1@2x.png"; sourceTree = "<group>"; };
+		72560CA41884F139006F9B22 /* guide_iphone5later2@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "guide_iphone5later2@2x.png"; sourceTree = "<group>"; };
+		72560CA51884F139006F9B22 /* guide_iphone5later3@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "guide_iphone5later3@2x.png"; sourceTree = "<group>"; };
+		72560CA91884FAFA006F9B22 /* guide_iphone5earlier2@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "guide_iphone5earlier2@2x.png"; sourceTree = "<group>"; };
+		72560CAB18850246006F9B22 /* BTPersonalDataView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BTPersonalDataView.h; path = "View Controllers/BTPersonalDataView.h"; sourceTree = "<group>"; };
+		72560CAC18850246006F9B22 /* BTPersonalDataView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BTPersonalDataView.m; path = "View Controllers/BTPersonalDataView.m"; sourceTree = "<group>"; };
+		72560CF7188565A0006F9B22 /* sport_progress@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sport_progress@2x.png"; sourceTree = "<group>"; };
 		7257F04B1880F14C002E9D31 /* antenatel_icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "antenatel_icon@2x.png"; sourceTree = "<group>"; };
 		725E018B182CDF0B00022A15 /* BTGetData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BTGetData.h; path = Global/BTGetData.h; sourceTree = "<group>"; };
 		725E018C182CDF0B00022A15 /* BTGetData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BTGetData.m; path = Global/BTGetData.m; sourceTree = "<group>"; };
@@ -582,8 +624,6 @@
 		728B794A187BF4360076CE93 /* BTKnowledgeModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTKnowledgeModel.m; sourceTree = "<group>"; };
 		728B7950187BF4640076CE93 /* knowledge_icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "knowledge_icon@2x.png"; sourceTree = "<group>"; };
 		728B7951187BF4640076CE93 /* anchor_unselected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "anchor_unselected@2x.png"; sourceTree = "<group>"; };
-		728B7952187BF4640076CE93 /* warn_unselected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "warn_unselected@2x.png"; sourceTree = "<group>"; };
-		728B7953187BF4640076CE93 /* warn_selected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "warn_selected@2x.png"; sourceTree = "<group>"; };
 		728B7954187BF4640076CE93 /* anchor_selected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "anchor_selected@2x.png"; sourceTree = "<group>"; };
 		728B7955187BF4640076CE93 /* warn_icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "warn_icon@2x.png"; sourceTree = "<group>"; };
 		728B795C187BF4A90076CE93 /* BTRowOfSectionModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTRowOfSectionModel.h; sourceTree = "<group>"; };
@@ -598,7 +638,6 @@
 		728ECC0218239AB0005053FE /* BTNavicationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BTNavicationController.m; path = "View Controllers/BTNavicationController.m"; sourceTree = "<group>"; };
 		728ECC091823B64F005053FE /* RBParallaxTableVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RBParallaxTableVC.h; path = CustomSuperViewController/RBParallaxTableVC.h; sourceTree = "<group>"; };
 		728ECC0A1823B64F005053FE /* RBParallaxTableVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RBParallaxTableVC.m; path = CustomSuperViewController/RBParallaxTableVC.m; sourceTree = "<group>"; };
-		729293F81838D149007B09A7 /* 透明.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "透明.png"; sourceTree = "<group>"; };
 		7298793618616A7B00039E83 /* physical_grade@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "physical_grade@2x.png"; sourceTree = "<group>"; };
 		729879381861716D00039E83 /* physical_sport_bg@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "physical_sport_bg@2x.png"; sourceTree = "<group>"; };
 		7298793A18618B4200039E83 /* BTScrollViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BTScrollViewController.h; path = CustomSuperViewController/BTScrollViewController.h; sourceTree = "<group>"; };
@@ -800,15 +839,40 @@
 		72CB9C48182B59D100C0DAF0 /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
 		72CFDD031856F2320008816D /* BTSettingCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTSettingCell.h; sourceTree = "<group>"; };
 		72CFDD041856F2320008816D /* BTSettingCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTSettingCell.m; sourceTree = "<group>"; };
+		72D5DEC21886345D00E6EB33 /* BTBlogDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BTBlogDetailViewController.h; path = "View Controllers/BTBlogDetailViewController.h"; sourceTree = "<group>"; };
+		72D5DEC31886345D00E6EB33 /* BTBlogDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BTBlogDetailViewController.m; path = "View Controllers/BTBlogDetailViewController.m"; sourceTree = "<group>"; };
+		72D5DEC5188642A200E6EB33 /* grade_demo@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "grade_demo@2x.png"; sourceTree = "<group>"; };
+		72D5DEC7188651ED00E6EB33 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
+		72D5DEC8188651ED00E6EB33 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
+		72D5DED518867FDB00E6EB33 /* icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon@2x.png"; sourceTree = "<group>"; };
+		72D5DED618867FDB00E6EB33 /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
+		72D5DED9188685D500E6EB33 /* navigation_logo@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "navigation_logo@2x.png"; sourceTree = "<group>"; };
+		72D5DEE6188690A200E6EB33 /* loading4@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "loading4@2x.png"; sourceTree = "<group>"; };
+		72D5DEE7188690A200E6EB33 /* loading1@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "loading1@2x.png"; sourceTree = "<group>"; };
+		72D5DEE8188690A200E6EB33 /* loading2@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "loading2@2x.png"; sourceTree = "<group>"; };
+		72D5DEE9188690A200E6EB33 /* loading5@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "loading5@2x.png"; sourceTree = "<group>"; };
+		72D5DEEA188690A200E6EB33 /* loading3@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "loading3@2x.png"; sourceTree = "<group>"; };
+		72D947BC1887C2BE0096276C /* BTSyncccViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTSyncccViewController.m; sourceTree = "<group>"; };
+		72D947BE1887C4DC0096276C /* warn_unselected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "warn_unselected@2x.png"; sourceTree = "<group>"; };
+		72D947BF1887C4DC0096276C /* warn_selected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "warn_selected@2x.png"; sourceTree = "<group>"; };
+		72D947C31887C6820096276C /* battery_icon0@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "battery_icon0@2x.png"; sourceTree = "<group>"; };
+		72D947C41887C6820096276C /* battery_icon10@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "battery_icon10@2x.png"; sourceTree = "<group>"; };
+		72D947C51887C6820096276C /* battery_icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "battery_icon@2x.png"; sourceTree = "<group>"; };
+		72D947C61887C6820096276C /* battery_icon2@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "battery_icon2@2x.png"; sourceTree = "<group>"; };
+		72D947C71887C6820096276C /* battery_icon3@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "battery_icon3@2x.png"; sourceTree = "<group>"; };
+		72D947C81887C6820096276C /* battery_icon4@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "battery_icon4@2x.png"; sourceTree = "<group>"; };
+		72D947C91887C6820096276C /* battery_icon5@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "battery_icon5@2x.png"; sourceTree = "<group>"; };
+		72D947CA1887C6820096276C /* battery_icon6@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "battery_icon6@2x.png"; sourceTree = "<group>"; };
+		72D947CB1887C6820096276C /* battery_icon7@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "battery_icon7@2x.png"; sourceTree = "<group>"; };
+		72D947CC1887C6820096276C /* battery_icon8@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "battery_icon8@2x.png"; sourceTree = "<group>"; };
+		72D947CD1887C6820096276C /* battery_icon9@x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "battery_icon9@x.png"; sourceTree = "<group>"; };
+		72D947CE1887C6820096276C /* battery_icon_unknown@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "battery_icon_unknown@2x.png"; sourceTree = "<group>"; };
 		72E3E508182B8C040062DA3D /* BTBluetoothConnectedCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BTBluetoothConnectedCell.h; path = MainCustomCell/BTBluetoothConnectedCell.h; sourceTree = "<group>"; };
 		72E3E509182B8C040062DA3D /* BTBluetoothConnectedCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BTBluetoothConnectedCell.m; path = MainCustomCell/BTBluetoothConnectedCell.m; sourceTree = "<group>"; };
 		72E3E50B182B9A360062DA3D /* BTBluetoothFindCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTBluetoothFindCell.h; sourceTree = "<group>"; };
 		72E3E50C182B9A360062DA3D /* BTBluetoothFindCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTBluetoothFindCell.m; sourceTree = "<group>"; };
 		72EE545E1846F9EB00093583 /* lace_bg@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "lace_bg@2x.png"; sourceTree = "<group>"; };
 		72EE54661847035D00093583 /* test_bg@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "test_bg@2x.png"; sourceTree = "<group>"; };
-		72EE546818470A0E00093583 /* icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon@2x.png"; sourceTree = "<group>"; };
-		72EE546918470A0E00093583 /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
-		72EE546C18470A6600093583 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -863,7 +927,7 @@
 			path = PNChart;
 			sourceTree = "<group>";
 		};
-		7231BE591859B36A009A6DB5 /* 运动量详情 */ = {
+		7231BE591859B36A009A6DB5 /* SportDetal */ = {
 			isa = PBXGroup;
 			children = (
 				72B418FA18238E3E002EAD35 /* BTPhysicSportViewController.h */,
@@ -875,7 +939,7 @@
 				7231BE601859B443009A6DB5 /* BTMonthSportViewController.h */,
 				7231BE611859B443009A6DB5 /* BTMonthSportViewController.m */,
 			);
-			name = "运动量详情";
+			name = SportDetal;
 			sourceTree = "<group>";
 		};
 		7232134E1824BBF300C17EDC /* CircularProgress Library */ = {
@@ -897,16 +961,18 @@
 			name = BTLoginRegisterCell;
 			sourceTree = "<group>";
 		};
-		7236B7BB18332A7C002E4FA8 /* 注册和登录 */ = {
+		7236B7BB18332A7C002E4FA8 /* BTRegisterAndLogin */ = {
 			isa = PBXGroup;
 			children = (
 				7236B7BC18332CC6002E4FA8 /* BTRegisterViewController.h */,
 				7236B7BD18332CC6002E4FA8 /* BTRegisterViewController.m */,
+				72560CAB18850246006F9B22 /* BTPersonalDataView.h */,
+				72560CAC18850246006F9B22 /* BTPersonalDataView.m */,
 			);
-			name = "注册和登录";
+			name = BTRegisterAndLogin;
 			sourceTree = "<group>";
 		};
-		723CD163183B7310007C486D /* 同步页面 */ = {
+		723CD163183B7310007C486D /* SyncView */ = {
 			isa = PBXGroup;
 			children = (
 				723CD15D183B45EE007C486D /* BTSyncTwoViewController.h */,
@@ -918,7 +984,7 @@
 				72B3F855187D5DEA00549408 /* BTBleOffViewController.h */,
 				72B3F856187D5DEA00549408 /* BTBleOffViewController.m */,
 			);
-			name = "同步页面";
+			name = SyncView;
 			sourceTree = "<group>";
 		};
 		723ECAEA1845F9D300D47DFA /* PICircularProgressView */ = {
@@ -933,6 +999,8 @@
 		723F0ECA183C5DFE005F1921 /* Sync */ = {
 			isa = PBXGroup;
 			children = (
+				72D947C21887C6820096276C /* Battery_icon */,
+				72D5DEC5188642A200E6EB33 /* grade_demo@2x.png */,
 				72B3F87F187EB2C300549408 /* delete_button_selected@2x.png */,
 				72B3F883187EB71A00549408 /* battery_hignpower_icon@2x.png */,
 				72B3F884187EB71A00549408 /* battery_unkonwn_icon@2x.png */,
@@ -990,7 +1058,14 @@
 				723F249018308925001F27DA /* 1.png */,
 				723F249118308925001F27DA /* 1@2x.png */,
 				723F249218308925001F27DA /* 2.png */,
+				72560C9F1884EE4C006F9B22 /* guide_iphone5earlier3@2x.png */,
+				72560CA31884F139006F9B22 /* guide_iphone5later1@2x.png */,
+				72560CA41884F139006F9B22 /* guide_iphone5later2@2x.png */,
+				72560CA51884F139006F9B22 /* guide_iphone5later3@2x.png */,
+				72560CA91884FAFA006F9B22 /* guide_iphone5earlier2@2x.png */,
+				72560CA11884F041006F9B22 /* guide_accessory@2x.png */,
 				723F249318308925001F27DA /* 2@2x.png */,
+				72560C9A1884EB17006F9B22 /* guide_iphone5earlier1@2x.png */,
 				723F249418308925001F27DA /* 3.png */,
 				723F249518308925001F27DA /* 3@2x.png */,
 				723F249618308925001F27DA /* 4.png */,
@@ -1040,7 +1115,7 @@
 		7241465918274520008B05C5 /* MainCustomCell */ = {
 			isa = PBXGroup;
 			children = (
-				72CFDD061856F7F40008816D /* 首页自定义cell */,
+				72CFDD061856F7F40008816D /* BTHomecell */,
 				7245448B1838AFBB0070F700 /* BTSettingCell */,
 				7236B7B7183324CA002E4FA8 /* BTLoginRegisterCell */,
 				72E3E507182B89680062DA3D /* BTBluetoothLinkCell */,
@@ -1048,7 +1123,7 @@
 			name = MainCustomCell;
 			sourceTree = "<group>";
 		};
-		72414666182758D9008B05C5 /* 一级页面 */ = {
+		72414666182758D9008B05C5 /* Primary View */ = {
 			isa = PBXGroup;
 			children = (
 				72716EDE18640FE900499D76 /* BTMainViewController.h */,
@@ -1057,8 +1132,8 @@
 				72B418F818238E2A002EAD35 /* BTPhysicalViewController.m */,
 				7241466E18277A67008B05C5 /* BTSyncViewController.h */,
 				7241466F18277A67008B05C5 /* BTSyncViewController.m */,
+				72D947BC1887C2BE0096276C /* BTSyncccViewController.m */,
 				723F0EEE183CB640005F1921 /* BTSyncccViewController.h */,
-				723F0EEF183CB640005F1921 /* BTSyncccViewController.m */,
 				72B418FD18238E53002EAD35 /* BTMineViewController.h */,
 				72B418FE18238E53002EAD35 /* BTMineViewController.m */,
 				72B419021823904B002EAD35 /* BTCustomTabBarController.h */,
@@ -1066,33 +1141,34 @@
 				728ECC0118239AB0005053FE /* BTNavicationController.h */,
 				728ECC0218239AB0005053FE /* BTNavicationController.m */,
 			);
-			name = "一级页面";
+			name = "Primary View";
 			sourceTree = "<group>";
 		};
-		72414668182758FB008B05C5 /* 二级页面 */ = {
+		72414668182758FB008B05C5 /* SecondLevelView */ = {
 			isa = PBXGroup;
 			children = (
-				72A37351186940FD003F5B24 /* 知识详情 */,
-				7262FAC1184DB02E005F3B67 /* 妈妈体征页面 */,
-				7266F03418628FE00029F6A3 /* 设置页面 */,
-				7231BE591859B36A009A6DB5 /* 运动量详情 */,
-				72486940185181F9008FD8FA /* 胎心监护 */,
-				7248693F185181CC008FD8FA /* 胎儿体重 */,
-				7248693B18516F1B008FD8FA /* 胎动详情 */,
-				723CD163183B7310007C486D /* 同步页面 */,
+				72A37351186940FD003F5B24 /* BTKnowledgeDetail */,
+				7262FAC1184DB02E005F3B67 /* MumPhysicaView */,
+				7266F03418628FE00029F6A3 /* BTSettingDetail */,
+				7231BE591859B36A009A6DB5 /* SportDetal */,
+				72486940185181F9008FD8FA /* BabyFetalHeartDetail */,
+				7248693F185181CC008FD8FA /* BabyWeight */,
+				7248693B18516F1B008FD8FA /* BabyFetalDetail */,
+				723CD163183B7310007C486D /* SyncView */,
 			);
-			name = "二级页面";
+			name = SecondLevelView;
 			sourceTree = "<group>";
 		};
 		724544891838AD130070F700 /* UIImagess */ = {
 			isa = PBXGroup;
 			children = (
+				72D5DEE51886902C00E6EB33 /* Loadinggif */,
 				729C1D0B1883B61A009FBBDD /* NavigationBar */,
 				728B794F187BF44E0076CE93 /* HomeImage */,
 				72EE545D1846F99D00093583 /* Phisical */,
 				723F0ECA183C5DFE005F1921 /* Sync */,
 				72B67AB2183A418B00294A08 /* zhuceshur.png */,
-				729293F81838D149007B09A7 /* 透明.png */,
+				722E1F621886247F0090E287 /* seperator_line@2x.png */,
 				7245448F1838B1A40070F700 /* Setting */,
 				729293C71838A726007B09A7 /* Tabbar */,
 			);
@@ -1132,7 +1208,7 @@
 			name = Setting;
 			sourceTree = "<group>";
 		};
-		7248693B18516F1B008FD8FA /* 胎动详情 */ = {
+		7248693B18516F1B008FD8FA /* BabyFetalDetail */ = {
 			isa = PBXGroup;
 			children = (
 				723D6439184C765F008618D7 /* BTFetalViewController.h */,
@@ -1142,25 +1218,25 @@
 				723D6484184CC96B008618D7 /* BTRecordFetalView.h */,
 				723D6485184CC96B008618D7 /* BTRecordFetalView.m */,
 			);
-			name = "胎动详情";
+			name = BabyFetalDetail;
 			sourceTree = "<group>";
 		};
-		7248693F185181CC008FD8FA /* 胎儿体重 */ = {
+		7248693F185181CC008FD8FA /* BabyWeight */ = {
 			isa = PBXGroup;
 			children = (
 				7248694118518255008FD8FA /* BTBabyWeightViewController.h */,
 				7248694218518255008FD8FA /* BTBabyWeightViewController.m */,
 			);
-			name = "胎儿体重";
+			name = BabyWeight;
 			sourceTree = "<group>";
 		};
-		72486940185181F9008FD8FA /* 胎心监护 */ = {
+		72486940185181F9008FD8FA /* BabyFetalHeartDetail */ = {
 			isa = PBXGroup;
 			children = (
 				724869441851827A008FD8FA /* BTBabyFetalViewController.h */,
 				724869451851827A008FD8FA /* BTBabyFetalViewController.m */,
 			);
-			name = "胎心监护";
+			name = BabyFetalHeartDetail;
 			sourceTree = "<group>";
 		};
 		7248783B188394780078F017 /* EGOImage */ = {
@@ -1311,7 +1387,7 @@
 			path = SocialSDKXib;
 			sourceTree = "<group>";
 		};
-		7262FAC1184DB02E005F3B67 /* 妈妈体征页面 */ = {
+		7262FAC1184DB02E005F3B67 /* MumPhysicaView */ = {
 			isa = PBXGroup;
 			children = (
 				7262FAC2184DB08D005F3B67 /* BTWeightViewController.h */,
@@ -1330,19 +1406,19 @@
 				7255ADAA186D66F7003A0913 /* BTUCViewController.m */,
 				72359724187559DF00713619 /* BTPresentInputViewController.h */,
 				72359725187559DF00713619 /* BTPresentInputViewController.m */,
-				72A3735518694319003F5B24 /* 分享 */,
+				72A3735518694319003F5B24 /* BTShare */,
 			);
-			name = "妈妈体征页面";
+			name = MumPhysicaView;
 			sourceTree = "<group>";
 		};
-		7262FB1B184DD80F005F3B67 /* 三级页面 */ = {
+		7262FB1B184DD80F005F3B67 /* ThirdLevelView */ = {
 			isa = PBXGroup;
 			children = (
 			);
-			name = "三级页面";
+			name = ThirdLevelView;
 			sourceTree = "<group>";
 		};
-		7266F03418628FE00029F6A3 /* 设置页面 */ = {
+		7266F03418628FE00029F6A3 /* BTSettingDetail */ = {
 			isa = PBXGroup;
 			children = (
 				72B67A84183A2DD700294A08 /* BTAboutViewController.h */,
@@ -1352,7 +1428,7 @@
 				724C714C1872B555003C4565 /* BTModifyDateViewController.h */,
 				724C714D1872B555003C4565 /* BTModifyDateViewController.m */,
 			);
-			name = "设置页面";
+			name = BTSettingDetail;
 			sourceTree = "<group>";
 		};
 		727038BC187143130021F83D /* DataModel */ = {
@@ -1419,11 +1495,11 @@
 			isa = PBXGroup;
 			children = (
 				729C1D09188395F2009FBBDD /* main_placeholder_image@2x.png */,
+				72D947BE1887C4DC0096276C /* warn_unselected@2x.png */,
+				72D947BF1887C4DC0096276C /* warn_selected@2x.png */,
 				728B7950187BF4640076CE93 /* knowledge_icon@2x.png */,
 				728B7951187BF4640076CE93 /* anchor_unselected@2x.png */,
 				7257F04B1880F14C002E9D31 /* antenatel_icon@2x.png */,
-				728B7952187BF4640076CE93 /* warn_unselected@2x.png */,
-				728B7953187BF4640076CE93 /* warn_selected@2x.png */,
 				728B7954187BF4640076CE93 /* anchor_selected@2x.png */,
 				728B7955187BF4640076CE93 /* warn_icon@2x.png */,
 				728B795F187BF64E0076CE93 /* appointment_bt_selected@2x.png */,
@@ -1476,6 +1552,7 @@
 		729C1D0B1883B61A009FBBDD /* NavigationBar */ = {
 			isa = PBXGroup;
 			children = (
+				72D5DED9188685D500E6EB33 /* navigation_logo@2x.png */,
 				729C1D0C1883B695009FBBDD /* navigationbar_complete_selected@2x.png */,
 				729C1D0D1883B695009FBBDD /* navigationbar_back_unselected@2x.png */,
 				729C1D0E1883B695009FBBDD /* navigationbar_complete_unselected@2x.png */,
@@ -1507,16 +1584,18 @@
 			path = Vendor;
 			sourceTree = "<group>";
 		};
-		72A37351186940FD003F5B24 /* 知识详情 */ = {
+		72A37351186940FD003F5B24 /* BTKnowledgeDetail */ = {
 			isa = PBXGroup;
 			children = (
 				72A3735218694199003F5B24 /* BTKnowledgeViewController.h */,
 				72A3735318694199003F5B24 /* BTKnowledgeViewController.m */,
+				72D5DEC21886345D00E6EB33 /* BTBlogDetailViewController.h */,
+				72D5DEC31886345D00E6EB33 /* BTBlogDetailViewController.m */,
 			);
-			name = "知识详情";
+			name = BTKnowledgeDetail;
 			sourceTree = "<group>";
 		};
-		72A3735518694319003F5B24 /* 分享 */ = {
+		72A3735518694319003F5B24 /* BTShare */ = {
 			isa = PBXGroup;
 			children = (
 				72A373591869435F003F5B24 /* share_platform_email@2x.png */,
@@ -1529,7 +1608,7 @@
 				72A373561869433B003F5B24 /* HYActivityView.h */,
 				72A373571869433B003F5B24 /* HYActivityView.m */,
 			);
-			name = "分享";
+			name = BTShare;
 			sourceTree = "<group>";
 		};
 		72AFBA3D18431995004F0350 /* BarChart Library */ = {
@@ -1686,9 +1765,10 @@
 		72B418C118238BCA002EAD35 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				72EE546818470A0E00093583 /* icon@2x.png */,
-				72EE546C18470A6600093583 /* Default-568h@2x.png */,
-				72EE546918470A0E00093583 /* icon.png */,
+				72D5DED518867FDB00E6EB33 /* icon@2x.png */,
+				72D5DED618867FDB00E6EB33 /* icon.png */,
+				72D5DEC7188651ED00E6EB33 /* Default@2x.png */,
+				72D5DEC8188651ED00E6EB33 /* Default-568h@2x.png */,
 				72B418C218238BCA002EAD35 /* AddingBand-Info.plist */,
 				72B418C318238BCA002EAD35 /* InfoPlist.strings */,
 				72B418C618238BCA002EAD35 /* main.m */,
@@ -1719,10 +1799,10 @@
 			isa = PBXGroup;
 			children = (
 				723F248B1830875C001F27DA /* BTGuideViewController */,
-				7262FB1B184DD80F005F3B67 /* 三级页面 */,
-				7236B7BB18332A7C002E4FA8 /* 注册和登录 */,
-				72414668182758FB008B05C5 /* 二级页面 */,
-				72414666182758D9008B05C5 /* 一级页面 */,
+				7262FB1B184DD80F005F3B67 /* ThirdLevelView */,
+				7236B7BB18332A7C002E4FA8 /* BTRegisterAndLogin */,
+				72414668182758FB008B05C5 /* SecondLevelView */,
+				72414666182758D9008B05C5 /* Primary View */,
 			);
 			name = "View Controllers";
 			sourceTree = "<group>";
@@ -1882,7 +1962,7 @@
 			name = Model;
 			sourceTree = "<group>";
 		};
-		72CFDD061856F7F40008816D /* 首页自定义cell */ = {
+		72CFDD061856F7F40008816D /* BTHomecell */ = {
 			isa = PBXGroup;
 			children = (
 				728B795C187BF4A90076CE93 /* BTRowOfSectionModel.h */,
@@ -1896,7 +1976,39 @@
 				72B3F852187D407400549408 /* BTUGCCell.h */,
 				72B3F853187D407400549408 /* BTUGCCell.m */,
 			);
-			name = "首页自定义cell";
+			name = BTHomecell;
+			sourceTree = "<group>";
+		};
+		72D5DEE51886902C00E6EB33 /* Loadinggif */ = {
+			isa = PBXGroup;
+			children = (
+				72D5DEE6188690A200E6EB33 /* loading4@2x.png */,
+				72D5DEE7188690A200E6EB33 /* loading1@2x.png */,
+				72D5DEE8188690A200E6EB33 /* loading2@2x.png */,
+				72D5DEE9188690A200E6EB33 /* loading5@2x.png */,
+				72D5DEEA188690A200E6EB33 /* loading3@2x.png */,
+			);
+			name = Loadinggif;
+			sourceTree = "<group>";
+		};
+		72D947C21887C6820096276C /* Battery_icon */ = {
+			isa = PBXGroup;
+			children = (
+				72D947C31887C6820096276C /* battery_icon0@2x.png */,
+				72D947C41887C6820096276C /* battery_icon10@2x.png */,
+				72D947C51887C6820096276C /* battery_icon@2x.png */,
+				72D947C61887C6820096276C /* battery_icon2@2x.png */,
+				72D947C71887C6820096276C /* battery_icon3@2x.png */,
+				72D947C81887C6820096276C /* battery_icon4@2x.png */,
+				72D947C91887C6820096276C /* battery_icon5@2x.png */,
+				72D947CA1887C6820096276C /* battery_icon6@2x.png */,
+				72D947CB1887C6820096276C /* battery_icon7@2x.png */,
+				72D947CC1887C6820096276C /* battery_icon8@2x.png */,
+				72D947CD1887C6820096276C /* battery_icon9@x.png */,
+				72D947CE1887C6820096276C /* battery_icon_unknown@2x.png */,
+			);
+			name = Battery_icon;
+			path = Batery_icon;
 			sourceTree = "<group>";
 		};
 		72E3E507182B89680062DA3D /* BTBluetoothLinkCell */ = {
@@ -1915,6 +2027,8 @@
 		72EE545D1846F99D00093583 /* Phisical */ = {
 			isa = PBXGroup;
 			children = (
+				72560CF7188565A0006F9B22 /* sport_progress@2x.png */,
+				72560C971884E959006F9B22 /* accessory_white@2x.png */,
 				72A2A31E186C2B7400A504CA /* physical_fetal_sel@2x.png */,
 				729C1D141883C326009FBBDD /* physical_edit_unselected@2x.png */,
 				729C1D151883C326009FBBDD /* physical_edit_selected@2x.png */,
@@ -2038,10 +2152,12 @@
 				724AB2251860218700067CAD /* baby_weight_unsel@2x.png in Resources */,
 				7255AD9C186D3EA1003A0913 /* horizontal_sep_line@2x.png in Resources */,
 				723F24A618308925001F27DA /* 4.png in Resources */,
+				72D5DEC6188642A200E6EB33 /* grade_demo@2x.png in Resources */,
 				724AB217186007FD00067CAD /* accessory_blue@2x.png in Resources */,
 				72316ACA1878182700A166BD /* setting_grade_icon@2x.png in Resources */,
 				723F24A118308925001F27DA /* 1@2x.png in Resources */,
 				72A9EC38187959C9006EEB28 /* tabbar_sel@2x.png in Resources */,
+				72D5DED818867FDB00E6EB33 /* icon.png in Resources */,
 				72A2A30A186AC9F000A504CA /* btn_close_normal@2x.png in Resources */,
 				724AB219186007FD00067CAD /* accessory_red@2x.png in Resources */,
 				725E9CB81868333300BD2354 /* UMSnsAccountViewController.xib in Resources */,
@@ -2050,17 +2166,23 @@
 				72A2A315186C106500A504CA /* hand_icon@2x.png in Resources */,
 				7257F04C1880F14C002E9D31 /* antenatel_icon@2x.png in Resources */,
 				724AB2241860218700067CAD /* Fetal_count_unsel@2x.png in Resources */,
+				72D947C11887C4DC0096276C /* warn_selected@2x.png in Resources */,
 				72316AC51878182700A166BD /* setting_feedback_icon@2x.png in Resources */,
+				72D947D91887C6820096276C /* battery_icon9@x.png in Resources */,
+				72D5DECA188651ED00E6EB33 /* Default-568h@2x.png in Resources */,
 				723F24AC18308925001F27DA /* checkBox_blankCheck.png in Resources */,
 				729C1D0A188395F2009FBBDD /* main_placeholder_image@2x.png in Resources */,
 				723F0ED3183C5E7F005F1921 /* 家丁手环icon.png in Resources */,
 				72B3F85B187D761E00549408 /* bluetooth_icon@2x.png in Resources */,
 				72A373601869435F003F5B24 /* share_platform_email@2x.png in Resources */,
 				72A9EC2618795756006EEB28 /* tabbar_bg@2x.png in Resources */,
+				72D5DED718867FDB00E6EB33 /* icon@2x.png in Resources */,
 				724075E418488E000033BB90 /* sr_refresh@2X.png in Resources */,
 				72B418C518238BCA002EAD35 /* InfoPlist.strings in Resources */,
 				724AB2221860218700067CAD /* fetal_sel@2x.png in Resources */,
+				72D5DEEE188690A200E6EB33 /* loading5@2x.png in Resources */,
 				725E9CB41868333300BD2354 /* UMSCommentInputControlleriPad.xib in Resources */,
+				72560CA81884F139006F9B22 /* guide_iphone5later3@2x.png in Resources */,
 				723F0ED4183C5E7F005F1921 /* 家丁手环icon@2x.png in Resources */,
 				724F1CF0184F3AF800342DF7 /* MHTabBarActiveTab.png in Resources */,
 				72B3F860187E609E00549408 /* phone_warn_icon@2x.png in Resources */,
@@ -2072,15 +2194,17 @@
 				7255AD9D186D3EA1003A0913 /* physical_collectioncell_bg@2x.png in Resources */,
 				72A9EC35187959C9006EEB28 /* shezhi_unselected@2x.png in Resources */,
 				7255ADA4186D4F43003A0913 /* physical_nodata_icon@2x.png in Resources */,
+				72D5DEEB188690A200E6EB33 /* loading4@2x.png in Resources */,
 				72A373661869435F003F5B24 /* share_platform_wechattimeline@2x.png in Resources */,
 				728B7957187BF4640076CE93 /* anchor_unselected@2x.png in Resources */,
 				725E9CB21868333300BD2354 /* UMSCommentDetailController.xib in Resources */,
 				725E9CAC1868333200BD2354 /* UMSocialLocalizable.strings in Resources */,
 				723F0EDE183C5FD7005F1921 /* 透明层@2x.png in Resources */,
+				72D947C01887C4DC0096276C /* warn_unselected@2x.png in Resources */,
+				72D947D81887C6820096276C /* battery_icon8@2x.png in Resources */,
 				72A9EC36187959C9006EEB28 /* sync_unselected@2x.png in Resources */,
 				724AB218186007FD00067CAD /* warning@2x.png in Resources */,
 				723F24A918308925001F27DA /* btn_nor@2x.png in Resources */,
-				729293F91838D149007B09A7 /* 透明.png in Resources */,
 				72A9EC34187959C9006EEB28 /* sync_selected@2x.png in Resources */,
 				725E9CB31868333300BD2354 /* UMSCommentInputController.xib in Resources */,
 				7298793718616A7B00039E83 /* physical_grade@2x.png in Resources */,
@@ -2090,26 +2214,30 @@
 				72B3F875187EAB2000549408 /* sync_image3@2x.png in Resources */,
 				729C1D101883B695009FBBDD /* navigationbar_complete_selected@2x.png in Resources */,
 				724AB22F18603CB900067CAD /* markview_ba_middle@2x.png in Resources */,
-				72EE546B18470A0E00093583 /* icon.png in Resources */,
 				72B67A7E1839EE1900294A08 /* FlatDatePicker-Icon-Close.png in Resources */,
 				72A373621869435F003F5B24 /* share_platform_imessage@2x.png in Resources */,
+				72D5DEDA188685D500E6EB33 /* navigation_logo@2x.png in Resources */,
 				723F0EE6183C67D0005F1921 /* sync_btn@2x.png in Resources */,
 				724AB2331860606400067CAD /* MHTabBarInactiveTab@2x.png in Resources */,
 				72A373651869435F003F5B24 /* share_platform_wechat@2x.png in Resources */,
 				723ECAF1184625FD00D47DFA /* demo1@2x.png in Resources */,
+				72D5DEEC188690A200E6EB33 /* loading1@2x.png in Resources */,
 				72B3F87E187EAB2000549408 /* sync_image5@2x.png in Resources */,
 				7255ADA8186D5BE0003A0913 /* physical_blood_icon@2x.png in Resources */,
 				72A9EC4818795AF6006EEB28 /* physical_selected1@2x.png in Resources */,
 				725E9CAE1868333200BD2354 /* TencentOpenApi_IOS_Bundle.bundle in Resources */,
+				72D947DA1887C6820096276C /* battery_icon_unknown@2x.png in Resources */,
 				72316AC81878182700A166BD /* setting_duedate_icon@2x.png in Resources */,
 				729C1D121883B695009FBBDD /* navigationbar_complete_unselected@2x.png in Resources */,
 				72B3F88E187FD91800549408 /* prhysical_exclamationMark@2x.png in Resources */,
 				72269018183DAC2700D6405E /* uestime_bg@2x.png in Resources */,
 				72A9EC32187959C9006EEB28 /* home_unselected@2x.png in Resources */,
 				729C1D131883B695009FBBDD /* navigationbar_back_selected@2x.png in Resources */,
+				72560CAA1884FAFA006F9B22 /* guide_iphone5earlier2@2x.png in Resources */,
 				728B795B187BF4640076CE93 /* warn_icon@2x.png in Resources */,
 				728B7961187BF64E0076CE93 /* appointment_bt_selected@2x.png in Resources */,
 				72EE54671847035D00093583 /* test_bg@2x.png in Resources */,
+				72D947D61887C6820096276C /* battery_icon6@2x.png in Resources */,
 				72B67A7C1839EE1900294A08 /* FlatDatePicker-Icon-Check.png in Resources */,
 				72A2A320186C2B7400A504CA /* physical_fetal_sel@2x.png in Resources */,
 				723F0EE3183C67D0005F1921 /* sync_btn_sel.png in Resources */,
@@ -2118,15 +2246,19 @@
 				72A2A312186C07DC00A504CA /* icon_logo@2x.png in Resources */,
 				72316AC71878182700A166BD /* setting_birthday_icon@2x.png in Resources */,
 				72B3F888187EB71A00549408 /* battery_lowpower_icon@2x.png in Resources */,
+				72D947CF1887C6820096276C /* battery_icon0@2x.png in Resources */,
 				72B3F886187EB71A00549408 /* battery_hignpower_icon@2x.png in Resources */,
-				728B7958187BF4640076CE93 /* warn_unselected@2x.png in Resources */,
+				72560C9D1884EB17006F9B22 /* guide_iphone5earlier1@2x.png in Resources */,
 				72729EE018697C7F009C2EDE /* blueArrow@2x.png in Resources */,
 				72A9EC37187959C9006EEB28 /* home_selected@2x.png in Resources */,
 				72B3F864187E941900549408 /* detain_button_unselected@2x.png in Resources */,
 				72B67A7F1839EE1900294A08 /* FlatDatePicker-Icon-Close@2x.png in Resources */,
 				72A9EC4118795AF6006EEB28 /* physical_unselected1@2x.png in Resources */,
 				723F24A518308925001F27DA /* 3@2x.png in Resources */,
+				72560CF8188565A0006F9B22 /* sport_progress@2x.png in Resources */,
+				72D947D01887C6820096276C /* battery_icon10@2x.png in Resources */,
 				724AB2201860218700067CAD /* baby_weight_sel@2x.png in Resources */,
+				72D947D51887C6820096276C /* battery_icon5@2x.png in Resources */,
 				72269017183DAC2700D6405E /* uestime_bg.png in Resources */,
 				723F0EE5183C67D0005F1921 /* sync_btn.png in Resources */,
 				72316AC91878182700A166BD /* setting_version_icon@2x.png in Resources */,
@@ -2146,13 +2278,15 @@
 				723C56C518614E1000D4DC13 /* red_bg@2x.png in Resources */,
 				724AB22C18602F5A00067CAD /* fetal_record_unsel@2x.png in Resources */,
 				729C1D111883B695009FBBDD /* navigationbar_back_unselected@2x.png in Resources */,
+				72560CA71884F139006F9B22 /* guide_iphone5later2@2x.png in Resources */,
+				72D947D31887C6820096276C /* battery_icon3@2x.png in Resources */,
 				729C1D161883C326009FBBDD /* physical_edit_unselected@2x.png in Resources */,
 				724AB2211860218700067CAD /* fetal_unsel@2x.png in Resources */,
 				724AB2371860832300067CAD /* markview_ba_left@2x.png in Resources */,
 				725E9CB51868333300BD2354 /* UMShareEditViewController.xib in Resources */,
 				725E9CBA1868333300BD2354 /* UMSocialSDKResourcesNew.bundle in Resources */,
 				72A9EC4318795AF6006EEB28 /* shezhi_selected1@2x.png in Resources */,
-				728B7959187BF4640076CE93 /* warn_selected@2x.png in Resources */,
+				72560CA61884F139006F9B22 /* guide_iphone5later1@2x.png in Resources */,
 				7255AD9E186D3EA1003A0913 /* vertical_sep_line@2x.png in Resources */,
 				72B67A7D1839EE1900294A08 /* FlatDatePicker-Icon-Check@2x.png in Resources */,
 				72A373641869435F003F5B24 /* share_platform_sina@2x.png in Resources */,
@@ -2164,20 +2298,25 @@
 				724AB216186007FD00067CAD /* accessory_gray@2x.png in Resources */,
 				72A373631869435F003F5B24 /* share_platform_qqfriends@2x.png in Resources */,
 				72B418D018238BCA002EAD35 /* Images.xcassets in Resources */,
-				72EE546A18470A0E00093583 /* icon@2x.png in Resources */,
 				723F24A718308925001F27DA /* 4@2x.png in Resources */,
 				729C1D171883C326009FBBDD /* physical_edit_selected@2x.png in Resources */,
 				723F0EE4183C67D0005F1921 /* sync_btn_sel@2x.png in Resources */,
+				72560CA01884EE4C006F9B22 /* guide_iphone5earlier3@2x.png in Resources */,
 				72B67AB3183A418B00294A08 /* zhuceshur.png in Resources */,
+				72D947D11887C6820096276C /* battery_icon@2x.png in Resources */,
 				723F0EF5183CC0D3005F1921 /* refresh_btn_sel.png in Resources */,
 				72B3F861187E609E00549408 /* Bangle_warn_icon@2x.png in Resources */,
 				72A9EC4418795AF6006EEB28 /* home_unselected1@2x.png in Resources */,
 				72B3F88A187FAE4500549408 /* sync_image0@2x.png in Resources */,
+				72D947D71887C6820096276C /* battery_icon7@2x.png in Resources */,
+				72D947D21887C6820096276C /* battery_icon2@2x.png in Resources */,
 				72B3F877187EAB2000549408 /* sync_image11@2x.png in Resources */,
 				72A2A321186C2B7400A504CA /* physical_fetal_unsel@2x.png in Resources */,
 				72B3F882187EB2C300549408 /* delete_button_unselected@2x.png in Resources */,
 				723F24AA18308925001F27DA /* btn_press.png in Resources */,
 				72B3F85A187D761E00549408 /* bluetooth_setting_icon@2x.png in Resources */,
+				722E1F631886247F0090E287 /* seperator_line@2x.png in Resources */,
+				72560C981884E959006F9B22 /* accessory_white@2x.png in Resources */,
 				72A9EC30187959C9006EEB28 /* shezhi_selected@2x.png in Resources */,
 				72A2A309186AC9F000A504CA /* btn_close_normal.png in Resources */,
 				723F24AB18308925001F27DA /* btn_press@2x.png in Resources */,
@@ -2192,8 +2331,11 @@
 				723F24AE18308925001F27DA /* checkBox_selectCheck.png in Resources */,
 				728B795A187BF4640076CE93 /* anchor_selected@2x.png in Resources */,
 				72B3F874187EAB2000549408 /* sync_image9@2x.png in Resources */,
+				72560CA21884F041006F9B22 /* guide_accessory@2x.png in Resources */,
+				72D5DEC9188651ED00E6EB33 /* Default@2x.png in Resources */,
 				72A9EC4718795AF6006EEB28 /* sync_unselected1@2x.png in Resources */,
 				723F24A018308925001F27DA /* 1.png in Resources */,
+				72D5DEED188690A200E6EB33 /* loading2@2x.png in Resources */,
 				72B3F87D187EAB2000549408 /* sync_image12@2x.png in Resources */,
 				723C56C718614FFF00D4DC13 /* sync_icon@2x.png in Resources */,
 				72B3F87A187EAB2000549408 /* sync_image6@2x.png in Resources */,
@@ -2204,11 +2346,12 @@
 				723F0EF7183CC0D3005F1921 /* refresh_btn.png in Resources */,
 				724AB22D18602F5A00067CAD /* fetal_record_sel@2x.png in Resources */,
 				723F0EF8183CC0D3005F1921 /* refresh_btn@2x.png in Resources */,
+				72D947D41887C6820096276C /* battery_icon4@2x.png in Resources */,
 				723F24A318308925001F27DA /* 2@2x.png in Resources */,
 				72A9EC33187959C9006EEB28 /* physical_selected@2x.png in Resources */,
 				72316AC61878182700A166BD /* setting_menstrual_icon@2x.png in Resources */,
+				72D5DEEF188690A200E6EB33 /* loading3@2x.png in Resources */,
 				723F0EDD183C5FD7005F1921 /* 透明层.png in Resources */,
-				72EE546D18470A6600093583 /* Default-568h@2x.png in Resources */,
 				724AB2311860604300067CAD /* MHTabBarIndicator@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2245,6 +2388,7 @@
 				7237B23318753DDA00830467 /* BTUserData.m in Sources */,
 				72CB9C3E182B595200C0DAF0 /* BTUtils.m in Sources */,
 				72B418CB18238BCA002EAD35 /* BTAppDelegate.m in Sources */,
+				72560CAD18850246006F9B22 /* BTPersonalDataView.m in Sources */,
 				723F0EFC183CD796005F1921 /* DDIndicator.m in Sources */,
 				7236B7BE18332CC6002E4FA8 /* BTRegisterViewController.m in Sources */,
 				724869461851827A008FD8FA /* BTBabyFetalViewController.m in Sources */,
@@ -2326,6 +2470,7 @@
 				72B67AA9183A335800294A08 /* Reachability.m in Sources */,
 				723597291875759700713619 /* BTUserSetting.m in Sources */,
 				72B418FF18238E53002EAD35 /* BTMineViewController.m in Sources */,
+				72D5DEC41886345D00E6EB33 /* BTBlogDetailViewController.m in Sources */,
 				7231BE541859910C009A6DB5 /* PNBar.m in Sources */,
 				7298793C18618B4200039E83 /* BTScrollViewController.m in Sources */,
 				7241467018277A67008B05C5 /* BTSyncViewController.m in Sources */,
@@ -2333,11 +2478,11 @@
 				7248784D188394780078F017 /* EGOImageLoader.m in Sources */,
 				72B67AA1183A335800294A08 /* NSData+MKBase64.m in Sources */,
 				7266B61518374C0100B1452A /* BTPhsicalData.m in Sources */,
+				72D947BD1887C2BE0096276C /* BTSyncccViewController.m in Sources */,
 				72B67A801839EE1900294A08 /* FlatDatePicker.m in Sources */,
 				7255AD94186D3E5B003A0913 /* BTPhysicalCell.m in Sources */,
 				7255ADAB186D66F7003A0913 /* BTUCViewController.m in Sources */,
 				723CD162183B72DA007C486D /* BTPastLinkViewController.m in Sources */,
-				723F0EF0183CB640005F1921 /* BTSyncccViewController.m in Sources */,
 				72A2A300186AAB8C00A504CA /* BTSheetPickerview.m in Sources */,
 				724544921838B8F50070F700 /* BTSettingSectionCell.m in Sources */,
 				7262FAD3184DB1B3005F3B67 /* MHTabBarController.m in Sources */,

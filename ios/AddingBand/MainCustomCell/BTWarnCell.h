@@ -15,6 +15,7 @@
 @property(nonatomic,strong)UIImageView *accessoryImage;
 @property(nonatomic,strong)UILabel *contentLabel;
 @property(nonatomic,strong)UIButton *todoButton;
+@property(nonatomic,strong)UIImageView *lineImage;
 @property(nonatomic,strong)BTKnowledgeModel *knowledgeModel;
 + (CGFloat)cellHeightWithMode:(BTKnowledgeModel *)model;
 

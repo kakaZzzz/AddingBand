@@ -22,7 +22,7 @@
         [self addSubview:_aImageView];
         
         
-        self.markLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height)];
+        self.markLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, -3, self.frame.size.width, self.frame.size.height)];
         _markLabel.textColor = kGlobalColor;
         _markLabel.numberOfLines = 0;
 #if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_5_1

@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface BTGuideViewController : UIViewController
+@interface BTGuideViewController : UIViewController<UIScrollViewDelegate>
 {
     BOOL _animating;
     
@@ -18,7 +18,7 @@
 @property (nonatomic, assign) BOOL animating;
 
 @property (nonatomic, strong) UIScrollView *pageScroll;
-
+@property (nonatomic, strong) UIPageControl *pagePotControl;
 + (BTGuideViewController *)sharedGuide;
 
 + (void)show;

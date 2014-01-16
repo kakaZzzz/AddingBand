@@ -74,8 +74,8 @@
        }
     
     
-    UIImageView *sepImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"horizontal_sep_line"]];
-    sepImage.frame = CGRectMake(0, 100,self.frame.size.width, 10);
+    UIImageView *sepImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"seperator_line"]];
+    sepImage.frame = CGRectMake(0, 100 + 5,self.frame.size.width, kSeparatorLineHeight);
     [self addSubview:sepImage];
 
 }

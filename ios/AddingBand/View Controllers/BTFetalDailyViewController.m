@@ -32,6 +32,9 @@ static int offsetX = 0;
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
+        //注册更新数据的监听者
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateView:) name:FETALVIEWUPDATENOTICE object:nil];
+
     }
     return self;
 }
@@ -63,14 +66,16 @@ static int offsetX = 0;
     [self.view addSubview:_fetalConditionTitle];
 
     //上次记录时间
-    self.lastTimeLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, _fetalConditionTitle.frame.origin.y + _fetalConditionTitle.frame.size.height , 100, 20)];
-   // _aLabel.backgroundColor = [UIColor yellowColor];
+    self.lastTimeLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, _fetalConditionTitle.frame.origin.y + _fetalConditionTitle.frame.size.height , 150, 30)];
+    _lastTimeLabel.font = [UIFont fontWithName:kCharacterAndNumberFont size:20.0];
+    _lastTimeLabel.textAlignment = NSTextAlignmentLeft;
+    _lastTimeLabel.backgroundColor = [UIColor clearColor];
     _lastTimeLabel.textColor = kBigTextColor;
     _lastTimeLabel.text = [self getLastRecordTimeFromRaw];//从coredata里面取数据
     [self.view addSubview:_lastTimeLabel];
     
     //次数
-    self.lastCountLabel = [[UILabel alloc] initWithFrame:CGRectMake(_lastTimeLabel.frame.origin.x + _lastTimeLabel.frame.size.width + 50, _lastTimeLabel.frame.origin.y - 20, 100, 50)];
+    self.lastCountLabel = [[UILabel alloc] initWithFrame:CGRectMake(_lastTimeLabel.frame.origin.x + _lastTimeLabel.frame.size.width +15, _lastTimeLabel.frame.origin.y - 20, 100, 50)];
     _lastCountLabel.textAlignment = NSTextAlignmentRight;
     _lastCountLabel.font = [UIFont systemFontOfSize:62];
     _lastCountLabel.textColor = kGlobalColor;
@@ -118,6 +123,29 @@ static int offsetX = 0;
     
     
 }
+#pragma mark - 收到通知 刷新UI
+- (void)updateView:(NSNotification *)notice
+{
+    NSLog(@"要刷新UI了啊");
+    
+    self.lastTimeLabel.text = [self getLastRecordTimeFromRaw];
+    self.lastCountLabel.text = [self getLastRecordFetalFromRaw];
+    //从coredata中取出数据 上次记录时间
+    
+    //刷新折线图 重绘
+//    [self getEveryHourData];
+//    [_lineChart setXLabels:self.lineXValues];
+//    [_lineChart setYValues:self.lineYValues];
+//    [_lineChart strokeChart];
+    
+    //现在的处理方法很屌丝 要优化
+    [_lineScrollView removeFromSuperview];
+    [self configureLineAndBarWithData];
+    //柱状图重绘
+    
+   // [self getBarXValue];
+    
+}
 
 #pragma mark - 配置折线图 和 柱状的遮盖层~~~~~~
 - (void)configureLineAndBarWithData
@@ -134,7 +162,8 @@ static int offsetX = 0;
     self.lineYValues = [NSMutableArray arrayWithCapacity:1];
     [self getEveryHourData];//调用此方法 即可更新 lineYValues
     self.lineChart = [[PNChart alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH *2, klineScrollViewHeight)];
-    [_lineChart setXLabels:@[@"00:00",@"01:00",@"02:00",@"03:00",@"04:00",@"05:00",@"06:00",@"07:00",@"08:00",@"09:00",@"10:00",@"11:00",@"12:00",@"13:00",@"14:00",@"15:00",@"16:00",@"17:00",@"18:00",@"19:00",@"20:00",@"21:00",@"22:00",@"23:00"]];
+    self.lineXValues = @[@"00:00",@"01:00",@"02:00",@"03:00",@"04:00",@"05:00",@"06:00",@"07:00",@"08:00",@"09:00",@"10:00",@"11:00",@"12:00",@"13:00",@"14:00",@"15:00",@"16:00",@"17:00",@"18:00",@"19:00",@"20:00",@"21:00",@"22:00",@"23:00"];
+    [_lineChart setXLabels:self.lineXValues];
     _lineChart.strokeColor = [UIColor whiteColor];//线条颜色
     [_lineChart setYValues:self.lineYValues];
     [_lineChart strokeChart];

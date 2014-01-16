@@ -1,4 +1,4 @@
-//
+ //
 //  BTBandCentral.m
 //  SmartBat
 //
@@ -100,9 +100,9 @@
             NSLog(@"蓝牙关闭,,,,,,");
             self.isBleOFF = YES;
             //关掉蓝牙开关时清零
-            self.globals.bleListCount = 0;
             
             [_allPeripherals removeAllObjects];
+            self.globals.bleListCount = [_allPeripherals count];
             
             break;
             
@@ -1073,6 +1073,11 @@
     [_cm stopScan];
     
     _scanTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(doScan:) userInfo:nil repeats:NO];
+}
+
+-(void)cleanBLECache{
+    [_allPeripherals removeAllObjects];
+    self.globals.bleListCount = [_allPeripherals count];
 }
 
 #pragma mark - 定时器调用

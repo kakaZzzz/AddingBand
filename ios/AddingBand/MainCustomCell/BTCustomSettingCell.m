@@ -40,7 +40,7 @@
     
     
     self.contentLabel = [[UILabel alloc] initWithFrame:CGRectMake((self.frame.size.width - 100 - 20),(self.frame.size.height - 40)/2, 100, 40)];
-    _contentLabel.font = [UIFont systemFontOfSize:24/2];
+    _contentLabel.font = [UIFont fontWithName:kCharacterAndNumberFont size:24/2];
     _contentLabel.textColor = kContentTextColor;
     _contentLabel.textAlignment = NSTextAlignmentRight;
     _contentLabel.backgroundColor = [UIColor clearColor];
@@ -53,8 +53,8 @@
     [self.contentView addSubview:_indicateImage];
     
     
-    self.lineImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"sep_line.png"]];
-    _lineImage.frame = CGRectMake(50, self.frame.size.height-1.0 , 320-50, 1.0);
+    self.lineImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"seperator_line"]];
+    _lineImage.frame = CGRectMake(50, self.frame.size.height-kSeparatorLineHeight , 320-50, kSeparatorLineHeight);
     [self.contentView addSubview:_lineImage];
 
 }

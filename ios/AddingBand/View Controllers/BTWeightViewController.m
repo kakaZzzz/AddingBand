@@ -64,7 +64,7 @@
     self.chartScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, 320, RED_BACKGROUND_HEIGHT)];
     _chartScrollView.contentSize = CGSizeMake(1200, 200);
     _chartScrollView.scrollEnabled = NO;
-    _chartScrollView.backgroundColor = [UIColor greenColor];
+    _chartScrollView.backgroundColor = kGlobalColor;
     [self.scrollView addSubview:_chartScrollView];
     
     //配置数据
@@ -231,7 +231,7 @@
     NSNumber *month = [BTUtils getMonth:localDate];
     NSNumber *dayLocal = [BTUtils getDay:localDate];
     NSDate *gmtDate = [NSDate dateFromString:[NSString stringWithFormat:@"%@.%@.%@",year,month,dayLocal] withFormat:@"yyyy.MM.dd"];
-
+   
     //算出怀孕第几天
     int day = [BTGetData getPregnancyDaysWithDate:gmtDate];
     

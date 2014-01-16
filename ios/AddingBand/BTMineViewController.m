@@ -62,7 +62,7 @@ static NSString *version = nil;//版本号
 - (void)viewWillAppear:(BOOL)animated
 {
     
-    NSLog(@"11111111出现");
+ 
     birthday = @"2013.12.25";
     duedate = @"2013.12.25";
     menstruation = @"2013.12.25";
@@ -73,15 +73,22 @@ static NSString *version = nil;//版本号
     NSArray *data = [BTGetData getFromCoreDataWithPredicate:nil entityName:@"BTUserSetting" sortKey:nil];
     if (data.count > 0) {
         BTUserSetting *userData = [data objectAtIndex:0];
-        birthday = userData.birthday;
-        duedate = userData.dueDate;
-        menstruation =  userData.menstruation;
-        self.contentArray = [NSArray arrayWithObjects:@"",birthday,menstruation,duedate,@"",version,@"",@"",@"",@"", nil];
+        if (userData.birthday) {
+            birthday = userData.birthday;
+        }
+        if (userData.dueDate) {
+            duedate = userData.dueDate;
+        }
+        if (userData.menstruation) {
+             menstruation =  userData.menstruation;
+        }
+        self.contentArray = [NSArray arrayWithObjects:@"",birthday,menstruation,duedate,@"",version,@"",@"",@"",nil];
         
     }
     else
     {
-        self.contentArray = [NSArray arrayWithObjects:@"",birthday,menstruation,duedate,@"",version,@"",@"",@"",@"", nil];
+        
+        self.contentArray = [NSArray arrayWithObjects:@"",birthday,menstruation,duedate,@"",version,@"",@"",@"",nil];
     }
 
     [self.tableView reloadData];
@@ -89,7 +96,7 @@ static NSString *version = nil;//版本号
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    NSLog(@"11111111加载");
+ 
     
 }
 #pragma mark - Table view data source

@@ -267,8 +267,7 @@
                 //   float value = [(NSNumber *)valueItems[i] floatValue];
                 CGPoint point = [self valuePoint:value atIndex:day];
                 
-                NSLog(@"点得位置%@",NSStringFromCGPoint(point));
-                
+                            
                 BTPhysicalModel *nextModel = [self.modelArray objectAtIndex:i+1];
                 
                 //float nextValue = [(NSNumber *)valueItems[day + 1] floatValue];

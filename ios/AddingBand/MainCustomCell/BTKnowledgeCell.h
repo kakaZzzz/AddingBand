@@ -17,6 +17,7 @@
 @property(nonatomic,strong)UILabel *accessLabel;
 @property(nonatomic,strong)UIImageView *accessImage;
 @property(nonatomic,strong)UILabel *contentLabel;
+@property(nonatomic,strong)UIImageView *lineImage;
 @property(nonatomic,retain)EGOImageView *contentImage;
 @property(nonatomic,strong)BTKnowledgeModel *knowledgeModel;
 + (CGFloat)cellHeightWithMode:(BTKnowledgeModel *)model;

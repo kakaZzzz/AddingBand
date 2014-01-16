@@ -82,7 +82,7 @@ static int selectedTag = 0;
 {
     
     [super viewDidLoad];
-    self.scrollView.contentSize = CGSizeMake(320, 700);
+    self.scrollView.contentSize = CGSizeMake(320, 550);
     [self addSubviews];//加载子视图
     
     // Do any additional setup after loading the view.
@@ -105,13 +105,13 @@ static int selectedTag = 0;
     
     //navigationBgView上的子视图
     
-    UIImageView *iconImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"icon_logo"]];
+    UIImageView *iconImage = [[UIImageView alloc] initWithImage:kNavigationbarIcon];
     iconImage.frame = CGRectMake(24/2, _navigationBgView.frame.size.height - 5 - 39, 39, 39);
     [_navigationBgView addSubview:iconImage];
     
     self.dateLabel = [[UILabel alloc] initWithFrame:CGRectMake(iconImage.frame.origin.x + iconImage.frame.size.width + 10, iconImage.frame.origin.y, 100, 20)];
      _dateLabel.backgroundColor = [UIColor clearColor];
-    _dateLabel.font = [UIFont systemFontOfSize:18];
+    _dateLabel.font = [UIFont systemFontOfSize:15];
     _dateLabel.textAlignment = NSTextAlignmentLeft;
     _dateLabel.textColor = [UIColor whiteColor];
     _dateLabel.text = @"3周4天";
@@ -131,33 +131,37 @@ static int selectedTag = 0;
     _headView.backgroundColor = kGlobalColor;
     [self.scrollView addSubview:_headView];
     
-    
-    //手环同步背景
-    BTView *syncBg = [[BTView alloc]initWithFrame:CGRectMake(0, _headView.frame.origin.y + _headView.frame.size.height, 320, 80/2)];
-    // syncBg.backgroundColor = [UIColor redColor];
-    syncBg.separationLine.frame = CGRectMake(0, syncBg.frame.size.height - kSeparatorLineHeight, 320, kSeparatorLineHeight);
-    [self.scrollView addSubview:syncBg];
-    
-    UIImageView *handImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"hand_icon"]];
-    handImage.frame = CGRectMake(36/2, (syncBg.frame.size.height - 15)/2, 12, 15);
-    [syncBg addSubview:handImage];
-    
-    self.lastSyncTimeLabel = [[UILabel alloc] initWithFrame:CGRectMake(handImage.frame.origin.x + handImage.frame.size.width, handImage.frame.origin.y - 2 , 200, 20)];
-    //_lastSyncTimeLabel.backgroundColor = [UIColor redColor];
-    _lastSyncTimeLabel.font = [UIFont systemFontOfSize:14];
-    _lastSyncTimeLabel.textAlignment = NSTextAlignmentLeft;
-    _lastSyncTimeLabel.textColor = kContentTextColor;
-    _lastSyncTimeLabel.text = @"手环上次同步时间: 14:23";
-    [syncBg addSubview:_lastSyncTimeLabel];
-    
-    UIButton *syncButton = [UIButton  buttonWithType:UIButtonTypeCustom];
-    syncButton.tag = PHYSICAL_CONTROL_TAG + 1;
-    syncButton.frame = CGRectMake(320 - 36/2 - 24, (syncBg.frame.size.height - 24)/2, 24, 24);
-    [syncButton setBackgroundImage:[UIImage imageNamed:@"sync_litbutton_bg"] forState:UIControlStateNormal];
-    [syncBg addSubview:syncButton];
+    //grade
+    UIImageView *gradeImage = [[UIImageView alloc] initWithFrame:CGRectMake((_headView.frame.size.width - 280/2)/2, (_headView.frame.size.height - 280/2)/2, 280/2, 280/2)];
+    gradeImage.image = [UIImage imageNamed:@"grade_demo"];
+    [_headView addSubview:gradeImage];
+//    //手环同步背景
+//    BTView *syncBg = [[BTView alloc]initWithFrame:CGRectMake(0, _headView.frame.origin.y + _headView.frame.size.height, 320, 80/2)];
+//    // syncBg.backgroundColor = [UIColor redColor];
+//    syncBg.separationLine.frame = CGRectMake(0, syncBg.frame.size.height - kSeparatorLineHeight, 320, kSeparatorLineHeight);
+//    [self.scrollView addSubview:syncBg];
+//    
+//    UIImageView *handImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"hand_icon"]];
+//    handImage.frame = CGRectMake(36/2, (syncBg.frame.size.height - 15)/2, 12, 15);
+//    [syncBg addSubview:handImage];
+//    
+//    self.lastSyncTimeLabel = [[UILabel alloc] initWithFrame:CGRectMake(handImage.frame.origin.x + handImage.frame.size.width, handImage.frame.origin.y - 2 , 200, 20)];
+//    //_lastSyncTimeLabel.backgroundColor = [UIColor redColor];
+//    _lastSyncTimeLabel.font = [UIFont systemFontOfSize:14];
+//    _lastSyncTimeLabel.textAlignment = NSTextAlignmentLeft;
+//    _lastSyncTimeLabel.textColor = kContentTextColor;
+//    _lastSyncTimeLabel.text = @"手环上次同步时间: 14:23";
+//    [syncBg addSubview:_lastSyncTimeLabel];
+//    
+//    UIButton *syncButton = [UIButton  buttonWithType:UIButtonTypeCustom];
+//    syncButton.tag = PHYSICAL_CONTROL_TAG + 1;
+//    syncButton.frame = CGRectMake(320 - 36/2 - 24, (syncBg.frame.size.height - 24)/2, 24, 24);
+//    [syncButton setBackgroundImage:[UIImage imageNamed:@"sync_litbutton_bg"] forState:UIControlStateNormal];
+//    [syncBg addSubview:syncButton];
     
     //运动量完成情况
-    BTView *sportProgressView = [[BTView alloc] initWithFrame:CGRectMake(0, syncBg.frame.origin.y + syncBg.frame.size.height, 320, 80)];
+   // BTView *sportProgressView = [[BTView alloc] initWithFrame:CGRectMake(0, syncBg.frame.origin.y + syncBg.frame.size.height, 320, 80)];
+    BTView *sportProgressView = [[BTView alloc] initWithFrame:CGRectMake(0, _headView.frame.origin.y + _headView.frame.size.height, 320, 80)];
     sportProgressView.backgroundColor = [UIColor whiteColor];
     [sportProgressView addTarget:self action:@selector(enterSportView:) forControlEvents:UIControlEventTouchUpInside];
     
@@ -171,12 +175,12 @@ static int selectedTag = 0;
     titleLabel.text = @"今日目标完成情况";
     [sportProgressView addSubview:titleLabel];
     
-    UILabel *labelGoal = [[UILabel alloc] initWithFrame:CGRectMake(sportProgressView.frame.origin.x + 36/2, titleLabel.frame.origin.y + 30, 70, 30)];
+    UILabel *labelGoal = [[UILabel alloc] initWithFrame:CGRectMake(sportProgressView.frame.origin.x + 36/2, titleLabel.frame.origin.y + 30, 40, 30)];
     labelGoal.textColor = kContentTextColor;
     labelGoal.backgroundColor = [UIColor clearColor];
     labelGoal.textAlignment = NSTextAlignmentLeft;
     labelGoal.font = [UIFont systemFontOfSize:SECOND_TITLE_SIZE];
-    labelGoal.text = @"今日目标:";
+    labelGoal.text = @"目标:";
     [sportProgressView addSubview:labelGoal];
     
     self.goalLabel = [[UILabel alloc] initWithFrame:CGRectMake(labelGoal.frame.origin.x + labelGoal.frame.size.width, labelGoal.frame.origin.y, 100, 30)];
@@ -262,59 +266,59 @@ static int selectedTag = 0;
     
     [self addPhysicalViewWithDataWithYvalue:fetalView.frame.origin.y + fetalView.frame.size.height + 10];
     
-    //加一条水平分割线
-    UIImageView *sepLine1 = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"horizontal_sep_line"]];
-    sepLine1.frame = CGRectMake(6, _physicalView.frame.origin.y + _physicalView.frame.size.height + 5 , 320 -2 *6, 10);
-    [self.scrollView addSubview:sepLine1];
-
-    //孕期血糖 和胎心监测
-    UIView *bloodView = [[UIView alloc] initWithFrame:CGRectMake(6, _physicalView.frame.origin.y + _physicalView.frame.size.height + 20, 320 -2 *6, 96/2)];
-    bloodView.backgroundColor = [UIColor whiteColor];
-    [self.scrollView addSubview:bloodView];
-    
-    //孕期血糖按钮
-    UIButton *bloodButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    bloodButton.backgroundColor = [UIColor whiteColor];
-    bloodButton.frame = CGRectMake(0, 0, 304/2, 96/2);
-    [bloodButton addTarget:self action:@selector(enterBloodView:) forControlEvents:UIControlEventTouchUpInside];
-    [bloodView addSubview:bloodButton];
-    
-    UIImageView *bloodIconImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"physical_blood_icon"]];
-    bloodIconImage.frame = CGRectMake(12, 11, 26, 26);
-    [bloodButton addSubview:bloodIconImage];
-    
-    UILabel *bloodLabel = [[UILabel alloc] initWithFrame:CGRectMake(bloodIconImage.frame.origin.x + bloodIconImage.frame.size.width + 18, bloodIconImage.frame.origin.y, 100, 26)];
-    bloodLabel.textColor = kBigTextColor;
-    bloodLabel.backgroundColor = [UIColor clearColor];
-    bloodLabel.textAlignment = NSTextAlignmentLeft;
-    bloodLabel.font = [UIFont systemFontOfSize:17];
-    bloodLabel.text = @"孕期血糖";
-    [bloodButton addSubview:bloodLabel];
-    
-    //加一条垂直分割线
-    UIImageView *sepLine = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"vertical_sep_line"]];
-    sepLine.frame = CGRectMake(bloodButton.frame.origin.x + bloodButton.frame.size.width, 0, 4, bloodView.frame.size.height);
-    [bloodView addSubview:sepLine];
-    
-    //胎心监测按钮
-    
-    UIButton *fetalButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    fetalButton.backgroundColor = [UIColor whiteColor];
-    [fetalButton addTarget:self action:@selector(enterFetalView:) forControlEvents:UIControlEventTouchUpInside];
-    fetalButton.frame = CGRectMake(bloodView.frame.size.width - 304/2, 0, 304/2, 96/2);
-    [bloodView addSubview:fetalButton];
-    
-    UIImageView *fetalIconImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"physical_fetal_icon"]];
-    fetalIconImage.frame = CGRectMake(12, 11, 26, 26);
-    [fetalButton addSubview:fetalIconImage];
-    
-    UILabel *fetalLabel = [[UILabel alloc] initWithFrame:CGRectMake(bloodIconImage.frame.origin.x + bloodIconImage.frame.size.width + 18, bloodIconImage.frame.origin.y, 100, 26)];
-    fetalLabel.textColor = kBigTextColor;
-    fetalLabel.backgroundColor = [UIColor clearColor];
-    fetalLabel.textAlignment = NSTextAlignmentLeft;
-    fetalLabel.font = [UIFont systemFontOfSize:17];
-    fetalLabel.text = @"胎心检测";
-    [fetalButton addSubview:fetalLabel];
+//    //加一条水平分割线
+//    UIImageView *sepLine1 = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"seperator_line"]];
+//    sepLine1.frame = CGRectMake(6, _physicalView.frame.origin.y + _physicalView.frame.size.height + 10 , 320 -2 *6, 1);
+//    [self.scrollView addSubview:sepLine1];
+//
+//    //孕期血糖 和胎心监测
+//    UIView *bloodView = [[UIView alloc] initWithFrame:CGRectMake(6, _physicalView.frame.origin.y + _physicalView.frame.size.height + 20, 320 -2 *6, 96/2)];
+//    bloodView.backgroundColor = [UIColor whiteColor];
+//    [self.scrollView addSubview:bloodView];
+//    
+//    //孕期血糖按钮
+//    UIButton *bloodButton = [UIButton buttonWithType:UIButtonTypeCustom];
+//    bloodButton.backgroundColor = [UIColor whiteColor];
+//    bloodButton.frame = CGRectMake(0, 0, 304/2, 96/2);
+//    [bloodButton addTarget:self action:@selector(enterBloodView:) forControlEvents:UIControlEventTouchUpInside];
+//    [bloodView addSubview:bloodButton];
+//    
+//    UIImageView *bloodIconImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"physical_blood_icon"]];
+//    bloodIconImage.frame = CGRectMake(12, 11, 26, 26);
+//    [bloodButton addSubview:bloodIconImage];
+//    
+//    UILabel *bloodLabel = [[UILabel alloc] initWithFrame:CGRectMake(bloodIconImage.frame.origin.x + bloodIconImage.frame.size.width + 18, bloodIconImage.frame.origin.y, 100, 26)];
+//    bloodLabel.textColor = kBigTextColor;
+//    bloodLabel.backgroundColor = [UIColor clearColor];
+//    bloodLabel.textAlignment = NSTextAlignmentLeft;
+//    bloodLabel.font = [UIFont systemFontOfSize:17];
+//    bloodLabel.text = @"孕期血糖";
+//    [bloodButton addSubview:bloodLabel];
+//    
+//    //加一条垂直分割线
+//    UIImageView *sepLine = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"vertical_sep_line"]];
+//    sepLine.frame = CGRectMake(bloodButton.frame.origin.x + bloodButton.frame.size.width, 0, 4, bloodView.frame.size.height);
+//    [bloodView addSubview:sepLine];
+//    
+//    //胎心监测按钮
+//    
+//    UIButton *fetalButton = [UIButton buttonWithType:UIButtonTypeCustom];
+//    fetalButton.backgroundColor = [UIColor whiteColor];
+//    [fetalButton addTarget:self action:@selector(enterFetalView:) forControlEvents:UIControlEventTouchUpInside];
+//    fetalButton.frame = CGRectMake(bloodView.frame.size.width - 304/2, 0, 304/2, 96/2);
+//    [bloodView addSubview:fetalButton];
+//    
+//    UIImageView *fetalIconImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"physical_fetal_icon"]];
+//    fetalIconImage.frame = CGRectMake(12, 11, 26, 26);
+//    [fetalButton addSubview:fetalIconImage];
+//    
+//    UILabel *fetalLabel = [[UILabel alloc] initWithFrame:CGRectMake(bloodIconImage.frame.origin.x + bloodIconImage.frame.size.width + 18, bloodIconImage.frame.origin.y, 100, 26)];
+//    fetalLabel.textColor = kBigTextColor;
+//    fetalLabel.backgroundColor = [UIColor clearColor];
+//    fetalLabel.textAlignment = NSTextAlignmentLeft;
+//    fetalLabel.font = [UIFont systemFontOfSize:17];
+//    fetalLabel.text = @"胎心检测";
+//    [fetalButton addSubview:fetalLabel];
     
 }
 
@@ -666,8 +670,12 @@ static int selectedTag = 0;
     NSDate *gmtDate = [NSDate dateFromString:[NSString stringWithFormat:@"%@.%@.%@",year,month,dayLocal] withFormat:@"yyyy.MM.dd"];
     int day = [BTGetData getPregnancyDaysWithDate:gmtDate];
     //根据怀孕天数 算出是第几周 第几天
-        int week = day/7 + 1;
-        int day1 = day%7;
+    int week = day/7 + 1;
+    int day1 = day%7;
+    if (day%7 == 0) {
+        week = week - 1;
+        day1 = 7;
+    }
         self.countLabel.text = [NSString stringWithFormat:@"预产期倒计时: %d天",(280 - day)];
         self.dateLabel.text = [NSString stringWithFormat:@"%d周%d天",week,day1];
 
@@ -714,9 +722,9 @@ static int selectedTag = 0;
     else{
         self.progressView.roundedHead = YES;
     }
-    _progress = i/10000.0;//此处1000是目标值 记得改 另外改了之后也要改柱状图内部
+    _progress = i/7000.0;//此处1000是目标值 记得改 另外改了之后也要改柱状图内部
     NSLog(@"进度是%f",_progress);
-    self.progressLabel.text = [NSString stringWithFormat:@"%0.1f",_progress];
+    self.progressLabel.text = [NSString stringWithFormat:@"%0.1f",_progress *100];
 
 }
 //更新胎动数据
