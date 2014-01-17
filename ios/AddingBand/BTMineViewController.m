@@ -50,7 +50,7 @@ static NSString *version = nil;//版本号
         self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
         self.tableView.separatorColor = [UIColor clearColor];
         self.tableView.showsVerticalScrollIndicator = NO;
-        
+       
         //cell标题内容
         self.titleArray = [NSArray arrayWithObjects:@"关于用户",@"生日",@"末次月经时间",@"预产期",@"系统设置",@"检查更新",@"评分",@"关于",@"意见反馈",nil];
         self.iconArray = [NSArray arrayWithObjects:@"",@"setting_birthday_icon",@"setting_menstrual_icon",@"setting_duedate_icon",@"",@"setting_version_icon",@"setting_grade_icon",@"setting_about_icon",@"setting_feedback_icon" ,nil];
@@ -62,7 +62,7 @@ static NSString *version = nil;//版本号
 - (void)viewWillAppear:(BOOL)animated
 {
     
-    NSLog(@"11111111出现");
+ 
     birthday = @"2013.12.25";
     duedate = @"2013.12.25";
     menstruation = @"2013.12.25";
@@ -73,15 +73,22 @@ static NSString *version = nil;//版本号
     NSArray *data = [BTGetData getFromCoreDataWithPredicate:nil entityName:@"BTUserSetting" sortKey:nil];
     if (data.count > 0) {
         BTUserSetting *userData = [data objectAtIndex:0];
-        birthday = userData.birthday;
-        duedate = userData.dueDate;
-        menstruation =  userData.menstruation;
-        self.contentArray = [NSArray arrayWithObjects:@"",birthday,menstruation,duedate,@"",version,@"",@"",@"",@"", nil];
+        if (userData.birthday) {
+            birthday = userData.birthday;
+        }
+        if (userData.dueDate) {
+            duedate = userData.dueDate;
+        }
+        if (userData.menstruation) {
+             menstruation =  userData.menstruation;
+        }
+        self.contentArray = [NSArray arrayWithObjects:@"",birthday,menstruation,duedate,@"",version,@"",@"",@"",nil];
         
     }
     else
     {
-        self.contentArray = [NSArray arrayWithObjects:@"",birthday,menstruation,duedate,@"",version,@"",@"",@"",@"", nil];
+        
+        self.contentArray = [NSArray arrayWithObjects:@"",birthday,menstruation,duedate,@"",version,@"",@"",@"",nil];
     }
 
     [self.tableView reloadData];
@@ -89,7 +96,7 @@ static NSString *version = nil;//版本号
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    NSLog(@"11111111加载");
+ 
     
 }
 #pragma mark - Table view data source

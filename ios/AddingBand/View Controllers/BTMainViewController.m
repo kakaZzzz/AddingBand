@@ -24,6 +24,8 @@
 #import "BTUserSetting.h"
 
 #import "BTRowOfSectionModel.h"
+#import "BTPersonalDataView.h"
+#import "BTBlogDetailViewController.h"
 #define NAVIGATIONBAR_Y 0
 #define NAVIGATIONBAR_HEIGHT 65
 
@@ -63,15 +65,23 @@ static int currentWeek = 0;
     if ([[NSUserDefaults standardUserDefaults] boolForKey:@"firstAppear"]) {
         [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"firstAppear"];
         NSLog(@"第一次进来");
-        [self popAlertView];
-        
+        [self presentPersonnalDataView];
+        //[self popAlertView];
         
     }
     
     [self.navigationController setNavigationBarHidden:YES animated:NO];
     [self updatePregnancyTime];
+    
+    //
+   
 }
-
+- (void)presentPersonnalDataView
+{
+    BTPersonalDataView *personnalDataView =[[BTPersonalDataView alloc] init];
+    [self presentViewController:personnalDataView animated:YES completion:nil];
+    
+}
 
 - (void)viewWillDisappear:(BOOL)animated
 {
@@ -142,6 +152,11 @@ static int currentWeek = 0;
     //根据怀孕天数 算出是第几周 第几天
     int week = day/7 + 1;
     int day1 = day%7;
+    
+    if (day%7 == 0) {
+        week = week - 1;
+        day1 = 7;
+    }
     self.countLabel.text = [NSString stringWithFormat:@"预产期倒计时: %d天",(280 - day)];
     self.dateLabel.text = [NSString stringWithFormat:@"%d周%d天",week,day1];
     
@@ -177,7 +192,7 @@ static int currentWeek = 0;
     /*GET请求 示例*/
   
     
-    self.engine = [[MKNetworkEngine alloc] initWithHostName:@"addinghome.com" customHeaderFields:nil];
+    self.engine = [[MKNetworkEngine alloc] initWithHostName:HTTP_HOSTNAME customHeaderFields:nil];
     [self.engine useCache];//使用缓存
     MKNetworkOperation *op = [self.engine operationWithPath:[NSString stringWithFormat:@"/api/schedule?p=2013-12-30&w=%d+%d",week,week + 1] params:nil httpMethod:@"GET" ssl:NO];
     [op addCompletionHandler:^(MKNetworkOperation *operation) {
@@ -203,21 +218,32 @@ static int currentWeek = 0;
 }
 - (void)handlePastDataByGetNetworkSuccessfullyWithJsonData:(NSData *)data
 {
+    
+    NSMutableArray *section = [NSMutableArray arrayWithCapacity:1];
+
     currentWeek = 3;
     NSDictionary *resultDic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:nil];
     
     NSDictionary *weekPreviousDic = [resultDic objectForKey:[NSString stringWithFormat:@"w%d",3]];
     NSArray *resultPreviousArray = [weekPreviousDic objectForKey:@"results"];
-    BTRowOfSectionModel *model1 = [[BTRowOfSectionModel alloc] initWithSectionTitle:[NSString stringWithFormat:@"%d周",currentWeek] row:[resultPreviousArray count]];
+    //判断是否有数据，有的话再做处理
+    BTRowOfSectionModel *model1 = nil;
+    if ([resultPreviousArray count] > 0) {
+        model1 = [[BTRowOfSectionModel alloc] initWithSectionTitle:[NSString stringWithFormat:@"%d周",currentWeek] row:[resultPreviousArray count]];
+        [section addObject:model1];
+      }
     NSLog(@"resultPreviousArray==%@",resultPreviousArray);
     NSLog(@"_____%@",model1);
     NSDictionary *weekCurrentDic = [resultDic objectForKey:[NSString stringWithFormat:@"w%d",3 + 1]];
     NSArray *resultCurrentArray = [weekCurrentDic objectForKey:@"results"];
-    
-    BTRowOfSectionModel *model2 = [[BTRowOfSectionModel alloc] initWithSectionTitle:[NSString stringWithFormat:@"%d周",currentWeek + 1] row:[resultCurrentArray count]];
+    NSLog(@"resultCurrentArray====%@",resultCurrentArray);
+    BTRowOfSectionModel *model2 = nil;
+    if ([resultCurrentArray count] > 0) {
+       model2 = [[BTRowOfSectionModel alloc] initWithSectionTitle:[NSString stringWithFormat:@"%d周",currentWeek + 1] row:[resultCurrentArray count]];
+        [section addObject:model2];
+    }
     
     //骚年 这里是分区数据
-    NSMutableArray *section = [NSMutableArray arrayWithObjects:model1,model2, nil];
     
     for (int i = section.count - 1; i >= 0;i--) {
         
@@ -227,18 +253,55 @@ static int currentWeek = 0;
     
     
     //下面是每行数据
-    NSMutableArray *resultArray = [NSMutableArray arrayWithArray:resultPreviousArray];
-    [resultArray addObjectsFromArray:resultCurrentArray];
+    NSMutableArray *array1 = [NSMutableArray arrayWithCapacity:1];
+    NSMutableArray *array2 = [NSMutableArray arrayWithCapacity:1];
+    NSMutableArray *resultArray = [NSMutableArray arrayWithCapacity:1];
     
-    
-    for (int i = resultArray.count - 1;i >= 0;i--)
-    {
-        NSDictionary * dictionary = [resultArray objectAtIndex:i];
-        BTKnowledgeModel * knowledge = [[BTKnowledgeModel alloc] initWithDictionary:dictionary];
-        //把一个个的knowledge存入可变数组 modelArray(类初始化的时候应经开辟空间)
-        [self.modelArray insertObject:knowledge atIndex:0];//这是行数据
-        
+    if ([resultPreviousArray count] > 0) {
+        for (int i = 0; i < [resultPreviousArray count]; i ++) {
+            NSDictionary * dictionary = [resultPreviousArray objectAtIndex:i];
+            NSLog(@"zidianshi %@",dictionary);
+            BTKnowledgeModel * knowledge = [[BTKnowledgeModel alloc] initWithDictionary:dictionary];
+            [array1 addObject:knowledge];
+        }
+        [resultArray addObject:array1];
+
     }
+    
+    if ([resultCurrentArray count] > 0) {
+        for (int i = 0; i < [resultCurrentArray count]; i ++) {
+            NSDictionary * dictionary = [resultCurrentArray objectAtIndex:i];
+            BTKnowledgeModel * knowledge = [[BTKnowledgeModel alloc] initWithDictionary:dictionary];
+            [array2 addObject:knowledge];
+        }
+        
+        [resultArray addObject:array2];
+
+    }
+    
+    
+        for (int i = resultArray.count - 1;i >= 0;i--)
+        {
+            NSArray * array = [resultArray objectAtIndex:i];
+            //把一个个的knowledge存入可变数组 modelArray(类初始化的时候应开辟空间)
+            [self.modelArray insertObject:array atIndex:0];//这是行数据
+        }
+       NSLog(@"请求结果是.......%@",self.modelArray);
+    
+    
+//    NSMutableArray *resultArray = [NSMutableArray arrayWithArray:resultPreviousArray];
+//    [resultArray addObjectsFromArray:resultCurrentArray];
+//    
+//    NSLog(@"resultArray=====%@",resultArray);
+//    for (int i = resultArray.count - 1;i >= 0;i--)
+//    {
+//        NSLog(@"yigeyige 放进去%@",[resultArray objectAtIndex:i]);
+//        NSDictionary * dictionary = [resultArray objectAtIndex:i];
+//        BTKnowledgeModel * knowledge = [[BTKnowledgeModel alloc] initWithDictionary:dictionary];
+//        //把一个个的knowledge存入可变数组 modelArray(类初始化的时候应经开辟空间)
+//        [self.modelArray insertObject:knowledge atIndex:0];//这是行数据
+//        
+//    }
     
     [self.tableView reloadData];
     [self finishReloadingData];//刷新完成
@@ -246,42 +309,74 @@ static int currentWeek = 0;
 
 - (void)handleNextDataByGetNetworkSuccessfullyWithJsonData:(NSData *)data
 {
+    NSMutableArray *section = [NSMutableArray arrayWithCapacity:1];
+
     currentWeek = 3;
     NSDictionary *resultDic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:nil];
     
     NSDictionary *weekPreviousDic = [resultDic objectForKey:[NSString stringWithFormat:@"w%d",3]];
     NSArray *resultPreviousArray = [weekPreviousDic objectForKey:@"results"];
-    BTRowOfSectionModel *model1 = [[BTRowOfSectionModel alloc] initWithSectionTitle:[NSString stringWithFormat:@"%d周",currentWeek] row:[resultPreviousArray count]];
+    //判断是否有数据，有的话再做处理
+    BTRowOfSectionModel *model1 = nil;
+    if ([resultPreviousArray count] > 0) {
+        model1 = [[BTRowOfSectionModel alloc] initWithSectionTitle:[NSString stringWithFormat:@"%d周",currentWeek] row:[resultPreviousArray count]];
+        [section addObject:model1];
+    }
     NSLog(@"resultPreviousArray==%@",resultPreviousArray);
     NSLog(@"_____%@",model1);
     NSDictionary *weekCurrentDic = [resultDic objectForKey:[NSString stringWithFormat:@"w%d",3 + 1]];
     NSArray *resultCurrentArray = [weekCurrentDic objectForKey:@"results"];
-    
-    BTRowOfSectionModel *model2 = [[BTRowOfSectionModel alloc] initWithSectionTitle:[NSString stringWithFormat:@"%d周",currentWeek + 1] row:[resultCurrentArray count]];
+    NSLog(@"resultCurrentArray====%@",resultCurrentArray);
+    BTRowOfSectionModel *model2 = nil;
+    if ([resultCurrentArray count] > 0) {
+        model2 = [[BTRowOfSectionModel alloc] initWithSectionTitle:[NSString stringWithFormat:@"%d周",currentWeek + 1] row:[resultCurrentArray count]];
+        [section addObject:model2];
+    }
     
     //骚年 这里是分区数据
-    NSMutableArray *section = [NSMutableArray arrayWithObjects:model1,model2, nil];
     
-    for (int i = 0; i < [section count];i++) {
+    for (int i = section.count - 1; i >= 0;i--) {
         
-        [self.sectionArray addObject:[section objectAtIndex:i]];//这是分区数据
+        [self.sectionArray insertObject:[section objectAtIndex:i] atIndex:0];//这是分区数据
         
     }
     
     
     //下面是每行数据
-    NSMutableArray *resultArray = [NSMutableArray arrayWithArray:resultPreviousArray];
-    [resultArray addObjectsFromArray:resultCurrentArray];
+    NSMutableArray *array1 = [NSMutableArray arrayWithCapacity:1];
+    NSMutableArray *array2 = [NSMutableArray arrayWithCapacity:1];
+    NSMutableArray *resultArray = [NSMutableArray arrayWithCapacity:1];
     
-    
-    for (int i = 0;i < [resultArray count];i++)
-    {
-        NSDictionary * dictionary = [resultArray objectAtIndex:i];
-        BTKnowledgeModel * knowledge = [[BTKnowledgeModel alloc] initWithDictionary:dictionary];
-        //把一个个的knowledge存入可变数组 modelArray(类初始化的时候应经开辟空间)
-        [self.modelArray addObject:knowledge];//这是行数据
+    if ([resultPreviousArray count] > 0) {
+        for (int i = 0; i < [resultPreviousArray count]; i ++) {
+            NSDictionary * dictionary = [resultPreviousArray objectAtIndex:i];
+            NSLog(@"zidianshi %@",dictionary);
+            BTKnowledgeModel * knowledge = [[BTKnowledgeModel alloc] initWithDictionary:dictionary];
+            [array1 addObject:knowledge];
+        }
+        [resultArray addObject:array1];
         
     }
+    
+    if ([resultCurrentArray count] > 0) {
+        for (int i = 0; i < [resultCurrentArray count]; i ++) {
+            NSDictionary * dictionary = [resultCurrentArray objectAtIndex:i];
+            BTKnowledgeModel * knowledge = [[BTKnowledgeModel alloc] initWithDictionary:dictionary];
+            [array2 addObject:knowledge];
+        }
+        
+        [resultArray addObject:array2];
+        
+    }
+    
+    
+    for (int i = resultArray.count - 1;i >= 0;i--)
+    {
+        NSArray * array = [resultArray objectAtIndex:i];
+        //把一个个的knowledge存入可变数组 modelArray(类初始化的时候应经开辟空间)
+        [self.modelArray insertObject:array atIndex:0];//这是行数据
+    }
+    NSLog(@"请求结果是.......%@",self.modelArray);
     
     [self.tableView reloadData];
     [self finishReloadingData];//刷新完成
@@ -290,21 +385,21 @@ static int currentWeek = 0;
 
 - (void)handleDataByGetNetworkFailly
 {
-    NSDictionary * dictionary;
-    for (int i = 0; i < 2; i ++) {
-        if (i == 0) {
-            dictionary  = [NSDictionary dictionaryWithObjectsAndKeys:@"3",@"event_id",@"103",@"event_type",@"该吃药了哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈",@"title", @"",@"hash",@"丫今儿该吃苹果了",@"description",@"2014-1-2",@"date",@"2014-1-4",@"expire",@"",@"icon",nil];
-        }
-        if (i == 1) {
-            dictionary  = [NSDictionary dictionaryWithObjectsAndKeys:@"2",@"event_id",@"103",@"event_type",@"什么是叶酸什么是叶酸什么是叶酸什么是叶酸什么是叶酸什么是叶酸什么是叶酸什么是叶酸什么是叶酸什么是叶酸什么是叶酸什么是叶酸？",@"title", @"",@"hash",@"叶酸是维生素B9的水溶形式。叶酸的名字来源于拉丁文folium。由米切尔及其同事 首次从菠菜叶中提取纯化出来，命名为叶酸。叶酸作为重要的一碳载体，在核苷酸合成，同型半胱氨酸的再甲基化等诸多重要生理代谢功能方面有重要作用。因此叶酸在快速的细胞分裂和生长过程中有尤其重要的作用。",@"description",@"2014-1-2",@"date",@"2014-1-4",@"expire",@"",@"icon",nil];
-            
-        }
-        BTKnowledgeModel * knowledge = [[BTKnowledgeModel alloc] initWithDictionary:dictionary];
-        //把一个个的shop存入可变数组 dataArray(父类中定义 并初始化)
-        [self.modelArray addObject:knowledge];
-        
-        
-    }
+//    NSDictionary * dictionary;
+//    for (int i = 0; i < 2; i ++) {
+//        if (i == 0) {
+//            dictionary  = [NSDictionary dictionaryWithObjectsAndKeys:@"3",@"event_id",@"103",@"event_type",@"该吃药了哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈",@"title", @"",@"hash",@"丫今儿该吃苹果了",@"description",@"2014-1-2",@"date",@"2014-1-4",@"expire",@"",@"icon",nil];
+//        }
+//        if (i == 1) {
+//            dictionary  = [NSDictionary dictionaryWithObjectsAndKeys:@"2",@"event_id",@"103",@"event_type",@"什么是叶酸什么是叶酸什么是叶酸什么是叶酸什么是叶酸什么是叶酸什么是叶酸什么是叶酸什么是叶酸什么是叶酸什么是叶酸什么是叶酸？",@"title", @"",@"hash",@"叶酸是维生素B9的水溶形式。叶酸的名字来源于拉丁文folium。由米切尔及其同事 首次从菠菜叶中提取纯化出来，命名为叶酸。叶酸作为重要的一碳载体，在核苷酸合成，同型半胱氨酸的再甲基化等诸多重要生理代谢功能方面有重要作用。因此叶酸在快速的细胞分裂和生长过程中有尤其重要的作用。",@"description",@"2014-1-2",@"date",@"2014-1-4",@"expire",@"",@"icon",nil];
+//            
+//        }
+//        BTKnowledgeModel * knowledge = [[BTKnowledgeModel alloc] initWithDictionary:dictionary];
+//        //把一个个的shop存入可变数组 dataArray(父类中定义 并初始化)
+//        [self.modelArray addObject:knowledge];
+//        
+//        
+//    }
     
     [self finishReloadingData];//刷新完成
     [self.tableView reloadData];
@@ -348,13 +443,13 @@ static int currentWeek = 0;
     
     //navigationBgView上的子视图
     
-    UIImageView *iconImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"icon_logo"]];
+    UIImageView *iconImage = [[UIImageView alloc] initWithImage:kNavigationbarIcon];
     iconImage.frame = CGRectMake(24/2, _navigationBgView.frame.size.height - 5 - 39, 39, 39);
     [_navigationBgView addSubview:iconImage];
     
     self.dateLabel = [[UILabel alloc] initWithFrame:CGRectMake(iconImage.frame.origin.x + iconImage.frame.size.width + 10, iconImage.frame.origin.y, 100, 20)];
     _dateLabel.backgroundColor = [UIColor clearColor];
-    _dateLabel.font = [UIFont systemFontOfSize:18];
+    _dateLabel.font = [UIFont systemFontOfSize:15];
     _dateLabel.textAlignment = NSTextAlignmentLeft;
     _dateLabel.textColor = [UIColor whiteColor];
     _dateLabel.text = @"3周4天";
@@ -373,7 +468,7 @@ static int currentWeek = 0;
     [clockButton setBackgroundImage:[UIImage imageNamed:@"appointment_bt_selected"] forState:UIControlStateSelected];
     [clockButton setBackgroundImage:[UIImage imageNamed:@"appointment_bt_selected"] forState:UIControlStateHighlighted];
     [clockButton addTarget:self action:@selector(inputYourPreproduction:) forControlEvents:UIControlEventTouchUpInside];
-    clockButton.frame = CGRectMake(320 - 50, 10, 60/2, 60/2);
+    clockButton.frame = CGRectMake(320 - 50, _navigationBgView.frame.size.height - 39, 60/2, 60/2);
     [_navigationBgView addSubview:clockButton];
     
     
@@ -384,6 +479,7 @@ static int currentWeek = 0;
     //加载tableview
     self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, _navigationBgView.frame.origin.y + _navigationBgView.frame.size.height, 320,self.view.frame.size.height - (_navigationBgView.frame.origin.y + _navigationBgView.frame.size.height) - 55)];
     _tableView.backgroundColor = [UIColor whiteColor];
+    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     _tableView.dataSource = self;
     _tableView.delegate = self;
     [self.view addSubview:_tableView];
@@ -526,7 +622,7 @@ static int currentWeek = 0;
     notification.alertAction = @"打开";  //提示框按钮
     notification.hasAction = YES; //是否显示额外的按钮，为no时alertAction消失
     
-    notification.applicationIconBadgeNumber +=1; //设置app图标右上角的数字
+    notification.applicationIconBadgeNumber =0; //设置app图标右上角的数字
     
     //下面设置本地通知发送的消息，这个消息可以接受
     NSDictionary* infoDic = [NSDictionary dictionaryWithObject:@"value" forKey:@"key"];
@@ -540,12 +636,14 @@ static int currentWeek = 0;
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     //在这里判断 用哪个cell进行展示 然后调用cell的自动调整高度的方法
-    BTKnowledgeModel *model = [self.modelArray objectAtIndex:indexPath.row];
-    switch ([model.remind intValue]) {
-        case 3://提醒
+    NSArray *arrayModel = [self.modelArray objectAtIndex:indexPath.section];
+    BTKnowledgeModel *model = [arrayModel objectAtIndex:indexPath.row];
+
+     switch ([model.remind intValue]) {
+        case 1://warn
             return [BTWarnCell cellHeightWithMode:model];
             break;
-        case 0://知识类
+        case 0://Knowledge
             
             return [BTKnowledgeCell cellHeightWithMode:model];
             break;
@@ -557,7 +655,11 @@ static int currentWeek = 0;
 }
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
+    
+   
     return [self.sectionArray count];
+    
+    
     //return 1;
 }
 
@@ -576,6 +678,13 @@ static int currentWeek = 0;
 {
     UIView *aView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 150)];
     aView.backgroundColor = [UIColor whiteColor];
+    aView.alpha = 0.9;
+    //加一个一像素的分割线
+    UIImageView *lineImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"seperator_line"]];
+    lineImage.frame = CGRectMake(0, 44 - kSeparatorLineHeight ,320, kSeparatorLineHeight);
+    [aView addSubview:lineImage];
+
+    
     
     UILabel *lable = [[UILabel alloc] initWithFrame:CGRectMake(5, 5, 60, (44 - 5*2))];
     lable.backgroundColor = [UIColor clearColor];
@@ -587,7 +696,7 @@ static int currentWeek = 0;
     button.tag = MAIN_BUTTON_TAG + section;
     [button setTitle:@"卵子受孕中" forState:UIControlStateNormal];
     [button addTarget:self action:@selector(pushNextView:) forControlEvents:UIControlEventTouchUpInside];
-    [aView addSubview:button];
+   // [aView addSubview:button];
     
     BTRowOfSectionModel *model = [self.sectionArray objectAtIndex:section];
     //    if (section == 0) {
@@ -617,30 +726,41 @@ static int currentWeek = 0;
     }
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     warnCell.selectionStyle = UITableViewCellSelectionStyleNone;
-    BTKnowledgeModel *model = [self.modelArray objectAtIndex:indexPath.row];
-    //现在2是知识类  3是提醒类
-    //    if  ([model.eventId intValue] == 3)
-    //    {
-    //        warnCell.knowledgeModel = model;
-    //        return warnCell;
-    //
-    //    }
-    //   else {
-    cell.knowledgeModel = model;
-    return cell;
     
-    //    }
+    NSArray *arrayModel = [self.modelArray objectAtIndex:indexPath.section];
+    BTKnowledgeModel *model = [arrayModel objectAtIndex:indexPath.row];
+       if  ([model.remind intValue] == 0)
+        {
+            cell.knowledgeModel = model;
+            return cell;
+
+            
+        }
+       else {
+           warnCell.knowledgeModel = model;
+           return warnCell;
+
+       }
     
-    return nil;
+    
     
 }
 
 #pragma mark - tabelview delegate
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    BTKnowledgeViewController *knowledge = [[BTKnowledgeViewController alloc] init];
-    knowledge.hidesBottomBarWhenPushed = YES;
-    [self.navigationController pushViewController:knowledge animated:YES];
+    
+    NSArray *arrayModel = [self.modelArray objectAtIndex:indexPath.section];
+    BTKnowledgeModel *model = [arrayModel objectAtIndex:indexPath.row];
+    NSString *hash = model.hash;
+    BTBlogDetailViewController *blogVC = [[BTBlogDetailViewController alloc] init];
+    blogVC.blogHash = hash;
+    
+    if (![hash isEqualToString:@""]) {
+    blogVC.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:blogVC animated:YES];
+
+    }
     
     
 }

@@ -62,7 +62,7 @@
     self.chartScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, 320, RED_BACKGROUND_HEIGHT)];
     _chartScrollView.contentSize = CGSizeMake(1200, 200);
     _chartScrollView.scrollEnabled = NO;
-    _chartScrollView.backgroundColor = [UIColor greenColor];
+    _chartScrollView.backgroundColor = kGlobalColor;
     [self.scrollView addSubview:_chartScrollView];
     
     

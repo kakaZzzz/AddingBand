@@ -43,6 +43,7 @@
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"firstLaunch"];
     }
     
+
     //将tabBarController设置为根视图
     self.tabBarController = [[BTCustomTabBarController alloc] init];
     self.window.rootViewController = _tabBarController;
@@ -51,24 +52,24 @@
     
     /*程序启动引导页 我给注释掉了 */
     //如果是第一次启动 加载启动页面
-    //    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"firstLaunch"]) {
-    //        [BTGuideViewController show];
-    //    }
-    
-    //测试用 默认给一些用户信息
-    NSManagedObjectContext *context =[(BTAppDelegate *) [UIApplication sharedApplication].delegate managedObjectContext];
-    
-    //往context中插入一个对象
-    
-    NSArray *data = [BTGetData getFromCoreDataWithPredicate:nil entityName:@"BTUserSetting" sortKey:nil];
-    if (data.count == 0) {
-        BTUserSetting *userSetting = [NSEntityDescription insertNewObjectForEntityForName:@"BTUserSetting" inManagedObjectContext:context];
-        userSetting.birthday = @"2012.12.24";
-        userSetting.dueDate =  @"2013.12.24";
-        userSetting.menstruation =@"2013.12.24";
-        // self.contentArray = [NSArray arrayWithObjects:@"",@"13466668888",@"yitu@126.com",@"修改密码",@"",userData.birthday,userData.dueDate,userData.pregnancy,@"",@"",@"",@"", nil];
-        [context save:nil];
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"firstLaunch"]) {
+        NSLog(@"程序第一次启动");
+        [BTGuideViewController show];
     }
+
+//    //测试用 默认给一些用户信息
+//    NSManagedObjectContext *context =[(BTAppDelegate *) [UIApplication sharedApplication].delegate managedObjectContext];
+//    
+//    //往context中插入一个对象
+//    
+//    NSArray *data = [BTGetData getFromCoreDataWithPredicate:nil entityName:@"BTUserSetting" sortKey:nil];
+//    if (data.count == 0) {
+//        BTUserSetting *userSetting = [NSEntityDescription insertNewObjectForEntityForName:@"BTUserSetting" inManagedObjectContext:context];
+//        userSetting.birthday = @"2012.12.24";
+//        userSetting.dueDate =  @"2013.12.24";
+//        userSetting.menstruation =@"2013.12.24";
+//        [context save:nil];
+//    }
     
     
     /**
@@ -187,7 +188,7 @@
     NSLog(@"user info = %@",[dic objectForKey:@"key"]);
     
     // 图标上的数字减1
-    application.applicationIconBadgeNumber -= 1;
+    application.applicationIconBadgeNumber = 0;
 }
 
 #pragma mark - popview 请输入预产期
@@ -217,7 +218,7 @@
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
     // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
     // 图标上的数字减1
-    application.applicationIconBadgeNumber -= 1;
+    application.applicationIconBadgeNumber = 0;
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application

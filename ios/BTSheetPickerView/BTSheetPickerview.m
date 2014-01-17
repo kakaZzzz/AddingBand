@@ -81,10 +81,13 @@
         self.frame = CGRectMake(0, shareWindow.frame.size.height - 300, 320, 300);
         
         self.backgroundColor = [UIColor whiteColor];
-        
+        //加一条分割线
+        UIImageView *imageLine = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 1)];
+        imageLine.image = [UIImage imageNamed:@"seperator_line"];
+        [self addSubview:imageLine];
         //取消按钮
         self.enterButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _enterButton.frame = CGRectMake(320 - 22 - 20, 10,22, 22);
+        _enterButton.frame = CGRectMake(320 - 78/2, 10,78/2, 60/2);
         [self.enterButton setBackgroundImage:[UIImage imageNamed:@"warn_selected"] forState:UIControlStateNormal];
         [self.enterButton addTarget:self action:@selector(closeButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:self.enterButton];
@@ -115,8 +118,12 @@
     }
     if (actionStyle == BTActionSheetPickerStyleDatePicker) {
         self.frame = CGRectMake(0, shareWindow.frame.size.height - 266, 320, 266);
-        
-        self.backgroundColor = [UIColor grayColor];
+        //加一条分割线
+        UIImageView *imageLine = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 1)];
+        imageLine.image = [UIImage imageNamed:@"seperator_line"];
+        [self addSubview:imageLine];
+
+        self.backgroundColor = [UIColor whiteColor];
         
 //        UIButton *cancelButton = [UIButton buttonWithType:UIButtonTypeCustom];
 //        cancelButton.frame = CGRectMake(0, 0, 50, 50);
@@ -134,7 +141,7 @@
     
         
         self.enterButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _enterButton.frame = CGRectMake(320 - 22 - 20, 15,22, 22);
+        _enterButton.frame = CGRectMake(320 - 78/2, 15,78/2, 60/2);
         [self.enterButton setBackgroundImage:[UIImage imageNamed:@"warn_selected"] forState:UIControlStateNormal];
         [self.enterButton setTitleColor:[UIColor orangeColor] forState:UIControlStateNormal];
         [self.enterButton addTarget:self action:@selector(closeButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
@@ -345,8 +352,8 @@
       self.isShow = YES;
        [UIView animateWithDuration:kModalViewAnimationDuration animations:^{
            
-     CGAffineTransform t = CGAffineTransformScale(CGAffineTransformIdentity, 0.9, 0.9);
-    [self.referView setTransform:t];
+//     CGAffineTransform t = CGAffineTransformScale(CGAffineTransformIdentity, 0.9, 0.9);
+//    [self.referView setTransform:t];
 
         self.alpha = 1;
         self.coverView.alpha = 1;
@@ -367,9 +374,9 @@
         self.alpha = 0;
         self.coverView.alpha = 0;
        // CGAffineTransform t = CGAffineTransformScale(CGAffineTransformIdentity, 1.0, 1.0);
-        CGAffineTransform t = CGAffineTransformIdentity;
-
-        [self.referView setTransform:t];
+//        CGAffineTransform t = CGAffineTransformIdentity;
+//
+//        [self.referView setTransform:t];
 
         
     } completion:^(BOOL finished) {

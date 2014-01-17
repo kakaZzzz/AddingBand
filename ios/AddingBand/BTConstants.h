@@ -63,15 +63,19 @@
 #define UUID_BATTERY_SERVICE            @"180F"
 #define UUID_BATTERY_LEVEL              @"2A19"
 
+//当前操作的蓝牙设备的状态
+#define CONNECTED_BLE_HAS_GONE          0
+#define CONNECTED_BLE_FINED             1
+
 //同步标志，和设备中的一致
 #define SYNC_CODE                       22
 
 //定时蓝牙扫描间隔
-#define SCAN_INTERVAL                   300.0
+#define SCAN_INTERVAL                   45.0
 
 //自动同步间隔
 
-#define AUTO_SYNC_INTERVAL              300
+#define AUTO_SYNC_INTERVAL              300.0
 
 //周边连接超时
 #define CONNECT_PERIPHERAL_TIMEOUT      10.0

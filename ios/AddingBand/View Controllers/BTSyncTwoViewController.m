@@ -12,7 +12,7 @@
 #import "LayoutDef.h"
 #define kPeripheralNameX 24/2
 #define kPeripheralNameY 10
-#define kPeripheralNameWidth 200
+#define kPeripheralNameWidth 170
 #define kPeripheralNameHeight 30
 
 
@@ -92,12 +92,12 @@ static BTSyncTwoViewController *syncTwoVC = nil;
     self.peripheralName = [[UILabel alloc] initWithFrame:CGRectMake(kPeripheralNameX, kPeripheralNameY, kPeripheralNameWidth, kPeripheralNameHeight)];
     _peripheralName.backgroundColor = [UIColor clearColor];
     _peripheralName.textColor = kBigTextColor;
-    _peripheralName.font = [UIFont systemFontOfSize:FIRST_TITLE_SIZE];
+    _peripheralName.font = [UIFont fontWithName:kCharacterAndNumberFont size:FIRST_TITLE_SIZE];
     _peripheralName.textAlignment = NSTextAlignmentLeft;
     _peripheralName.text = @"设备名称啊啊啊啊啊啊";
     [self.view addSubview:_peripheralName];
     
-    self.batteryImage = [[UIImageView alloc] initWithFrame:CGRectMake((320 - 92/2) - 24/2, 30/2, 92/2, 34/2)];
+    self.batteryImage = [[UIImageView alloc] initWithFrame:CGRectMake(_peripheralName.frame.origin.x + _peripheralName.frame.size.width + 5, 30/2, 92/2, 34/2)];
     _batteryImage.image = [UIImage imageNamed:@"battery_unkonwn_icon"];
     [self.view addSubview:_batteryImage];
     
@@ -106,7 +106,7 @@ static BTSyncTwoViewController *syncTwoVC = nil;
     [self.view addSubview:iconImage];
     
     //连接状态
-    self.linkLabel = [[UILabel alloc]initWithFrame:CGRectMake(iconImage.frame.origin.x + iconImage.frame.size.width + 5, iconImage.frame.origin.y, 200,20)];
+    self.linkLabel = [[UILabel alloc]initWithFrame:CGRectMake(iconImage.frame.origin.x + iconImage.frame.size.width + 3, iconImage.frame.origin.y - 3, 200,20)];
     _linkLabel.backgroundColor = [UIColor clearColor];
     _linkLabel.font = [UIFont systemFontOfSize:SECOND_TITLE_SIZE];
     _linkLabel.textColor = kContentTextColor;
@@ -117,20 +117,31 @@ static BTSyncTwoViewController *syncTwoVC = nil;
     [self.view addSubview:_linkLabel];
     
     
- 
+    //上次同步时间
+    self.lastSyncTime = [[UILabel alloc]initWithFrame:CGRectMake((320 - 150 - 5), self.linkLabel.frame.origin.y, 150, self.linkLabel.frame.size.height)];
+    _lastSyncTime.font = [UIFont systemFontOfSize:SECOND_TITLE_SIZE];
+    _lastSyncTime.textAlignment = NSTextAlignmentRight;
+    _lastSyncTime.backgroundColor = [UIColor clearColor];
+    _lastSyncTime.text = @"使用时间:---";
+    _lastSyncTime.textColor = kContentTextColor;
+  //  [self.view addSubview:_lastSyncTime];
+
+    
+    //使用时间标签
+//    self.useTimeLabel = [[UILabel alloc] initWithFrame:CGRectMake((320 - 100), self.linkLabel.frame.origin.y, 100, self.linkLabel.frame.size.height)];
+//    _useTimeLabel.font = [UIFont systemFontOfSize:SECOND_TITLE_SIZE];
+//    _useTimeLabel.textAlignment = NSTextAlignmentRight;
+//    _useTimeLabel.backgroundColor = [UIColor clearColor];
+//    _useTimeLabel.text = @"使用时间:---";
+//    _useTimeLabel.textColor = kContentTextColor;
+//    [self.view addSubview:_useTimeLabel];
+
     
   
     self.aRedView = [[UIView alloc] initWithFrame:CGRectMake(0, 170/2, 320, self.view.frame.size.height - 170/2)];
     _aRedView.backgroundColor = kGlobalColor;
     [self.view addSubview:_aRedView];
 
-    //上次同步时间
-    self.lastSyncTime = [[UILabel alloc]initWithFrame:CGRectMake(0, 100, 200,20)];
-    _lastSyncTime.backgroundColor = [UIColor clearColor];
-    _lastSyncTime.font = [UIFont systemFontOfSize:SECOND_TITLE_SIZE];
-    _lastSyncTime.textColor = kContentTextColor;
-    _lastSyncTime.textAlignment = NSTextAlignmentLeft;
-    [_aRedView addSubview:_lastSyncTime];
 
     //电量
     
@@ -142,7 +153,7 @@ static BTSyncTwoViewController *syncTwoVC = nil;
     _batteryLabel.textAlignment = NSTextAlignmentCenter;
     _batteryLabel.lineBreakMode = NSLineBreakByTruncatingTail;
     _batteryLabel.numberOfLines= 0;
-    [_aRedView addSubview:_batteryLabel];
+   // [_aRedView addSubview:_batteryLabel];
     
 
     
@@ -159,10 +170,10 @@ static BTSyncTwoViewController *syncTwoVC = nil;
     
     
     self.syncIcon = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"sync_image0"]];
-    _syncIcon.frame = CGRectMake((self.view.frame.size.width - 120)/2, (_aRedView.frame.size.height - 120)/2, 120, 120);
-    //    if (IPHONE_5_OR_LATER) {
-    //        _testButton.frame = CGRectMake((self.view.frame.size.width - 120)/2, self.view.frame.size.height - 260, 120, 120);
-    //    }
+    _syncIcon.frame = CGRectMake((self.view.frame.size.width - 120)/2, 50, 120, 120);
+    if (IPHONE_5_OR_LATER) {
+    _syncIcon.frame = CGRectMake((self.view.frame.size.width - 120)/2, 100, 120, 120);
+    }
     
     NSMutableArray * imageArray = [NSMutableArray arrayWithCapacity:1];
     
@@ -171,7 +182,7 @@ static BTSyncTwoViewController *syncTwoVC = nil;
         [imageArray addObject:image];
     }
     _syncIcon.animationImages = imageArray;
-    _syncIcon.animationDuration = 1.0;
+    _syncIcon.animationDuration = 1.5;
     _syncIcon.userInteractionEnabled = YES;
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(toSyncByYourself:)];
     [_syncIcon addGestureRecognizer:tap];
@@ -187,14 +198,18 @@ static BTSyncTwoViewController *syncTwoVC = nil;
     [_syncIcon addSubview:label];
     
     
-    
-    //使用时间标签
-    self.useTimeLabel = [[UILabel alloc] initWithFrame:CGRectMake(5, 0, 200, 30)];
-    _useTimeLabel.backgroundColor = [UIColor clearColor];
-    _useTimeLabel.text = @"使用时间:---";
-    _useTimeLabel.textColor = [UIColor whiteColor];
-    [_aRedView addSubview:_useTimeLabel];
+    UILabel *contentLabel = [[UILabel alloc] initWithFrame:CGRectMake((320 - 300)/2, _syncIcon.frame.origin.y + _syncIcon.frame.size.height + 30, 300, 20)];
+    contentLabel.backgroundColor = [UIColor clearColor];
+    contentLabel.font = [UIFont systemFontOfSize:SECOND_TITLE_SIZE];
+    contentLabel.textColor = kWhiteColor;
+    contentLabel.textAlignment = NSTextAlignmentCenter;
+    contentLabel.text = @"美妈，我们会5分钟为您自动同步一次哦";
+    contentLabel.lineBreakMode = NSLineBreakByTruncatingTail;
+    contentLabel.numberOfLines= 0;
+    [_aRedView addSubview:contentLabel];
 
+    
+ 
     //
     self.syncProgress = [[UILabel alloc]initWithFrame:CGRectMake(150,0,150,50)];
     _syncProgress.backgroundColor = [UIColor blueColor];
@@ -204,7 +219,7 @@ static BTSyncTwoViewController *syncTwoVC = nil;
     _syncProgress.textAlignment = NSTextAlignmentLeft;
     _syncProgress.lineBreakMode = NSLineBreakByTruncatingTail;
     _syncProgress.numberOfLines= 0;
-    [_aRedView addSubview:_syncProgress];
+   // [_aRedView addSubview:_syncProgress];
 
     
 }
@@ -212,6 +227,7 @@ static BTSyncTwoViewController *syncTwoVC = nil;
 {
     
     NSLog(@"自己点击同步");
+    [[NSNotificationCenter defaultCenter] postNotificationName:HANDLETOSYNCNOTICE object:nil];
     [self.bc scanAndSync];
     if ([_syncIcon isAnimating]) {
         [_syncIcon stopAnimating];

@@ -24,6 +24,7 @@
 
 //手环总数
 @property(assign, nonatomic) NSInteger bleListCount;
+@property(assign, nonatomic) NSInteger connectedBleStatus;
 
 //是否显示蓝牙列表页
 @property(assign, nonatomic) Boolean displayBleList;

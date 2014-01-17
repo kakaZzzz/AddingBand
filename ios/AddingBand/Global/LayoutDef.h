@@ -57,6 +57,7 @@
 #define UPDATACIRCULARPROGRESSNOTICE @"updateCircleProgressNotice"//更新圆形进度条通知
 #define DATEPICKERDISMISSNOTICE @"datePickerDismissNotice"//时间选择器将要消失的时候的通知
 #define FETALVIEWUPDATENOTICE @"fetalViewUpdate"//胎动详情页面刷新数据
+#define HANDLETOSYNCNOTICE @"handleToSyncNotice"//胎动详情页面刷新数据
 
 //App整体布局 宏
 #define RED_BACKGROUND_HEIGHT 368/2
@@ -69,7 +70,7 @@
 #define kPhysicalImageHeight 100
 
 
-#define kSeparatorLineHeight 2.0f
+#define kSeparatorLineHeight 0.5f
 //字体大小
 
 #define FIRST_TITLE_SIZE 34/2
@@ -83,9 +84,22 @@
 #define titleLabelColor @"333333"
 #define contentLabelColor @"999999"
 
+/**
+ *  系统英文和字体所用字体
+ */
+#define kCharacterAndNumberFont @"STHeitiJ-Light"
+
 #define kGlobalColor [UIColor colorWithRed:255/255.0 green:35/255.0 blue:80/255.0 alpha:1.0]
 #define kBigTextColor [UIColor colorWithRed:94/255.0 green:101/255.0 blue:113/255.0 alpha:1.0]
 #define kContentTextColor [UIColor colorWithRed:145/255.0 green:154/255.0 blue:170/255.0 alpha:1.0]
+#define kBlueColor [UIColor colorWithRed:66/255.0 green:156/255.0 blue:239/255.0 alpha:1.0]
+#define kTableViewSectionColor [UIColor colorWithRed:245/255.0 green:247/255.0 blue:247/255.0 alpha:1.0]
+#define kWhiteColor  [UIColor colorWithRed:255/255.0 green:180/255.0 blue:195/255.0 alpha:1.0]
+/**
+ *  全局图片名字
+ */
+
+#define kNavigationbarIcon [UIImage imageNamed:@"navigation_logo"]
 //程序中各种tag值
 #define BREAK_CONNECT_ALERT 100
 #define TIME_OUT_ALERT 101
@@ -113,8 +127,10 @@
 
 //蓝牙同步 连接部分宏
 #define SCAN_PERIPHERAL_TIMEOUT 10.0
-#define UPDATE_PREVIOUSSYNC_TIME 2.0
-#define LINkBLE_TIMEOUT 30.0
+#define UPDATE_PREVIOUSSYNC_TIME 5.0
+#define LINkBLE_TIMEOUT 40.0
+
+#define LASTSYNC_TEXT @"上次同步"
 //修改设置日期的宏  生日 预产期 末次月经时间
 #define MODIFY_BIRTHDAY_TYPE 1//生日
 #define MODIFY_DUEDATE_TYPE 3//预产期
@@ -133,4 +149,8 @@
 
 #define ON_LIMIT @"onLimit"
 #define OFF_LIMIT @"offLimit"
+
+//网络接口
+#define HTTP_HEADER @"http://www.addinghome.com"
+#define HTTP_HOSTNAME @"addinghome.com"
 #endif

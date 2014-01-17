@@ -1,4 +1,4 @@
-//
+ //
 //  BTBandCentral.m
 //  SmartBat
 //
@@ -35,6 +35,7 @@
         self.waitForNextSync = YES;
         
         self.globals.displayBleList = NO;
+        self.globals.connectedBleStatus = CONNECTED_BLE_HAS_GONE;
         
          [NSTimer scheduledTimerWithTimeInterval:SCAN_INTERVAL target:self selector:@selector(doScan:) userInfo:nil repeats:YES];
     }
@@ -100,9 +101,9 @@
             NSLog(@"蓝牙关闭,,,,,,");
             self.isBleOFF = YES;
             //关掉蓝牙开关时清零
-            self.globals.bleListCount = 0;
             
             [_allPeripherals removeAllObjects];
+            self.globals.bleListCount = [_allPeripherals count];
             
             break;
             
@@ -146,6 +147,8 @@
                     
                     //sn也一致的话，直接连接
                     // rightOne = NO;//不让列表再刷新  直接在历史页面进行设备连接
+                    
+                    self.globals.connectedBleStatus = CONNECTED_BLE_FINED;
                     
                     isLast = YES;
                     
@@ -671,6 +674,8 @@
             
             [_allPeripherals setObject:new forKey:new.name];
             
+            self.globals.connectedBleStatus = CONNECTED_BLE_HAS_GONE;
+            
             //把coredata里的数据删除
             //            [_context delete:old];
             
@@ -1073,6 +1078,11 @@
     [_cm stopScan];
     
     _scanTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(doScan:) userInfo:nil repeats:NO];
+}
+
+-(void)cleanBLECache{
+    [_allPeripherals removeAllObjects];
+    self.globals.bleListCount = [_allPeripherals count];
 }
 
 #pragma mark - 定时器调用

@@ -24,4 +24,5 @@
 //数据
 @property(nonatomic,strong)NSMutableArray *arrayBarXValue;//柱状遮挡的x坐标数组
 @property(nonatomic,strong)NSMutableArray *lineYValues;//绘制折线图使用
+@property(nonatomic,strong)NSArray *lineXValues;//绘制折线图使用
 @end

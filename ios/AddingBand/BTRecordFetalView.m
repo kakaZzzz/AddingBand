@@ -175,13 +175,13 @@ static int comMinute = 0;
 {
     [self getLocalTime];//得出当前时间
     
- //   double nowDate = [[NSDate date] timeIntervalSince1970];
+   double nowDate = [[NSDate date] timeIntervalSince1970];
     
- //   if ([self isBeyondFiveMinutes:nowDate]) {
+   if ([self isBeyondFiveMinutes:nowDate]) {
         _countLabel.text = [NSString stringWithFormat:@"%d",++fetalCount];
         //往coredata里存一条数据
         [self writeToCoredataWithFetalType:[NSNumber numberWithInt:PHONE_FETAL_TYPE]];
- //   }
+    }
     
     comHour = [self.aHour intValue];
     comMinute = [self.aMinute intValue];

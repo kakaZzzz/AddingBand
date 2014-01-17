@@ -50,7 +50,7 @@ static BTPhysicSportViewController *sharedPhysicSportInstance = nil;//单例
     [super viewDidLoad];
  
     
-    self.navigationItem.title = @"MAMA运动";
+    self.navigationItem.title = @"运动量";
     
     [self addDayWeekMonthView];
     [self addTodayProgressView];
@@ -142,31 +142,42 @@ static BTPhysicSportViewController *sharedPhysicSportInstance = nil;//单例
     bLabel.text = @"%";
     [self.scrollView addSubview:bLabel];
 
+    //蓝线
+    UIView *blueLine = [[UIView alloc] initWithFrame:CGRectMake(24/2, _goalLabel.frame.origin.y + _goalLabel.frame.size.height + 88/4 + 20 + 5, (320 - 24), 2)];
+    blueLine.backgroundColor = kBlueColor;
+    [self.scrollView addSubview:blueLine];
     
-    self.progressView = [[UIView alloc] initWithFrame:CGRectMake(24/2, _goalLabel.frame.origin.y + _goalLabel.frame.size.height + 88/4, 0, 12)];
-    _progressView.backgroundColor = [UIColor blueColor];;
+    self.progressView = [[UIView alloc] initWithFrame:CGRectMake(24/2, _goalLabel.frame.origin.y + _goalLabel.frame.size.height + 88/4 + 20, 0, 12)];
+    _progressView.backgroundColor = kBlueColor;
     [self.scrollView addSubview:_progressView];
     
     
-    self.progressImage =   [[UIImageView alloc] initWithFrame:CGRectMake(_progressView.frame.origin.x, _progressView.frame.origin.y - 40, 40, 40)];
-    _progressImage.backgroundColor = [UIColor redColor];
+    self.progressImage =   [[UIImageView alloc] initWithFrame:CGRectMake(_progressView.frame.origin.x - (92/2+5)/2, _progressView.frame.origin.y - 35, 52, 66/2)];
+    _progressImage.backgroundColor = [UIColor clearColor];
+    _progressImage.image = [UIImage imageNamed:@"sport_progress"];
     [self.scrollView addSubview:_progressImage];
                           
-    self.progressLabel = [[UILabel alloc] initWithFrame:CGRectMake(0 , 0, 30,30)];
-    _progressLabel.textColor = [UIColor whiteColor];
-    _progressLabel.backgroundColor = [UIColor yellowColor];
+    self.progressLabel = [[UILabel alloc] initWithFrame:CGRectMake(0 ,(_progressImage.frame.size.height - 20)/2 -2, 40,20)];
+    _progressLabel.textColor = kBlueColor;
+    _progressLabel.backgroundColor = [UIColor clearColor];
     _progressLabel.textAlignment = NSTextAlignmentCenter;
     _progressLabel.font = [UIFont systemFontOfSize:40/2];
   //  _progressLabel.text = @"100";
     [_progressImage addSubview:_progressLabel];
 
-//    //动态绘制进度view
-//    //  // [self addGradeCircular];
-//    int i = [self getDailyStep];
-//    NSLog(@"走了多少步%d",i);
-//    float progress = (i/10000.0) *100;//此处1000是目标值 记得改 另外改了之后也要改柱状图内部
+    
+    UILabel *percentLabel = [[UILabel alloc] initWithFrame:CGRectMake(_progressLabel.frame.origin.x + _progressLabel.frame.size.width, 10, 15, 15)];
+    percentLabel.textColor = kBlueColor;
+    percentLabel.font = [UIFont systemFontOfSize:12.0];
+    percentLabel.text = @"%";
+    [_progressImage addSubview:percentLabel];
+    //动态绘制进度view
+    //  // [self addGradeCircular];
+    int i = [self getDailyStep];
+    NSLog(@"走了多少步%d",i);
+    float progress = (i/7000.0);//此处1000是目标值 记得改 另外改了之后也要改柱状图内部
 //    NSLog(@"++++++++++++%f",progress);
-//    NSString *str = [NSString stringWithFormat:@"%f",progress];
+//    NSString *str = [NSString stringWithFormat:@"%.0f",progress];
 //    self.progressLabel.text = [str substringToIndex:4];
 //    
 //    NSLog(@"^^^^^^^^^^^%@",self.progressLabel.text);
@@ -176,25 +187,73 @@ static BTPhysicSportViewController *sharedPhysicSportInstance = nil;//单例
 //        NSLog(@"------------%f",k);
 //        self.progressView.frame = CGRectMake(0, 250,320 * k, 80);
 //        
-//		
-//	}];
 //
+//	}];
+
 
     
-    [UIView animateWithDuration:1.0 animations:^{
+    [self updateProgressAnimatedWithProgress:progress];
+    [self updateTaskAchievementWithProgress:progress];
+    
+}
+#pragma mark - 更新进度条
+- (void)updateProgressAnimatedWithProgress:(float)progress
+{
+    [UIView animateWithDuration:2.0 animations:^{
         
-    self.progressView.frame = CGRectMake(_progressView.frame.origin.x, _progressView.frame.origin.y,50, _progressView.frame.size.height);
-    self.progressImage.frame = CGRectMake(12 + 50, _progressImage.frame.origin.y,_progressImage.frame.size.width, _progressImage.frame.size.height);
+        if (progress > 1.0) {
+            self.progressView.frame = CGRectMake(_progressView.frame.origin.x, _progressView.frame.origin.y,(320 - 24)*1.0, _progressView.frame.size.height);
+            
+        }
+        else
+        {
+            self.progressView.frame = CGRectMake(_progressView.frame.origin.x, _progressView.frame.origin.y,(320 - 24)*progress, _progressView.frame.size.height);
+            
+
+        }
         
-        for (int i = 0; i <= 50; i ++) {
-              _progressLabel.text = [NSString stringWithFormat:@"%0.1f", (float)i/50];
+        if (progress <  0.1) {
+            self.progressImage.frame = CGRectMake((320 - 24)*0.1 - 33/2 + 2, _progressImage.frame.origin.y,_progressImage.frame.size.width, _progressImage.frame.size.height);
+
+        }
+        else if (progress > 0.9)
+        {
+            self.progressImage.frame = CGRectMake((320 - 24)*0.9 - 33/2 + 2, _progressImage.frame.origin.y,_progressImage.frame.size.width, _progressImage.frame.size.height);
+            
+
+        }
+        else
+        {
+            self.progressImage.frame = CGRectMake((320 - 24)*progress - 33/2 + 2, _progressImage.frame.origin.y,_progressImage.frame.size.width, _progressImage.frame.size.height);
+
+        }
+        
+        float percent = progress*100;
+        if (percent > 100)
+        {
+            _progressLabel.text = [NSString stringWithFormat:@"%d",(int)percent];
+        }
+        else
+        {
+            _progressLabel.text = [NSString stringWithFormat:@"%0.1f",percent];
+
         }
       
         
-        
-        }];
+    }];
 
-    
+}
+#pragma mark - 更新完成情况
+- (void)updateTaskAchievementWithProgress:(float)progress
+{
+    if (progress < 1.0) {
+        self.titleLabel.text = @"未完成";
+        self.titleLabel.textColor = kGlobalColor;
+    }
+    else{
+         self.titleLabel.text = @"已完成";
+         self.titleLabel.textColor = kBlueColor;
+    }
 }
 #pragma mark - 读取当天总步数
 - (int)getDailyStep

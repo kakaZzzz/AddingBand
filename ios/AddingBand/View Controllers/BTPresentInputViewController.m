@@ -77,7 +77,7 @@
     
     self.inputField = [[UITextField alloc] initWithFrame:CGRectMake(320/2 - 40, (weightView.frame.size.height - 50)/2, 100, 50)];
     _inputField.textColor = kContentTextColor;
-    _inputField.backgroundColor = [UIColor yellowColor];
+    _inputField.backgroundColor = [UIColor clearColor];
     _inputField.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
     _inputField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
     _inputField.tag = TEXTFIELD_TAG + 0;
@@ -94,7 +94,7 @@
     
     self.kiloLabel = [[UILabel alloc] initWithFrame:CGRectMake(320 - 30,(weightView.frame.size.height - 30)/2, 30, 30)];
     _kiloLabel.textColor = kBigTextColor;
-    _kiloLabel.backgroundColor = [UIColor blueColor];
+    _kiloLabel.backgroundColor = [UIColor clearColor];
     _kiloLabel.textAlignment = NSTextAlignmentLeft;
     _kiloLabel.font = [UIFont systemFontOfSize:SECOND_TITLE_SIZE];
     _kiloLabel.text = @"kg";
@@ -110,7 +110,7 @@
     
     self.heightTextField = [[UITextField alloc] initWithFrame:CGRectMake(320/2 - 40, (_bView.frame.size.height - 50)/2, 100, 50)];
     _heightTextField.textColor = kContentTextColor;
-    _heightTextField.backgroundColor = [UIColor yellowColor];
+    _heightTextField.backgroundColor = [UIColor clearColor];;
     _heightTextField.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
     _heightTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
     _heightTextField.tag = TEXTFIELD_TAG + 1;
@@ -125,7 +125,7 @@
     
     UILabel *bLabel = [[UILabel alloc] initWithFrame:CGRectMake(320 - 30,(_bView.frame.size.height - 30)/2, 30, 30)];
     bLabel.textColor = kBigTextColor;
-    bLabel.backgroundColor = [UIColor blueColor];
+    bLabel.backgroundColor = [UIColor clearColor];;
     bLabel.textAlignment = NSTextAlignmentLeft;
     bLabel.font = [UIFont systemFontOfSize:SECOND_TITLE_SIZE];
     bLabel.text = @"cm";
@@ -140,7 +140,7 @@
     
     self.previousWeightField = [[UITextField alloc] initWithFrame:CGRectMake(320/2 - 40, (_cView.frame.size.height - 50)/2, 100, 50)];
     _previousWeightField.textColor = kContentTextColor;
-    _previousWeightField.backgroundColor = [UIColor yellowColor];
+    _previousWeightField.backgroundColor = [UIColor clearColor];;
     _previousWeightField.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
     _previousWeightField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
     _previousWeightField.tag = TEXTFIELD_TAG + 2;
@@ -156,7 +156,7 @@
     
     UILabel *cLabel = [[UILabel alloc] initWithFrame:CGRectMake(320 - 30,(_cView.frame.size.height - 30)/2, 30, 30)];
     cLabel.textColor = kBigTextColor;
-    cLabel.backgroundColor = [UIColor blueColor];
+    cLabel.backgroundColor = [UIColor clearColor];;
     cLabel.textAlignment = NSTextAlignmentLeft;
     cLabel.font = [UIFont systemFontOfSize:SECOND_TITLE_SIZE];
     cLabel.text = @"kg";
@@ -435,8 +435,8 @@
         NSLog(@"there no");
         
         BTUserSetting *new = [NSEntityDescription insertNewObjectForEntityForName:@"BTUserSetting" inManagedObjectContext:context];
-      new.mamHeight = height;
-      new.previousWeight = previousWeight;
+       new.mamHeight = height;
+       new.previousWeight = previousWeight;
       
         }
     

@@ -114,7 +114,7 @@
         
         //
         
-        CGRect rect = CGRectMake((bar.center.x - 70/2), 0, 70, 50);//标签坐标 大小
+        CGRect rect = CGRectMake((bar.center.x - 75/2), 0, 75, 50);//标签坐标 大小
         bar.markView = [[BTBarMarkView alloc] initWithFrame:rect];
         bar.markView.aImageView.image = [UIImage imageNamed:@"markview_ba_middle@2x"];
         bar.markView.markLabel.text = [NSString stringWithFormat:@"%@ \n%d次",[self getLastRecordTimeFromRaw:raw],[self getFetalCountFromRecordTime:raw.seconds1970]];
