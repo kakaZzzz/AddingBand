@@ -71,7 +71,7 @@
 
 //自动同步间隔
 
-#define AUTO_SYNC_INTERVAL              30
+#define AUTO_SYNC_INTERVAL              300
 
 //周边连接超时
 #define CONNECT_PERIPHERAL_TIMEOUT      10.0
