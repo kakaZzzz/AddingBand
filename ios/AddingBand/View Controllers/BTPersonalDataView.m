@@ -56,7 +56,7 @@ static int selectedTextFieldTag = 0;
     navigationBgView.backgroundColor = kGlobalColor;
     [self.view addSubview:navigationBgView];
 
-    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake((self.view.frame.size.width - 100)/2, (navigationBgView.frame.size.height - 20)/2, 100, 20)];
+    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake((self.view.frame.size.width - 100)/2, (navigationBgView.frame.size.height - 20)/2 + 5, 100, 20)];
     titleLabel.backgroundColor = [UIColor clearColor];
     titleLabel.textColor = [UIColor whiteColor];
     titleLabel.textAlignment = NSTextAlignmentCenter;
@@ -64,7 +64,7 @@ static int selectedTextFieldTag = 0;
     [navigationBgView addSubview:titleLabel];
     
     UIButton *completeButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    completeButton.frame = CGRectMake((self.view.frame.size.width - 100/2),(navigationBgView.frame.size.height - 48/2)/2, 100/2, 48/2);
+    completeButton.frame = CGRectMake((self.view.frame.size.width - 100/2) - 10,(navigationBgView.frame.size.height - 48/2)/2 + 5, 100/2, 48/2);
     [completeButton setTitle:@"完成" forState:UIControlStateNormal];
     [completeButton addTarget:self action:@selector(completeInput:) forControlEvents:UIControlEventTouchUpInside];
     [navigationBgView addSubview:completeButton];
@@ -80,9 +80,9 @@ static int selectedTextFieldTag = 0;
     birthdayImage.image = [UIImage imageNamed:@"setting_birthday_icon"];
     [aView addSubview:birthdayImage];
     
-    self.birthdayText = [[UITextField alloc] initWithFrame:CGRectMake((aView.frame.size.width - 100)/2, (aView.frame.size.height - 40)/2, 100, 40)];
+    self.birthdayText = [[UITextField alloc] initWithFrame:CGRectMake((aView.frame.size.width - 250)/2, (aView.frame.size.height - 40)/2, 250, 40)];
     _birthdayText.textColor = kContentTextColor;
-    _birthdayText.backgroundColor = [UIColor whiteColor];
+    _birthdayText.backgroundColor = [UIColor clearColor];
     _birthdayText.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
     _birthdayText.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
     _birthdayText.tag = TEXTFIELD_TAG + 3;
@@ -91,6 +91,7 @@ static int selectedTextFieldTag = 0;
     _birthdayText.keyboardType = UIKeyboardTypeDecimalPad;
      _birthdayText.font = [UIFont systemFontOfSize:SECOND_TITLE_SIZE];
     _birthdayText.placeholder = @"生日";
+    _birthdayText.textAlignment = NSTextAlignmentCenter;
     [_birthdayText addPreviousNextDoneOnKeyboardWithTarget:self previousAction:@selector(previousClicked:) nextAction:@selector(nextClicked:) doneAction:@selector(doneClicked:)];
 
     [aView addSubview:_birthdayText];
@@ -105,9 +106,9 @@ static int selectedTextFieldTag = 0;
     menstrualImage.image = [UIImage imageNamed:@"setting_menstrual_icon"];
     [bView addSubview:menstrualImage];
     
-    self.menstrualText = [[UITextField alloc] initWithFrame:CGRectMake((bView.frame.size.width - 100)/2, (bView.frame.size.height - 40)/2, 100, 40)];
+    self.menstrualText = [[UITextField alloc] initWithFrame:CGRectMake((bView.frame.size.width - 250)/2, (bView.frame.size.height - 40)/2, 250, 40)];
     _menstrualText.textColor = kContentTextColor;
-    _menstrualText.backgroundColor = [UIColor whiteColor];
+    _menstrualText.backgroundColor = [UIColor clearColor];
     _menstrualText.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
     _menstrualText.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
     _menstrualText.tag = TEXTFIELD_TAG + 4;
@@ -116,6 +117,7 @@ static int selectedTextFieldTag = 0;
     _menstrualText.keyboardType = UIKeyboardTypeDecimalPad;
     _menstrualText.font = [UIFont systemFontOfSize:SECOND_TITLE_SIZE];
     _menstrualText.placeholder = @"末次月经时间";
+    _menstrualText.textAlignment = NSTextAlignmentCenter;
     [_menstrualText addPreviousNextDoneOnKeyboardWithTarget:self previousAction:@selector(previousClicked:) nextAction:@selector(nextClicked:) doneAction:@selector(doneClicked:)];
 
     [bView addSubview:_menstrualText];
@@ -129,9 +131,9 @@ static int selectedTextFieldTag = 0;
     duedateImage.image = [UIImage imageNamed:@"setting_duedate_icon"];
     [cView addSubview:duedateImage];
     
-    self.duedateText = [[UITextField alloc] initWithFrame:CGRectMake((cView.frame.size.width - 100)/2, (cView.frame.size.height - 40)/2, 100, 40)];
+    self.duedateText = [[UITextField alloc] initWithFrame:CGRectMake((cView.frame.size.width - 250)/2, (cView.frame.size.height - 40)/2, 250, 40)];
     _duedateText.textColor = kContentTextColor;
-    _duedateText.backgroundColor = [UIColor whiteColor];
+    _duedateText.backgroundColor = [UIColor clearColor];
     _duedateText.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
     _duedateText.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
     _duedateText.tag = TEXTFIELD_TAG + 5;
@@ -140,6 +142,7 @@ static int selectedTextFieldTag = 0;
     _duedateText.keyboardType = UIKeyboardTypeDecimalPad;
     _duedateText.font = [UIFont systemFontOfSize:SECOND_TITLE_SIZE];
     _duedateText.placeholder = @"预产期";
+    _duedateText.textAlignment = NSTextAlignmentCenter;
     [_duedateText addPreviousNextDoneOnKeyboardWithTarget:self previousAction:@selector(previousClicked:) nextAction:@selector(nextClicked:) doneAction:@selector(doneClicked:)];
 
     [cView addSubview:_duedateText];

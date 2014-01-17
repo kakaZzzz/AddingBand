@@ -47,7 +47,7 @@
 
 - (void)setKnowledgeModel:(BTKnowledgeModel *)knowledgeModel
 {
-    NSLog(@"走了此方法了....");
+    
     _knowledgeModel = knowledgeModel;
     self.dayLabel.text = _knowledgeModel.date;
     

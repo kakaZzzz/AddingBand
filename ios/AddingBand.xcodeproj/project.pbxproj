@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		721AD8261888DEA800CE5CB5 /* BTDateCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 721AD8251888DEA800CE5CB5 /* BTDateCell.m */; };
+		721AD86C1889495900CE5CB5 /* edit_bg@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 721AD86B1889495900CE5CB5 /* edit_bg@2x.png */; };
+		721AD8701889548B00CE5CB5 /* edit_compeleted@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 721AD86F1889548B00CE5CB5 /* edit_compeleted@2x.png */; };
 		72269017183DAC2700D6405E /* uestime_bg.png in Resources */ = {isa = PBXBuildFile; fileRef = 72269015183DAC2700D6405E /* uestime_bg.png */; };
 		72269018183DAC2700D6405E /* uestime_bg@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 72269016183DAC2700D6405E /* uestime_bg@2x.png */; };
 		722E1F631886247F0090E287 /* seperator_line@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 722E1F621886247F0090E287 /* seperator_line@2x.png */; };
@@ -374,6 +376,8 @@
 /* Begin PBXFileReference section */
 		721AD8241888DEA800CE5CB5 /* BTDateCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BTDateCell.h; path = MainCustomCell/BTDateCell.h; sourceTree = "<group>"; };
 		721AD8251888DEA800CE5CB5 /* BTDateCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BTDateCell.m; path = MainCustomCell/BTDateCell.m; sourceTree = "<group>"; };
+		721AD86B1889495900CE5CB5 /* edit_bg@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "edit_bg@2x.png"; sourceTree = "<group>"; };
+		721AD86F1889548B00CE5CB5 /* edit_compeleted@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "edit_compeleted@2x.png"; sourceTree = "<group>"; };
 		72269015183DAC2700D6405E /* uestime_bg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = uestime_bg.png; sourceTree = "<group>"; };
 		72269016183DAC2700D6405E /* uestime_bg@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "uestime_bg@2x.png"; sourceTree = "<group>"; };
 		722E1F621886247F0090E287 /* seperator_line@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "seperator_line@2x.png"; sourceTree = "<group>"; };
@@ -2032,6 +2036,7 @@
 		72EE545D1846F99D00093583 /* Phisical */ = {
 			isa = PBXGroup;
 			children = (
+				721AD86B1889495900CE5CB5 /* edit_bg@2x.png */,
 				72560CF7188565A0006F9B22 /* sport_progress@2x.png */,
 				72560C971884E959006F9B22 /* accessory_white@2x.png */,
 				72A2A31E186C2B7400A504CA /* physical_fetal_sel@2x.png */,
@@ -2040,6 +2045,7 @@
 				72B3F88B187FD8CC00549408 /* physical_askMark@2x.png */,
 				7255ADA5186D5BE0003A0913 /* physical_fetal_icon@2x.png */,
 				7255ADA6186D5BE0003A0913 /* physical_blood_icon@2x.png */,
+				721AD86F1889548B00CE5CB5 /* edit_compeleted@2x.png */,
 				7255ADA3186D4F43003A0913 /* physical_nodata_icon@2x.png */,
 				72A2A31F186C2B7400A504CA /* physical_fetal_unsel@2x.png */,
 				72A2A313186C106500A504CA /* hand_icon@2x.png */,
@@ -2155,6 +2161,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				724AB2251860218700067CAD /* baby_weight_unsel@2x.png in Resources */,
+				721AD86C1889495900CE5CB5 /* edit_bg@2x.png in Resources */,
 				7255AD9C186D3EA1003A0913 /* horizontal_sep_line@2x.png in Resources */,
 				723F24A618308925001F27DA /* 4.png in Resources */,
 				72D5DEC6188642A200E6EB33 /* grade_demo@2x.png in Resources */,
@@ -2274,6 +2281,7 @@
 				724827741881395B00B413C7 /* pull_up@2x.png in Resources */,
 				72B3F876187EAB2000549408 /* sync_image7@2x.png in Resources */,
 				72A9EC31187959C9006EEB28 /* physical_unselected@2x.png in Resources */,
+				721AD8701889548B00CE5CB5 /* edit_compeleted@2x.png in Resources */,
 				72B3F88C187FD8CC00549408 /* physical_askMark@2x.png in Resources */,
 				72EE54601846F9EB00093583 /* lace_bg@2x.png in Resources */,
 				724AB2231860218700067CAD /* Fetal_count_sel@2x.png in Resources */,

@@ -48,20 +48,20 @@
     [self.contentView addSubview:_contentLabel];
 
     
-    self.indicateImage = [[UIImageView alloc] initWithFrame:CGRectMake(_contentLabel.frame.origin.x + _contentLabel.frame.size.width, (self.frame.size.height - 15)/2, 15, 15)];
+    self.indicateImage = [[UIImageView alloc] initWithFrame:CGRectMake(_contentLabel.frame.origin.x + _contentLabel.frame.size.width, (self.frame.size.height - 17)/2, 15, 15)];
     _indicateImage.image = [UIImage imageNamed:@"accessory_gray.png"];
     [self.contentView addSubview:_indicateImage];
     
     
     self.lineImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"seperator_line"]];
-    _lineImage.frame = CGRectMake(50, self.frame.size.height + 0.5 , 320-50, kSeparatorLineHeight);
+    _lineImage.frame = CGRectMake(50, self.frame.size.height - 1.0 , 320-50, kSeparatorLineHeight);
     [self.contentView addSubview:_lineImage];
 
 }
 - (void)layoutSubviews
 {
     if (self.indexRow == 3 || self.indexRow == 8) {
-        _lineImage.frame = CGRectMake(0, self.frame.size.height - 0.5  , 320, kSeparatorLineHeight);
+        _lineImage.frame = CGRectMake(0, self.frame.size.height - 1.0   , 320, kSeparatorLineHeight);
     }
 }
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated

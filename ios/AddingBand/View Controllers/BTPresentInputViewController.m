@@ -67,9 +67,10 @@
     [super viewDidLoad];
     self.backButton.hidden = YES;//隐藏返回按钮
      self.view.backgroundColor = [UIColor yellowColor];
+    self.scrollView.scrollEnabled = NO;
     [self configureNavigationbarRightbar];
     //体重
-    BTView *weightView = [[BTView alloc] initWithFrame:CGRectMake(0, 368/2, 320, 112/2)];
+    BTView *weightView = [[BTView alloc] initWithFrame:CGRectMake(0, 0, 320, 112/2)];
     weightView.backgroundColor = [UIColor whiteColor];
     
     [self.scrollView addSubview:weightView];
@@ -162,6 +163,14 @@
     cLabel.text = @"kg";
     [_cView addSubview:cLabel];
 
+    UIView *bgView = [[UIView alloc] initWithFrame:CGRectMake(0, _cView.frame.origin.y + _cView.frame.size.height, 320, self.scrollView.frame.size.height - _cView.frame.origin.y - _cView.frame.size.height)];
+    [self.scrollView addSubview:bgView];
+    
+    
+    UIImageView *editBackgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"edit_bg"]];
+    editBackgroundView.frame = CGRectMake(0 , 20, 320, 240);
+    [bgView addSubview:editBackgroundView];
+    
     //重新调整布局
     [self layoutSubViewsByInputType:self.presentStyle];
     

@@ -19,7 +19,7 @@
 #define klineScrollViewWidth 320
 #define klineScrollViewHeight 200
 
-#define klineScrollViewContentSizeX (320 *2)
+#define klineScrollViewContentSizeX (320 *2 + 30)
 static int offsetX = 0;
 @interface BTFetalDailyViewController ()
 
@@ -156,12 +156,9 @@ static int offsetX = 0;
     _lineScrollView.backgroundColor = kGlobalColor;
     [self.view addSubview:_lineScrollView];
     
-    
-    
-
     self.lineYValues = [NSMutableArray arrayWithCapacity:1];
     [self getEveryHourData];//调用此方法 即可更新 lineYValues
-    self.lineChart = [[PNChart alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH *2, klineScrollViewHeight)];
+    self.lineChart = [[PNChart alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH *2 + 30, klineScrollViewHeight)];
     self.lineXValues = @[@"00:00",@"01:00",@"02:00",@"03:00",@"04:00",@"05:00",@"06:00",@"07:00",@"08:00",@"09:00",@"10:00",@"11:00",@"12:00",@"13:00",@"14:00",@"15:00",@"16:00",@"17:00",@"18:00",@"19:00",@"20:00",@"21:00",@"22:00",@"23:00"];
     [_lineChart setXLabels:self.lineXValues];
     _lineChart.strokeColor = [UIColor whiteColor];//线条颜色
@@ -172,7 +169,7 @@ static int offsetX = 0;
     
     self.arrayBarXValue = [NSMutableArray arrayWithCapacity:1];
     [self getBarXValue];
-    PNChart * barChart = [[PNChart alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH * 2, 200.0)];
+    PNChart * barChart = [[PNChart alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH * 2 + 30, 200.0)];
 	barChart.backgroundColor = [UIColor clearColor];
 	barChart.type = PNBarType;
 	[barChart setXLabels:self.arrayBarXValue];

@@ -29,7 +29,7 @@
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
         // Initialization code
-        self.backgroundColor = kTableViewSectionColor;
+        self.contentView.backgroundColor = kTableViewSectionColor;
         [self createCustomCell];
     }
     return self;
@@ -49,7 +49,7 @@
      
     
     self.lineImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"seperator_line"]];
-    _lineImage.frame = CGRectMake(lineImageX, self.frame.size.height + 0.5, lineImageWidth, kSeparatorLineHeight);
+    _lineImage.frame = CGRectMake(lineImageX, self.frame.size.height - kSeparatorLineHeight, lineImageWidth, kSeparatorLineHeight);
     [self.contentView addSubview:_lineImage];
     
 }

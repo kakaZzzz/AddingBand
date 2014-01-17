@@ -136,42 +136,48 @@
     self.titleLabel.frame = CGRectMake(_titleLabel.frame.origin.x, _titleLabel.frame.origin.y, _titleLabel.frame.size.width, labelSize.height);
     
     
-    //图片
-    //有图片
-    if (![_knowledgeModel.contentImage isEqualToString:@""]) {
-        self.contentImage.frame = CGRectMake(_contentImage.frame.origin.x, _titleLabel.frame.origin.y + _titleLabel.frame.size.height + 10, kContentLabelHeight, kContentLabelHeight);
-        
-        self.contentImage.imageURL = [NSURL URLWithString:_knowledgeModel.contentImage];//异步加载图片
-        
-        self.contentLabel.frame = CGRectMake(_contentImage.frame.origin.x + _contentImage.frame.size.width , _contentImage.frame.origin.y, 320 - _contentImage.frame.origin.x - _contentImage.frame.size.width - 24/2, kContentLabelHeight);
-
-
-    }
-    //没图片
-    else{
-         _contentImage.frame = CGRectZero;
-        self.contentLabel.frame = CGRectMake(_titleLabel.frame.origin.x  , _titleLabel.frame.origin.y + _titleLabel.frame.size.height + 10, 320 - _titleLabel.frame.origin.x - 24/2, kContentLabelHeight);
-        
-
-    }
     
     
     self.titleLabel.text = _knowledgeModel.title;
     self.contentLabel.text = _knowledgeModel.description;
     self.dayLabel.text = _knowledgeModel.date;
     
+    
     if ([_knowledgeModel.description isEqualToString:@""]) {
-        
+        _contentImage.frame = CGRectZero;
         self.contentLabel.frame = CGRectMake(_titleLabel.frame.origin.x  , _titleLabel.frame.origin.y + _titleLabel.frame.size.height + 10, 320 - _titleLabel.frame.origin.x - 24/2, 0.0);
         _lineImage.frame = CGRectMake(kTitleLabelX, (2 * kTitleLabelY + labelSize.height) -kSeparatorLineHeight , 320-24, kSeparatorLineHeight);
       }
     
     else{
-        self.contentLabel.frame = CGRectMake(_titleLabel.frame.origin.x  , _titleLabel.frame.origin.y + _titleLabel.frame.size.height + 10, 320 - _titleLabel.frame.origin.x - 24/2, kContentLabelHeight);
+        
+        
+        
+        //图片
+        //有图片
+        if (![_knowledgeModel.contentImage isEqualToString:@""]) {
+            self.contentImage.frame = CGRectMake(_titleLabel.frame.origin.x, _titleLabel.frame.origin.y + _titleLabel.frame.size.height + 10, kContentLabelHeight, kContentLabelHeight);
+            
+            self.contentImage.imageURL = [NSURL URLWithString:_knowledgeModel.contentImage];//异步加载图片
+            
+            self.contentLabel.frame = CGRectMake(_contentImage.frame.origin.x + _contentImage.frame.size.width , _contentImage.frame.origin.y, 320 - _contentImage.frame.origin.x - _contentImage.frame.size.width - 24/2, kContentLabelHeight);
+            
+            
+        }
+        //没图片
+        else{
+            _contentImage.frame = CGRectZero;
+            self.contentLabel.frame = CGRectMake(_titleLabel.frame.origin.x  , _titleLabel.frame.origin.y + _titleLabel.frame.size.height + 10, 320 - _titleLabel.frame.origin.x - 24/2, kContentLabelHeight);
+            
+            
+        }
+
 
         _lineImage.frame = CGRectMake(kTitleLabelX, (2 * kTitleLabelY + labelSize.height + kContentLabelHeight + 10)-kSeparatorLineHeight , 320-24, kSeparatorLineHeight);
 
     }
+    
+    
     
     if ([_knowledgeModel.hash isEqualToString:@""]) {
         self.accessLabel.hidden = YES;

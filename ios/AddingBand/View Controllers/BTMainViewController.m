@@ -92,7 +92,7 @@ static int currentWeek = 0;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.view.backgroundColor = [UIColor yellowColor];
+    self.view.backgroundColor = [UIColor whiteColor];
     
     //[self popAlertView];
     [self getCurrentWeekOfPregnancy];//得到今天是怀孕第几周
@@ -479,6 +479,12 @@ static int currentWeek = 0;
     
     //加载tableview
     self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, _navigationBgView.frame.origin.y + _navigationBgView.frame.size.height, 320,self.view.frame.size.height - (_navigationBgView.frame.origin.y + _navigationBgView.frame.size.height) - 55)];
+    
+    if (IOS7_OR_EARLIER) {
+        
+        self.tableView.frame = CGRectMake(0, _navigationBgView.frame.origin.y + _navigationBgView.frame.size.height, 320,self.view.frame.size.height - (_navigationBgView.frame.origin.y + _navigationBgView.frame.size.height) - 58);
+    }
+    NSLog(@"页面高度 亲 %f",self.view.frame.size.height);
     _tableView.backgroundColor = [UIColor whiteColor];
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     _tableView.dataSource = self;
@@ -723,7 +729,7 @@ static int currentWeek = 0;
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     
-    NSLog(@"要显示的时候崩了");
+   
     static NSString *CellIdentifier = @"Cell";
     static NSString *CellIdentifierWarn = @"CellWarn";
     static NSString *CellIdentifierDate = @"CellDate";
@@ -742,9 +748,9 @@ static int currentWeek = 0;
         dateCell = [[BTDateCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifierDate];
     }
 
-//    cell.selectionStyle = UITableViewCellSelectionStyleNone;
-//    warnCell.selectionStyle = UITableViewCellSelectionStyleNone;
-//    dateCell.selectionStyle = UITableViewCellSelectionStyleNone;
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    warnCell.selectionStyle = UITableViewCellSelectionStyleNone;
+    dateCell.selectionStyle = UITableViewCellSelectionStyleNone;
 
     
     NSArray *arrayModel = [self.modelArray objectAtIndex:indexPath.section];

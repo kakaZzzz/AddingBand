@@ -172,7 +172,7 @@ static int selectedTag = 0;
     titleLabel.backgroundColor = [UIColor clearColor];
     titleLabel.textAlignment = NSTextAlignmentLeft;
     titleLabel.font = [UIFont systemFontOfSize:FIRST_TITLE_SIZE];
-    titleLabel.text = @"今日目标完成情况";
+    titleLabel.text = @"今日完成情况";
     [sportProgressView addSubview:titleLabel];
     
     UILabel *labelGoal = [[UILabel alloc] initWithFrame:CGRectMake(sportProgressView.frame.origin.x + 36/2, titleLabel.frame.origin.y + 30, 40, 30)];

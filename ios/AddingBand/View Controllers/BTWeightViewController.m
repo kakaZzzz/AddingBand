@@ -30,6 +30,7 @@
 @property(nonatomic,strong)UILabel *previousWeightLabel;
 @property(nonatomic,strong)UILabel *recreaseLabel;
 @property(nonatomic,strong)NSArray *onLimit;
+@property(nonatomic,strong) UIButton *modifyButton;
 @end
 
 #define ARC4RANDOM_MAX  0x100000000
@@ -115,13 +116,11 @@
 
     
     //修改按钮
-    UIButton *modifyButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [modifyButton setBackgroundImage:[UIImage imageNamed:@"physical_edit_unselected"] forState:UIControlStateNormal];
-    [modifyButton setBackgroundImage:[UIImage imageNamed:@"physical_edit_selected"] forState:UIControlStateSelected];
-    [modifyButton setBackgroundImage:[UIImage imageNamed:@"physical_edit_selected"] forState:UIControlStateHighlighted];
-    [modifyButton addTarget:self action:@selector(modifyData:) forControlEvents:UIControlEventTouchUpInside];
-    modifyButton.frame = CGRectMake(320 - 10 - 48/2, (weightView.frame.size.height - 48/2)/2, 48/2, 48/2);
-    [weightView addSubview:modifyButton];
+    self.modifyButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [_modifyButton setBackgroundImage:[UIImage imageNamed:@"physical_edit_unselected"] forState:UIControlStateNormal];
+    [_modifyButton addTarget:self action:@selector(modifyData:) forControlEvents:UIControlEventTouchUpInside];
+    _modifyButton.frame = CGRectMake(320 - 10 - 48/2, (weightView.frame.size.height - 48/2)/2, 48/2, 48/2);
+    [weightView addSubview:_modifyButton];
 
     //体重情况
     
@@ -179,6 +178,22 @@
     presentVC.navigationItem.title = @"填写体重";
     [self presentViewController:_nav animated:YES completion:nil];
 }
+#pragma mark - event
+- (void)modifyData:(UIButton *)btn
+{
+    if ([btn.currentBackgroundImage isEqual:[UIImage imageNamed:@"physical_edit_unselected"]]) {
+        [_weightField becomeFirstResponder];
+        [btn setBackgroundImage:[UIImage imageNamed:@"edit_compeleted"] forState:UIControlStateNormal];
+    }
+    else{
+        [btn setBackgroundImage:[UIImage imageNamed:@"physical_edit_unselected"] forState:UIControlStateNormal];
+        [self updateUIWithValue:_weightField.text];
+        [self writeToCoredataWithWeight:_weightField.text];
+        [_weightField resignFirstResponder];
+    }
+    
+}
+
 #pragma mark - 增加代码的鲁棒性 在此只允许输入数字和小数点
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
 {
@@ -197,6 +212,22 @@
     }
     return canChange;
 }
+#pragma mark - 开始编辑
+- (void)textFieldDidBeginEditing:(UITextField *)textField
+{
+    if ([_modifyButton.currentBackgroundImage isEqual:[UIImage imageNamed:@"physical_edit_unselected"]]) {
+        
+        [_modifyButton setBackgroundImage:[UIImage imageNamed:@"edit_compeleted"] forState:UIControlStateNormal];
+    }
+    else{
+        [_modifyButton setBackgroundImage:[UIImage imageNamed:@"physical_edit_unselected"] forState:UIControlStateNormal];
+        
+    }
+    
+    
+    
+}
+
 #pragma mark - 按键盘retrn 键之后触发的方法
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
@@ -209,12 +240,6 @@
     
 
     return YES;
-}
-#pragma mark - event
-- (void)modifyData:(UIButton *)btn
-{
-    [_weightField becomeFirstResponder];
- 
 }
 
 
@@ -545,11 +570,11 @@
 #pragma mark - 关闭键盘
 - (void)closeKeyboard:(UITapGestureRecognizer *)tap
 {
-    if ([_weightField isFirstResponder]) {
-        [self updateUIWithValue:_weightField.text];
-        [self writeToCoredataWithWeight:_weightField.text];
-        [_weightField resignFirstResponder];
-    }
+//    if ([_weightField isFirstResponder]) {
+//        [self updateUIWithValue:_weightField.text];
+//        [self writeToCoredataWithWeight:_weightField.text];
+//        [_weightField resignFirstResponder];
+//    }
 }
 #pragma mark - FYChartViewDataSource
 

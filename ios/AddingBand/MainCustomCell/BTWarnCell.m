@@ -61,7 +61,7 @@
     _titleLabel.textAlignment = NSTextAlignmentLeft;
     _titleLabel.numberOfLines = 0;
     _titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
-    _titleLabel.backgroundColor = [UIColor blueColor];
+    _titleLabel.backgroundColor = [UIColor clearColor];
     [self.contentView addSubview:_titleLabel];
     
     //    //内容标签
@@ -78,7 +78,7 @@
     self.todoButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [_todoButton setBackgroundImage:[UIImage imageNamed:@"warn_unselected"] forState:UIControlStateNormal];
     [_todoButton addTarget:self action:@selector(todoSelect:) forControlEvents:UIControlEventTouchUpInside];
-    _todoButton.frame = CGRectMake(320 - 78/2,_iconImage.frame.origin.y,78/2, 60/2);
+    _todoButton.frame = CGRectMake(320 - 78/2,_iconImage.frame.origin.y - 4,78/2, 60/2);
     [self.contentView addSubview:_todoButton];
     
     self.lineImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"seperator_line"]];

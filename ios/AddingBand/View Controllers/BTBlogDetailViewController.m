@@ -27,25 +27,26 @@
 {
     [super viewDidLoad];
     self.navigationItem.title = @"知识详情";
-    [self.scrollView removeFromSuperview];
-    
-
     
   NSURL *strUrl = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@",HTTP_HEADER,self.blogHash]];
    
 
     [self addWebViewWithUrl:strUrl];
     
-
+   
 	// Do any additional setup after loading the view.
 }
 
 - (void)addWebViewWithUrl:(NSURL *)url
 {
-    
+     NSLog(@"页面高度是多少啊？%f", self.view.frame.size.height);
 
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
-    self.webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, 320, self.view.frame.size.height- 44)];
+    self.webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, 320, self.view.frame.size.height - 44)];
+    if (IOS7_OR_LATER) {
+        self.webView.frame = CGRectMake(0, 0, 320, self.view.frame.size.height - 44 - 20);
+    }
+
     self.webView.delegate = self;
     [self.webView loadRequest:request];
     self.webView.scalesPageToFit = YES;

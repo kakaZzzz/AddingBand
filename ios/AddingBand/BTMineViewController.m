@@ -47,11 +47,7 @@ static NSString *version = nil;//版本号
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         
-        self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-        self.tableView.separatorColor = [UIColor clearColor];
-        self.tableView.showsVerticalScrollIndicator = NO;
-       
-        //cell标题内容
+           //cell标题内容
         self.titleArray = [NSArray arrayWithObjects:@"关于用户",@"生日",@"末次月经时间",@"预产期",@"系统设置",@"检查更新",@"评分",@"关于",@"意见反馈",nil];
         self.iconArray = [NSArray arrayWithObjects:@"",@"setting_birthday_icon",@"setting_menstrual_icon",@"setting_duedate_icon",@"",@"setting_version_icon",@"setting_grade_icon",@"setting_about_icon",@"setting_feedback_icon" ,nil];
         
@@ -97,7 +93,17 @@ static NSString *version = nil;//版本号
 {
     [super viewDidLoad];
  
-    
+    NSLog(@"页面高度是   %0.1f",self.view.frame.size.height);
+    self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, 320, self.view.frame.size.height - 44 - 50 - 10) style:UITableViewStylePlain];
+    if (IOS7_OR_LATER) {
+        self.tableView.frame = CGRectMake(0, 0, 320, self.view.frame.size.height - 44 - 50 - 20 -10);
+    }
+    self.tableView.delegate = self;
+    self.tableView.dataSource = self;
+    self.tableView.separatorColor = [UIColor clearColor];
+    self.tableView.showsVerticalScrollIndicator = NO;
+    [self.view addSubview:self.tableView];
+
 }
 #pragma mark - Table view data source
 
@@ -115,10 +121,10 @@ static NSString *version = nil;//版本号
 
 
 //动态改变每一行的高度
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    return 90/2;
-}
+//- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+//    
+//    return 90/2;
+//}
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
