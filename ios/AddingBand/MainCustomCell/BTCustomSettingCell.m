@@ -58,7 +58,12 @@
     [self.contentView addSubview:_lineImage];
 
 }
-
+- (void)layoutSubviews
+{
+    if (self.indexRow == 3 || self.indexRow == 8) {
+        _lineImage.frame = CGRectMake(0, self.frame.size.height - 0.5  , 320, kSeparatorLineHeight);
+    }
+}
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated
 {
     [super setSelected:selected animated:animated];

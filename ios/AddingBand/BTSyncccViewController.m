@@ -22,13 +22,18 @@
 #import "BTCloseToBleViewController.h"//靠近设备 提示页面
 #import "BTBleOffViewController.h"//蓝牙开关未打开
 
+#define kBackgroundViewX 0
+#define kBackgroundViewY 20
+#define kBackgroundViewWidth 320
+#define kBackgroundViewHeight 44
+
 #define kTitleX 20
-#define kTitleY 20
+#define kTitleY 0
 #define kTitleWidth 100
 #define kTitleHeight 44
 
 #define kTableViewX 0
-#define kTableViewY (kTitleY + kTitleHeight)
+#define kTableViewY (kBackgroundViewY + kBackgroundViewHeight)
 #define kTableViewWidth 320
 #define kTableViewHeight 200
 
@@ -181,22 +186,28 @@ static int battery = 0;
 #pragma mark - 连接蓝牙设备提示语句 “可连接设备”
 - (void)addLinkBLELabel
 {
+    
+    UIView *bgView = [[UIView alloc] initWithFrame:CGRectMake(kBackgroundViewX, kBackgroundViewY, self.view.frame.size.width, self.tableView.rowHeight)];
+    bgView.backgroundColor = kTableViewSectionColor;
+    [self.aScrollView addSubview:bgView];
+    
+    
     self.labelSection = [[UILabel alloc]initWithFrame:CGRectMake(kTitleX, kTitleY ,kTitleWidth,self.tableView.rowHeight)];
-    // _labelSection.backgroundColor = [UIColor blueColor];
+    _labelSection.backgroundColor = [UIColor clearColor];
     _labelSection.font = [UIFont systemFontOfSize:16.0];
     _labelSection.textColor = [BTColor getColor:titleLabelColor];
     _labelSection.text = @"可连接设备";
     _labelSection.textAlignment = NSTextAlignmentLeft;
-    [self.aScrollView addSubview:_labelSection];
+    [bgView addSubview:_labelSection];
     
     UIImageView *separativieLine = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"seperator_line"]];
     separativieLine.frame = CGRectMake(0, _labelSection.frame.origin.y + _labelSection.frame.size.height, 320, kSeparatorLineHeight);
-    [self.aScrollView addSubview:separativieLine];
+    [bgView addSubview:separativieLine];
     //系统菊花
     
     UIActivityIndicatorView *activeView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
     activeView.frame = CGRectMake(_labelSection.frame.origin.x + _labelSection.frame.size.width + 3, _labelSection.frame.origin.y + 23, 1.0, 1.0);
-    [self.aScrollView addSubview:activeView];
+    [bgView addSubview:activeView];
     [activeView startAnimating];
     //下面加一道线
     //    UIImageView *lineImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"sep_line.png"]];

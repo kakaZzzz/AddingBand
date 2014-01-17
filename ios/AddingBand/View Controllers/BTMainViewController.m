@@ -26,6 +26,7 @@
 #import "BTRowOfSectionModel.h"
 #import "BTPersonalDataView.h"
 #import "BTBlogDetailViewController.h"
+#import "BTDateCell.h"
 #define NAVIGATIONBAR_Y 0
 #define NAVIGATIONBAR_HEIGHT 65
 
@@ -194,7 +195,7 @@ static int currentWeek = 0;
     
     self.engine = [[MKNetworkEngine alloc] initWithHostName:HTTP_HOSTNAME customHeaderFields:nil];
     [self.engine useCache];//使用缓存
-    MKNetworkOperation *op = [self.engine operationWithPath:[NSString stringWithFormat:@"/api/schedule?p=2013-12-30&w=%d+%d",week,week + 1] params:nil httpMethod:@"GET" ssl:NO];
+    MKNetworkOperation *op = [self.engine operationWithPath:[NSString stringWithFormat:@"/api/schedule_new?p=2013-12-30&t=2014-1-28&w=%d+%d",week,week + 1] params:nil httpMethod:@"GET" ssl:NO];
     [op addCompletionHandler:^(MKNetworkOperation *operation) {
         NSLog(@"[operation responseData]-->>%@", [operation responseString]);
         
@@ -639,17 +640,25 @@ static int currentWeek = 0;
     NSArray *arrayModel = [self.modelArray objectAtIndex:indexPath.section];
     BTKnowledgeModel *model = [arrayModel objectAtIndex:indexPath.row];
 
-     switch ([model.remind intValue]) {
-        case 1://warn
-            return [BTWarnCell cellHeightWithMode:model];
-            break;
-        case 0://Knowledge
-            
-            return [BTKnowledgeCell cellHeightWithMode:model];
-            break;
-            
-        default:
-            break;
+    if ([model.title isEqualToString:@""]) {
+        
+        return 30.0;
+    }
+    
+    else
+    {
+        switch ([model.remind intValue]) {
+            case 1://warn
+                return [BTWarnCell cellHeightWithMode:model];
+                break;
+            case 0://Knowledge
+                return [BTKnowledgeCell cellHeightWithMode:model];
+                break;
+                
+            default:
+                break;
+        }
+
     }
     return 150.0;
 }
@@ -713,10 +722,15 @@ static int currentWeek = 0;
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    
+    NSLog(@"要显示的时候崩了");
     static NSString *CellIdentifier = @"Cell";
     static NSString *CellIdentifierWarn = @"CellWarn";
+    static NSString *CellIdentifierDate = @"CellDate";
     BTKnowledgeCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     BTWarnCell *warnCell = [tableView dequeueReusableCellWithIdentifier:CellIdentifierWarn];
+    BTDateCell *dateCell = [tableView dequeueReusableCellWithIdentifier:CellIdentifierDate];
+
     
     if (cell == nil) {
         cell = [[BTKnowledgeCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
@@ -724,26 +738,40 @@ static int currentWeek = 0;
     if (warnCell == nil) {
         warnCell = [[BTWarnCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifierWarn];
     }
-    cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    warnCell.selectionStyle = UITableViewCellSelectionStyleNone;
+    if (dateCell == nil) {
+        dateCell = [[BTDateCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifierDate];
+    }
+
+//    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+//    warnCell.selectionStyle = UITableViewCellSelectionStyleNone;
+//    dateCell.selectionStyle = UITableViewCellSelectionStyleNone;
+
     
     NSArray *arrayModel = [self.modelArray objectAtIndex:indexPath.section];
     BTKnowledgeModel *model = [arrayModel objectAtIndex:indexPath.row];
-       if  ([model.remind intValue] == 0)
+    if ([model.title isEqualToString:@""]) {
+        NSLog(@"------%@",model.date);
+        dateCell.knowledgeModel = model;
+        return dateCell;
+    }
+    else{
+        if  ([model.remind intValue] == 0)
         {
             cell.knowledgeModel = model;
             return cell;
-
+            
             
         }
-       else {
-           warnCell.knowledgeModel = model;
-           return warnCell;
+        else {
+            warnCell.knowledgeModel = model;
+            return warnCell;
+            
+        }
 
-       }
+    }
     
     
-    
+    return nil;
 }
 
 #pragma mark - tabelview delegate

@@ -14,4 +14,5 @@
 @property(nonatomic,strong)UILabel *contentLabel;//cell标题
 @property(nonatomic,strong)UIImageView *indicateImage;//指示箭头
 @property(nonatomic,strong)UIImageView *lineImage;//分割线图片
+@property(nonatomic,assign)int indexRow;
 @end

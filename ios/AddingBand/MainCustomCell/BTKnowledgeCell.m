@@ -17,7 +17,7 @@
 #define kDayLabelHeight 20
 
 #define kIconImageX 24/2
-#define kIconImageY (10 + kDayLabelHeight + 10)
+#define kIconImageY 15
 #define kIconImageWidth 44/2
 #define kIconImageHeight 44/2
 
@@ -50,7 +50,7 @@
     _dayLabel.textColor = kBigTextColor;
     _dayLabel.text = @"12.13";
     _dayLabel.opaque = NO;
-    [self.contentView addSubview:_dayLabel];
+  //  [self.contentView addSubview:_dayLabel];
     
     
     //icon图标
@@ -112,12 +112,12 @@
     CGSize labelSize = [model.title sizeWithFont:font constrainedToSize:size lineBreakMode:NSLineBreakByWordWrapping];
  
     if ([model.description isEqualToString:@""]) {
-    
-        return (kTitleLabelY + labelSize.height + 10 + 10);
+        return (2 * kTitleLabelY + labelSize.height);
+      
     }
     else{
         
-        return (kTitleLabelY + labelSize.height+ kContentLabelHeight + 10 + 10);
+        return (2 * kTitleLabelY + labelSize.height+ kContentLabelHeight + 10);
  
     }
     
@@ -135,8 +135,6 @@
     CGSize labelSize = [_knowledgeModel.title sizeWithFont:_titleLabel.font constrainedToSize:size lineBreakMode:NSLineBreakByWordWrapping];
     self.titleLabel.frame = CGRectMake(_titleLabel.frame.origin.x, _titleLabel.frame.origin.y, _titleLabel.frame.size.width, labelSize.height);
     
-    
-   // self.accessImage.frame = CGRectMake(_titleLabel.frame.origin.x + _titleLabel.frame.size.width + 5, _titleLabel.frame.origin.y, 30, 30);
     
     //图片
     //有图片
@@ -165,13 +163,13 @@
     if ([_knowledgeModel.description isEqualToString:@""]) {
         
         self.contentLabel.frame = CGRectMake(_titleLabel.frame.origin.x  , _titleLabel.frame.origin.y + _titleLabel.frame.size.height + 10, 320 - _titleLabel.frame.origin.x - 24/2, 0.0);
-        _lineImage.frame = CGRectMake(kTitleLabelX, (self.contentLabel.frame.origin.y + 0) + 10 -kSeparatorLineHeight , 320-24, kSeparatorLineHeight);
+        _lineImage.frame = CGRectMake(kTitleLabelX, (2 * kTitleLabelY + labelSize.height) -kSeparatorLineHeight , 320-24, kSeparatorLineHeight);
       }
     
     else{
         self.contentLabel.frame = CGRectMake(_titleLabel.frame.origin.x  , _titleLabel.frame.origin.y + _titleLabel.frame.size.height + 10, 320 - _titleLabel.frame.origin.x - 24/2, kContentLabelHeight);
 
-        _lineImage.frame = CGRectMake(kTitleLabelX, (self.contentLabel.frame.origin.y + kContentLabelHeight) + 10 -kSeparatorLineHeight , 320-24, kSeparatorLineHeight);
+        _lineImage.frame = CGRectMake(kTitleLabelX, (2 * kTitleLabelY + labelSize.height + kContentLabelHeight + 10)-kSeparatorLineHeight , 320-24, kSeparatorLineHeight);
 
     }
     

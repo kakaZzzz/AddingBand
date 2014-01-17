@@ -27,11 +27,13 @@
 {
     [super viewDidLoad];
     self.navigationItem.title = @"知识详情";
-    
+    [self.scrollView removeFromSuperview];
     
 
     
-    NSURL *strUrl = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@",HTTP_HEADER,self.blogHash]];
+  NSURL *strUrl = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@",HTTP_HEADER,self.blogHash]];
+   
+
     [self addWebViewWithUrl:strUrl];
     
 
@@ -43,24 +45,25 @@
     
 
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
-    self.webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, 320, self.view.frame.size.height)];
+    self.webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, 320, self.view.frame.size.height- 44)];
     self.webView.delegate = self;
-    [self.view addSubview:self.webView];
     [self.webView loadRequest:request];
     self.webView.scalesPageToFit = YES;
+    self.webView.suppressesIncrementalRendering = YES;
+    [self.view addSubview:self.webView];
+ 
     
 
-    self.imageView = [[UIImageView alloc] initWithFrame:CGRectMake(100, 100, 50, 50)];
+    self.imageView = [[UIImageView alloc] initWithFrame:CGRectMake((self.view.frame.size.width - 50)/2, self.view.center.y - 70, 50, 50)];
     _imageView.image = [UIImage imageNamed:@"loading1.png"];
     NSMutableArray * imageArray = [NSMutableArray arrayWithCapacity:1];
     for (int i=1;i<6;i++) {
         UIImage * image = [UIImage imageNamed:[NSString stringWithFormat:@"loading%d",i]];
         [imageArray addObject:image];
     }
-    _imageView.center = self.navigationController.view.center;
     _imageView.animationImages = imageArray;
     _imageView.animationDuration = 1.5;
-    [self.navigationController.view addSubview:_imageView];
+    [self.view addSubview:_imageView];
 
 
 }
@@ -81,7 +84,7 @@
     NSLog(@"webViewDidFinishLoad---");
     [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
     
-    // [_activityIndicatorView stopAnimating];
+
     [_imageView stopAnimating];
     [_imageView removeFromSuperview];
 }

@@ -146,7 +146,7 @@ static NSString *version = nil;//版本号
         }
         
         cellIndicate.iconImage.image = [UIImage imageNamed:[self.iconArray objectAtIndex:indexPath.row]];
-        
+        cellIndicate.indexRow = indexPath.row;
         //cellIndicate.indicateImage = UITableViewCellAccessoryDisclosureIndicator;
         cellIndicate.titleLabel.text = [_titleArray objectAtIndex:indexPath.row];
         cellIndicate.contentLabel.text = [_contentArray objectAtIndex:indexPath.row];

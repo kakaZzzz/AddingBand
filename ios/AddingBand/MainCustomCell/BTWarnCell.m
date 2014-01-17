@@ -14,7 +14,7 @@
 #define kDayLabelHeight 20
 
 #define kIconImageX 24/2
-#define kIconImageY (10 + kDayLabelHeight + 10)
+#define kIconImageY 15
 #define kIconImageWidth 44/2
 #define kIconImageHeight 44/2
 
@@ -45,7 +45,7 @@
     _dayLabel.textColor = kBigTextColor;
     _dayLabel.text = @"12.13";
     _dayLabel.opaque = NO;
-    [self.contentView addSubview:_dayLabel];
+  //  [self.contentView addSubview:_dayLabel];
     
     
     //icon图标
@@ -61,7 +61,7 @@
     _titleLabel.textAlignment = NSTextAlignmentLeft;
     _titleLabel.numberOfLines = 0;
     _titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
-    _titleLabel.backgroundColor = [UIColor clearColor];
+    _titleLabel.backgroundColor = [UIColor blueColor];
     [self.contentView addSubview:_titleLabel];
     
     //    //内容标签
@@ -109,8 +109,8 @@
     UIFont *font = [UIFont systemFontOfSize:FIRST_TITLE_SIZE];
     //计算实际frame大小，并将label的frame变成实际大小
     CGSize labelSize = [model.title sizeWithFont:font constrainedToSize:size lineBreakMode:NSLineBreakByWordWrapping];
-    
-    return (kTitleLabelY + labelSize.height + 10);
+      NSLog(@"提醒类cell的高度....%0.1f",(20 + labelSize.height + 10));
+    return (2 * kTitleLabelY + labelSize.height);
 }
 
 - (void)setKnowledgeModel:(BTKnowledgeModel *)knowledgeModel
@@ -126,7 +126,7 @@
     self.titleLabel.text = _knowledgeModel.title;
     self.dayLabel.text = _knowledgeModel.date;
     
-     _lineImage.frame = CGRectMake(kTitleLabelX, (kTitleLabelY + labelSize.height + 10)-kSeparatorLineHeight , 320-24, kSeparatorLineHeight);
+     _lineImage.frame = CGRectMake(kTitleLabelX, (2 *kTitleLabelY + labelSize.height)-kSeparatorLineHeight , 320-24, kSeparatorLineHeight);
     
     
 }

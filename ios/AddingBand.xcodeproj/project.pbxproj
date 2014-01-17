@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		721AD8261888DEA800CE5CB5 /* BTDateCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 721AD8251888DEA800CE5CB5 /* BTDateCell.m */; };
 		72269017183DAC2700D6405E /* uestime_bg.png in Resources */ = {isa = PBXBuildFile; fileRef = 72269015183DAC2700D6405E /* uestime_bg.png */; };
 		72269018183DAC2700D6405E /* uestime_bg@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 72269016183DAC2700D6405E /* uestime_bg@2x.png */; };
 		722E1F631886247F0090E287 /* seperator_line@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 722E1F621886247F0090E287 /* seperator_line@2x.png */; };
@@ -371,6 +372,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		721AD8241888DEA800CE5CB5 /* BTDateCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BTDateCell.h; path = MainCustomCell/BTDateCell.h; sourceTree = "<group>"; };
+		721AD8251888DEA800CE5CB5 /* BTDateCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BTDateCell.m; path = MainCustomCell/BTDateCell.m; sourceTree = "<group>"; };
 		72269015183DAC2700D6405E /* uestime_bg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = uestime_bg.png; sourceTree = "<group>"; };
 		72269016183DAC2700D6405E /* uestime_bg@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "uestime_bg@2x.png"; sourceTree = "<group>"; };
 		722E1F621886247F0090E287 /* seperator_line@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "seperator_line@2x.png"; sourceTree = "<group>"; };
@@ -1975,6 +1978,8 @@
 				725E9B7D1867E3F900BD2354 /* BTKnowledgeCell.m */,
 				72B3F852187D407400549408 /* BTUGCCell.h */,
 				72B3F853187D407400549408 /* BTUGCCell.m */,
+				721AD8241888DEA800CE5CB5 /* BTDateCell.h */,
+				721AD8251888DEA800CE5CB5 /* BTDateCell.m */,
 			);
 			name = BTHomecell;
 			sourceTree = "<group>";
@@ -2442,6 +2447,7 @@
 				72A3735418694199003F5B24 /* BTKnowledgeViewController.m in Sources */,
 				72CB9C41182B599E00C0DAF0 /* BTEntity.m in Sources */,
 				72B418F918238E2A002EAD35 /* BTPhysicalViewController.m in Sources */,
+				721AD8261888DEA800CE5CB5 /* BTDateCell.m in Sources */,
 				72AFBA5E18431995004F0350 /* XMLParser.m in Sources */,
 				723213521824BD1F00C17EDC /* CircularProgressView.m in Sources */,
 				723CD15F183B45EE007C486D /* BTSyncTwoViewController.m in Sources */,

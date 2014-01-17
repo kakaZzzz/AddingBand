@@ -10,6 +10,8 @@
 #import "BTGlobals.h"
 #import "BTBandCentral.h"
 #import "LayoutDef.h"
+#define kBackgroundHeaderViewHeight 170/2
+
 #define kPeripheralNameX 24/2
 #define kPeripheralNameY 10
 #define kPeripheralNameWidth 170
@@ -89,21 +91,26 @@ static BTSyncTwoViewController *syncTwoVC = nil;
 }
 - (void)addSubviews
 {
+    
+    UIView *bgView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, kBackgroundHeaderViewHeight)];
+    bgView.backgroundColor = kTableViewSectionColor;
+    [self.view addSubview:bgView];
+    
     self.peripheralName = [[UILabel alloc] initWithFrame:CGRectMake(kPeripheralNameX, kPeripheralNameY, kPeripheralNameWidth, kPeripheralNameHeight)];
     _peripheralName.backgroundColor = [UIColor clearColor];
     _peripheralName.textColor = kBigTextColor;
     _peripheralName.font = [UIFont fontWithName:kCharacterAndNumberFont size:FIRST_TITLE_SIZE];
     _peripheralName.textAlignment = NSTextAlignmentLeft;
     _peripheralName.text = @"设备名称啊啊啊啊啊啊";
-    [self.view addSubview:_peripheralName];
+    [bgView addSubview:_peripheralName];
     
     self.batteryImage = [[UIImageView alloc] initWithFrame:CGRectMake(_peripheralName.frame.origin.x + _peripheralName.frame.size.width + 5, 30/2, 92/2, 34/2)];
-    _batteryImage.image = [UIImage imageNamed:@"battery_unkonwn_icon"];
-    [self.view addSubview:_batteryImage];
+    _batteryImage.image = [UIImage imageNamed:@"battery_icon_unknown"];
+    [bgView addSubview:_batteryImage];
     
     UIImageView *iconImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"hand_icon"]];
     iconImage.frame = CGRectMake(_peripheralName.frame.origin.x, _peripheralName.frame.origin.y + _peripheralName.frame.size.height + 20, 12, 15);
-    [self.view addSubview:iconImage];
+    [bgView addSubview:iconImage];
     
     //连接状态
     self.linkLabel = [[UILabel alloc]initWithFrame:CGRectMake(iconImage.frame.origin.x + iconImage.frame.size.width + 3, iconImage.frame.origin.y - 3, 200,20)];
@@ -114,7 +121,7 @@ static BTSyncTwoViewController *syncTwoVC = nil;
     _linkLabel.text = @"连接成功";
     _linkLabel.lineBreakMode = NSLineBreakByTruncatingTail;
     _linkLabel.numberOfLines= 0;
-    [self.view addSubview:_linkLabel];
+    [bgView addSubview:_linkLabel];
     
     
     //上次同步时间
