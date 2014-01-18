@@ -169,7 +169,7 @@ static int offsetX = 0;
     
     self.arrayBarXValue = [NSMutableArray arrayWithCapacity:1];
     [self getBarXValue];
-    PNChart * barChart = [[PNChart alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH * 2 + 30, 200.0)];
+    PNChart * barChart = [[PNChart alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH * 2 + 30 , 200.0)];
 	barChart.backgroundColor = [UIColor clearColor];
 	barChart.type = PNBarType;
 	[barChart setXLabels:self.arrayBarXValue];
@@ -180,7 +180,7 @@ static int offsetX = 0;
     
     //
     //动画效果 改变偏移量
-    [self changeScrollViewContentOffsetWithOffset:offsetX animated:YES];
+    [self changeScrollViewContentOffsetWithOffset:23 animated:YES];
 }
 - (void)getEveryHourData
 {

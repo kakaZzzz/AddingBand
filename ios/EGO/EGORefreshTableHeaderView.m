@@ -163,7 +163,7 @@
 	switch (aState) {
 		case EGOOPullRefreshPulling:
 			
-			//_statusLabel.text = NSLocalizedString(@"Release to refresh...", @"Release to refresh status");
+           //_statusLabel.text = NSLocalizedString(@"Release to refresh...", @"Release to refresh status");
             _statusLabel.text = NSLocalizedString(@"小伙伴,松开刷新...", @"Release to refresh status");
 			[CATransaction begin];
 			[CATransaction setAnimationDuration:FLIP_ANIMATION_DURATION];

@@ -261,7 +261,7 @@ static int currentWeek = 0;
     if ([resultPreviousArray count] > 0) {
         for (int i = 0; i < [resultPreviousArray count]; i ++) {
             NSDictionary * dictionary = [resultPreviousArray objectAtIndex:i];
-            NSLog(@"zidianshi %@",dictionary);
+        //    NSLog(@"zidianshi %@",dictionary);
             BTKnowledgeModel * knowledge = [[BTKnowledgeModel alloc] initWithDictionary:dictionary];
             [array1 addObject:knowledge];
         }
