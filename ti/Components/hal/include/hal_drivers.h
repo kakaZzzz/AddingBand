@@ -22,7 +22,7 @@
   its documentation for any purpose.
 
   YOU FURTHER ACKNOWLEDGE AND AGREE THAT THE SOFTWARE AND DOCUMENTATION ARE
-  PROVIDED “AS IS” WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED,
+  PROVIDED “AS IS?WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED,
   INCLUDING WITHOUT LIMITATION, ANY WARRANTY OF MERCHANTABILITY, TITLE,
   NON-INFRINGEMENT AND FITNESS FOR A PARTICULAR PURPOSE. IN NO EVENT SHALL
   TEXAS INSTRUMENTS OR ITS LICENSORS BE LIABLE OR OBLIGATED UNDER CONTRACT,
@@ -54,11 +54,12 @@ extern "C"
  * CONSTANTS
  **************************************************************************************************/
 
+#define HAL_FDDOG_EVENT                     0x0100
 #define HAL_BUZZER_EVENT                    0x0080
 #define PERIOD_RSSI_RESET_EVT               0x0040
 #define HAL_LED_BLINK_EVENT                 0x0020
 #define HAL_KEY_EVENT                       0x0010
-
+  
 #if defined POWER_SAVING
 #define HAL_SLEEP_TIMER_EVENT               0x0004
 #define HAL_PWRMGR_HOLD_EVENT               0x0002
@@ -67,6 +68,8 @@ extern "C"
 
 #define HAL_PWRMGR_CONSERVE_DELAY           10
 #define PERIOD_RSSI_RESET_TIMEOUT           10
+  
+#define HAL_WATCHDOG TURE
 
 /**************************************************************************************************
  * GLOBAL VARIABLES

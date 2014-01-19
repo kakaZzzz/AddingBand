@@ -801,7 +801,23 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
             ledCycleCount = 0;
             lockSlip = 0;
         }
-
+        //test watchdog code
+//        {
+//          uint8 i = 1;
+//          HAL_DISABLE_INTERRUPTS();
+//          while(i)
+//          {
+//            toggleLEDWithTime(2, OPEN_PIO); 
+//            toggleLEDWithTime(4, OPEN_PIO); 
+//            toggleLEDWithTime(6, OPEN_PIO);
+//            toggleLEDWithTime(8, OPEN_PIO);
+//            toggleLEDWithTime(10, OPEN_PIO);
+//            i++;
+//            if(i>100)i=1;
+//          }
+//          HAL_ENABLE_INTERRUPTS();
+//        }
+       //end test code
         return (events ^ CYCLE_LED_12_EVT);
     }
 

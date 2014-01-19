@@ -22,7 +22,7 @@
   its documentation for any purpose.
 
   YOU FURTHER ACKNOWLEDGE AND AGREE THAT THE SOFTWARE AND DOCUMENTATION ARE
-  PROVIDED “AS IS” WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED,
+  PROVIDED “AS IS?WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED,
   INCLUDING WITHOUT LIMITATION, ANY WARRANTY OF MERCHANTABILITY, TITLE,
   NON-INFRINGEMENT AND FITNESS FOR A PARTICULAR PURPOSE. IN NO EVENT SHALL
   TEXAS INSTRUMENTS OR ITS LICENSORS BE LIABLE OR OBLIGATED UNDER CONTRACT,
@@ -70,6 +70,11 @@
 #include "usb_hid.h"
 #endif
 
+//watchdog
+
+// (units of 625us, 160=100ms 500MS=800UNIT
+#define FEEDDOG_EVT_PERIOD               800
+
 /**************************************************************************************************
  *                                      GLOBAL VARIABLES
  **************************************************************************************************/
@@ -94,8 +99,39 @@ void Hal_Init( uint8 task_id )
 #ifdef CC2591_COMPRESSION_WORKAROUND
   osal_start_reload_timer( Hal_TaskID, PERIOD_RSSI_RESET_EVT, PERIOD_RSSI_RESET_TIMEOUT );
 #endif
+  osal_start_reload_timer( Hal_TaskID, HAL_FDDOG_EVENT, FEEDDOG_EVT_PERIOD);//feed dog period 500ms
 }
+/**************************************************************************************************
+ * @fn      Watchdog init
+ *
+ * @brief   watchdog function.
+ * WDCTL.int bit 1:0
+ *  00: Clock period ¡Á 32,768 (~1 s) when running the 32-kHz XOSC
+ *  01: Clock period ¡Á 8192 (~0.25 s)
+ *  10: Clock period ¡Á 512 (~15.625 ms)
+ *  11: Clock period ¡Á 64 (~1.9 ms)
+ * WDCTL.mode bit 3:2 
+ *  00: IDLE
+ *  01: Reserved
+ *  10: Watchdog mode
+ *  11: Timer mode
+ * @param   none
+ *
+ * @return  None
+ **************************************************************************************************/
+#define BTLSL(n,m)  ((n) << (m))
 
+void WatchdogInit( void )
+{
+  uint8 wdg_ctrl_int = BTLSL(0X00,0);//watch dog period 1s
+  uint8 wdg_ctrl_mod = BTLSL(0X02,2);//select watchdog mode
+
+  WDCTL =  wdg_ctrl_int |  wdg_ctrl_mod;
+}
+void WatchdogFeed( void )
+{
+  WD_KICK();
+}
 /**************************************************************************************************
  * @fn      Hal_DriverInit
  *
@@ -151,6 +187,7 @@ void HalDriverInit (void)
 #if (defined HAL_HID) && (HAL_HID == TRUE)
   usbHidInit();
 #endif
+ 
 }
 
 /**************************************************************************************************
@@ -202,7 +239,21 @@ uint16 Hal_ProcessEvent( uint8 task_id, uint16 events )
     return (events ^ PERIOD_RSSI_RESET_EVT);
   }
 #endif
+  //init or feed watchdog 
+  if (events & HAL_FDDOG_EVENT)
+  {
+    if(!WDCTL)
+    {
+      WatchdogInit();
+    }
+    else
+    {
+      WatchdogFeed();
+    }
 
+    return events ^ HAL_FDDOG_EVENT;
+  }
+  
   if ( events & HAL_LED_BLINK_EVENT )
   {
 #if (defined (BLINK_LEDS)) && (HAL_LED == TRUE)
