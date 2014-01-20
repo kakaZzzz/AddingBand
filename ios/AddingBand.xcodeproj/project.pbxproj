@@ -117,6 +117,9 @@
 		724C714E1872B555003C4565 /* BTModifyDateViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 724C714D1872B555003C4565 /* BTModifyDateViewController.m */; };
 		724F1CEB184F093300342DF7 /* BTRawData.m in Sources */ = {isa = PBXBuildFile; fileRef = 724F1CEA184F093300342DF7 /* BTRawData.m */; };
 		724F1CF0184F3AF800342DF7 /* MHTabBarActiveTab.png in Resources */ = {isa = PBXBuildFile; fileRef = 724F1CED184F3AF800342DF7 /* MHTabBarActiveTab.png */; };
+		72548F64188CCDC4006FA4DC /* BTFeedbackTopicsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 72548F61188CCDC4006FA4DC /* BTFeedbackTopicsViewController.m */; };
+		72548F65188CCDC4006FA4DC /* BTFeedbackViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 72548F63188CCDC4006FA4DC /* BTFeedbackViewController.m */; };
+		72548F68188CD7A9006FA4DC /* BTFeedbackCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 72548F67188CD7A9006FA4DC /* BTFeedbackCell.m */; };
 		7255AD94186D3E5B003A0913 /* BTPhysicalCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7255AD8B186D3E5B003A0913 /* BTPhysicalCell.m */; };
 		7255AD95186D3E5B003A0913 /* BTPhysicalCollectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7255AD8D186D3E5B003A0913 /* BTPhysicalCollectionView.m */; };
 		7255AD98186D3E5B003A0913 /* BTUCCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7255AD93186D3E5B003A0913 /* BTUCCell.m */; };
@@ -530,6 +533,12 @@
 		724F1CE9184F093300342DF7 /* BTRawData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BTRawData.h; path = AddingBand/BTRawData.h; sourceTree = "<group>"; };
 		724F1CEA184F093300342DF7 /* BTRawData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BTRawData.m; path = AddingBand/BTRawData.m; sourceTree = "<group>"; };
 		724F1CED184F3AF800342DF7 /* MHTabBarActiveTab.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = MHTabBarActiveTab.png; sourceTree = "<group>"; };
+		72548F60188CCDC4006FA4DC /* BTFeedbackTopicsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTFeedbackTopicsViewController.h; sourceTree = "<group>"; };
+		72548F61188CCDC4006FA4DC /* BTFeedbackTopicsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTFeedbackTopicsViewController.m; sourceTree = "<group>"; };
+		72548F62188CCDC4006FA4DC /* BTFeedbackViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTFeedbackViewController.h; sourceTree = "<group>"; };
+		72548F63188CCDC4006FA4DC /* BTFeedbackViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTFeedbackViewController.m; sourceTree = "<group>"; };
+		72548F66188CD7A9006FA4DC /* BTFeedbackCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BTFeedbackCell.h; path = AddingBand/MainCustomCell/BTFeedbackCell.h; sourceTree = "<group>"; };
+		72548F67188CD7A9006FA4DC /* BTFeedbackCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BTFeedbackCell.m; path = AddingBand/MainCustomCell/BTFeedbackCell.m; sourceTree = "<group>"; };
 		7255AD8A186D3E5B003A0913 /* BTPhysicalCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTPhysicalCell.h; sourceTree = "<group>"; };
 		7255AD8B186D3E5B003A0913 /* BTPhysicalCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTPhysicalCell.m; sourceTree = "<group>"; };
 		7255AD8C186D3E5B003A0913 /* BTPhysicalCollectionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTPhysicalCollectionView.h; sourceTree = "<group>"; };
@@ -1305,6 +1314,19 @@
 			path = Images;
 			sourceTree = "<group>";
 		};
+		72548F5F188CCDA1006FA4DC /* Feedback */ = {
+			isa = PBXGroup;
+			children = (
+				72548F60188CCDC4006FA4DC /* BTFeedbackTopicsViewController.h */,
+				72548F61188CCDC4006FA4DC /* BTFeedbackTopicsViewController.m */,
+				72548F62188CCDC4006FA4DC /* BTFeedbackViewController.h */,
+				72548F63188CCDC4006FA4DC /* BTFeedbackViewController.m */,
+				72548F66188CD7A9006FA4DC /* BTFeedbackCell.h */,
+				72548F67188CD7A9006FA4DC /* BTFeedbackCell.m */,
+			);
+			name = Feedback;
+			sourceTree = "<group>";
+		};
 		7255AD89186D3E5B003A0913 /* BTPhysicalCustomCollection */ = {
 			isa = PBXGroup;
 			children = (
@@ -1474,6 +1496,7 @@
 		727F1938182B37EE00CAD11A /* Library */ = {
 			isa = PBXGroup;
 			children = (
+				72548F5F188CCDA1006FA4DC /* Feedback */,
 				7248783B188394780078F017 /* EGOImage */,
 				72B3F88F188002C900549408 /* BTProgressHUB */,
 				727038C3187145030021F83D /* BTScrollChartView */,
@@ -2394,6 +2417,7 @@
 				72B5EDB81865B0EB00FF363E /* BTCloseToBleViewController.m in Sources */,
 				72B67AA4183A335800294A08 /* NSString+MKNetworkKitAdditions.m in Sources */,
 				72B67AAE183A33C400294A08 /* BTCheckVersion.m in Sources */,
+				72548F68188CD7A9006FA4DC /* BTFeedbackCell.m in Sources */,
 				72CB9C32182B590500C0DAF0 /* BTBandPeripheral.m in Sources */,
 				723F248E18308791001F27DA /* BTGuideViewController.m in Sources */,
 				72316AAB1877D2BC00A166BD /* BTPhysicalStandard.m in Sources */,
@@ -2416,6 +2440,7 @@
 				72CB9C31182B590500C0DAF0 /* BTBandCentral.m in Sources */,
 				72729EDD1869792C009C2EDE /* EGORefreshTableFooterView.m in Sources */,
 				72729EDE1869792C009C2EDE /* EGORefreshTableHeaderView.m in Sources */,
+				72548F64188CCDC4006FA4DC /* BTFeedbackTopicsViewController.m in Sources */,
 				7248694318518255008FD8FA /* BTBabyWeightViewController.m in Sources */,
 				72774F4F1844517800CA034E /* BTAccountCell.m in Sources */,
 				72AFBA5A18431995004F0350 /* CMPopTipView.m in Sources */,
@@ -2450,6 +2475,7 @@
 				724C71481872A783003C4565 /* BTCustomSettingCell.m in Sources */,
 				725E9B7E1867E3F900BD2354 /* BTKnowledgeCell.m in Sources */,
 				72A2A308186AC9F000A504CA /* BTAlertView.m in Sources */,
+				72548F65188CCDC4006FA4DC /* BTFeedbackViewController.m in Sources */,
 				7248784C188394780078F017 /* EGOImageLoadConnection.m in Sources */,
 				724F1CEB184F093300342DF7 /* BTRawData.m in Sources */,
 				72A3735418694199003F5B24 /* BTKnowledgeViewController.m in Sources */,

@@ -24,6 +24,8 @@
 
 #import "BTCustomSettingCell.h"
 #import "BTModifyDateViewController.h"
+#import "BTFeedbackViewController.h"//
+#import "BTNavicationController.h"
 #define CELL_SECTION (indexPath.row == 0 || indexPath.row == 4)
 #define CELL_INDICATOR (indexPath.row == 3 || indexPath.row == 9 || indexPath.row == 10 ||indexPath.row == 11)
 #define CELL_TEXTFIELD (indexPath.row == 7)
@@ -220,7 +222,14 @@ static NSString *version = nil;//版本号
             break;
         case 8://意见反馈
         {
-           
+            BTFeedbackViewController *feedbackVc = [[BTFeedbackViewController alloc]init];
+            [feedbackVc.navigationItem setHidesBackButton:YES];//隐藏系统的返回按钮
+            feedbackVc.hidesBottomBarWhenPushed = YES;
+            feedbackVc.toRecipients = [NSArray arrayWithObject:@"yituwangpeng@gmail.com"];
+            feedbackVc.ccRecipients = nil;
+            feedbackVc.bccRecipients = nil;
+            [self.navigationController pushViewController:feedbackVc animated:YES];
+
         }
             break;
    
