@@ -170,22 +170,6 @@
 #define OFF_Y                       0x30
 #define OFF_Z                       0x31
 
-uint8 X0, X1, Y0, Y1, Z1, Z0;
-int16 X_out, Y_out, Z_out;
-uint8 INT_STATUS;
-
-int16 PACE_DUR_MIN = 6; //0.3s
-int16 PACE_DUR_MAX = 12; //1.2s
-int16 ALT_MIN = 300;
-int16 DIR = 1; //12
-int16 first_pace = 1; //
-int16 pace_count = 0; //
-int16 PACE_PEAK = 0;
-int16 PACE_BOTTOM = 0;
-int16 time_count = 0;
-int16 cross_count = 0; //0
-int16 ACC_CUR = 0;
-
 
 #define EEPROM_ADDRESS                      0x50
 
@@ -221,6 +205,27 @@ int16 ACC_CUR = 0;
 #define READ_INTERVAL                       100
 
 #define ACC_STATIC_COUNT_MAX                10
+
+
+#define ALT_MIN_DEFAULT                     4000
+#define ALT_MIN_10X                         400
+
+
+uint8 X0, X1, Y0, Y1, Z1, Z0;
+int16 X_out, Y_out, Z_out;
+uint8 INT_STATUS;
+
+int16 PACE_DUR_MIN = 6; //0.3s
+int16 PACE_DUR_MAX = 12; //1.2s
+int16 ALT_MIN = ALT_MIN_DEFAULT;
+int16 DIR = 1; //12
+int16 first_pace = 1; //
+int16 pace_count = 0; //
+int16 PACE_PEAK = 0;
+int16 PACE_BOTTOM = 0;
+int16 time_count = 0;
+int16 cross_count = 0; //0
+int16 ACC_CUR = 0;
 
 
 /*********************************************************************
@@ -1544,6 +1549,7 @@ static void accLoop(void)
                     eepromWrite(STEP_DATA_TYPE);
 
                     accLoadInterval = 0;
+                    ALT_MIN = ALT_MIN_DEFAULT;
 
                 }
                 else
@@ -1612,6 +1618,7 @@ static void accGetAccData(uint8 count)
     if (accStaticCount > ACC_STATIC_COUNT_MAX * 2)
     {
         accLoadInterval = ACC_LOAD_INTERVAL * ACC_STATIC_COUNT_MAX;
+        ALT_MIN = ALT_MIN_10X;
     }
 
     uint8 addr = OUT_X_MSB, accBuf[192];
