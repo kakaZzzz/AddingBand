@@ -34,6 +34,8 @@ static int currentWeek = 0;
 @interface BTMainViewController ()
 @property(nonatomic,strong)UILabel *dateLabel;//3周4天
 @property(nonatomic,strong)UILabel *countLabel;//预产期倒计时
+@property(nonatomic,strong)NSString *menstruation;
+@property(nonatomic,strong)NSString *today;
 
 @end
 
@@ -93,7 +95,7 @@ static int currentWeek = 0;
 {
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor whiteColor];
-    
+    [self getMenstruationAndTodayDate];
     //[self popAlertView];
     [self getCurrentWeekOfPregnancy];//得到今天是怀孕第几周
     [self addSubviews];
@@ -102,6 +104,22 @@ static int currentWeek = 0;
     //[self getNetworkDataWithWeekOfPregnancy:3];
     [self showRefreshHeader:YES];//代码触发刷新
 	// Do any additional setup after loading the view.
+}
+#pragma mark - 得到末次月经 和 今天日期
+- (void)getMenstruationAndTodayDate
+{
+    NSArray *data = [BTGetData getFromCoreDataWithPredicate:nil entityName:@"BTUserSetting" sortKey:nil];
+    if (data.count > 0) {
+        BTUserSetting *userData = [data objectAtIndex:0];
+        NSString *str1 = userData.menstruation;
+        self.menstruation = [str1 stringByReplacingOccurrencesOfString:@"." withString:@"-"];
+    }
+    NSDate *localdate = [NSDate localdate];
+    NSNumber *year = [BTUtils getYear:localdate];
+    NSNumber *month = [BTUtils getMonth:localdate];
+    NSNumber *dayLocal = [BTUtils getDay:localdate];
+    self.today = [NSString stringWithFormat:@"%@-%@-%@",year,month,dayLocal];
+
 }
 #pragma mark - 代码触发下拉刷新
 -(void)showRefreshHeader:(BOOL)animated
@@ -195,7 +213,7 @@ static int currentWeek = 0;
     
     self.engine = [[MKNetworkEngine alloc] initWithHostName:HTTP_HOSTNAME customHeaderFields:nil];
     [self.engine useCache];//使用缓存
-    MKNetworkOperation *op = [self.engine operationWithPath:[NSString stringWithFormat:@"/api/schedule_new?p=2014-1-20&t=2014-1-20&w=%d+%d",week,week + 1] params:nil httpMethod:@"GET" ssl:NO];
+    MKNetworkOperation *op = [self.engine operationWithPath:[NSString stringWithFormat:@"/api/schedule_new?p=%@&t=%@&w=%d+%d",self.menstruation,self.today,week,week + 1] params:nil httpMethod:@"GET" ssl:NO];
     [op addCompletionHandler:^(MKNetworkOperation *operation) {
         NSLog(@"[operation responseData]-->>%@", [operation responseString]);
         

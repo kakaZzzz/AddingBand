@@ -105,15 +105,14 @@
     if (data.count > 0) {
         BTUserSetting *userData = [data objectAtIndex:0];
    
-        NSDate *dueDate = [NSDate dateFromString:userData.dueDate withFormat:@"yyyy.MM.dd"];//duedate为00：00：00
+        NSDate *dueDate = [NSDate dateFromString:userData.menstruation withFormat:@"yyyy.MM.dd"];//duedate为00：00：00
         
-        NSTimeInterval due = [dueDate timeIntervalSince1970];
+        NSTimeInterval menstruation = [dueDate timeIntervalSince1970];
         NSTimeInterval now = [date timeIntervalSince1970];
-        NSTimeInterval cha = due - now;
+        NSTimeInterval cha = now - menstruation;
         
         int day1 = cha/(24 * 60 * 60);
-        int day2 = 280 - day1;
-        return day2;
+        return day1;
      }
     
     return 0;
