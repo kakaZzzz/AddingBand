@@ -220,6 +220,8 @@ int16 ACC_CUR = 0;
 #define TIME_DISPLAY_INTERVAL               3000
 #define READ_INTERVAL                       100
 
+#define ACC_STATIC_COUNT_MAX                10
+
 
 /*********************************************************************
  * TYPEDEFS
@@ -328,6 +330,8 @@ uint8 tapWaitFor = 0, lockSlip = 0, blinkPIO = 0, blinkMinutes = 13, onTheKey = 
 // uint16 testAddr = 0;
 
 uint8 readTheI = 0;
+
+uint32 accLoadInterval = ACC_LOAD_INTERVAL, accStaticCount = 0;
 
 /*********************************************************************
  * LOCAL FUNCTIONS
@@ -677,7 +681,7 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
 
         // restart timer
         // osal_start_timerEx( simpleBLEPeripheral_TaskID, ACC_PERIODIC_EVT, 100 );
-        osal_start_timerEx( simpleBLEPeripheral_TaskID, ACC_PERIODIC_EVT, ACC_LOAD_INTERVAL );
+        osal_start_timerEx( simpleBLEPeripheral_TaskID, ACC_PERIODIC_EVT, accLoadInterval );
 
         return (events ^ ACC_PERIODIC_EVT);
     }
@@ -1482,11 +1486,6 @@ static void accInit( void )
 
 static void accLoop(void)
 {
-
-    
-
-    // accGetAccData();
-
     //todo
     X_out = X_out >> 6;
     Y_out = Y_out >> 6;
@@ -1543,6 +1542,8 @@ static void accLoop(void)
                     // SimpleProfile_SetParameter( HEALTH_SYNC, sizeof ( d ), d );
 
                     eepromWrite(STEP_DATA_TYPE);
+
+                    accLoadInterval = 0;
 
                 }
                 else
@@ -1605,6 +1606,13 @@ static void accGetAccData(uint8 count)
     // X_out = (int16)((accBuf[0] << 8) | accBuf[1]);
     // Y_out = (int16)((accBuf[2] << 8) | accBuf[3]);
     // Z_out = (int16)((accBuf[4] << 8) | accBuf[5]);
+
+    accStaticCount++;
+
+    if (accStaticCount > ACC_STATIC_COUNT_MAX * 2)
+    {
+        accLoadInterval = ACC_LOAD_INTERVAL * ACC_STATIC_COUNT_MAX;
+    }
 
     uint8 addr = OUT_X_MSB, accBuf[192];
 
