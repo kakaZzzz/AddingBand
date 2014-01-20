@@ -180,7 +180,7 @@ static int offsetX = 0;
     
     //
     //动画效果 改变偏移量
-    [self changeScrollViewContentOffsetWithOffset:23 animated:YES];
+    [self changeScrollViewContentOffsetWithOffset:offsetX animated:YES];
 }
 - (void)getEveryHourData
 {
@@ -255,7 +255,7 @@ static int offsetX = 0;
     //排序
     NSSortDescriptor *sorter = [[NSSortDescriptor  alloc ] initWithKey :@"seconds1970" ascending:YES];
     [array  sortUsingDescriptors :[NSArray  arrayWithObject:sorter]];
-    
+
     //在这里判断两个记录时间是否相差1个小时 如果小于一个小时 则只留一个
      BTRawData *rawOne = nil;
     for (BTRawData *raw in array) {

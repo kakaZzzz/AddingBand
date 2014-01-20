@@ -33,11 +33,11 @@ static const NSInteger TAG_OFFSET = 1000;
 {
 	[button setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
 
-	UIImage *image = [[UIImage imageNamed:@"MHTabBarActiveTab11"] stretchableImageWithLeftCapWidth:0 topCapHeight:0];
+	UIImage *image = [[UIImage imageNamed:@"MHTabBarInactiveTab"] stretchableImageWithLeftCapWidth:0 topCapHeight:0];
 	[button setBackgroundImage:image forState:UIControlStateNormal];
 	[button setBackgroundImage:image forState:UIControlStateHighlighted];
 	
-	[button setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];//选中之后字体颜色
+	[button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];//选中之后字体颜色
 	//[button setTitleShadowColor:[UIColor colorWithWhite:0.0f alpha:0.5f] forState:UIControlStateNormal];
 }
 #pragma mark - 取消选中按钮 改变button的状态
@@ -49,12 +49,8 @@ static const NSInteger TAG_OFFSET = 1000;
 	[button setBackgroundImage:image forState:UIControlStateNormal];
 	[button setBackgroundImage:image forState:UIControlStateHighlighted];
 
-    if (button.tag == TAG_OFFSET + 3 || button.tag == TAG_OFFSET + 4) {
-    [button setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];//字体颜色
-    }
-    else{
-	[button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    }
+	[button setTitleColor:[UIColor colorWithRed:255/255.0 green:174/255.0 blue:190/255.0 alpha:1.0] forState:UIControlStateNormal];
+   
 	//[button setTitleShadowColor:[UIColor whiteColor] forState:UIControlStateNormal];
     
 }
@@ -129,10 +125,10 @@ static const NSInteger TAG_OFFSET = 1000;
 {
 	[super viewDidLoad];
 
-    NSLog(@"黑条加载。。。。");
+
 	self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     
-  //  self.view.frame = CGRectMake(0, 100, 240, 200);
+   // self.view.frame = CGRectMake(0, 100, 240, 200);
 
 	CGRect rect = CGRectMake(0, 0, self.view.bounds.size.width, TAB_BAR_HEIGHT);
   

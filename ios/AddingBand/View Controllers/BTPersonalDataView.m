@@ -92,7 +92,7 @@ static int selectedTextFieldTag = 0;
      _birthdayText.font = [UIFont systemFontOfSize:SECOND_TITLE_SIZE];
     _birthdayText.placeholder = @"生日";
     _birthdayText.textAlignment = NSTextAlignmentCenter;
-    [_birthdayText addPreviousNextDoneOnKeyboardWithTarget:self previousAction:@selector(previousClicked:) nextAction:@selector(nextClicked:) doneAction:@selector(doneClicked:)];
+    [_birthdayText addPreviousAndNextAndDoneOnDatepickerWithTarget:self previousAction:@selector(previousClicked:) nextAction:@selector(nextClicked:) doneAction:@selector(doneClicked:)];
 
     [aView addSubview:_birthdayText];
 
@@ -118,7 +118,7 @@ static int selectedTextFieldTag = 0;
     _menstrualText.font = [UIFont systemFontOfSize:SECOND_TITLE_SIZE];
     _menstrualText.placeholder = @"末次月经时间";
     _menstrualText.textAlignment = NSTextAlignmentCenter;
-    [_menstrualText addPreviousNextDoneOnKeyboardWithTarget:self previousAction:@selector(previousClicked:) nextAction:@selector(nextClicked:) doneAction:@selector(doneClicked:)];
+    [_menstrualText addPreviousAndNextAndDoneOnDatepickerWithTarget:self previousAction:@selector(previousClicked:) nextAction:@selector(nextClicked:) doneAction:@selector(doneClicked:)];
 
     [bView addSubview:_menstrualText];
 
@@ -143,7 +143,8 @@ static int selectedTextFieldTag = 0;
     _duedateText.font = [UIFont systemFontOfSize:SECOND_TITLE_SIZE];
     _duedateText.placeholder = @"预产期";
     _duedateText.textAlignment = NSTextAlignmentCenter;
-    [_duedateText addPreviousNextDoneOnKeyboardWithTarget:self previousAction:@selector(previousClicked:) nextAction:@selector(nextClicked:) doneAction:@selector(doneClicked:)];
+    [_duedateText addPreviousAndNextAndDoneOnDatepickerWithTarget:self previousAction:@selector(previousClicked:) nextAction:@selector(nextClicked:) doneAction:@selector(doneClicked:)];
+
 
     [cView addSubview:_duedateText];
 
@@ -182,6 +183,46 @@ static int selectedTextFieldTag = 0;
     selectedTextFieldTag = aTextField.tag;
     [self showDatePicker];
     UITextField *field = (UITextField*)[self.view viewWithTag:selectedTextFieldTag];
+    NSDate *localDate = [NSDate localdate];
+    NSNumber *year = [BTUtils getYear:localDate];
+
+    switch (aTextField.tag) {
+        case TEXTFIELD_TAG + 3://生日
+        {
+            //确定滚轮日期范围
+            NSDate* minDate =  [NSDate dateFromString:[NSString stringWithFormat:@"%d.01.01",([year intValue] - 50)] withFormat:@"yyyy.MM.dd"];
+            NSDate* maxDate =  [NSDate dateFromString:[NSString stringWithFormat:@"%d.01.01",([year intValue] - 18)] withFormat:@"yyyy.MM.dd"];
+            self.datePicker.minimumDate = minDate;
+            self.datePicker.maximumDate = maxDate;
+            
+            
+
+        }
+            break;
+        case TEXTFIELD_TAG + 4://末次月经
+        {
+            //确定滚轮日期范围
+            NSDate* minDate =  [NSDate dateFromString:[NSString stringWithFormat:@"%d.01.01",([year intValue] - 1)] withFormat:@"yyyy.MM.dd"];
+            NSDate* maxDate =  [NSDate dateFromString:[NSString stringWithFormat:@"%d.01.01",([year intValue] + 1)] withFormat:@"yyyy.MM.dd"];
+            self.datePicker.minimumDate = minDate;
+            self.datePicker.maximumDate = maxDate;
+            
+        }
+            break;
+        case TEXTFIELD_TAG + 5://预产期
+        {
+            //确定滚轮日期范围
+            NSDate* minDate =  [NSDate dateFromString:[NSString stringWithFormat:@"%d.01.01",([year intValue] - 1)] withFormat:@"yyyy.MM.dd"];
+            NSDate* maxDate =  [NSDate dateFromString:[NSString stringWithFormat:@"%d.01.01",([year intValue] + 1)] withFormat:@"yyyy.MM.dd"];
+            self.datePicker.minimumDate = minDate;
+            self.datePicker.maximumDate = maxDate;
+            
+        }
+            break;
+
+        default:
+            break;
+    }
     field.inputView = self.datePicker;
  
 
@@ -293,7 +334,7 @@ static int selectedTextFieldTag = 0;
 
 #pragma mark - Toolbar on Datepicker
 
--(void)addPreviousNextDoneOnDatepickerWithTarget:(id)target previousAction:(SEL)previousAction nextAction:(SEL)nextAction doneAction:(SEL)doneAction;
+-(void)addPreviousAndNextAndDoneOnDatepickerWithTarget:(id)target previousAction:(SEL)previousAction nextAction:(SEL)nextAction doneAction:(SEL)doneAction
 {
     //Creating a toolBar for phoneNumber keyboard
     UIToolbar *toolbar = [[UIToolbar alloc] init];

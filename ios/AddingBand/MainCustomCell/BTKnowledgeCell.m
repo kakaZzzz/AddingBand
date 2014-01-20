@@ -26,7 +26,7 @@
 #define kTitleLabelWidth 200
 #define kTitleLabelHeight 20
 
-#define kContentLabelHeight 50
+#define kContentLabelHeight 40
 @implementation BTKnowledgeCell
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
@@ -79,7 +79,7 @@
     self.contentLabel = [[UILabel alloc] initWithFrame:CGRectMake(_contentImage.frame.origin.x + _contentImage.frame.size.width , _contentImage.frame.origin.y, 320 - _contentImage.frame.origin.x - _contentImage.frame.size.width - 24/2, kContentLabelHeight)];
     _contentLabel.font = [UIFont systemFontOfSize:SECOND_TITLE_SIZE];
     _contentLabel.textColor = kContentTextColor;
-    _contentLabel.backgroundColor = [UIColor clearColor];
+    _contentLabel.backgroundColor = [UIColor blueColor];
     _contentLabel.textAlignment = NSTextAlignmentLeft;
     _contentLabel.numberOfLines = 0;
     _contentLabel.lineBreakMode = NSLineBreakByTruncatingTail;
@@ -135,9 +135,7 @@
     CGSize labelSize = [_knowledgeModel.title sizeWithFont:_titleLabel.font constrainedToSize:size lineBreakMode:NSLineBreakByWordWrapping];
     self.titleLabel.frame = CGRectMake(_titleLabel.frame.origin.x, _titleLabel.frame.origin.y, _titleLabel.frame.size.width, labelSize.height);
     
-    
-    
-    
+
     self.titleLabel.text = _knowledgeModel.title;
     self.contentLabel.text = _knowledgeModel.description;
     self.dayLabel.text = _knowledgeModel.date;

@@ -172,6 +172,7 @@
             self.datePicker = [[UIDatePicker alloc] init];
             _datePicker.frame = CGRectMake(0, self.frame.size.height - 216, 320, 216);
             _datePicker.datePickerMode = UIDatePickerModeDateAndTime;
+            _datePicker.timeZone = [NSTimeZone systemTimeZone];
             [self addSubview:_datePicker];
 
         }
@@ -182,6 +183,7 @@
             _datePicker.frame = CGRectMake(0, self.frame.size.height - 216, 320, 216);
             [_datePicker addTarget:self action:@selector(dateChanged) forControlEvents:UIControlEventValueChanged];
             _datePicker.datePickerMode = UIDatePickerModeDate;
+            _datePicker.timeZone = [NSTimeZone systemTimeZone];
             [self addSubview:_datePicker];
             
         }

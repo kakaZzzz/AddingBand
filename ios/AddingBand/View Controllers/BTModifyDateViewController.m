@@ -14,6 +14,7 @@
 #import "BTGetData.h" 
 #import "LayoutDef.h"
 #import "BTUserSetting.h"
+#import "BTUserSetting.h"
 @interface BTModifyDateViewController ()
 @property(nonatomic,strong)NSManagedObjectContext *context;
 @end
@@ -101,6 +102,26 @@
                                                                                   referView:nil
                                                                                    delegate:self
                                                                                       title:@"选择生日日期"];
+                        //确定滚轮日期范围
+                        NSDate *localDate = [NSDate localdate];
+                        NSNumber *year = [BTUtils getYear:localDate];
+                        NSDate* minDate =  [NSDate dateFromString:[NSString stringWithFormat:@"%d.01.01",([year intValue] - 50)] withFormat:@"yyyy.MM.dd"];
+                        NSDate* maxDate =  [NSDate dateFromString:[NSString stringWithFormat:@"%d.01.01",([year intValue] - 18)] withFormat:@"yyyy.MM.dd"];
+                        self.actionSheetView.datePicker.minimumDate = minDate;
+                        self.actionSheetView.datePicker.maximumDate = maxDate;
+                        
+                        //确定时间选择器默认的时间
+                        NSString *strDate= [self getNewDataFromCoredataWithModifyType:MODIFY_BIRTHDAY_TYPE];
+                        if ([strDate isEqualToString:@"还未记录"]) {
+                            self.actionSheetView.datePicker.date = [NSDate localdate];
+                        }
+                        else{
+                            NSDate *gmtDate = [NSDate dateFromString:strDate withFormat:@"yyyy.MM.dd"];
+                            self.actionSheetView.datePicker.date = gmtDate;
+                        }
+                        
+                        
+                        
                     }
                         break;
                     case MODIFY_DUEDATE_TYPE:
@@ -109,6 +130,24 @@
                                                                                   referView:nil
                                                                                    delegate:self
                                                                                       title:@"选择预产期日期"];
+                        
+                        //确定滚轮日期范围
+                        NSDate *localDate = [NSDate localdate];
+                        NSNumber *year = [BTUtils getYear:localDate];
+                        NSDate* minDate =  [NSDate dateFromString:[NSString stringWithFormat:@"%d.01.01",([year intValue] - 1)] withFormat:@"yyyy.MM.dd"];
+                        NSDate* maxDate =  [NSDate dateFromString:[NSString stringWithFormat:@"%d.01.01",([year intValue] + 1)] withFormat:@"yyyy.MM.dd"];
+                        self.actionSheetView.datePicker.minimumDate = minDate;
+                        self.actionSheetView.datePicker.maximumDate = maxDate;
+                        //确定时间选择器默认的时间
+                        NSString *strDate= [self getNewDataFromCoredataWithModifyType:MODIFY_DUEDATE_TYPE];
+                        if ([strDate isEqualToString:@"还未记录"]) {
+                            self.actionSheetView.datePicker.date = [NSDate localdate];
+                        }
+                        else{
+                            NSDate *gmtDate = [NSDate dateFromString:strDate withFormat:@"yyyy.MM.dd"];
+                            self.actionSheetView.datePicker.date = gmtDate;
+                        }
+
 
                     }
                         break;
@@ -118,6 +157,24 @@
                                                                                   referView:nil
                                                                                    delegate:self
                                                                                       title:@"选择末次月经日期"];
+                        //确定滚轮日期范围
+                        NSDate *localDate = [NSDate localdate];
+                        NSNumber *year = [BTUtils getYear:localDate];
+                        NSDate* minDate =  [NSDate dateFromString:[NSString stringWithFormat:@"%d.01.01",([year intValue] - 1)] withFormat:@"yyyy.MM.dd"];
+                        NSDate* maxDate =  [NSDate dateFromString:[NSString stringWithFormat:@"%d.01.01",([year intValue] + 1)] withFormat:@"yyyy.MM.dd"];
+                        self.actionSheetView.datePicker.minimumDate = minDate;
+                        self.actionSheetView.datePicker.maximumDate = maxDate;
+
+                        //确定时间选择器默认的时间
+                        NSString *strDate= [self getNewDataFromCoredataWithModifyType:MODIFY_MENSTRUATION_TYPE];
+                        if ([strDate isEqualToString:@"还未记录"]) {
+                            self.actionSheetView.datePicker.date = [NSDate localdate];
+                        }
+                        else{
+                            NSDate *gmtDate = [NSDate dateFromString:strDate withFormat:@"yyyy.MM.dd"];
+                            self.actionSheetView.datePicker.date = gmtDate;
+                        }
+
 
                     }
                         break;
@@ -129,6 +186,7 @@
     
     [_actionSheetView show];
 }
+
 #pragma mark - 输入生日，末次月经时间，预产期 日期选择器delegate
 - (void)actionSheetPickerView:(BTSheetPickerview *)pickerView didSelectDate:(NSDate*)date
 {

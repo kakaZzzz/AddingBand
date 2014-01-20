@@ -61,8 +61,8 @@ static NSString *version = nil;//版本号
 {
     
  
-    birthday = @"2013.12.25";
-    duedate = @"2013.12.25";
+    birthday = @"1989.07.31";
+    duedate = @"2014.08.25";
     menstruation = @"2013.12.25";
     NSString *versionString =  [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString*)kCFBundleVersionKey];//获取版本号
     version = [NSString stringWithFormat:@"V%@",versionString];

@@ -19,7 +19,7 @@
 @interface UITextField (ToolbarOnDatePiker)
 
 //Helper function to add SegmentedNextPrevious and Done button on keyboard.
--(void)addPreviousNextDoneOnDatepickerWithTarget:(id)target previousAction:(SEL)previousAction nextAction:(SEL)nextAction doneAction:(SEL)doneAction;
+-(void)addPreviousAndNextAndDoneOnDatepickerWithTarget:(id)target previousAction:(SEL)previousAction nextAction:(SEL)nextAction doneAction:(SEL)doneAction;
 
 //Helper methods to enable and desable previous next buttons.
 -(void)setEnablePrevious:(BOOL)isPreviousEnabled next:(BOOL)isNextEnabled;

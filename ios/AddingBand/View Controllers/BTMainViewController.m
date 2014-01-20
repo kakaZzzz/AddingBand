@@ -143,20 +143,23 @@ static int currentWeek = 0;
     
 }
 
-#pragma mark - 根据预产期 的出今天处于第几周
+#pragma mark - 根据末次月经日期 算出今天处于第几周
 - (int)getCurrentWeekOfPregnancy
 {
-    NSArray *data = [BTGetData getFromCoreDataWithPredicate:nil entityName:@"BTUserSetting" sortKey:nil];
-    if (data.count > 0) {
-        BTUserSetting *userData = [data objectAtIndex:0];
-        int day = [self intervalSinceNow:userData.dueDate];
-        self.dueDate = [userData.dueDate stringByReplacingOccurrencesOfString:@"." withString:@"-"];//把预产期取出来 存下来 避免反复操作coredata
-        //根据怀孕天数 算出是第几周 第几天
-        int week = (280 - day)/7 + 1;
-        currentWeek = week;
-        return week;
+    NSDate *localdate = [NSDate localdate];
+    NSNumber *year = [BTUtils getYear:localdate];
+    NSNumber *month = [BTUtils getMonth:localdate];
+    NSNumber *dayLocal = [BTUtils getDay:localdate];
+    NSDate *gmtDate = [NSDate dateFromString:[NSString stringWithFormat:@"%@.%@.%@",year,month,dayLocal] withFormat:@"yyyy.MM.dd"];
+    int day = [BTGetData getPregnancyDaysWithDate:gmtDate];
+    //根据怀孕天数 算出是第几周 第几天
+    int week = day/7 + 1;
+    if (day%7 == 0) {
+        week = week - 1;
     }
-    return 0;
+    currentWeek = week;
+    return week;
+    
 }
 
 #pragma mark - 更新导航栏上显示的怀孕时间

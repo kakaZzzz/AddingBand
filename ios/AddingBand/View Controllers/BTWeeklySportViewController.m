@@ -39,10 +39,25 @@
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor blueColor];
     
-    [self configureBarViewAllDatas];
+    NSDate *date = [[NSDate alloc] init];
+    NSDate *dateBegin = [date beginningOfWeek];
+    NSArray *arrayWeek = [self getDateOfWeeklyWithFirstdayOfWeek:dateBegin];
+
+    [self configureBarViewAllDatasWithWeekdays:arrayWeek];
     NSLog(@"周运动量==========%@",self.yValueArray);
     [self loadBarChartUsingArray];
     
+}
+- (void)updateViewWithWeekBeginDate:(NSDate *)date
+{
+    if (self.lineScrollView) {
+        [_lineScrollView removeFromSuperview];
+        NSArray *arrayWeek = [self getDateOfWeeklyWithFirstdayOfWeek:date];
+        [self configureBarViewAllDatasWithWeekdays:arrayWeek];
+        [self loadBarChartUsingArray];
+
+    }
+
 }
 #pragma mark - loadBarChart  加载柱形图
 - (void)loadBarChartUsingArray {
@@ -53,6 +68,7 @@
     self.lineScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, 320,368/2)];
     _lineScrollView.contentSize = CGSizeMake(320, _lineScrollView.frame.size.height);
     _lineScrollView.backgroundColor = kGlobalColor;
+    _lineScrollView.showsHorizontalScrollIndicator = NO;
     [self.view addSubview:_lineScrollView];
  
     
@@ -89,48 +105,46 @@
         shouldPlotVerticalLines:NO];
 }
 
-- (NSArray *)getDateWithWeekday
+- (NSArray *)getDateOfWeeklyWithFirstdayOfWeek:(NSDate *)date
 {
     
    
-    NSDate *date = [[NSDate alloc] init];
-    NSDate *dateBegin = [date beginningOfWeek];
     //将日期加8小时
     
-    NSLog(@"周一对应日期  %@",dateBegin);
-    NSLog(@"周二对应日期  %@",[dateBegin addDay:1]);
-    NSLog(@"周三对应日期  %@",[dateBegin addDay:2]);
-    NSLog(@"周四对应日期  %@",[dateBegin addDay:3]);
-    NSLog(@"周五对应日期  %@",[dateBegin addDay:4]);
-    NSLog(@"周六对应日期  %@",[dateBegin addDay:5]);
-    NSLog(@"周日对应日期  %@",[dateBegin addDay:6]);
+    NSLog(@"周一对应日期  %@",date);
+    NSLog(@"周二对应日期  %@",[date addDay:1]);
+    NSLog(@"周三对应日期  %@",[date addDay:2]);
+    NSLog(@"周四对应日期  %@",[date addDay:3]);
+    NSLog(@"周五对应日期  %@",[date addDay:4]);
+    NSLog(@"周六对应日期  %@",[date addDay:5]);
+    NSLog(@"周日对应日期  %@",[date addDay:6]);
     
-    NSDate *date1 = dateBegin;
-    NSDate *date2 = [dateBegin addDay:1];
-    NSDate *date3 = [dateBegin addDay:2];
-    NSDate *date4 = [dateBegin addDay:3];
-    NSDate *date5 = [dateBegin addDay:4];
-    NSDate *date6 = [dateBegin addDay:5];
-    NSDate *date7 = [dateBegin addDay:6];
+    NSDate *date1 = date;
+    NSDate *date2 = [date addDay:1];
+    NSDate *date3 = [date addDay:2];
+    NSDate *date4 = [date addDay:3];
+    NSDate *date5 = [date addDay:4];
+    NSDate *date6 = [date addDay:5];
+    NSDate *date7 = [date addDay:6];
     
   NSArray *dateArray = [NSArray arrayWithObjects:date1,date2,date3,date4,date5,date6,date7, nil];
     return dateArray;
     
 }
 
-- (void)configureBarViewAllDatas
+- (void)configureBarViewAllDatasWithWeekdays:(NSArray *)weekArray
 {
     
-    self.xLableArray = [NSArray arrayWithObjects:@"周一",@"周二",@"周三",@"周四",@"周五",@"周六",@"周日", nil];
+    self.xLableArray = [NSArray arrayWithObjects:@"周一",@"二",@"三",@"四",@"五",@"六",@"日", nil];
    self.yValueArray = [NSMutableArray arrayWithCapacity:1];
     self.yValueArray = [NSMutableArray arrayWithObjects:@"0.1",@"0.1",@"0.1",@"0.1",@"0.1",@"0.1",@"0.1", nil];
-    NSArray *arrayWeek = [self getDateWithWeekday];
-   
+    
+    
     
     //
     for (int i = 0; i < 7; i ++) {
         
-        NSDate *date = [arrayWeek objectAtIndex:i];
+        NSDate *date = [weekArray objectAtIndex:i];
         //分割出年月日小时
         NSNumber* year = [BTUtils getYear:date];
         NSNumber* month = [BTUtils getMonth:date];
@@ -151,6 +165,7 @@
         
       }
     
+
 }
 
 - (void)didReceiveMemoryWarning

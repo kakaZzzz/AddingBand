@@ -22,6 +22,8 @@
 #define kTitleLabelY kIconImageY
 #define kTitleLabelWidth 200
 #define kTitleLabelHeight 20
+
+#define kContentLabelHeight 40
 @implementation BTWarnCell
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
@@ -64,12 +66,15 @@
     _titleLabel.backgroundColor = [UIColor clearColor];
     [self.contentView addSubview:_titleLabel];
     
-    //    //内容标签
-    //    self.contentLabel = [[UILabel alloc] initWithFrame:CGRectMake(_titleLabel.frame.origin.x , _titleLabel.frame.origin.y + _titleLabel.frame.size.height, 200, 50)];
-    //    _contentLabel.font = [UIFont systemFontOfSize:17.0f];
-    //    _contentLabel.backgroundColor = [UIColor yellowColor];
-    //    _contentLabel.textAlignment = NSTextAlignmentLeft;
-    //    [self.contentView addSubview:_contentLabel];
+    //内容标签
+    self.contentLabel = [[UILabel alloc] initWithFrame:CGRectMake(_titleLabel.frame.origin.x,  _titleLabel.frame.origin.y + _titleLabel.frame.size.height + 10, 320 - _titleLabel.frame.origin.x - 24/2, kContentLabelHeight)];
+    _contentLabel.font = [UIFont systemFontOfSize:SECOND_TITLE_SIZE];
+    _contentLabel.textColor = kContentTextColor;
+    _contentLabel.backgroundColor = [UIColor clearColor];
+    _contentLabel.textAlignment = NSTextAlignmentLeft;
+    _contentLabel.numberOfLines = 0;
+    _contentLabel.lineBreakMode = NSLineBreakByTruncatingTail;
+    [self.contentView addSubview:_contentLabel];
     
     
     
@@ -110,7 +115,16 @@
     //计算实际frame大小，并将label的frame变成实际大小
     CGSize labelSize = [model.title sizeWithFont:font constrainedToSize:size lineBreakMode:NSLineBreakByWordWrapping];
       NSLog(@"提醒类cell的高度....%0.1f",(20 + labelSize.height + 10));
-    return (2 * kTitleLabelY + labelSize.height);
+    if ([model.description isEqualToString:@""]) {
+        return (2 * kTitleLabelY + labelSize.height);
+        
+    }
+    else{
+        
+        return (2 * kTitleLabelY + labelSize.height+ kContentLabelHeight + 10);
+        
+    }
+    
 }
 
 - (void)setKnowledgeModel:(BTKnowledgeModel *)knowledgeModel
@@ -123,11 +137,23 @@
     CGSize labelSize = [_knowledgeModel.title sizeWithFont:_titleLabel.font constrainedToSize:size lineBreakMode:NSLineBreakByWordWrapping];
     // [self.titleLabel setFrame:CGRectMake:(_titleLabel.frame.origin.x,_titleLabel.frame.origin.y,labelSize.width, labelSize.height)];
     self.titleLabel.frame = CGRectMake(_titleLabel.frame.origin.x, _titleLabel.frame.origin.y, _titleLabel.frame.size.width, labelSize.height);
+    
     self.titleLabel.text = _knowledgeModel.title;
-    self.dayLabel.text = _knowledgeModel.date;
+    self.contentLabel.text = _knowledgeModel.description;
+   
     
-     _lineImage.frame = CGRectMake(kTitleLabelX, (2 *kTitleLabelY + labelSize.height)-kSeparatorLineHeight , 320-24, kSeparatorLineHeight);
+    if ([_knowledgeModel.description isEqualToString:@""]) {
+        self.contentLabel.frame = CGRectMake(_titleLabel.frame.origin.x  , _titleLabel.frame.origin.y + _titleLabel.frame.size.height + 10, 320 - _titleLabel.frame.origin.x - 24/2, 0.0);
+        _lineImage.frame = CGRectMake(kTitleLabelX, (2 * kTitleLabelY + labelSize.height) -kSeparatorLineHeight , 320-24, kSeparatorLineHeight);
+    }
     
+    else{
+        
+        
+
+        _lineImage.frame = CGRectMake(kTitleLabelX, (2 * kTitleLabelY + labelSize.height + kContentLabelHeight + 10)-kSeparatorLineHeight , 320-24, kSeparatorLineHeight);
+        
+    }
     
 }
 

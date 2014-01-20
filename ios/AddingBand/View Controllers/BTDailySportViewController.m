@@ -40,11 +40,27 @@ static int offsetX = 0;
 {
      NSLog(@"viewWillDisappear--");
 }
+- (void)updateViewWithDate:(NSDate *)date
+{
+    if (self.lineScrollView) {
+        offsetX = 0;
+        [self.lineScrollView removeFromSuperview];
+        [self getEveryHourDataWithDate:date];
+        [self loadBarChartUsingArray];
+
+    }
+ }
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor whiteColor];
-    [self getEveryHourData];
+    //获取当前时间
+    NSDate* date = [NSDate date];
+    NSTimeZone *zone = [NSTimeZone systemTimeZone];
+    NSInteger interval = [zone secondsFromGMTForDate: date];
+    NSDate *localeDate = [date  dateByAddingTimeInterval: interval];
+   
+    [self getEveryHourDataWithDate:localeDate];
     [self loadBarChartUsingArray];
     
 	// Do any additional setup after loading the view.
@@ -57,6 +73,7 @@ static int offsetX = 0;
     self.lineScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, 320,368/2)];
     _lineScrollView.contentSize = CGSizeMake(klineScrollViewContentSizeX, _lineScrollView.frame.size.height);
     _lineScrollView.backgroundColor = kGlobalColor;
+    _lineScrollView.showsHorizontalScrollIndicator = NO;
     [self.view addSubview:_lineScrollView];
     
     //动画效果 改变偏移量
@@ -99,24 +116,17 @@ static int offsetX = 0;
 
 
 #pragma mark - 得到每小时的数据
-- (void)getEveryHourData
+- (void)getEveryHourDataWithDate:(NSDate *)date
 {
     
     self.xLableArray = [NSMutableArray arrayWithCapacity:1];
     self.xLableArray = [NSMutableArray arrayWithObjects:@"0",@"1",@"2",@"3",@"4",@"5",@"6",@"7",@"8",@"9",@"10",@"11",@"12",@"13",@"14",@"15",@"16",@"17",@"18",@"19",@"20",@"21",@"22",@"23", nil];
     self.yValueArray = [NSMutableArray arrayWithObjects:@"0.1",@"0.1",@"0.1",@"0.1",@"0.1",@"0.1",@"0.1",@"0.1",@"0.1",@"0.1",@"0.1",@"0.1",@"0.1",@"0.1",@"0.1",@"0.1",@"0.1",@"0.1",@"0.1",@"0.1",@"0.1",@"0.1",@"0.1",@"0.1", nil];
 
-    //获取当前时间
-    NSDate* date = [NSDate date];
-    NSTimeZone *zone = [NSTimeZone systemTimeZone];
-    NSInteger interval = [zone secondsFromGMTForDate: date];
-    NSDate *localeDate = [date  dateByAddingTimeInterval: interval];
-    NSLog(@"localeDate211==%@", localeDate);
-    
     //分割出年月日小时
-    NSNumber* year = [BTUtils getYear:localeDate];
-    NSNumber* month = [BTUtils getMonth:localeDate];
-    NSNumber* day = [BTUtils getDay:localeDate];
+    NSNumber* year = [BTUtils getYear:date];
+    NSNumber* month = [BTUtils getMonth:date];
+    NSNumber* day = [BTUtils getDay:date];
     
     int count = 0;
     for (int i =0; i < 24; i ++) {

@@ -95,6 +95,7 @@
 #define kBlueColor [UIColor colorWithRed:66/255.0 green:156/255.0 blue:239/255.0 alpha:1.0]
 #define kTableViewSectionColor [UIColor colorWithRed:245/255.0 green:247/255.0 blue:247/255.0 alpha:1.0]
 #define kWhiteColor  [UIColor colorWithRed:255/255.0 green:180/255.0 blue:195/255.0 alpha:1.0]
+#define kRedColor  [UIColor colorWithRed:236/255.0 green:0/255.0 blue:73/255.0 alpha:1.0]
 /**
  *  全局图片名字
  */

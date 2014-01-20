@@ -13,4 +13,5 @@
 @property (strong, nonatomic)NSArray *xLableArray;//柱形图x轴数组
 @property (strong, nonatomic)NSMutableArray *yValueArray;//柱形图y轴数组
 @property(nonatomic,strong)UIScrollView *lineScrollView;
+- (void)updateViewWithWeekBeginDate:(NSDate *)date;
 @end
