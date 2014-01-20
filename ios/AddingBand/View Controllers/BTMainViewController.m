@@ -195,7 +195,7 @@ static int currentWeek = 0;
     
     self.engine = [[MKNetworkEngine alloc] initWithHostName:HTTP_HOSTNAME customHeaderFields:nil];
     [self.engine useCache];//使用缓存
-    MKNetworkOperation *op = [self.engine operationWithPath:[NSString stringWithFormat:@"/api/schedule_new?p=2014-1-20&t=2014-1-28&w=%d+%d",week,week + 1] params:nil httpMethod:@"GET" ssl:NO];
+    MKNetworkOperation *op = [self.engine operationWithPath:[NSString stringWithFormat:@"/api/schedule_new?p=2014-1-20&t=2014-1-20&w=%d+%d",week,week + 1] params:nil httpMethod:@"GET" ssl:NO];
     [op addCompletionHandler:^(MKNetworkOperation *operation) {
         NSLog(@"[operation responseData]-->>%@", [operation responseString]);
         
