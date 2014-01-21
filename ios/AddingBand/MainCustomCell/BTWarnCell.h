@@ -17,6 +17,8 @@
 @property(nonatomic,strong)UIButton *todoButton;
 @property(nonatomic,strong)UIImageView *lineImage;
 @property(nonatomic,strong)BTKnowledgeModel *knowledgeModel;
+
+@property(nonatomic,strong)NSManagedObjectContext *context;
 + (CGFloat)cellHeightWithMode:(BTKnowledgeModel *)model;
 
 @end

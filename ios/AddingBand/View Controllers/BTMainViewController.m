@@ -242,7 +242,6 @@ static int currentWeek = 0;
 {
     
     NSMutableArray *section = [NSMutableArray arrayWithCapacity:1];
-
     currentWeek = 3;
     NSDictionary *resultDic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:nil];
     
@@ -286,6 +285,10 @@ static int currentWeek = 0;
             BTKnowledgeModel * knowledge = [[BTKnowledgeModel alloc] initWithDictionary:dictionary];
             [array1 addObject:knowledge];
         }
+        //对array1进行处理
+//        for (BTKnowledgeModel *model in array1) {
+//            <#statements#>
+//        }
         [resultArray addObject:array1];
 
     }
@@ -311,19 +314,6 @@ static int currentWeek = 0;
        NSLog(@"请求结果是.......%@",self.modelArray);
     
     
-//    NSMutableArray *resultArray = [NSMutableArray arrayWithArray:resultPreviousArray];
-//    [resultArray addObjectsFromArray:resultCurrentArray];
-//    
-//    NSLog(@"resultArray=====%@",resultArray);
-//    for (int i = resultArray.count - 1;i >= 0;i--)
-//    {
-//        NSLog(@"yigeyige 放进去%@",[resultArray objectAtIndex:i]);
-//        NSDictionary * dictionary = [resultArray objectAtIndex:i];
-//        BTKnowledgeModel * knowledge = [[BTKnowledgeModel alloc] initWithDictionary:dictionary];
-//        //把一个个的knowledge存入可变数组 modelArray(类初始化的时候应经开辟空间)
-//        [self.modelArray insertObject:knowledge atIndex:0];//这是行数据
-//        
-//    }
     
     [self.tableView reloadData];
     [self finishReloadingData];//刷新完成
@@ -491,7 +481,7 @@ static int currentWeek = 0;
     [clockButton setBackgroundImage:[UIImage imageNamed:@"appointment_bt_selected"] forState:UIControlStateHighlighted];
     [clockButton addTarget:self action:@selector(inputYourPreproduction:) forControlEvents:UIControlEventTouchUpInside];
     clockButton.frame = CGRectMake(320 - 50, _navigationBgView.frame.size.height - 39, 60/2, 60/2);
-    [_navigationBgView addSubview:clockButton];
+  //  [_navigationBgView addSubview:clockButton];
     
     
     self.headView = [[UIView alloc] initWithFrame:CGRectMake(0, NAVIGATIONBAR_HEIGHT, 320, 40)];
@@ -540,66 +530,6 @@ static int currentWeek = 0;
 }
 
 #pragma mark - 各种button event
-
-#pragma MARK - 打开webview
-//点击分区头上的按钮 进入下一页
-- (void)pushNextView:(UIButton *)button
-{
-    NSLog(@"点击分区头，进入下一页");
-    
-    NSURL *strUrl = [NSURL URLWithString:@"http://www.addinghome.com/blog/app/45"];
-    NSURLRequest *request = [NSURLRequest requestWithURL:strUrl];
-    self.webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, 320, 460)];
-    [self.view addSubview:self.webView];
-    [self.webView loadRequest:request];
-    self.webView.scalesPageToFit = YES;
-    
-    UIToolbar *toolBar = [[UIToolbar alloc]initWithFrame:CGRectMake(0, 360, 320, 44)];
-    toolBar.backgroundColor = [UIColor blueColor];
-    [self.webView addSubview:toolBar];
-    
-    UIBarButtonItem *barBack = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRewind target:self action:@selector(goBack)];
-    UIBarButtonItem *barForward = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop target:self action:@selector(goForward)];
-    UIBarButtonItem *barSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
-    //barSpace.width = 240;
-    
-    NSArray *arr = [NSArray arrayWithObjects:barBack,barSpace,barForward,nil];
-    toolBar.items = arr;
-    
-}
-
-- (void)goBack
-
-{
-    [_webView goBack];
-}
-- (void)goForward
-{
-    [_webView stopLoading];
-    [_webView removeFromSuperview];
-}
-- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
-{
-    return YES;
-    NSLog(@"shouldStartLoadWithRequest");
-}
-- (void)webViewDidStartLoad:(UIWebView *)webView
-{
-    NSLog(@"ViewDidStartLoad---");
-    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
-    //  [_activityIndicatorView startAnimating];
-}
-- (void)webViewDidFinishLoad:(UIWebView *)webView
-{
-    NSLog(@"webViewDidFinishLoad---");
-    [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-    
-    // [_activityIndicatorView stopAnimating];
-}
-- (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error
-{
-    NSLog(@"didFailLoadWithError---");
-}
 
 
 
@@ -727,19 +657,8 @@ static int currentWeek = 0;
     lable.textAlignment = NSTextAlignmentCenter;
     lable.textColor =kGlobalColor;
     
-    UIButton *button  = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    button.frame = CGRectMake(320 - 100, 10,100, (44 - 10*2));
-    button.tag = MAIN_BUTTON_TAG + section;
-    [button setTitle:@"卵子受孕中" forState:UIControlStateNormal];
-    [button addTarget:self action:@selector(pushNextView:) forControlEvents:UIControlEventTouchUpInside];
-   // [aView addSubview:button];
-    
     BTRowOfSectionModel *model = [self.sectionArray objectAtIndex:section];
-    //    if (section == 0) {
-    //        lable.text = @"3周";
-    
     lable.text = model.sectionTile;
-    //    }
     [aView addSubview: lable];
     
     static int tag = 1001;
@@ -846,11 +765,10 @@ static int currentWeek = 0;
     
     //[self setFooterView];
 }
-//===============
+
 //刷新delegate
 -(void)setFooterView{
-	//    UIEdgeInsets test = self.aoView.contentInset;
-    // if the footerView is nil, then create it, reset the position of the footer
+	    // if the footerView is nil, then create it, reset the position of the footer
     CGFloat height = MAX(self.tableView.contentSize.height, self.tableView.frame.size.height);
     if (_refreshFooterView && [_refreshFooterView superview])
 	{

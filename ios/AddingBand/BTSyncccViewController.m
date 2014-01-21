@@ -321,20 +321,15 @@ static int battery = 0;
     //读取一下对更新时间的描述
     _lastSyncTime = [self.bc getLastSyncDesc:MAM_BAND_MODEL];
     NSString *subString = [self.syncTwoVC.linkLabel.text substringToIndex:4];
-
     if ([subString isEqualToString:LASTSYNC_TEXT]) {
      self.syncTwoVC.linkLabel.text = _lastSyncTime;
     }
    
-   
     //计算使用时间
     int k = [[self.bc getBpByModel:MAM_BAND_MODEL] setupDate];
-    NSLog(@"使用了多少秒%d",k);
     NSString *str = [BTGetData getBLEuseTime:k];//得到外围设备使用时间
     self.syncTwoVC.useTimeLabel.text = [NSString stringWithFormat:@"%@",str];
     
-    // self.pastVC.useTimeLabel.text = [NSString stringWithFormat:@"%@",str];
-    // [self.tableView reloadData];
     
 }
 //监控参数，更新显示  当连接  断开的时候也会调用此方法

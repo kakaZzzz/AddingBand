@@ -16,7 +16,8 @@
 #import "BTRawData.h"
 #import "BTGetData.h"
 #import "NSDate+DateHelper.h"
-//tabbarView
+#import "BTUserSetting.h"
+//tabbarViews
 #define ktabbarViewX 0
 #define ktabbarViewY 80/2
 #define ktabbarViewWidth 320
@@ -71,20 +72,24 @@ static BTPhysicSportViewController *sharedPhysicSportInstance = nil;//单例
     redBgView.backgroundColor = kRedColor;
     [self.scrollView addSubview:redBgView];
     
-    self.previousButton = [[UIButton alloc] initWithFrame:CGRectMake(20, (redBgView.frame.size.height - 32/2)/2, 50/2, 32/2)];
-    _previousButton.backgroundColor = [UIColor yellowColor];
+    self.previousButton = [[UIButton alloc] initWithFrame:CGRectMake(0, (redBgView.frame.size.height - 70/2)/2, 70/2, 70/2)];
+  //  _previousButton.backgroundColor = [UIColor yellowColor];
+    [_previousButton setBackgroundImage:[UIImage imageNamed:@"left_indicate_button"] forState:UIControlStateNormal];
     [_previousButton addTarget:self action:@selector(previousStage:) forControlEvents:UIControlEventTouchUpInside];
     [redBgView addSubview:_previousButton];
     
-    self.nextButton = [[UIButton alloc] initWithFrame:CGRectMake(320 - 50/2 - 20, (redBgView.frame.size.height - 32/2)/2, 50/2, 32/2)];
-    _nextButton.backgroundColor = [UIColor yellowColor];
+    self.nextButton = [[UIButton alloc] initWithFrame:CGRectMake(320 - 70/2, (redBgView.frame.size.height - 70/2)/2, 70/2, 70/2)];
+  //  _nextButton.backgroundColor = [UIColor yellowColor];
+    [_nextButton setBackgroundImage:[UIImage imageNamed:@"right_nonindicate_button"] forState:UIControlStateNormal];
     [_nextButton addTarget:self action:@selector(nextStage:) forControlEvents:UIControlEventTouchUpInside];
     [redBgView addSubview:_nextButton];
     
     self.titleDateLabel = [[UILabel alloc] initWithFrame:CGRectMake((320 - 200)/2 , (redBgView.frame.size.height - 30)/2, 200, 30)];
-    _titleDateLabel.backgroundColor = [UIColor blueColor];
+    _titleDateLabel.backgroundColor = [UIColor clearColor];
+    _titleDateLabel.textColor = [UIColor whiteColor];
+    _titleDateLabel.font = [UIFont systemFontOfSize:FIRST_TITLE_SIZE];
     _titleDateLabel.textAlignment = NSTextAlignmentCenter;
-    _titleDateLabel.text = @"2013年12月24日";
+    _titleDateLabel.text = @"2013-12-24";
     [redBgView addSubview:_titleDateLabel];
     
     
@@ -93,19 +98,39 @@ static BTPhysicSportViewController *sharedPhysicSportInstance = nil;//单例
 
 - (void)previousStage:(UIButton *)button
 {
+    NSDate *menstruationDate = nil;
+    
+    NSArray *data = [BTGetData getFromCoreDataWithPredicate:nil entityName:@"BTUserSetting" sortKey:nil];
+    if (data.count > 0) {
+        BTUserSetting *userData = [data objectAtIndex:0];
+        menstruationDate = [NSDate dateFromString:userData.menstruation withFormat:@"yyyy.MM.dd"];//duedate为00：00：00
+        NSLog(@"末次月经日期是%@",[menstruationDate stringWithFormat:@"yyyyMMdd"]);
+    
+    }
+    
     if (self.selectedViewControllerIndex == 0) {
         if (!_currentDate) {
             _currentDate = [NSDate localdate];
             
         }
+        //末次月经是分界线
+        if (![NSDate isAscendingWithOnedate:[_currentDate addDay:-1] anotherdate:menstruationDate]) {
         _currentDate = [_currentDate addDay:-1];
-        
+            NSLog(@"当前日期是%@",[_currentDate stringWithFormat:@"yyyyMMdd"]);
         NSNumber *year = [BTUtils getYear:_currentDate];
         NSNumber *month = [BTUtils getMonth:_currentDate];
         NSNumber *day = [BTUtils getDay:_currentDate];
         //然后确定是哪个viewController 然后调用暴露出来的更行接口
         self.titleDateLabel.text = [NSString stringWithFormat:@"%@-%@-%@",year,month,day];
         [(BTDailySportViewController *)self.selectedViewController updateViewWithDate:_currentDate];
+        [self changePreviousAndNextButtonBackgroundImage];
+        }
+        else{
+            //改变按钮的背景图
+        [_previousButton setBackgroundImage:[UIImage imageNamed:@"left_nonindicate_button"] forState:UIControlStateNormal];
+
+            
+        }
     }
     
     
@@ -117,15 +142,22 @@ static BTPhysicSportViewController *sharedPhysicSportInstance = nil;//单例
             _currentWeekDate = [date1 beginningOfWeek];
             
         }
-        _currentWeekDate = [_currentWeekDate addDay:-7];
-        
-        NSNumber *year = [BTUtils getYear:_currentWeekDate];
-        NSNumber *month = [BTUtils getMonth:_currentWeekDate];
-        NSNumber *day = [BTUtils getDay:_currentWeekDate];
-        
-        //然后确定是哪个viewController 然后调用暴露出来的更行接口
-        self.titleDateLabel.text = [NSString stringWithFormat:@"%@-%@-%@",year,month,day];
-        [(BTWeeklySportViewController *)self.selectedViewController updateViewWithWeekBeginDate:_currentWeekDate];
+        if (![NSDate isAscendingWithOnedate:[_currentWeekDate addDay:(-7 + 6)] anotherdate:menstruationDate]) {
+            _currentWeekDate = [_currentWeekDate addDay:-7];
+            NSNumber *year = [BTUtils getYear:_currentWeekDate];
+            NSNumber *month = [BTUtils getMonth:_currentWeekDate];
+            NSNumber *day = [BTUtils getDay:_currentWeekDate];
+            //然后确定是哪个viewController 然后调用暴露出来的更行接口
+            self.titleDateLabel.text = [NSString stringWithFormat:@"%@-%@-%@(Monday)",year,month,day];
+            [(BTWeeklySportViewController *)self.selectedViewController updateViewWithWeekBeginDate:_currentWeekDate];
+            [self changePreviousAndNextButtonBackgroundImage];
+            
+
+        }
+        else{
+            //改变按钮的背景图
+             [_previousButton setBackgroundImage:[UIImage imageNamed:@"left_nonindicate_button"] forState:UIControlStateNormal];            
+        }
         
     }
 }
@@ -138,7 +170,7 @@ static BTPhysicSportViewController *sharedPhysicSportInstance = nil;//单例
             
         }
         
-        if ([[_currentDate addDay:1] timeIntervalSinceDate:[NSDate localdate]] < 0) {
+        if ([NSDate isAscendingWithOnedate:_currentDate anotherdate:[NSDate localdate]]) {
             _currentDate = [_currentDate addDay:1];
             
             NSNumber *year = [BTUtils getYear:_currentDate];
@@ -149,6 +181,11 @@ static BTPhysicSportViewController *sharedPhysicSportInstance = nil;//单例
             self.titleDateLabel.text = [NSString stringWithFormat:@"%@-%@-%@",year,month,day];
             
             [(BTDailySportViewController *)self.selectedViewController updateViewWithDate:_currentDate];
+            [self changePreviousAndNextButtonBackgroundImage];
+        }
+        else{
+            //改变按钮的背景图
+            [_nextButton setBackgroundImage:[UIImage imageNamed:@"right_nonindicate_button"] forState:UIControlStateNormal];
         }
         
         
@@ -165,7 +202,7 @@ static BTPhysicSportViewController *sharedPhysicSportInstance = nil;//单例
             
         }
         
-        if ([[_currentWeekDate addDay:1] timeIntervalSinceDate:[[[NSDate alloc] init] beginningOfWeek]] < 0) {
+        if ([NSDate isAscendingWithOnedate:[_currentWeekDate addDay:7] anotherdate:[NSDate localdate]]) {
             _currentWeekDate = [_currentWeekDate addDay:7];
             
             NSNumber *year = [BTUtils getYear:_currentWeekDate];
@@ -173,9 +210,14 @@ static BTPhysicSportViewController *sharedPhysicSportInstance = nil;//单例
             NSNumber *day = [BTUtils getDay:_currentWeekDate];
             //然后确定是哪个viewController 然后调用暴露出来的更行接口
             
-            self.titleDateLabel.text = [NSString stringWithFormat:@"%@-%@-%@",year,month,day];
+            self.titleDateLabel.text = [NSString stringWithFormat:@"%@-%@-%@(Monday)",year,month,day];
             
            [(BTWeeklySportViewController *)self.selectedViewController updateViewWithWeekBeginDate:_currentWeekDate];
+            [self changePreviousAndNextButtonBackgroundImage];
+        }
+        else{
+            //改变按钮的背景图
+            [_nextButton setBackgroundImage:[UIImage imageNamed:@"right_nonindicate_button"] forState:UIControlStateNormal];
         }
 
     }
@@ -184,13 +226,37 @@ static BTPhysicSportViewController *sharedPhysicSportInstance = nil;//单例
     
     
 }
+
+#pragma mark - 随时调整左右箭头的背景
+- (void)changePreviousAndNextButtonBackgroundImage
+{
+    NSDate *menstruationDate = nil;
+    NSArray *data = [BTGetData getFromCoreDataWithPredicate:nil entityName:@"BTUserSetting" sortKey:nil];
+    if (data.count > 0) {
+        BTUserSetting *userData = [data objectAtIndex:0];
+        menstruationDate = [NSDate dateFromString:userData.menstruation withFormat:@"yyyy.MM.dd"];//duedate为00：00：00
+        NSLog(@"末次月经日期是%@",[menstruationDate stringWithFormat:@"yyyyMMdd"]);
+    }
+    
+    if (![NSDate isAscendingWithOnedate:_currentDate anotherdate:menstruationDate] && [NSDate isAscendingWithOnedate:_currentDate anotherdate:[NSDate localdate]]) {
+        [_previousButton setBackgroundImage:[UIImage imageNamed:@"left_indicate_button"] forState:UIControlStateNormal];
+        [_nextButton setBackgroundImage:[UIImage imageNamed:@"right_indicate_button"] forState:UIControlStateNormal];
+    }
+    
+    if (![NSDate isAscendingWithOnedate:_currentWeekDate anotherdate:menstruationDate] && [NSDate isAscendingWithOnedate:_currentDate anotherdate:[NSDate localdate]]) {
+        [_previousButton setBackgroundImage:[UIImage imageNamed:@"left_indicate_button"] forState:UIControlStateNormal];
+        [_nextButton setBackgroundImage:[UIImage imageNamed:@"right_indicate_button"] forState:UIControlStateNormal];
+
+    }
+
+}
 #pragma mark - 加载button控制的日 周 月运动详情
 - (void)addDayWeekMonthView
 {
     
 	BTDailySportViewController *dailyVC = [[BTDailySportViewController alloc] init];
     BTWeeklySportViewController *weeklyVC = [[BTWeeklySportViewController alloc]init];
-    //   BTMonthSportViewController *monthVC = [[BTMonthSportViewController alloc] init];
+    //BTMonthSportViewController *monthVC = [[BTMonthSportViewController alloc] init];
     
     
     
@@ -221,7 +287,43 @@ static BTPhysicSportViewController *sharedPhysicSportInstance = nil;//单例
     //这个代理方法tmd太有用了
     self.selectedViewControllerIndex = index;
     self.selectedViewController = viewController;
+    
+    //更新视图
+    [self updateViewControllerCharWithViewcontrollerIndex:index];
+    
     NSLog(@"选中的视图小标是%d",index);
+}
+#pragma mark - 更新今天和周的视图  重回当前日期
+- (void)updateViewControllerCharWithViewcontrollerIndex:(int)viewcontrollerIndex
+{
+    
+    
+    [_nextButton setBackgroundImage:[UIImage imageNamed:@"right_nonindicate_button"] forState:UIControlStateNormal];
+    if (viewcontrollerIndex == 0) {
+        
+        _currentDate = nil;
+        NSDate *localDate = [NSDate localdate];
+        NSNumber *year = [BTUtils getYear:localDate];
+        NSNumber *month = [BTUtils getMonth:localDate];
+        NSNumber *day = [BTUtils getDay:localDate];
+        //然后确定是哪个viewController 然后调用暴露出来的更行接口
+        
+        self.titleDateLabel.text = [NSString stringWithFormat:@"%@-%@-%@",year,month,day];
+        [(BTDailySportViewController *)self.selectedViewController updateViewWithDate:localDate];
+        
+    }
+    if (viewcontrollerIndex == 1) {
+        _currentWeekDate = nil;
+        NSDate *date1 = [[NSDate alloc] init];
+        NSDate *beginDate = [date1 beginningOfWeek];
+       
+        NSNumber *year = [BTUtils getYear:beginDate];
+        NSNumber *month = [BTUtils getMonth:beginDate];
+        NSNumber *day = [BTUtils getDay:beginDate];
+        //然后确定是哪个viewController 然后调用暴露出来的更行接口
+        self.titleDateLabel.text = [NSString stringWithFormat:@"%@-%@-%@(Monday)",year,month,day];
+        [(BTWeeklySportViewController *)self.selectedViewController updateViewWithWeekBeginDate:beginDate];
+    }
 }
 - (void)addTodayProgressView
 {
@@ -310,21 +412,6 @@ static BTPhysicSportViewController *sharedPhysicSportInstance = nil;//单例
     int i = [self getDailyStep];
     NSLog(@"走了多少步%d",i);
     float progress = (i/7000.0);//此处1000是目标值 记得改 另外改了之后也要改柱状图内部
-    //    NSLog(@"++++++++++++%f",progress);
-    //    NSString *str = [NSString stringWithFormat:@"%.0f",progress];
-    //    self.progressLabel.text = [str substringToIndex:4];
-    //
-    //    NSLog(@"^^^^^^^^^^^%@",self.progressLabel.text);
-    //    [UIView animateWithDuration:1.0 animations:^{
-    //
-    //        float k = (float)(i/10000.0);
-    //        NSLog(@"------------%f",k);
-    //        self.progressView.frame = CGRectMake(0, 250,320 * k, 80);
-    //
-    //
-    //	}];
-    
-    
     
     [self updateProgressAnimatedWithProgress:progress];
     [self updateTaskAchievementWithProgress:progress];

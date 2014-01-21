@@ -8,6 +8,9 @@
 
 #import "BTWarnCell.h"
 #import "LayoutDef.h"
+#import "BTGetData.h"
+#import "BTWarnData.h"
+
 #define kDayLabelX 24/2
 #define kDayLabelY 15
 #define kDayLabelWidth 100
@@ -47,7 +50,7 @@
     _dayLabel.textColor = kBigTextColor;
     _dayLabel.text = @"12.13";
     _dayLabel.opaque = NO;
-  //  [self.contentView addSubview:_dayLabel];
+    //  [self.contentView addSubview:_dayLabel];
     
     
     //icon图标
@@ -89,7 +92,7 @@
     self.lineImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"seperator_line"]];
     _lineImage.frame = CGRectMake(kTitleLabelX, self.frame.size.height-kSeparatorLineHeight , 320-24, kSeparatorLineHeight);
     [self.contentView addSubview:_lineImage];
-
+    
     
     
 }
@@ -100,21 +103,52 @@
     if ([_todoButton.currentBackgroundImage isEqual:[UIImage imageNamed:@"warn_unselected"]]) {
         
         NSLog(@"点击了button");
+        BTWarnCell *cell = (BTWarnCell *)button.superview.superview;
+        //将提醒id存到coredata
+        NSLog(@"标题是什么了什么了...%@",cell.knowledgeModel.warnId);
+
+        [self writeToCoredataWithWarnid:cell.knowledgeModel.warnId];
         [_todoButton setBackgroundImage:[UIImage imageNamed:@"warn_selected"] forState:UIControlStateNormal];
         
+    }
+    
+}
+#pragma mark - 往coredata里面写入数据
+- (void)writeToCoredataWithWarnid:(NSNumber *)aWarnId
+{
+    //设置coredatatype
+    _context = [BTGetData getAppContex];
+    NSError *error;
+    BTWarnData* new = [NSEntityDescription insertNewObjectForEntityForName:@"BTWarnData" inManagedObjectContext:_context];
+    new.warnId = aWarnId;
+    [_context save:&error];
+    // 及时保存
+    if(![_context save:&error]){
+        NSLog(@"%@", [error localizedDescription]);
+    }
+    
+}
+
+- (BOOL)isHasDone:(NSNumber *)aWarnId
+{
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"warnId == %@",aWarnId];
+    NSArray *dataArray = [BTGetData getFromCoreDataWithPredicate:predicate entityName:@"BTWarnData" sortKey:nil];
+    if ([dataArray count] > 0) {
+        return YES;
+    }
+    else{
+        return NO;
     }
     
 }
 + (CGFloat)cellHeightWithMode:(BTKnowledgeModel *)model
 {
     
-    NSLog(@"返回高度.........");
-    //   UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(kTitleLabelX, kTitleLabelY, kTitleLabelWidth, kTitleLabelHeight)];
     CGSize size = CGSizeMake(kTitleLabelWidth,2000);
     UIFont *font = [UIFont systemFontOfSize:FIRST_TITLE_SIZE];
     //计算实际frame大小，并将label的frame变成实际大小
     CGSize labelSize = [model.title sizeWithFont:font constrainedToSize:size lineBreakMode:NSLineBreakByWordWrapping];
-      NSLog(@"提醒类cell的高度....%0.1f",(20 + labelSize.height + 10));
+    NSLog(@"提醒类cell的高度....%0.1f",(20 + labelSize.height + 10));
     if ([model.description isEqualToString:@""]) {
         return (2 * kTitleLabelY + labelSize.height);
         
@@ -140,7 +174,7 @@
     
     self.titleLabel.text = _knowledgeModel.title;
     self.contentLabel.text = _knowledgeModel.description;
-   
+    
     
     if ([_knowledgeModel.description isEqualToString:@""]) {
         self.contentLabel.frame = CGRectMake(_titleLabel.frame.origin.x  , _titleLabel.frame.origin.y + _titleLabel.frame.size.height + 10, 320 - _titleLabel.frame.origin.x - 24/2, 0.0);
@@ -150,9 +184,17 @@
     else{
         
         
-
+        
         _lineImage.frame = CGRectMake(kTitleLabelX, (2 * kTitleLabelY + labelSize.height + kContentLabelHeight + 10)-kSeparatorLineHeight , 320-24, kSeparatorLineHeight);
         
+    }
+    
+    if ([self isHasDone:_knowledgeModel.warnId]) {
+         [_todoButton setBackgroundImage:[UIImage imageNamed:@"warn_selected"] forState:UIControlStateNormal];
+    }
+    else{
+        [_todoButton setBackgroundImage:[UIImage imageNamed:@"warn_unselected"] forState:UIControlStateNormal];
+
     }
     
 }

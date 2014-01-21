@@ -57,14 +57,18 @@
         <attribute name="menstruation" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="previousWeight" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
+    <entity name="BTWarnData" representedClassName="BTWarnData" syncable="YES">
+        <attribute name="warnId" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+    </entity>
     <elements>
         <element name="BTBleList" positionX="0" positionY="0" width="0" height="0"/>
         <element name="BTEntity" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="BTGirthStandard" positionX="0" positionY="0" width="0" height="0"/>
         <element name="BTPhsicalData" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="BTPhysicalStandard" positionX="0" positionY="0" width="0" height="0"/>
         <element name="BTRawData" positionX="0" positionY="0" width="0" height="0"/>
         <element name="BTUserData" positionX="0" positionY="0" width="0" height="0"/>
         <element name="BTUserSetting" positionX="0" positionY="0" width="0" height="0"/>
-        <element name="BTPhysicalStandard" positionX="0" positionY="0" width="0" height="0"/>
-        <element name="BTGirthStandard" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="BTWarnData" positionX="0" positionY="0" width="0" height="0"/>
     </elements>
 </model>

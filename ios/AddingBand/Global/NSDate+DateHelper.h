@@ -34,4 +34,5 @@
 +(NSString*)stringFromDate:(NSDate*)date withFormat:(NSString*)string;
 //日期转化成民国时间
 -(NSString*)dateToTW:(NSString*)string;
++ (BOOL)isAscendingWithOnedate:(NSDate *)onedate anotherdate:(NSDate *)anotherdate;
 @end

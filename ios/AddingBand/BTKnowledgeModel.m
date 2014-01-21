@@ -26,7 +26,8 @@
         self.expire = [dic objectForKey:@"expire"];
         self.icon = [dic objectForKey:@"icon"];
         self.contentImage = [dic objectForKey:@"image"];
-   
+        self.warnId = [NSNumber numberWithInt:[[dic objectForKey:@"event_id"] intValue]];
+    
     }
     return self;
 }

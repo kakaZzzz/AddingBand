@@ -18,5 +18,6 @@
 @property(nonatomic,strong)NSString *expire;
 @property(nonatomic,strong)NSString *icon;
 @property(nonatomic,strong)NSString *contentImage;
+@property(nonatomic,strong)NSNumber *warnId;
 -(id)initWithDictionary:(NSDictionary *)dic;
 @end

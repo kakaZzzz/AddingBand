@@ -139,11 +139,11 @@ static int comMinute = 0;
     self.recordButton = [UIButton buttonWithType:UIButtonTypeCustom];
     
     if (IPHONE_5_OR_LATER) {
-        _recordButton.frame = CGRectMake((320 - 152)/2, 118, 152, 152);
+        _recordButton.frame = CGRectMake((320 - 152)/2, 90, 152, 152);
        
     }
     else{
-        _recordButton.frame = CGRectMake((320 - 120)/2, 80, 120, 120);
+        _recordButton.frame = CGRectMake((320 - 110)/2, 60, 110, 110);
         
     }
 
@@ -162,7 +162,7 @@ static int comMinute = 0;
     _countLabel.text = @"0";
     [self.view addSubview:_countLabel];
 
-    UILabel *fetalCount = [[UILabel alloc] initWithFrame:CGRectMake(_countLabel.frame.origin.x + _countLabel.frame.size.width - 7, _countLabel.frame.origin.y + 35, 50, 25)];
+    UILabel *fetalCount = [[UILabel alloc] initWithFrame:CGRectMake(_countLabel.frame.origin.x + _countLabel.frame.size.width - 11, _countLabel.frame.origin.y + 35, 50, 25)];
     fetalCount.font = [UIFont systemFontOfSize:17];
     fetalCount.backgroundColor = [UIColor clearColor];
     fetalCount.textColor =[UIColor whiteColor];

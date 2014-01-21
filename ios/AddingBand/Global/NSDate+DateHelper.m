@@ -132,4 +132,16 @@
     int y=[[str substringWithRange:NSMakeRange(0,4)]intValue];
     return[NSString stringWithFormat:@"%d%@",y-1911,[str stringByReplacingCharactersInRange:NSMakeRange(0,4)withString:@""]];
 }
+
++ (BOOL)isAscendingWithOnedate:(NSDate *)onedate anotherdate:(NSDate *)anotherdate{
+    //现将两个日期转化成同一时区的
+    
+    NSString *onestr = [onedate stringWithFormat:@"yyyyMMdd"];
+    NSString *anotherstr = [anotherdate stringWithFormat:@"yyyyMMdd"];
+    
+    int a = [onestr intValue];
+    int b = [anotherstr intValue];
+    return a < b ? YES : NO;
+    
+}
 @end

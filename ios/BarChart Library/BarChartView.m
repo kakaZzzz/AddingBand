@@ -115,8 +115,7 @@
 	for (NSDictionary *barInfo in chartDataArray)  {
 		BarView *bar = [[BarView alloc] initWithFrame:CGRectMake((barFullWidth - barWidth)/2 + _index*(barFullWidth),  plotView.height - roundf([[barInfo objectForKey:@"value"] floatValue]*barHeightRatio), barWidth, roundf([[barInfo objectForKey:@"value"] floatValue]*barHeightRatio))];
         
-        NSLog(@"bar的大小事多少。。。。%@",NSStringFromCGRect(bar.frame));
-       // bar.tag = 1 + _index;
+              // bar.tag = 1 + _index;
           /**
          *  在柱状图上加上数值标签 默认隐藏 当点击的时候出现 过一会儿自动隐藏 或者再点击的时候直接隐藏
          *

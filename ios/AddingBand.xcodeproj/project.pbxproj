@@ -13,6 +13,11 @@
 		72269017183DAC2700D6405E /* uestime_bg.png in Resources */ = {isa = PBXBuildFile; fileRef = 72269015183DAC2700D6405E /* uestime_bg.png */; };
 		72269018183DAC2700D6405E /* uestime_bg@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 72269016183DAC2700D6405E /* uestime_bg@2x.png */; };
 		722E1F631886247F0090E287 /* seperator_line@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 722E1F621886247F0090E287 /* seperator_line@2x.png */; };
+		722EB339188E44A6006F0EE1 /* right_nonindicate_button@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 722EB335188E44A6006F0EE1 /* right_nonindicate_button@2x.png */; };
+		722EB33A188E44A6006F0EE1 /* right_indicate_button@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 722EB336188E44A6006F0EE1 /* right_indicate_button@2x.png */; };
+		722EB33B188E44A6006F0EE1 /* left_indicate_button@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 722EB337188E44A6006F0EE1 /* left_indicate_button@2x.png */; };
+		722EB33C188E44A6006F0EE1 /* left_nonindicate_button@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 722EB338188E44A6006F0EE1 /* left_nonindicate_button@2x.png */; };
+		722EB33F188E6A03006F0EE1 /* BTWarnData.m in Sources */ = {isa = PBXBuildFile; fileRef = 722EB33E188E6A03006F0EE1 /* BTWarnData.m */; };
 		722EDEF9182A3D43006B25EE /* BTBluetoothLinkCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 722EDEF8182A3D43006B25EE /* BTBluetoothLinkCell.m */; };
 		72316A9F1877D15D00A166BD /* BTGirthStandard.m in Sources */ = {isa = PBXBuildFile; fileRef = 72316A9E1877D15D00A166BD /* BTGirthStandard.m */; };
 		72316AAB1877D2BC00A166BD /* BTPhysicalStandard.m in Sources */ = {isa = PBXBuildFile; fileRef = 72316AAA1877D2BC00A166BD /* BTPhysicalStandard.m */; };
@@ -384,6 +389,12 @@
 		72269015183DAC2700D6405E /* uestime_bg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = uestime_bg.png; sourceTree = "<group>"; };
 		72269016183DAC2700D6405E /* uestime_bg@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "uestime_bg@2x.png"; sourceTree = "<group>"; };
 		722E1F621886247F0090E287 /* seperator_line@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "seperator_line@2x.png"; sourceTree = "<group>"; };
+		722EB335188E44A6006F0EE1 /* right_nonindicate_button@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "right_nonindicate_button@2x.png"; sourceTree = "<group>"; };
+		722EB336188E44A6006F0EE1 /* right_indicate_button@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "right_indicate_button@2x.png"; sourceTree = "<group>"; };
+		722EB337188E44A6006F0EE1 /* left_indicate_button@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "left_indicate_button@2x.png"; sourceTree = "<group>"; };
+		722EB338188E44A6006F0EE1 /* left_nonindicate_button@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "left_nonindicate_button@2x.png"; sourceTree = "<group>"; };
+		722EB33D188E6A03006F0EE1 /* BTWarnData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BTWarnData.h; path = AddingBand/BTWarnData.h; sourceTree = "<group>"; };
+		722EB33E188E6A03006F0EE1 /* BTWarnData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BTWarnData.m; path = AddingBand/BTWarnData.m; sourceTree = "<group>"; };
 		722EDEF7182A3D43006B25EE /* BTBluetoothLinkCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BTBluetoothLinkCell.h; sourceTree = "<group>"; };
 		722EDEF8182A3D43006B25EE /* BTBluetoothLinkCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BTBluetoothLinkCell.m; sourceTree = "<group>"; };
 		72316A9D1877D15D00A166BD /* BTGirthStandard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BTGirthStandard.h; path = AddingBand/BTGirthStandard.h; sourceTree = "<group>"; };
@@ -926,6 +937,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		722EB334188E4478006F0EE1 /* PhysicalImages */ = {
+			isa = PBXGroup;
+			children = (
+				722EB335188E44A6006F0EE1 /* right_nonindicate_button@2x.png */,
+				722EB336188E44A6006F0EE1 /* right_indicate_button@2x.png */,
+				722EB337188E44A6006F0EE1 /* left_indicate_button@2x.png */,
+				722EB338188E44A6006F0EE1 /* left_nonindicate_button@2x.png */,
+			);
+			path = PhysicalImages;
+			sourceTree = "<group>";
+		};
 		7231BE491859910C009A6DB5 /* PNChart */ = {
 			isa = PBXGroup;
 			children = (
@@ -1972,6 +1994,8 @@
 			isa = PBXGroup;
 			children = (
 				72CB9C33182B592500C0DAF0 /* Model.xcdatamodeld */,
+				722EB33D188E6A03006F0EE1 /* BTWarnData.h */,
+				722EB33E188E6A03006F0EE1 /* BTWarnData.m */,
 				72316AA91877D2BC00A166BD /* BTPhysicalStandard.h */,
 				72316AAA1877D2BC00A166BD /* BTPhysicalStandard.m */,
 				72316A9D1877D15D00A166BD /* BTGirthStandard.h */,
@@ -2059,6 +2083,7 @@
 		72EE545D1846F99D00093583 /* Phisical */ = {
 			isa = PBXGroup;
 			children = (
+				722EB334188E4478006F0EE1 /* PhysicalImages */,
 				721AD86B1889495900CE5CB5 /* edit_bg@2x.png */,
 				72560CF7188565A0006F9B22 /* sport_progress@2x.png */,
 				72560C971884E959006F9B22 /* accessory_white@2x.png */,
@@ -2217,6 +2242,7 @@
 				724AB2221860218700067CAD /* fetal_sel@2x.png in Resources */,
 				72D5DEEE188690A200E6EB33 /* loading5@2x.png in Resources */,
 				725E9CB41868333300BD2354 /* UMSCommentInputControlleriPad.xib in Resources */,
+				722EB33A188E44A6006F0EE1 /* right_indicate_button@2x.png in Resources */,
 				72560CA81884F139006F9B22 /* guide_iphone5later3@2x.png in Resources */,
 				723F0ED4183C5E7F005F1921 /* 家丁手环icon@2x.png in Resources */,
 				724F1CF0184F3AF800342DF7 /* MHTabBarActiveTab.png in Resources */,
@@ -2318,6 +2344,7 @@
 				72D947D31887C6820096276C /* battery_icon3@2x.png in Resources */,
 				729C1D161883C326009FBBDD /* physical_edit_unselected@2x.png in Resources */,
 				724AB2211860218700067CAD /* fetal_unsel@2x.png in Resources */,
+				722EB33B188E44A6006F0EE1 /* left_indicate_button@2x.png in Resources */,
 				724AB2371860832300067CAD /* markview_ba_left@2x.png in Resources */,
 				725E9CB51868333300BD2354 /* UMShareEditViewController.xib in Resources */,
 				725E9CBA1868333300BD2354 /* UMSocialSDKResourcesNew.bundle in Resources */,
@@ -2373,6 +2400,7 @@
 				723F24A018308925001F27DA /* 1.png in Resources */,
 				72D5DEED188690A200E6EB33 /* loading2@2x.png in Resources */,
 				72B3F87D187EAB2000549408 /* sync_image12@2x.png in Resources */,
+				722EB339188E44A6006F0EE1 /* right_nonindicate_button@2x.png in Resources */,
 				723C56C718614FFF00D4DC13 /* sync_icon@2x.png in Resources */,
 				72B3F87A187EAB2000549408 /* sync_image6@2x.png in Resources */,
 				72A2A316186C106500A504CA /* sync_litbutton_bg@2x.png in Resources */,
@@ -2382,6 +2410,7 @@
 				723F0EF7183CC0D3005F1921 /* refresh_btn.png in Resources */,
 				724AB22D18602F5A00067CAD /* fetal_record_sel@2x.png in Resources */,
 				723F0EF8183CC0D3005F1921 /* refresh_btn@2x.png in Resources */,
+				722EB33C188E44A6006F0EE1 /* left_nonindicate_button@2x.png in Resources */,
 				72D947D41887C6820096276C /* battery_icon4@2x.png in Resources */,
 				723F24A318308925001F27DA /* 2@2x.png in Resources */,
 				72A9EC33187959C9006EEB28 /* physical_selected@2x.png in Resources */,
@@ -2532,6 +2561,7 @@
 				728B795E187BF4A90076CE93 /* BTRowOfSectionModel.m in Sources */,
 				72B67A86183A2DD700294A08 /* BTAboutViewController.m in Sources */,
 				72AFBA5718431995004F0350 /* BarChartView.m in Sources */,
+				722EB33F188E6A03006F0EE1 /* BTWarnData.m in Sources */,
 				7231BE561859910C009A6DB5 /* PNChart.m in Sources */,
 				7231BE5C1859B3FF009A6DB5 /* BTDailySportViewController.m in Sources */,
 				723D6486184CC96B008618D7 /* BTRecordFetalView.m in Sources */,
