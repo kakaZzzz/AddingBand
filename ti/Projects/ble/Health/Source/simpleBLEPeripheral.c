@@ -52,18 +52,31 @@
 #define LO_UINT32(x)                          ((x) & 0xffff)
 
 // define LEDs
-#define LED0_PIO                              P0_1
-#define LED1_PIO                              P0_2
-#define LED2_PIO                              P0_4
-#define LED3_PIO                              P0_5
-#define LED4_PIO                              P0_6
-#define LED5_PIO                              P0_7
-#define LED6_PIO                              P1_0
-#define LED7_PIO                              P1_1
-#define LED8_PIO                              P1_6
-#define LED9_PIO                              P1_7
-#define LED10_PIO                             P2_0
-#define LED11_PIO                             P0_0
+// #define LED0_PIO                              P0_1
+// #define LED1_PIO                              P0_2
+// #define LED2_PIO                              P0_4
+// #define LED3_PIO                              P0_5
+// #define LED4_PIO                              P0_6
+// #define LED5_PIO                              P0_7
+// #define LED6_PIO                              P1_0
+// #define LED7_PIO                              P1_1
+// #define LED8_PIO                              P1_6
+// #define LED9_PIO                              P1_7
+// #define LED10_PIO                             P2_0
+// #define LED11_PIO                             P0_0
+
+#define LED0_PIO                              P0_5
+#define LED1_PIO                              P0_6
+#define LED2_PIO                              P0_7
+#define LED3_PIO                              P1_0
+#define LED4_PIO                              P1_1
+#define LED5_PIO                              P1_6
+#define LED6_PIO                              P1_7
+#define LED7_PIO                              P2_0
+#define LED8_PIO                              P0_0
+#define LED9_PIO                              P0_1
+#define LED10_PIO                             P0_2
+#define LED11_PIO                             P0_4
 
 #define OPEN_PIO                              0
 #define CLOSE_PIO                             1
