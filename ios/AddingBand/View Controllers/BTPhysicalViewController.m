@@ -128,7 +128,7 @@ static int selectedTag = 0;
     
     //加一个文字logo
     UIImageView *logoImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"logo_text"]];
-    logoImage.frame = CGRectMake(iconImage.frame.origin.x + iconImage.frame.size.width + 5, (_navigationBgView.frame.size.height - 42/2)/2, 232/2, 42/2);
+    logoImage.frame = CGRectMake(iconImage.frame.origin.x + iconImage.frame.size.width + 5, _navigationBgView.frame.size.height - 11 - 42/2, 232/2, 42/2);
     [_navigationBgView addSubview:logoImage];
 
     //分数背景view

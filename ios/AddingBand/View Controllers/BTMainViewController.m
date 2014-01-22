@@ -31,7 +31,7 @@
 #define NAVIGATIONBAR_HEIGHT 65
 
 static int currentWeek = 0;
-static int pastWeek = 0;
+static int pastWeek = 100;//初始值
 static int nextWeek = 0;
 @interface BTMainViewController ()
 @property(nonatomic,strong)UILabel *dateLabel;//3周4天
@@ -243,6 +243,46 @@ static int nextWeek = 0;
     return day1;
 }
 
+- (void)getNetworkDataByCodeRefreshWithWeekOfPregnancy:(int)week
+{
+    self.engine = [[MKNetworkEngine alloc] initWithHostName:HTTP_HOSTNAME customHeaderFields:nil];
+    [self.engine useCache];//使用缓存
+    
+    MKNetworkOperation *op = [self.engine operationWithPath:[NSString stringWithFormat:@"/api/schedule_new?p=%@&t=%@&w=%d",self.menstruation,self.today,week] params:nil httpMethod:@"GET" ssl:NO];
+    
+    [op addCompletionHandler:^(MKNetworkOperation *operation) {
+        NSLog(@"[operation responseData]-->>%@", [operation responseString]);
+        
+        NSDictionary *resultDic = [NSJSONSerialization JSONObjectWithData:[operation responseData] options:NSJSONReadingAllowFragments error:nil];
+        //保证有数据的时候在进行数据处理 没有数据就直接跳过
+        if ([resultDic count] > 0) {
+            if (_isLoadNextData) {
+                NSLog(@"week 是----%d",week);
+                [self handleNextDataByGetNetworkSuccessfullyWithJsonData:[operation responseData] week:week];
+                
+            }
+            else{
+                [self handlePastDataByGetNetworkSuccessfullyWithJsonData:[operation responseData] week:week];
+                
+            }
+            
+        }
+        
+        else{
+            [self finishReloadingData];
+        }
+        
+        //请求数据错误
+    }errorHandler:^(MKNetworkOperation *errorOp, NSError* err) {
+        NSLog(@"MKNetwork request error------ : %@", [err localizedDescription]);
+        [self handleDataByGetNetworkFailly];
+        
+    }];
+    [self.engine enqueueOperation:op];
+    
+
+
+}
 #pragma mark - 请求网络数据
 - (void)getNetworkDataWithWeekOfPregnancy:(int)week
 {
@@ -252,8 +292,14 @@ static int nextWeek = 0;
   
     self.engine = [[MKNetworkEngine alloc] initWithHostName:HTTP_HOSTNAME customHeaderFields:nil];
    [self.engine useCache];//使用缓存
+    
     MKNetworkOperation *op = [self.engine operationWithPath:[NSString stringWithFormat:@"/api/schedule_new?p=%@&t=%@&w=%d+%d",self.menstruation,self.today,week,week + 1] params:nil httpMethod:@"GET" ssl:NO];
- 
+
+  
+
+
+    
+  
     [op addCompletionHandler:^(MKNetworkOperation *operation) {
         NSLog(@"[operation responseData]-->>%@", [operation responseString]);
         
@@ -275,6 +321,8 @@ static int nextWeek = 0;
         else{
             [self finishReloadingData];
         }
+        
+         _isCodeRefresh = NO;//代码触发刷新置为 NO
         //请求数据错误
     }errorHandler:^(MKNetworkOperation *errorOp, NSError* err) {
         NSLog(@"MKNetwork request error------ : %@", [err localizedDescription]);
@@ -565,7 +613,7 @@ static int nextWeek = 0;
     
     //加一个文字logo
     UIImageView *logoImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"logo_text"]];
-    logoImage.frame = CGRectMake(iconImage.frame.origin.x + iconImage.frame.size.width + 5, (_navigationBgView.frame.size.height - 42/2)/2, 232/2, 42/2);
+    logoImage.frame = CGRectMake(iconImage.frame.origin.x + iconImage.frame.size.width + 5, _navigationBgView.frame.size.height - 11 - 42/2, 232/2, 42/2);
     [_navigationBgView addSubview:logoImage];
     
     
@@ -784,9 +832,9 @@ static int nextWeek = 0;
         dateCell = [[BTDateCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifierDate];
     }
 
-//    cell.selectionStyle = UITableViewCellSelectionStyleNone;
-//    warnCell.selectionStyle = UITableViewCellSelectionStyleNone;
-//    dateCell.selectionStyle = UITableViewCellSelectionStyleNone;
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    warnCell.selectionStyle = UITableViewCellSelectionStyleNone;
+    dateCell.selectionStyle = UITableViewCellSelectionStyleNone;
 
     
     NSArray *arrayModel = [self.modelArray objectAtIndex:indexPath.section];
@@ -928,30 +976,32 @@ static int nextWeek = 0;
     if (_isCodeRefresh) {
         NSLog(@"走这个方法了吗？。。。。。。。。");
         [self getNetworkDataWithWeekOfPregnancy:currentWeek];
-         self.isLoadNextData = NO;
+        self.isLoadNextData = NO;
         
     }
     else{
-        if (pastWeek == 0) {
-            pastWeek =  currentWeek - 2;
-
+        if (pastWeek == 100) {
+            pastWeek =  currentWeek - 1;
+            NSLog(@"乐乐乐乐乐乐乐乐了了");
         }
         else{
-            pastWeek = pastWeek -2;
+            pastWeek = pastWeek -1;
         }
-        if (pastWeek > 0) {
-            [self getNetworkDataWithWeekOfPregnancy:pastWeek];
-        }
-        else
-        {
-            [self finishReloadingData];
-            
-        }
+            if (pastWeek > 0) {
+                
+                [self getNetworkDataByCodeRefreshWithWeekOfPregnancy:pastWeek];
+            }
+            else
+            {
+                [self finishReloadingData];
+                
+            }
+        
         self.isLoadNextData = NO;
-
+        
     }
     // [self getNetworkDataWithWeekOfPregnancy:3];
-    _isCodeRefresh = NO;//代码触发刷新
+    _isCodeRefresh = NO;
     
 }
 

@@ -101,7 +101,21 @@
 
 - (void)todoSelect:(UIButton *)button
 {
-    BTWarnCell *cell = (BTWarnCell *)button.superview.superview;
+    
+    BTWarnCell *cell = nil;
+    if (IOS7_OR_EARLIER) {
+        cell = (BTWarnCell *)button.superview.superview;
+        NSLog(@"****%@",button.superview);
+        NSLog(@"****%@",button.superview.superview);
+        
+
+    }
+    else{
+        cell = (BTWarnCell *)button.superview.superview.superview;
+        NSLog(@"****%@",button.superview);
+        NSLog(@"****%@",button.superview.superview);
+        NSLog(@"****%@",button.superview.superview);
+    }
     BTKnowledgeModel *knowledgeModel = cell.knowledgeModel;
     //将提醒id存到coredata
     if ([self isCurrentDay:knowledgeModel.date]) {
@@ -118,14 +132,16 @@
 
     }
     else{
-        if ([_todoButton.currentBackgroundImage isEqual:[UIImage imageNamed:@"warn_unselected"]]) {
-            [self writeToCoredataWithWarnid:knowledgeModel.warnId];
-            [_todoButton setBackgroundImage:[UIImage imageNamed:@"warn_selected"] forState:UIControlStateNormal];
-            
-        }
-        else{
-            
-        }
+        
+      
+//        if ([_todoButton.currentBackgroundImage isEqual:[UIImage imageNamed:@"warn_unselected"]]) {
+//            [self writeToCoredataWithWarnid:knowledgeModel.warnId];
+//            [_todoButton setBackgroundImage:[UIImage imageNamed:@"warn_selected"] forState:UIControlStateNormal];
+//            
+//        }
+//        else{
+//            
+//        }
 
     }
     
