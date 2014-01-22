@@ -43,6 +43,14 @@
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"firstLaunch"];
     }
     
+    //增加标识，用于判断是否是第一次启动应用,首页是不是第一次进入进入此页面
+    if (![[NSUserDefaults standardUserDefaults] boolForKey:@"everAppear"]) {
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"firstAppear"];
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"everAppear"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        
+    }
+
 
     //将tabBarController设置为根视图
     self.tabBarController = [[BTCustomTabBarController alloc] init];
@@ -57,6 +65,8 @@
         [BTGuideViewController show];
     }
 
+    
+ 
 //    //测试用 默认给一些用户信息
 //    NSManagedObjectContext *context =[(BTAppDelegate *) [UIApplication sharedApplication].delegate managedObjectContext];
 //    

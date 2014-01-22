@@ -19,10 +19,7 @@
         self.hash = [dic objectForKey:@"hash"];
         self.title = [dic objectForKey:@"title"];
         self.description = [dic objectForKey:@"description"];
-        //对date进行一下分割转换
-        // NSMutableString
-        NSArray *subString = [[dic objectForKey:@"date"] componentsSeparatedByString:@"-"];
-        self.date = [NSString stringWithFormat:@"%@.%@",[subString objectAtIndex:1],[subString objectAtIndex:2]];
+        self.date = [dic objectForKey:@"date"];
         self.expire = [dic objectForKey:@"expire"];
         self.icon = [dic objectForKey:@"icon"];
         self.contentImage = [dic objectForKey:@"image"];

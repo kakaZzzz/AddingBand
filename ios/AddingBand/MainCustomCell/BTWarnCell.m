@@ -10,6 +10,8 @@
 #import "LayoutDef.h"
 #import "BTGetData.h"
 #import "BTWarnData.h"
+#import "NSDate+DateHelper.h"
+#import "BTUtils.h"
 
 #define kDayLabelX 24/2
 #define kDayLabelY 15
@@ -17,7 +19,7 @@
 #define kDayLabelHeight 20
 
 #define kIconImageX 24/2
-#define kIconImageY 15
+#define kIconImageY 10
 #define kIconImageWidth 44/2
 #define kIconImageHeight 44/2
 
@@ -99,20 +101,56 @@
 
 - (void)todoSelect:(UIButton *)button
 {
-    
-    if ([_todoButton.currentBackgroundImage isEqual:[UIImage imageNamed:@"warn_unselected"]]) {
-        
-        NSLog(@"点击了button");
-        BTWarnCell *cell = (BTWarnCell *)button.superview.superview;
-        //将提醒id存到coredata
-        NSLog(@"标题是什么了什么了...%@",cell.knowledgeModel.warnId);
+    BTWarnCell *cell = (BTWarnCell *)button.superview.superview;
+    BTKnowledgeModel *knowledgeModel = cell.knowledgeModel;
+    //将提醒id存到coredata
+    if ([self isCurrentDay:knowledgeModel.date]) {
+        if ([_todoButton.currentBackgroundImage isEqual:[UIImage imageNamed:@"warn_unselected"]]) {
+            [self writeToCoredataWithWarnid:knowledgeModel.warnId];
+            [_todoButton setBackgroundImage:[UIImage imageNamed:@"warn_selected"] forState:UIControlStateNormal];
+            
+        }
+        else{
+            [self deleteDataFromCoredataWithWarnid:knowledgeModel.warnId];
+            [_todoButton setBackgroundImage:[UIImage imageNamed:@"warn_unselected"] forState:UIControlStateNormal];
 
-        [self writeToCoredataWithWarnid:cell.knowledgeModel.warnId];
-        [_todoButton setBackgroundImage:[UIImage imageNamed:@"warn_selected"] forState:UIControlStateNormal];
-        
+        }
+
+    }
+    else{
+        if ([_todoButton.currentBackgroundImage isEqual:[UIImage imageNamed:@"warn_unselected"]]) {
+            [self writeToCoredataWithWarnid:knowledgeModel.warnId];
+            [_todoButton setBackgroundImage:[UIImage imageNamed:@"warn_selected"] forState:UIControlStateNormal];
+            
+        }
+        else{
+            
+        }
+
     }
     
 }
+- (BOOL)isCurrentDay:(NSString *)date
+{
+    NSDate *localDate = [NSDate localdate];
+    NSNumber *localYear = [BTUtils getYear:localDate];
+    NSNumber *localMonth = [BTUtils getMonth:localDate];
+    NSNumber *localDay = [BTUtils getDay:localDate];
+    
+    NSArray *subString = [date componentsSeparatedByString:@"-"];
+    NSString *year = [subString objectAtIndex:0];
+    NSString *month = [subString objectAtIndex:1];
+    NSString *day = [subString objectAtIndex:2];
+    
+    if (([localYear intValue] == [year intValue]) && ([localMonth intValue] == [month intValue]) && ([localDay intValue] == [day intValue])) {
+        return YES;
+    }
+    else{
+        return NO;
+    }
+    
+}
+
 #pragma mark - 往coredata里面写入数据
 - (void)writeToCoredataWithWarnid:(NSNumber *)aWarnId
 {
@@ -121,6 +159,26 @@
     NSError *error;
     BTWarnData* new = [NSEntityDescription insertNewObjectForEntityForName:@"BTWarnData" inManagedObjectContext:_context];
     new.warnId = aWarnId;
+    [_context save:&error];
+    // 及时保存
+    if(![_context save:&error]){
+        NSLog(@"%@", [error localizedDescription]);
+    }
+    
+}
+#pragma mark - 从coredata里面删除数据
+- (void)deleteDataFromCoredataWithWarnid:(NSNumber *)aWarnId
+{
+    //设置coredatatype
+    _context = [BTGetData getAppContex];
+    NSError *error;
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"warnId == %@",aWarnId];
+    NSArray *dataArray = [BTGetData getFromCoreDataWithPredicate:predicate entityName:@"BTWarnData" sortKey:nil];
+    if ([dataArray count] > 0) {
+        BTWarnData *data = [dataArray objectAtIndex:0];
+        [_context deleteObject:data];
+
+    }
     [_context save:&error];
     // 及时保存
     if(![_context save:&error]){

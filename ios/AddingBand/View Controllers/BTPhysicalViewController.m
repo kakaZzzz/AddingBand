@@ -109,23 +109,28 @@ static int selectedTag = 0;
     iconImage.frame = CGRectMake(24/2, _navigationBgView.frame.size.height - 5 - 39, 39, 39);
     [_navigationBgView addSubview:iconImage];
     
-    self.dateLabel = [[UILabel alloc] initWithFrame:CGRectMake(iconImage.frame.origin.x + iconImage.frame.size.width + 10, iconImage.frame.origin.y, 100, 20)];
-     _dateLabel.backgroundColor = [UIColor clearColor];
-    _dateLabel.font = [UIFont systemFontOfSize:15];
-    _dateLabel.textAlignment = NSTextAlignmentLeft;
-    _dateLabel.textColor = [UIColor whiteColor];
-    _dateLabel.text = @"3周4天";
-    [_navigationBgView addSubview:_dateLabel];
+//    self.dateLabel = [[UILabel alloc] initWithFrame:CGRectMake(iconImage.frame.origin.x + iconImage.frame.size.width + 10, iconImage.frame.origin.y, 100, 20)];
+//     _dateLabel.backgroundColor = [UIColor clearColor];
+//    _dateLabel.font = [UIFont systemFontOfSize:15];
+//    _dateLabel.textAlignment = NSTextAlignmentLeft;
+//    _dateLabel.textColor = [UIColor whiteColor];
+//    _dateLabel.text = @"3周4天";
+//    [_navigationBgView addSubview:_dateLabel];
+//    
+//    self.countLabel = [[UILabel alloc] initWithFrame:CGRectMake(iconImage.frame.origin.x + iconImage.frame.size.width + 10, _dateLabel.frame.origin.y + _dateLabel.frame.size.height, 200, 20)];
+//    _countLabel.backgroundColor = [UIColor clearColor];
+//    _countLabel.font = [UIFont systemFontOfSize:15];
+//    _countLabel.textAlignment = NSTextAlignmentLeft;
+//    _countLabel.textColor = [UIColor whiteColor];
+//    _countLabel.text = @"预产期倒计时: 255天";
+//    [_navigationBgView addSubview:_countLabel];
     
-    self.countLabel = [[UILabel alloc] initWithFrame:CGRectMake(iconImage.frame.origin.x + iconImage.frame.size.width + 10, _dateLabel.frame.origin.y + _dateLabel.frame.size.height, 200, 20)];
-    _countLabel.backgroundColor = [UIColor clearColor];
-    _countLabel.font = [UIFont systemFontOfSize:15];
-    _countLabel.textAlignment = NSTextAlignmentLeft;
-    _countLabel.textColor = [UIColor whiteColor];
-    _countLabel.text = @"预产期倒计时: 255天";
-    [_navigationBgView addSubview:_countLabel];
     
-    
+    //加一个文字logo
+    UIImageView *logoImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"logo_text"]];
+    logoImage.frame = CGRectMake(iconImage.frame.origin.x + iconImage.frame.size.width + 5, (_navigationBgView.frame.size.height - 42/2)/2, 232/2, 42/2);
+    [_navigationBgView addSubview:logoImage];
+
     //分数背景view
     self.headView = [[UIView alloc] initWithFrame:CGRectMake(0, 90/2, 320, (406-90)/2)];
     _headView.backgroundColor = kGlobalColor;
@@ -665,7 +670,7 @@ static int selectedTag = 0;
     }
     
     //更新自定义的navigationBar的怀孕时间
-    [self updatePregnancyTime];
+   // [self updatePregnancyTime];
 }
 #pragma mark - 更新导航栏上显示的怀孕时间
 - (void)updatePregnancyTime

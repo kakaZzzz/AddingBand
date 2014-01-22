@@ -11,7 +11,7 @@
 @interface BTDateCell : UITableViewCell
 
 @property(nonatomic,strong)UILabel *dayLabel;
-
+@property(nonatomic,strong)UILabel *countdownLabel;
 @property(nonatomic,strong)BTKnowledgeModel *knowledgeModel;
 
 @end

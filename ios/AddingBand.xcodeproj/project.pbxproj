@@ -192,6 +192,7 @@
 		728C60841855C47900232B4F /* BTBadgeManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 728C60831855C47900232B4F /* BTBadgeManager.m */; };
 		728ECC0318239AB0005053FE /* BTNavicationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 728ECC0218239AB0005053FE /* BTNavicationController.m */; };
 		728ECC0B1823B64F005053FE /* RBParallaxTableVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 728ECC0A1823B64F005053FE /* RBParallaxTableVC.m */; };
+		7291D939188F8583000862FD /* logo_text@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7291D938188F8583000862FD /* logo_text@2x.png */; };
 		7298793718616A7B00039E83 /* physical_grade@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7298793618616A7B00039E83 /* physical_grade@2x.png */; };
 		729879391861716D00039E83 /* physical_sport_bg@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 729879381861716D00039E83 /* physical_sport_bg@2x.png */; };
 		7298793C18618B4200039E83 /* BTScrollViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7298793B18618B4200039E83 /* BTScrollViewController.m */; };
@@ -665,6 +666,7 @@
 		728ECC0218239AB0005053FE /* BTNavicationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BTNavicationController.m; path = "View Controllers/BTNavicationController.m"; sourceTree = "<group>"; };
 		728ECC091823B64F005053FE /* RBParallaxTableVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RBParallaxTableVC.h; path = CustomSuperViewController/RBParallaxTableVC.h; sourceTree = "<group>"; };
 		728ECC0A1823B64F005053FE /* RBParallaxTableVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RBParallaxTableVC.m; path = CustomSuperViewController/RBParallaxTableVC.m; sourceTree = "<group>"; };
+		7291D938188F8583000862FD /* logo_text@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "logo_text@2x.png"; sourceTree = "<group>"; };
 		7298793618616A7B00039E83 /* physical_grade@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "physical_grade@2x.png"; sourceTree = "<group>"; };
 		729879381861716D00039E83 /* physical_sport_bg@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "physical_sport_bg@2x.png"; sourceTree = "<group>"; };
 		7298793A18618B4200039E83 /* BTScrollViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BTScrollViewController.h; path = CustomSuperViewController/BTScrollViewController.h; sourceTree = "<group>"; };
@@ -1604,6 +1606,7 @@
 		729C1D0B1883B61A009FBBDD /* NavigationBar */ = {
 			isa = PBXGroup;
 			children = (
+				7291D938188F8583000862FD /* logo_text@2x.png */,
 				72D5DED9188685D500E6EB33 /* navigation_logo@2x.png */,
 				729C1D0C1883B695009FBBDD /* navigationbar_complete_selected@2x.png */,
 				729C1D0D1883B695009FBBDD /* navigationbar_back_unselected@2x.png */,
@@ -2347,6 +2350,7 @@
 				722EB33B188E44A6006F0EE1 /* left_indicate_button@2x.png in Resources */,
 				724AB2371860832300067CAD /* markview_ba_left@2x.png in Resources */,
 				725E9CB51868333300BD2354 /* UMShareEditViewController.xib in Resources */,
+				7291D939188F8583000862FD /* logo_text@2x.png in Resources */,
 				725E9CBA1868333300BD2354 /* UMSocialSDKResourcesNew.bundle in Resources */,
 				72A9EC4318795AF6006EEB28 /* shezhi_selected1@2x.png in Resources */,
 				72560CA61884F139006F9B22 /* guide_iphone5later1@2x.png in Resources */,

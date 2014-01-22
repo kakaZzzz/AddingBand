@@ -257,6 +257,18 @@ static int selectedTextFieldTag = 0;
     if ([self isCompleted]) {
         //写入coredata
         [self writeToCoredataWithBirthday:_birthdayText.text menstruation:_menstrualText.text dueDate:_duedateText.text];
+        [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"firstAppear"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        
+        NSDate *localdate = [NSDate localdate];
+        NSNumber *year = [BTUtils getYear:localdate];
+        NSNumber *month = [BTUtils getMonth:localdate];
+        NSNumber *dayLocal = [BTUtils getDay:localdate];
+        NSString *today = [NSString stringWithFormat:@"%@-%@-%@",year,month,dayLocal];
+        NSString *menstrual =[self.menstrualText.text stringByReplacingOccurrencesOfString:@"." withString:@"-"];
+        NSDictionary *userinfoDic = [NSDictionary dictionaryWithObjectsAndKeys:menstrual,FIRSTENTERNOTICE_MENSTRUAL_KEY,today,FIRSTENTERNOTICE_TODAY_KEY,nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName:FIRSTENTERNOTICE object:nil userInfo:userinfoDic];
+        
         [self dismissViewControllerAnimated:YES completion:nil];
 
     }

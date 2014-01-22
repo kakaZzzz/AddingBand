@@ -17,7 +17,7 @@
 #define kDayLabelHeight 20
 
 #define kIconImageX 24/2
-#define kIconImageY 15
+#define kIconImageY 10
 #define kIconImageWidth 44/2
 #define kIconImageHeight 44/2
 
@@ -79,7 +79,7 @@
     self.contentLabel = [[UILabel alloc] initWithFrame:CGRectMake(_contentImage.frame.origin.x + _contentImage.frame.size.width , _contentImage.frame.origin.y, 320 - _contentImage.frame.origin.x - _contentImage.frame.size.width - 24/2, kContentLabelHeight)];
     _contentLabel.font = [UIFont systemFontOfSize:SECOND_TITLE_SIZE];
     _contentLabel.textColor = kContentTextColor;
-    _contentLabel.backgroundColor = [UIColor blueColor];
+    _contentLabel.backgroundColor = [UIColor clearColor];
     _contentLabel.textAlignment = NSTextAlignmentLeft;
     _contentLabel.numberOfLines = 0;
     _contentLabel.lineBreakMode = NSLineBreakByTruncatingTail;

@@ -58,6 +58,12 @@
 #define DATEPICKERDISMISSNOTICE @"datePickerDismissNotice"//时间选择器将要消失的时候的通知
 #define FETALVIEWUPDATENOTICE @"fetalViewUpdate"//胎动详情页面刷新数据
 #define HANDLETOSYNCNOTICE @"handleToSyncNotice"//胎动详情页面刷新数据
+//第一次进入首页通知 及其参数
+#define FIRSTENTERNOTICE @"firstEnterNotice"//胎动详情页面刷新数据
+#define FIRSTENTERNOTICE_MENSTRUAL_KEY  @"menstrual"
+#define FIRSTENTERNOTICE_TODAY_KEY  @"today"
+
+
 
 //App整体布局 宏
 #define RED_BACKGROUND_HEIGHT 368/2
