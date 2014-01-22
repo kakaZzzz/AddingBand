@@ -49,10 +49,10 @@
     _lineView.hidden = YES;
     [self.contentView addSubview:_lineView];
     
-    self.countdownLabel = [[UILabel alloc] initWithFrame:CGRectMake(320 - 200,_dayLabel.frame.origin.y, 200, kDayLabelHeight)];
+    self.countdownLabel = [[UILabel alloc] initWithFrame:CGRectMake(320 - 200 + 10,_dayLabel.frame.origin.y, 200, kDayLabelHeight)];
     _countdownLabel.font = [UIFont fontWithName:kCharacterAndNumberFont size:10.0f];
     _countdownLabel.backgroundColor = [UIColor clearColor];
-    _countdownLabel.textAlignment = NSTextAlignmentLeft;
+    _countdownLabel.textAlignment = NSTextAlignmentRight;
     _countdownLabel.textColor = kGlobalColor;
     _countdownLabel.text = [self calculateDuedate];
     _countdownLabel.hidden = YES;
@@ -129,7 +129,7 @@
 //    self.countLabel.text = [NSString stringWithFormat:@"预产期倒计时: %d天",(280 - day)];
 //    self.dateLabel.text = [NSString stringWithFormat:@"%d周%d天",week,day1];
     
-    NSString *resultString = [NSString stringWithFormat:@"怀孕:%d周%d天  预产期倒计时:%d天",week,day1,(280 - day)];
+    NSString *resultString = [NSString stringWithFormat:@"怀孕%d周%d天 宝宝出生还有%d天",week,day1,(280 - day)];
     return resultString;
 }
 

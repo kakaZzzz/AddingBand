@@ -160,4 +160,7 @@
 //网络接口
 #define HTTP_HEADER @"http://www.addinghome.com"
 #define HTTP_HOSTNAME @"addinghome.com"
+
+//友盟统计
+#define UMAPP_KEY @"52b7fae256240bd52f18fdd2"
 #endif

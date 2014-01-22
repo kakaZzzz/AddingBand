@@ -8,13 +8,10 @@
 
 #import "BTMainViewController.h"
 #import "LayoutDef.h"
-#import "UMSocialSnsService.h"//友盟分享
-#import "UMSocial.h"
 #import "NSDate+DateHelper.h"
 #import "BTUtils.h"
 #import "BTAlertView.h"
 
-#import "BTKnowledgeViewController.h"
 #import "MKNetworkEngine.h"
 #import "MKNetworkOperation.h"
 #import "BTKnowledgeModel.h"
@@ -71,9 +68,9 @@ static int nextWeek = 0;
     }
     
     [self.navigationController setNavigationBarHidden:YES animated:NO];
-   //[self updatePregnancyTime];
+    //[self updatePregnancyTime];
     
-   
+    
 }
 - (void)presentPersonnalDataView
 {
@@ -92,9 +89,6 @@ static int nextWeek = 0;
     [super viewDidLoad];
     NSLog(@"视图加载了........");
     self.view.backgroundColor = [UIColor whiteColor];
-    [self getMenstruationAndTodayDate];//得到末次月经 和 今天日期
-    //[self popAlertView];
-    currentWeek =[self getCurrentWeekOfPregnancyWithMenstruation:nil];//得到今天是怀孕第几周
     NSLog(@"*********当前周  %d",currentWeek);
     [self addSubviews];
     [self addChageScrollViewToTopButton];
@@ -103,9 +97,10 @@ static int nextWeek = 0;
     
     
     if (![[NSUserDefaults standardUserDefaults] boolForKey:@"firstAppear"]) {
-        
+        [self getMenstruationAndTodayDate];//得到末次月经 和 今天日期
+        currentWeek =[self getCurrentWeekOfPregnancyWithMenstruation:nil];//得到今天是怀孕第几周
         [self showRefreshHeader:YES];//代码触发刷新
-
+        
     }
    	// Do any additional setup after loading the view.
 }
@@ -116,8 +111,10 @@ static int nextWeek = 0;
     
     self.menstruation = [userInfoDic objectForKey:FIRSTENTERNOTICE_MENSTRUAL_KEY];
     self.today = [userInfoDic objectForKey:FIRSTENTERNOTICE_TODAY_KEY];
-    currentWeek = [self getCurrentWeekOfPregnancyWithMenstruation:self.menstruation];
-     [self showRefreshHeader:YES];//代码触发刷新
+    NSString *menstruationString = [self.menstruation stringByReplacingOccurrencesOfString:@"-" withString:@"."];
+    currentWeek = [self getCurrentWeekOfPregnancyWithMenstruation:menstruationString];
+    
+    [self showRefreshHeader:YES];//代码触发刷新
 }
 #pragma mark - 得到末次月经 和 今天日期
 - (void)getMenstruationAndTodayDate
@@ -126,7 +123,7 @@ static int nextWeek = 0;
     if (data.count > 0) {
         BTUserSetting *userData = [data objectAtIndex:0];
         NSString *str1 = userData.menstruation;
-        NSLog(@"首次读出末次月经时间...%@",str1);
+        
         self.menstruation = [str1 stringByReplacingOccurrencesOfString:@"." withString:@"-"];
     }
     NSDate *localdate = [NSDate localdate];
@@ -134,7 +131,7 @@ static int nextWeek = 0;
     NSNumber *month = [BTUtils getMonth:localdate];
     NSNumber *dayLocal = [BTUtils getDay:localdate];
     self.today = [NSString stringWithFormat:@"%@-%@-%@",year,month,dayLocal];
-
+    
 }
 #pragma mark - 代码触发下拉刷新
 -(void)showRefreshHeader:(BOOL)animated
@@ -159,7 +156,7 @@ static int nextWeek = 0;
     
 }
 
-#pragma mark - 根据末次月经日期 算出今天处于第几周 
+#pragma mark - 根据末次月经日期 算出今天处于第几周
 /**
  *  根据末次月经日期 算出今天处于第几周
  *
@@ -177,18 +174,16 @@ static int nextWeek = 0;
     if (menstruation) {
         NSDate *gmtDate = [NSDate dateFromString:[NSString stringWithFormat:@"%@.%@.%@",year,month,dayLocal] withFormat:@"yyyy.MM.dd"];
         NSDate *menstruationDate = [NSDate dateFromString:menstruation withFormat:@"yyyy.MM.dd"];//duedate为00：00：00
-        
         NSTimeInterval menstruation = [menstruationDate timeIntervalSince1970];
         NSTimeInterval now = [gmtDate timeIntervalSince1970];
         NSTimeInterval cha = now - menstruation;
-        
         day = cha/(24 * 60 * 60);
-        NSLog(@"怀孕多少天---%d",day);
+        
     }
     else{
         NSDate *gmtDate = [NSDate dateFromString:[NSString stringWithFormat:@"%@.%@.%@",year,month,dayLocal] withFormat:@"yyyy.MM.dd"];
         day = [BTGetData getPregnancyDaysWithDate:gmtDate];
-       NSLog(@"怀孕多少天+++++%d",day);
+        
     }
     //根据怀孕天数 算出是第几周 第几天
     int week = day/7 + 1;
@@ -256,6 +251,49 @@ static int nextWeek = 0;
         NSDictionary *resultDic = [NSJSONSerialization JSONObjectWithData:[operation responseData] options:NSJSONReadingAllowFragments error:nil];
         //保证有数据的时候在进行数据处理 没有数据就直接跳过
         if ([resultDic count] > 0) {
+            
+       [self handlePastDataByGetNetworkSuccessfullyWithJsonData:[operation responseData] week:week];
+            
+        }
+        
+        else{
+            [self finishReloadingData];
+        }
+        
+        //请求数据错误
+    }errorHandler:^(MKNetworkOperation *errorOp, NSError* err) {
+        NSLog(@"MKNetwork request error------ : %@", [err localizedDescription]);
+        [self handleDataByGetNetworkFailly];
+        
+    }];
+    [self.engine enqueueOperation:op];
+    
+    
+    
+}
+#pragma mark - 请求网络数据
+- (void)getNetworkDataWithWeekOfPregnancy:(int)week
+{
+    
+    //用MKNetworkKit进行异步网络请求
+    /*GET请求 示例*/
+    
+    self.engine = [[MKNetworkEngine alloc] initWithHostName:HTTP_HOSTNAME customHeaderFields:nil];
+    [self.engine useCache];//使用缓存
+    
+    MKNetworkOperation *op = [self.engine operationWithPath:[NSString stringWithFormat:@"/api/schedule_new?p=%@&t=%@&w=%d+%d",self.menstruation,self.today,week,week + 1] params:nil httpMethod:@"GET" ssl:NO];
+    
+    
+    
+    
+    
+    
+    [op addCompletionHandler:^(MKNetworkOperation *operation) {
+        NSLog(@"[operation responseData]-->>%@", [operation responseString]);
+        
+        NSDictionary *resultDic = [NSJSONSerialization JSONObjectWithData:[operation responseData] options:NSJSONReadingAllowFragments error:nil];
+        //保证有数据的时候在进行数据处理 没有数据就直接跳过
+        if ([resultDic count] > 0) {
             if (_isLoadNextData) {
                 NSLog(@"week 是----%d",week);
                 [self handleNextDataByGetNetworkSuccessfullyWithJsonData:[operation responseData] week:week];
@@ -272,57 +310,7 @@ static int nextWeek = 0;
             [self finishReloadingData];
         }
         
-        //请求数据错误
-    }errorHandler:^(MKNetworkOperation *errorOp, NSError* err) {
-        NSLog(@"MKNetwork request error------ : %@", [err localizedDescription]);
-        [self handleDataByGetNetworkFailly];
-        
-    }];
-    [self.engine enqueueOperation:op];
-    
-
-
-}
-#pragma mark - 请求网络数据
-- (void)getNetworkDataWithWeekOfPregnancy:(int)week
-{
-    
-    //用MKNetworkKit进行异步网络请求
-    /*GET请求 示例*/
-  
-    self.engine = [[MKNetworkEngine alloc] initWithHostName:HTTP_HOSTNAME customHeaderFields:nil];
-   [self.engine useCache];//使用缓存
-    
-    MKNetworkOperation *op = [self.engine operationWithPath:[NSString stringWithFormat:@"/api/schedule_new?p=%@&t=%@&w=%d+%d",self.menstruation,self.today,week,week + 1] params:nil httpMethod:@"GET" ssl:NO];
-
-  
-
-
-    
-  
-    [op addCompletionHandler:^(MKNetworkOperation *operation) {
-        NSLog(@"[operation responseData]-->>%@", [operation responseString]);
-        
-        NSDictionary *resultDic = [NSJSONSerialization JSONObjectWithData:[operation responseData] options:NSJSONReadingAllowFragments error:nil];
-        //保证有数据的时候在进行数据处理 没有数据就直接跳过
-        if ([resultDic count] > 0) {
-            if (_isLoadNextData) {
-                NSLog(@"week 是----%d",week);
-                [self handleNextDataByGetNetworkSuccessfullyWithJsonData:[operation responseData] week:week];
-                
-            }
-            else{
-                [self handlePastDataByGetNetworkSuccessfullyWithJsonData:[operation responseData] week:week];
-                
-            }
-
-        }
-        
-        else{
-            [self finishReloadingData];
-        }
-        
-         _isCodeRefresh = NO;//代码触发刷新置为 NO
+        _isCodeRefresh = NO;//代码触发刷新置为 NO
         //请求数据错误
     }errorHandler:^(MKNetworkOperation *errorOp, NSError* err) {
         NSLog(@"MKNetwork request error------ : %@", [err localizedDescription]);
@@ -337,7 +325,7 @@ static int nextWeek = 0;
 {
     
     NSMutableArray *section = [NSMutableArray arrayWithCapacity:1];
-   // currentWeek = 3;
+    // currentWeek = 3;
     NSDictionary *resultDic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:nil];
     
     NSDictionary *weekPreviousDic = [resultDic objectForKey:[NSString stringWithFormat:@"w%d",week]];
@@ -347,7 +335,7 @@ static int nextWeek = 0;
     if ([resultPreviousArray count] > 0) {
         model1 = [[BTRowOfSectionModel alloc] initWithSectionTitle:[NSString stringWithFormat:@"%d周",week] row:[resultPreviousArray count]];
         [section addObject:model1];
-      }
+    }
     NSLog(@"resultPreviousArray==%@",resultPreviousArray);
     NSLog(@"_____%@",model1);
     NSDictionary *weekCurrentDic = [resultDic objectForKey:[NSString stringWithFormat:@"w%d",week + 1]];
@@ -355,7 +343,7 @@ static int nextWeek = 0;
     NSLog(@"resultCurrentArray====%@",resultCurrentArray);
     BTRowOfSectionModel *model2 = nil;
     if ([resultCurrentArray count] > 0) {
-       model2 = [[BTRowOfSectionModel alloc] initWithSectionTitle:[NSString stringWithFormat:@"%d周",week + 1] row:[resultCurrentArray count]];
+        model2 = [[BTRowOfSectionModel alloc] initWithSectionTitle:[NSString stringWithFormat:@"%d周",week + 1] row:[resultCurrentArray count]];
         [section addObject:model2];
     }
     
@@ -390,7 +378,7 @@ static int nextWeek = 0;
         
         NSLog(@"dadadadada %@",array1);
         [resultArray addObject:array1];
-
+        
     }
     
     if ([resultCurrentArray count] > 0) {
@@ -401,17 +389,17 @@ static int nextWeek = 0;
         }
         
         [resultArray addObject:array2];
-
+        
     }
     
     
-        for (int i = resultArray.count - 1;i >= 0;i--)
-        {
-            NSArray * array = [resultArray objectAtIndex:i];
-            //把一个个的knowledge存入可变数组 modelArray(类初始化的时候应开辟空间)
-            [self.modelArray insertObject:array atIndex:0];//这是行数据
-        }
-       NSLog(@"请求结果是.......%@",self.modelArray);
+    for (int i = resultArray.count - 1;i >= 0;i--)
+    {
+        NSArray * array = [resultArray objectAtIndex:i];
+        //把一个个的knowledge存入可变数组 modelArray(类初始化的时候应开辟空间)
+        [self.modelArray insertObject:array atIndex:0];//这是行数据
+    }
+    NSLog(@"请求结果是.......%@",self.modelArray);
     
     
     
@@ -422,42 +410,42 @@ static int nextWeek = 0;
 - (void)handleNextDataByGetNetworkSuccessfullyWithJsonData:(NSData *)data week:(int)week
 {
     NSMutableArray *section = [NSMutableArray arrayWithCapacity:1];
-
-   // currentWeek = 3;
+    
+    // currentWeek = 3;
     NSDictionary *resultDic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:nil];
     
-  
-        NSDictionary *weekPreviousDic = [resultDic objectForKey:[NSString stringWithFormat:@"w%d",week]];
-        NSArray *resultPreviousArray = [weekPreviousDic objectForKey:@"results"];
-        //判断是否有数据，有的话再做处理
-        BTRowOfSectionModel *model1 = nil;
-        if ([resultPreviousArray count] > 0) {
-            model1 = [[BTRowOfSectionModel alloc] initWithSectionTitle:[NSString stringWithFormat:@"%d周",week] row:[resultPreviousArray count]];
-            [section addObject:model1];
-        }
-        NSLog(@"resultPreviousArray==%@",resultPreviousArray);
-        NSLog(@"_____%@",model1);
-        NSDictionary *weekCurrentDic = [resultDic objectForKey:[NSString stringWithFormat:@"w%d",week + 1]];
-        NSArray *resultCurrentArray = [weekCurrentDic objectForKey:@"results"];
-        NSLog(@"resultCurrentArray====%@",resultCurrentArray);
-        BTRowOfSectionModel *model2 = nil;
-        if ([resultCurrentArray count] > 0) {
-            model2 = [[BTRowOfSectionModel alloc] initWithSectionTitle:[NSString stringWithFormat:@"%d周",week + 1] row:[resultCurrentArray count]];
-            [section addObject:model2];
-        }
+    
+    NSDictionary *weekPreviousDic = [resultDic objectForKey:[NSString stringWithFormat:@"w%d",week]];
+    NSArray *resultPreviousArray = [weekPreviousDic objectForKey:@"results"];
+    //判断是否有数据，有的话再做处理
+    BTRowOfSectionModel *model1 = nil;
+    if ([resultPreviousArray count] > 0) {
+        model1 = [[BTRowOfSectionModel alloc] initWithSectionTitle:[NSString stringWithFormat:@"%d周",week] row:[resultPreviousArray count]];
+        [section addObject:model1];
+    }
+    NSLog(@"resultPreviousArray==%@",resultPreviousArray);
+    NSLog(@"_____%@",model1);
+    NSDictionary *weekCurrentDic = [resultDic objectForKey:[NSString stringWithFormat:@"w%d",week + 1]];
+    NSArray *resultCurrentArray = [weekCurrentDic objectForKey:@"results"];
+    NSLog(@"resultCurrentArray====%@",resultCurrentArray);
+    BTRowOfSectionModel *model2 = nil;
+    if ([resultCurrentArray count] > 0) {
+        model2 = [[BTRowOfSectionModel alloc] initWithSectionTitle:[NSString stringWithFormat:@"%d周",week + 1] row:[resultCurrentArray count]];
+        [section addObject:model2];
+    }
+    
+    //骚年 这里是分区数据
+    
+    for (int i = 0; i < [section count];i++) {
         
-        //骚年 这里是分区数据
+        [self.sectionArray addObject:[section objectAtIndex:i]];//这是分区数据
         
-        for (int i = 0; i < [section count];i++) {
-            
-            [self.sectionArray addObject:[section objectAtIndex:i]];//这是分区数据
-            
-        }
-
+    }
     
     
-
-
+    
+    
+    
     //下面是每行数据
     NSMutableArray *array1 = [NSMutableArray arrayWithCapacity:1];
     NSMutableArray *array2 = [NSMutableArray arrayWithCapacity:1];
@@ -501,21 +489,21 @@ static int nextWeek = 0;
 
 - (void)handleDataByGetNetworkFailly
 {
-//    NSDictionary * dictionary;
-//    for (int i = 0; i < 2; i ++) {
-//        if (i == 0) {
-//            dictionary  = [NSDictionary dictionaryWithObjectsAndKeys:@"3",@"event_id",@"103",@"event_type",@"该吃药了哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈",@"title", @"",@"hash",@"丫今儿该吃苹果了",@"description",@"2014-1-2",@"date",@"2014-1-4",@"expire",@"",@"icon",nil];
-//        }
-//        if (i == 1) {
-//            dictionary  = [NSDictionary dictionaryWithObjectsAndKeys:@"2",@"event_id",@"103",@"event_type",@"什么是叶酸什么是叶酸什么是叶酸什么是叶酸什么是叶酸什么是叶酸什么是叶酸什么是叶酸什么是叶酸什么是叶酸什么是叶酸什么是叶酸？",@"title", @"",@"hash",@"叶酸是维生素B9的水溶形式。叶酸的名字来源于拉丁文folium。由米切尔及其同事 首次从菠菜叶中提取纯化出来，命名为叶酸。叶酸作为重要的一碳载体，在核苷酸合成，同型半胱氨酸的再甲基化等诸多重要生理代谢功能方面有重要作用。因此叶酸在快速的细胞分裂和生长过程中有尤其重要的作用。",@"description",@"2014-1-2",@"date",@"2014-1-4",@"expire",@"",@"icon",nil];
-//            
-//        }
-//        BTKnowledgeModel * knowledge = [[BTKnowledgeModel alloc] initWithDictionary:dictionary];
-//        //把一个个的shop存入可变数组 dataArray(父类中定义 并初始化)
-//        [self.modelArray addObject:knowledge];
-//        
-//        
-//    }
+    //    NSDictionary * dictionary;
+    //    for (int i = 0; i < 2; i ++) {
+    //        if (i == 0) {
+    //            dictionary  = [NSDictionary dictionaryWithObjectsAndKeys:@"3",@"event_id",@"103",@"event_type",@"该吃药了哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈",@"title", @"",@"hash",@"丫今儿该吃苹果了",@"description",@"2014-1-2",@"date",@"2014-1-4",@"expire",@"",@"icon",nil];
+    //        }
+    //        if (i == 1) {
+    //            dictionary  = [NSDictionary dictionaryWithObjectsAndKeys:@"2",@"event_id",@"103",@"event_type",@"什么是叶酸什么是叶酸什么是叶酸什么是叶酸什么是叶酸什么是叶酸什么是叶酸什么是叶酸什么是叶酸什么是叶酸什么是叶酸什么是叶酸？",@"title", @"",@"hash",@"叶酸是维生素B9的水溶形式。叶酸的名字来源于拉丁文folium。由米切尔及其同事 首次从菠菜叶中提取纯化出来，命名为叶酸。叶酸作为重要的一碳载体，在核苷酸合成，同型半胱氨酸的再甲基化等诸多重要生理代谢功能方面有重要作用。因此叶酸在快速的细胞分裂和生长过程中有尤其重要的作用。",@"description",@"2014-1-2",@"date",@"2014-1-4",@"expire",@"",@"icon",nil];
+    //
+    //        }
+    //        BTKnowledgeModel * knowledge = [[BTKnowledgeModel alloc] initWithDictionary:dictionary];
+    //        //把一个个的shop存入可变数组 dataArray(父类中定义 并初始化)
+    //        [self.modelArray addObject:knowledge];
+    //
+    //
+    //    }
     
     [self finishReloadingData];//刷新完成
     [self.tableView reloadData];
@@ -569,7 +557,11 @@ static int nextWeek = 0;
 - (void)toTop:(UIButton *)button
 {
     [UIView animateWithDuration:0.5 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
-        self.tableView.contentOffset = CGPointMake(0, 0);
+       // self.tableView.contentOffset = CGPointMake(0, 0);
+        
+    //    scrollToRowAtIndexPath:(NSIndexPath *)indexPath atScrollPosition:(UITableViewScrollPosition)scrollPosition animated:(BOOL)animated
+        NSIndexPath *aIndexpath = [NSIndexPath indexPathForRow:4 inSection:0];
+        [self.tableView scrollToRowAtIndexPath:aIndexpath atScrollPosition:UITableViewScrollPositionTop animated:YES];
     } completion:nil];
     
 }
@@ -595,21 +587,21 @@ static int nextWeek = 0;
     iconImage.frame = CGRectMake(24/2, _navigationBgView.frame.size.height - 5 - 39, 39, 39);
     [_navigationBgView addSubview:iconImage];
     
-//    self.dateLabel = [[UILabel alloc] initWithFrame:CGRectMake(iconImage.frame.origin.x + iconImage.frame.size.width + 10, iconImage.frame.origin.y, 100, 20)];
-//    _dateLabel.backgroundColor = [UIColor clearColor];
-//    _dateLabel.font = [UIFont systemFontOfSize:15];
-//    _dateLabel.textAlignment = NSTextAlignmentLeft;
-//    _dateLabel.textColor = [UIColor whiteColor];
-//    _dateLabel.text = @"3周4天";
-//    [_navigationBgView addSubview:_dateLabel];
+    //    self.dateLabel = [[UILabel alloc] initWithFrame:CGRectMake(iconImage.frame.origin.x + iconImage.frame.size.width + 10, iconImage.frame.origin.y, 100, 20)];
+    //    _dateLabel.backgroundColor = [UIColor clearColor];
+    //    _dateLabel.font = [UIFont systemFontOfSize:15];
+    //    _dateLabel.textAlignment = NSTextAlignmentLeft;
+    //    _dateLabel.textColor = [UIColor whiteColor];
+    //    _dateLabel.text = @"3周4天";
+    //    [_navigationBgView addSubview:_dateLabel];
     
-//    self.countLabel = [[UILabel alloc] initWithFrame:CGRectMake(iconImage.frame.origin.x + iconImage.frame.size.width + 10, _dateLabel.frame.origin.y + _dateLabel.frame.size.height, 200, 20)];
-//    _countLabel.backgroundColor = [UIColor clearColor];
-//    _countLabel.font = [UIFont systemFontOfSize:15];
-//    _countLabel.textAlignment = NSTextAlignmentLeft;
-//    _countLabel.textColor = [UIColor whiteColor];
-//    _countLabel.text = @"预产期倒计时: 255天";
-//    [_navigationBgView addSubview:_countLabel];
+    //    self.countLabel = [[UILabel alloc] initWithFrame:CGRectMake(iconImage.frame.origin.x + iconImage.frame.size.width + 10, _dateLabel.frame.origin.y + _dateLabel.frame.size.height, 200, 20)];
+    //    _countLabel.backgroundColor = [UIColor clearColor];
+    //    _countLabel.font = [UIFont systemFontOfSize:15];
+    //    _countLabel.textAlignment = NSTextAlignmentLeft;
+    //    _countLabel.textColor = [UIColor whiteColor];
+    //    _countLabel.text = @"预产期倒计时: 255天";
+    //    [_navigationBgView addSubview:_countLabel];
     
     //加一个文字logo
     UIImageView *logoImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"logo_text"]];
@@ -623,7 +615,7 @@ static int nextWeek = 0;
     [clockButton setBackgroundImage:[UIImage imageNamed:@"appointment_bt_selected"] forState:UIControlStateHighlighted];
     [clockButton addTarget:self action:@selector(inputYourPreproduction:) forControlEvents:UIControlEventTouchUpInside];
     clockButton.frame = CGRectMake(320 - 50, _navigationBgView.frame.size.height - 39, 60/2, 60/2);
-  //  [_navigationBgView addSubview:clockButton];
+    //  [_navigationBgView addSubview:clockButton];
     
     
     self.headView = [[UIView alloc] initWithFrame:CGRectMake(0, NAVIGATIONBAR_HEIGHT, 320, 40)];
@@ -738,7 +730,7 @@ static int nextWeek = 0;
     //在这里判断 用哪个cell进行展示 然后调用cell的自动调整高度的方法
     NSArray *arrayModel = [self.modelArray objectAtIndex:indexPath.section];
     BTKnowledgeModel *model = [arrayModel objectAtIndex:indexPath.row];
-
+    
     if ([model.title isEqualToString:@""]) {
         return 44.0;
     }
@@ -756,14 +748,14 @@ static int nextWeek = 0;
             default:
                 break;
         }
-
+        
     }
     return 100.0;
 }
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     
-   
+    
     return [self.sectionArray count];
     
     
@@ -772,8 +764,8 @@ static int nextWeek = 0;
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-//    BTRowOfSectionModel *model = [self.sectionArray objectAtIndex:section];
-//    return model.row;
+    //    BTRowOfSectionModel *model = [self.sectionArray objectAtIndex:section];
+    //    return model.row;
     
     NSArray *rowArray = [self.modelArray objectAtIndex:section];
     return [rowArray count];
@@ -793,7 +785,7 @@ static int nextWeek = 0;
     UIImageView *lineImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"seperator_line"]];
     lineImage.frame = CGRectMake(0, 44 - kSeparatorLineHeight ,320, kSeparatorLineHeight);
     [aView addSubview:lineImage];
-
+    
     
     
     UILabel *lable = [[UILabel alloc] initWithFrame:CGRectMake(5, 5, 60, (44 - 5*2))];
@@ -813,14 +805,14 @@ static int nextWeek = 0;
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     
-   
+    
     static NSString *CellIdentifier = @"Cell";
     static NSString *CellIdentifierWarn = @"CellWarn";
     static NSString *CellIdentifierDate = @"CellDate";
     BTKnowledgeCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     BTWarnCell *warnCell = [tableView dequeueReusableCellWithIdentifier:CellIdentifierWarn];
     BTDateCell *dateCell = [tableView dequeueReusableCellWithIdentifier:CellIdentifierDate];
-
+    
     
     if (cell == nil) {
         cell = [[BTKnowledgeCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
@@ -831,11 +823,11 @@ static int nextWeek = 0;
     if (dateCell == nil) {
         dateCell = [[BTDateCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifierDate];
     }
-
+    
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     warnCell.selectionStyle = UITableViewCellSelectionStyleNone;
     dateCell.selectionStyle = UITableViewCellSelectionStyleNone;
-
+    
     
     NSArray *arrayModel = [self.modelArray objectAtIndex:indexPath.section];
     BTKnowledgeModel *model = [arrayModel objectAtIndex:indexPath.row];
@@ -857,7 +849,7 @@ static int nextWeek = 0;
             return warnCell;
             
         }
-
+        
     }
     
     
@@ -875,9 +867,9 @@ static int nextWeek = 0;
     blogVC.blogHash = hash;
     
     if (![hash isEqualToString:@""]) {
-    blogVC.hidesBottomBarWhenPushed = YES;
-    [self.navigationController pushViewController:blogVC animated:YES];
-
+        blogVC.hidesBottomBarWhenPushed = YES;
+        [self.navigationController pushViewController:blogVC animated:YES];
+        
     }
     
     
@@ -912,7 +904,7 @@ static int nextWeek = 0;
 
 //刷新delegate
 -(void)setFooterView{
-	    // if the footerView is nil, then create it, reset the position of the footer
+    // if the footerView is nil, then create it, reset the position of the footer
     CGFloat height = MAX(self.tableView.contentSize.height, self.tableView.frame.size.height);
     if (_refreshFooterView && [_refreshFooterView superview])
 	{
@@ -987,15 +979,15 @@ static int nextWeek = 0;
         else{
             pastWeek = pastWeek -1;
         }
-            if (pastWeek > 0) {
-                
-                [self getNetworkDataByCodeRefreshWithWeekOfPregnancy:pastWeek];
-            }
-            else
-            {
-                [self finishReloadingData];
-                
-            }
+        if (pastWeek > 0) {
+            
+            [self getNetworkDataByCodeRefreshWithWeekOfPregnancy:pastWeek];
+        }
+        else
+        {
+            [self finishReloadingData];
+            
+        }
         
         self.isLoadNextData = NO;
         
@@ -1019,7 +1011,7 @@ static int nextWeek = 0;
     
     NSLog(@"下一个数据开始是%d",nextWeek);
     [self getNetworkDataWithWeekOfPregnancy:nextWeek];
-  
+    
 }
 #pragma mark -
 #pragma mark method that should be called when the refreshing is finished
@@ -1080,7 +1072,7 @@ static int nextWeek = 0;
 
 - (void)egoRefreshTableDidTriggerRefresh:(EGORefreshPos)aRefreshPos
 {
-
+    
 	[self beginToReloadData:aRefreshPos];
 	
 }

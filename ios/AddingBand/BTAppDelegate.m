@@ -14,14 +14,12 @@
 #import "BTSyncTwoViewController.h"
 #import "BTGetData.h"
 #import "BTUserSetting.h"
-#import "UMSocialData.h"//友盟分享组件
-#import "UMSocial.h"
-#import "UMSocialConfig.h"
 #import "BTPhysicalStandard.h"
 #import "BTGirthStandard.h"
 #import "BTAlertView.h"
 #import "LayoutDef.h"
 #import "BTUtils.h"
+#import "MobClick.h"
 @implementation BTAppDelegate
 
 @synthesize managedObjectContext = _managedObjectContext;
@@ -32,8 +30,10 @@
 {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     
+    //友盟统计
+    [MobClick startWithAppkey:UMAPP_KEY reportPolicy:BATCH channelId:@"Web"];
+    [MobClick setLogEnabled:YES];//开启调试
     
-     
     // Override point for customization after application launch.
     //同步页面
     [BTSyncTwoViewController shareSyncTwoview];
@@ -94,25 +94,6 @@
     
     
     
-//    //分享 注册
-//    [ShareSDK registerApp:@"fa5b01a73b0"];
-//    
-//    /**
-//     连接新浪微博开放平台应用以使用相关功能，此应用需要引用SinaWeiboConnection.framework
-//     http://open.weibo.com上注册新浪微博开放平台应用，并将相关信息填写到以下字段
-//     **/
-//    [ShareSDK connectSinaWeiboWithAppKey:@"48993404"
-//                               appSecret:@"cffc91bba791bdc887684f2ab20c09c3"
-//                             redirectUri:@"http://www.sharesdk.cn"];
-    
-    
-    //友盟分享
-    [UMSocialData setAppKey:@"52b7fae256240bd52f18fdd2"];
-    
-    [UMSocialConfig setWXAppId:@"wxd9a39c7122aa6516" url:nil];//微信
-    //[WXApi registerApp:@"wxd9a39c7122aa6516"];//微信
-    
-   // [UMSocialConfig setQQAppId:@"100424468" url:nil importClasses:@[[QQApiInterface class],[TencentOAuth class]]];
     return YES;
 }
 //将宫高写入coredata文件
@@ -246,24 +227,7 @@
 {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
     
-    [UMSocialSnsService  applicationDidBecomeActive];
     
-}
-- (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url
-{
-    return  [UMSocialSnsService handleOpenURL:url wxApiDelegate:nil];
-    
-   // return [WXApi handleOpenURL:url delegate:self];
-}
-
-- (BOOL)application:(UIApplication *)application
-            openURL:(NSURL *)url
-  sourceApplication:(NSString *)sourceApplication
-         annotation:(id)annotation
-
-{
-    return  [UMSocialSnsService handleOpenURL:url wxApiDelegate:nil];
-    //return [WXApi handleOpenURL:url delegate:self];
 }
 
 
