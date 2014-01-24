@@ -98,7 +98,7 @@ static int offsetX = 0;
     
     self.startButton = [UIButton buttonWithType:UIButtonTypeCustom];
     if (IPHONE_5_OR_LATER) {
-        _startButton.frame = CGRectMake((320 - 152)/2, self.view.frame.size.height - 220, 152, 152);
+        _startButton.frame = CGRectMake((320 - 152)/2, self.view.frame.size.height - 238, 152, 152);
         
     }
     else{

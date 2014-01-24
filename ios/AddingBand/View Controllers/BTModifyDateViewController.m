@@ -204,6 +204,10 @@
     //更新数据
     [self writeToCoredataWithModifyType:self.modifyType date:dateString];
     
+    if (self.modifyType == MODIFY_MENSTRUATION_TYPE) {
+        NSDictionary *userInfoDic = [NSDictionary dictionaryWithObjectsAndKeys:dateString,MODIFY_MENSTRUATION_KEY,nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName:MODIFYMENSTRUATIONDATENOTICE object:nil userInfo:userInfoDic];
+    }
 
 }
 #pragma mark - 日期边滚动 边触发的方法

@@ -86,7 +86,6 @@
 		724075E418488E000033BB90 /* sr_refresh@2X.png in Resources */ = {isa = PBXBuildFile; fileRef = 724075DD18488E000033BB90 /* sr_refresh@2X.png */; };
 		724075E518488E000033BB90 /* SRRefreshView.m in Sources */ = {isa = PBXBuildFile; fileRef = 724075E018488E000033BB90 /* SRRefreshView.m */; };
 		724075E618488E000033BB90 /* SRSlimeView.m in Sources */ = {isa = PBXBuildFile; fileRef = 724075E218488E000033BB90 /* SRSlimeView.m */; };
-		7241467018277A67008B05C5 /* BTSyncViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7241466F18277A67008B05C5 /* BTSyncViewController.m */; };
 		724544921838B8F50070F700 /* BTSettingSectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 724544911838B8F50070F700 /* BTSettingSectionCell.m */; };
 		724544951838C3110070F700 /* BTColor.m in Sources */ = {isa = PBXBuildFile; fileRef = 724544941838C3110070F700 /* BTColor.m */; };
 		7245449B1838C43D0070F700 /* BTSettingIndicateCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7245449A1838C43D0070F700 /* BTSettingIndicateCell.m */; };
@@ -313,7 +312,6 @@
 		72B67AA9183A335800294A08 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 72B67AA0183A335800294A08 /* Reachability.m */; };
 		72B67AAE183A33C400294A08 /* BTCheckVersion.m in Sources */ = {isa = PBXBuildFile; fileRef = 72B67AAC183A33C400294A08 /* BTCheckVersion.m */; };
 		72B67AB1183A352900294A08 /* BTTextfieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 72B67AB0183A352900294A08 /* BTTextfieldCell.m */; };
-		72B67AB3183A418B00294A08 /* zhuceshur.png in Resources */ = {isa = PBXBuildFile; fileRef = 72B67AB2183A418B00294A08 /* zhuceshur.png */; };
 		72B67AB9183A42C200294A08 /* IQKeyBoardManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 72B67AB6183A42C200294A08 /* IQKeyBoardManager.m */; };
 		72B67ABA183A42C200294A08 /* IQSegmentedNextPrevious.m in Sources */ = {isa = PBXBuildFile; fileRef = 72B67AB8183A42C200294A08 /* IQSegmentedNextPrevious.m */; };
 		72CB79F51852EDB50027664E /* BTTimerLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 72CB79F41852EDB50027664E /* BTTimerLabel.m */; };
@@ -482,8 +480,6 @@
 		724075E118488E000033BB90 /* SRSlimeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SRSlimeView.h; sourceTree = "<group>"; };
 		724075E218488E000033BB90 /* SRSlimeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SRSlimeView.m; sourceTree = "<group>"; };
 		72414662182757C3008B05C5 /* LayoutDef.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LayoutDef.h; path = Global/LayoutDef.h; sourceTree = "<group>"; };
-		7241466E18277A67008B05C5 /* BTSyncViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BTSyncViewController.h; path = "View Controllers/BTSyncViewController.h"; sourceTree = "<group>"; };
-		7241466F18277A67008B05C5 /* BTSyncViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BTSyncViewController.m; path = "View Controllers/BTSyncViewController.m"; sourceTree = "<group>"; };
 		724544901838B8F50070F700 /* BTSettingSectionCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BTSettingSectionCell.h; path = MainCustomCell/BTSettingSectionCell.h; sourceTree = "<group>"; };
 		724544911838B8F50070F700 /* BTSettingSectionCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BTSettingSectionCell.m; path = MainCustomCell/BTSettingSectionCell.m; sourceTree = "<group>"; };
 		724544931838C3110070F700 /* BTColor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BTColor.h; path = Global/BTColor.h; sourceTree = "<group>"; };
@@ -804,7 +800,6 @@
 		72B67AAD183A33C400294A08 /* VersionConstant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VersionConstant.h; sourceTree = "<group>"; };
 		72B67AAF183A352900294A08 /* BTTextfieldCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BTTextfieldCell.h; path = MainCustomCell/BTTextfieldCell.h; sourceTree = "<group>"; };
 		72B67AB0183A352900294A08 /* BTTextfieldCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BTTextfieldCell.m; path = MainCustomCell/BTTextfieldCell.m; sourceTree = "<group>"; };
-		72B67AB2183A418B00294A08 /* zhuceshur.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = zhuceshur.png; sourceTree = "<group>"; };
 		72B67AB5183A42C200294A08 /* IQKeyBoardManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQKeyBoardManager.h; sourceTree = "<group>"; };
 		72B67AB6183A42C200294A08 /* IQKeyBoardManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQKeyBoardManager.m; sourceTree = "<group>"; };
 		72B67AB7183A42C200294A08 /* IQSegmentedNextPrevious.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQSegmentedNextPrevious.h; sourceTree = "<group>"; };
@@ -1128,8 +1123,6 @@
 				72716EDF18640FE900499D76 /* BTMainViewController.m */,
 				72B418F718238E2A002EAD35 /* BTPhysicalViewController.h */,
 				72B418F818238E2A002EAD35 /* BTPhysicalViewController.m */,
-				7241466E18277A67008B05C5 /* BTSyncViewController.h */,
-				7241466F18277A67008B05C5 /* BTSyncViewController.m */,
 				723F0EEE183CB640005F1921 /* BTSyncccViewController.h */,
 				72D947BC1887C2BE0096276C /* BTSyncccViewController.m */,
 				72B418FD18238E53002EAD35 /* BTMineViewController.h */,
@@ -1165,7 +1158,6 @@
 				728B794F187BF44E0076CE93 /* HomeImage */,
 				72EE545D1846F99D00093583 /* Phisical */,
 				723F0ECA183C5DFE005F1921 /* Sync */,
-				72B67AB2183A418B00294A08 /* zhuceshur.png */,
 				722E1F621886247F0090E287 /* seperator_line@2x.png */,
 				7245448F1838B1A40070F700 /* Setting */,
 				729293C71838A726007B09A7 /* Tabbar */,
@@ -2251,7 +2243,6 @@
 				729C1D171883C326009FBBDD /* physical_edit_selected@2x.png in Resources */,
 				723F0EE4183C67D0005F1921 /* sync_btn_sel@2x.png in Resources */,
 				72560CA01884EE4C006F9B22 /* guide_iphone5earlier3@2x.png in Resources */,
-				72B67AB3183A418B00294A08 /* zhuceshur.png in Resources */,
 				72D947D11887C6820096276C /* battery_icon@2x.png in Resources */,
 				723F0EF5183CC0D3005F1921 /* refresh_btn_sel.png in Resources */,
 				72B3F861187E609E00549408 /* Bangle_warn_icon@2x.png in Resources */,
@@ -2425,7 +2416,6 @@
 				72D5DEC41886345D00E6EB33 /* BTBlogDetailViewController.m in Sources */,
 				7231BE541859910C009A6DB5 /* PNBar.m in Sources */,
 				7298793C18618B4200039E83 /* BTScrollViewController.m in Sources */,
-				7241467018277A67008B05C5 /* BTSyncViewController.m in Sources */,
 				728B794D187BF4360076CE93 /* BTKnowledgeModel.m in Sources */,
 				7248784D188394780078F017 /* EGOImageLoader.m in Sources */,
 				72B67AA1183A335800294A08 /* NSData+MKBase64.m in Sources */,
@@ -2578,12 +2568,7 @@
 				GCC_PREFIX_HEADER = "AddingBand/AddingBand-Prefix.pch";
 				INFOPLIST_FILE = "AddingBand/AddingBand-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					UMSocial_Sdk_3.2,
-					UMSocial_Sdk_3.2/frameworks/Wechat,
-					/Users/lanyu/dev/AddingBand/ios/UM,
-				);
+				LIBRARY_SEARCH_PATHS = /Users/lanyu/dev/AddingBand/ios/UM;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -2604,12 +2589,7 @@
 				GCC_PREFIX_HEADER = "AddingBand/AddingBand-Prefix.pch";
 				INFOPLIST_FILE = "AddingBand/AddingBand-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					UMSocial_Sdk_3.2,
-					UMSocial_Sdk_3.2/frameworks/Wechat,
-					/Users/lanyu/dev/AddingBand/ios/UM,
-				);
+				LIBRARY_SEARCH_PATHS = /Users/lanyu/dev/AddingBand/ios/UM;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";

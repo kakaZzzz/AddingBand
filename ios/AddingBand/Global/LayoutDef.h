@@ -53,17 +53,23 @@
 #define kBluetoothFindHeight (kLastSyncTimeY + kLastSyncTimeHeight + 10)
 //未发现设备的cell的高度
 #define kBluetoothNotFindHeight (kBluetoothNameY + kBluetoothNameHeight + 10)
+
+
 //通知中心发出得各个通知
 #define UPDATACIRCULARPROGRESSNOTICE @"updateCircleProgressNotice"//更新圆形进度条通知
 #define DATEPICKERDISMISSNOTICE @"datePickerDismissNotice"//时间选择器将要消失的时候的通知
 #define FETALVIEWUPDATENOTICE @"fetalViewUpdate"//胎动详情页面刷新数据
-#define HANDLETOSYNCNOTICE @"handleToSyncNotice"//胎动详情页面刷新数据
+#define HANDLETOSYNCNOTICE @"handleToSyncNotice"//手动同步手环通知
+#define MODIFYMENSTRUATIONDATENOTICE @"modifyMenstruationDateNotice" //手动修改末次月经时间
+
+
 //第一次进入首页通知 及其参数
 #define FIRSTENTERNOTICE @"firstEnterNotice"//胎动详情页面刷新数据
 #define FIRSTENTERNOTICE_MENSTRUAL_KEY  @"menstrual"
 #define FIRSTENTERNOTICE_TODAY_KEY  @"today"
 
-
+//在设置页面修改完末次月经后 发出通知的各参数
+#define MODIFY_MENSTRUATION_KEY @"modifayMenstruationKey"
 
 //App整体布局 宏
 #define RED_BACKGROUND_HEIGHT 368/2
@@ -102,6 +108,7 @@
 #define kTableViewSectionColor [UIColor colorWithRed:245/255.0 green:247/255.0 blue:247/255.0 alpha:1.0]
 #define kWhiteColor  [UIColor colorWithRed:255/255.0 green:180/255.0 blue:195/255.0 alpha:1.0]
 #define kRedColor  [UIColor colorWithRed:236/255.0 green:0/255.0 blue:73/255.0 alpha:1.0]
+
 /**
  *  全局图片名字
  */
@@ -163,4 +170,14 @@
 
 //友盟统计
 #define UMAPP_KEY @"52b7fae256240bd52f18fdd2"
+
+/**
+ *  首次进入程序 和 首次进入首页
+ */
+
+#define EVER_LAUNCHED @"everLaunched"
+#define FIRST_LAUNCHED @"firstLaunch"
+#define EVER_APPEAR @"everAppear"
+#define FIRST_APPEAR @"firstAppear"
+
 #endif

@@ -38,48 +38,49 @@
     //同步页面
     [BTSyncTwoViewController shareSyncTwoview];
     //增加标识，用于判断是否是第一次启动应用...
-    if (![[NSUserDefaults standardUserDefaults] boolForKey:@"everLaunched"]) {
-        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"everLaunched"];
-        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"firstLaunch"];
+    if (![[NSUserDefaults standardUserDefaults] boolForKey:EVER_LAUNCHED]) {
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:EVER_LAUNCHED];
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:FIRST_LAUNCHED];
     }
     
     //增加标识，用于判断是否是第一次启动应用,首页是不是第一次进入进入此页面
-    if (![[NSUserDefaults standardUserDefaults] boolForKey:@"everAppear"]) {
-        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"firstAppear"];
-        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"everAppear"];
+    if (![[NSUserDefaults standardUserDefaults] boolForKey:EVER_APPEAR]) {
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:FIRST_APPEAR];
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:EVER_APPEAR];
         [[NSUserDefaults standardUserDefaults] synchronize];
         
     }
-
-
+    
+    
     //将tabBarController设置为根视图
     self.tabBarController = [[BTCustomTabBarController alloc] init];
+    _tabBarController.delegate = self;
     self.window.rootViewController = _tabBarController;
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
     
     /*程序启动引导页 我给注释掉了 */
     //如果是第一次启动 加载启动页面
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"firstLaunch"]) {
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:FIRST_LAUNCHED]) {
         NSLog(@"程序第一次启动");
         [BTGuideViewController show];
     }
-
     
- 
-//    //测试用 默认给一些用户信息
-//    NSManagedObjectContext *context =[(BTAppDelegate *) [UIApplication sharedApplication].delegate managedObjectContext];
-//    
-//    //往context中插入一个对象
-//    
-//    NSArray *data = [BTGetData getFromCoreDataWithPredicate:nil entityName:@"BTUserSetting" sortKey:nil];
-//    if (data.count == 0) {
-//        BTUserSetting *userSetting = [NSEntityDescription insertNewObjectForEntityForName:@"BTUserSetting" inManagedObjectContext:context];
-//        userSetting.birthday = @"2012.12.24";
-//        userSetting.dueDate =  @"2013.12.24";
-//        userSetting.menstruation =@"2013.12.24";
-//        [context save:nil];
-//    }
+    
+    
+    //    //测试用 默认给一些用户信息
+    //    NSManagedObjectContext *context =[(BTAppDelegate *) [UIApplication sharedApplication].delegate managedObjectContext];
+    //
+    //    //往context中插入一个对象
+    //
+    //    NSArray *data = [BTGetData getFromCoreDataWithPredicate:nil entityName:@"BTUserSetting" sortKey:nil];
+    //    if (data.count == 0) {
+    //        BTUserSetting *userSetting = [NSEntityDescription insertNewObjectForEntityForName:@"BTUserSetting" inManagedObjectContext:context];
+    //        userSetting.birthday = @"2012.12.24";
+    //        userSetting.dueDate =  @"2013.12.24";
+    //        userSetting.menstruation =@"2013.12.24";
+    //        [context save:nil];
+    //    }
     
     
     /**
@@ -88,20 +89,42 @@
     //
     [self writeToCoredataWithFundalHeightLimit];
     [self writeToCoredataWithGirthLimit];
-   
     
- 
+    
+    
     
     
     
     return YES;
 }
+- (void)tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController
+{
+    switch (tabBarController.selectedIndex) {
+        case 0:
+            [MobClick event:@"Primarytab"];
+            break;
+        case 1:
+            [MobClick event:@"Physicaltab"];
+            break;
+        case 2:
+            [MobClick event:@"Synctab"];
+            break;
+        case 3:
+            [MobClick event:@"Settingtab"];
+            break;
+            
+        default:
+            break;
+    }
+    
+}
+
 //将宫高写入coredata文件
 - (void)writeToCoredataWithFundalHeightLimit
 {
     
     
-    //宫高 
+    //宫高
     NSMutableArray *array1 = [NSMutableArray arrayWithCapacity:1];
     for (int i = 20; i < 42; i ++) {
         [array1 addObject:[NSNumber numberWithInt:(i - 1)*7]];
@@ -111,7 +134,7 @@
     
     NSArray *array3 = [NSArray arrayWithObjects:@"20.5",@"21.5",@"22.5",@"23.5",@"24.5",@"25.5",@"26.5",@"27.5",@"28.5",@"29.5",@"30.5",@"31.5",@"32.5",@"33.5",@"34.5",@"34.5",@"34.5",@"34.5",@"34.5",@"34.5",@"34.5",@"34.5", nil];
     
-   
+    
     
     NSError *error;
     for (int i = 0; i<22; i ++) {
@@ -128,7 +151,7 @@
         if(![_managedObjectContext save:&error]){
             NSLog(@"%@", [error localizedDescription]);
         }
-
+        
     }
     
 }
@@ -138,7 +161,7 @@
     
     
     //腹围
-     NSMutableArray *array1 = [NSMutableArray arrayWithCapacity:1];
+    NSMutableArray *array1 = [NSMutableArray arrayWithCapacity:1];
     for (int i = 20; i < 42; i ++) {
         [array1 addObject:[NSNumber numberWithInt:(i - 1)*7]];
     }
@@ -170,8 +193,8 @@
 }
 - (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification*)notification{
     
-//    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"LocalNotification" message:notification.alertBody delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
-//    [alert show];
+    //    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"LocalNotification" message:notification.alertBody delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+    //    [alert show];
     [self popAntenatalAlertView];
     NSDictionary* dic = [[NSDictionary alloc]init];
     //这里可以接受到本地通知中心发送的消息
@@ -196,11 +219,11 @@
     BTAlertView *alert = [[BTAlertView alloc] initWithTitle:@"产检提醒" iconImage:[UIImage imageNamed:@"antenatel_icon"] contentText:content leftButtonTitle:nil rightButtonTitle:@"知道了"];
     [alert show];
     alert.rightBlock = ^() {
-       
+        
         
     };
     alert.dismissBlock = ^() {
-            };
+    };
     
 }
 

@@ -36,6 +36,8 @@ static int nextWeek = 0;
 @property(nonatomic,strong)NSString *menstruation;
 @property(nonatomic,strong)NSString *today;
 @property(nonatomic,assign)BOOL isCodeRefresh;
+@property(nonatomic,assign)BOOL isLoadPastSuccessfully;
+@property(nonatomic,assign)BOOL isLoadNextSuccessfully;
 @end
 
 @implementation BTMainViewController
@@ -47,7 +49,10 @@ static int nextWeek = 0;
         // Custom initialization
         self.modelArray = [NSMutableArray arrayWithCapacity:1];
         self.sectionArray = [NSMutableArray arrayWithCapacity:1];
+        self.isLoadPastSuccessfully = YES;
+        self.isLoadNextSuccessfully = YES;
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getNetworkData:) name:FIRSTENTERNOTICE object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshloadDataByModifyMenstruation:) name:MODIFYMENSTRUATIONDATENOTICE object:nil];
         
     }
     return self;
@@ -55,13 +60,10 @@ static int nextWeek = 0;
 #pragma mark - 视图出现  消失
 - (void)viewWillAppear:(BOOL)animated
 {
-    NSLog(@"出现了  你大爷的");
-    
-    
+
     //如果是第一次进入此页面 pop一个view
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"firstAppear"]) {
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:FIRST_APPEAR]) {
         
-        NSLog(@"第一次进来");
         [self presentPersonnalDataView];
         //[self popAlertView];
         
@@ -96,7 +98,7 @@ static int nextWeek = 0;
     //[self getNetworkDataWithWeekOfPregnancy:3];
     
     
-    if (![[NSUserDefaults standardUserDefaults] boolForKey:@"firstAppear"]) {
+    if (![[NSUserDefaults standardUserDefaults] boolForKey:FIRST_APPEAR]) {
         [self getMenstruationAndTodayDate];//得到末次月经 和 今天日期
         currentWeek =[self getCurrentWeekOfPregnancyWithMenstruation:nil];//得到今天是怀孕第几周
         [self showRefreshHeader:YES];//代码触发刷新
@@ -115,6 +117,29 @@ static int nextWeek = 0;
     currentWeek = [self getCurrentWeekOfPregnancyWithMenstruation:menstruationString];
     
     [self showRefreshHeader:YES];//代码触发刷新
+}
+//修改完预产期后 首页更新数据
+- (void)refreshloadDataByModifyMenstruation:(NSNotification *)notification
+{
+    NSDate *localdate = [NSDate localdate];
+    NSNumber *year = [BTUtils getYear:localdate];
+    NSNumber *month = [BTUtils getMonth:localdate];
+    NSNumber *dayLocal = [BTUtils getDay:localdate];
+    self.today = [NSString stringWithFormat:@"%@-%@-%@",year,month,dayLocal];
+
+    NSDictionary *userInfoDic = notification.userInfo;
+    self.menstruation = [userInfoDic objectForKey:MODIFY_MENSTRUATION_KEY];
+    currentWeek = [self getCurrentWeekOfPregnancyWithMenstruation:self.menstruation];
+    //model数组要清零 各日期也要重置
+    [self.sectionArray removeAllObjects];
+    [self.modelArray removeAllObjects];
+    [self.tableView reloadData];
+    pastWeek = 100;
+    nextWeek = 0;
+    _isLoadNextSuccessfully = YES;
+    _isLoadPastSuccessfully = YES;
+    [self showRefreshHeader:YES];//代码触发刷新
+
 }
 #pragma mark - 得到末次月经 和 今天日期
 - (void)getMenstruationAndTodayDate
@@ -237,8 +262,8 @@ static int nextWeek = 0;
     
     return day1;
 }
-
-- (void)getNetworkDataByCodeRefreshWithWeekOfPregnancy:(int)week
+#pragma mark - 请求网络数据
+- (void)getNetworkDataOfPastTimeWithWeekOfPregnancy:(int)week
 {
     self.engine = [[MKNetworkEngine alloc] initWithHostName:HTTP_HOSTNAME customHeaderFields:nil];
     [self.engine useCache];//使用缓存
@@ -248,6 +273,8 @@ static int nextWeek = 0;
     [op addCompletionHandler:^(MKNetworkOperation *operation) {
         NSLog(@"[operation responseData]-->>%@", [operation responseString]);
         
+        //请求成功
+        _isLoadPastSuccessfully = YES;
         NSDictionary *resultDic = [NSJSONSerialization JSONObjectWithData:[operation responseData] options:NSJSONReadingAllowFragments error:nil];
         //保证有数据的时候在进行数据处理 没有数据就直接跳过
         if ([resultDic count] > 0) {
@@ -263,6 +290,8 @@ static int nextWeek = 0;
         //请求数据错误
     }errorHandler:^(MKNetworkOperation *errorOp, NSError* err) {
         NSLog(@"MKNetwork request error------ : %@", [err localizedDescription]);
+        //请求失败
+        _isLoadPastSuccessfully = NO;
         [self handleDataByGetNetworkFailly];
         
     }];
@@ -271,7 +300,7 @@ static int nextWeek = 0;
     
     
 }
-#pragma mark - 请求网络数据
+
 - (void)getNetworkDataWithWeekOfPregnancy:(int)week
 {
     
@@ -294,12 +323,19 @@ static int nextWeek = 0;
         NSDictionary *resultDic = [NSJSONSerialization JSONObjectWithData:[operation responseData] options:NSJSONReadingAllowFragments error:nil];
         //保证有数据的时候在进行数据处理 没有数据就直接跳过
         if ([resultDic count] > 0) {
+            
+            //加载成功之后 才将 _isCodeRefresh置为no,否则还是要加载当周的数据
+             _isCodeRefresh = NO;
+            
             if (_isLoadNextData) {
                 NSLog(@"week 是----%d",week);
+                //请求成功
+                _isLoadNextSuccessfully = YES;
                 [self handleNextDataByGetNetworkSuccessfullyWithJsonData:[operation responseData] week:week];
                 
             }
             else{
+                _isLoadPastSuccessfully = YES;
                 [self handlePastDataByGetNetworkSuccessfullyWithJsonData:[operation responseData] week:week];
                 
             }
@@ -314,6 +350,9 @@ static int nextWeek = 0;
         //请求数据错误
     }errorHandler:^(MKNetworkOperation *errorOp, NSError* err) {
         NSLog(@"MKNetwork request error------ : %@", [err localizedDescription]);
+        //请求失败
+        _isLoadNextSuccessfully = NO;
+        _isLoadPastSuccessfully = NO;
         [self handleDataByGetNetworkFailly];
         
     }];
@@ -551,7 +590,7 @@ static int nextWeek = 0;
     [_toTopButton setBackgroundImage:[UIImage imageNamed:@"anchor_selected"] forState:UIControlStateSelected];
     [_toTopButton setBackgroundImage:[UIImage imageNamed:@"anchor_selected"] forState:UIControlStateHighlighted];
     [_toTopButton addTarget:self action:@selector(toTop:) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:_toTopButton];
+   // [self.view addSubview:_toTopButton];
 }
 //返回到首页
 - (void)toTop:(UIButton *)button
@@ -977,11 +1016,18 @@ static int nextWeek = 0;
             NSLog(@"乐乐乐乐乐乐乐乐了了");
         }
         else{
-            pastWeek = pastWeek -1;
+            //上一次请求成功 或者失败后的处理方法
+            if (_isLoadPastSuccessfully) {
+                 pastWeek = pastWeek -1;
+            }
+            else{
+                pastWeek = pastWeek - 0;
+            }
+           
         }
         if (pastWeek > 0) {
             
-            [self getNetworkDataByCodeRefreshWithWeekOfPregnancy:pastWeek];
+            [self getNetworkDataOfPastTimeWithWeekOfPregnancy:pastWeek];
         }
         else
         {
@@ -993,7 +1039,7 @@ static int nextWeek = 0;
         
     }
     // [self getNetworkDataWithWeekOfPregnancy:3];
-    _isCodeRefresh = NO;
+   
     
 }
 
@@ -1006,7 +1052,16 @@ static int nextWeek = 0;
         nextWeek = currentWeek + 2;
     }
     else{
-        nextWeek = nextWeek + 2;
+        
+        //上一次请求成功 或者失败后的处理方法
+        if (_isLoadNextSuccessfully) {
+            nextWeek = nextWeek + 2;
+        }
+        else{
+            nextWeek = nextWeek + 0;
+        }
+
+        
     }
     
     NSLog(@"下一个数据开始是%d",nextWeek);

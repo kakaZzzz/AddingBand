@@ -27,7 +27,7 @@ static int selectedTextFieldTag = 0;
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-  
+        
     }
     return self;
 }
@@ -55,7 +55,7 @@ static int selectedTextFieldTag = 0;
     }
     navigationBgView.backgroundColor = kGlobalColor;
     [self.view addSubview:navigationBgView];
-
+    
     UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake((self.view.frame.size.width - 100)/2, (navigationBgView.frame.size.height - 20)/2 + 5, 100, 20)];
     titleLabel.backgroundColor = [UIColor clearColor];
     titleLabel.textColor = [UIColor whiteColor];
@@ -69,8 +69,8 @@ static int selectedTextFieldTag = 0;
     [completeButton addTarget:self action:@selector(completeInput:) forControlEvents:UIControlEventTouchUpInside];
     [navigationBgView addSubview:completeButton];
     
-
-
+    
+    
     //birthday
     BTView *aView= [[BTView alloc] initWithFrame:CGRectMake(0, navigationBgView.frame.origin.y + navigationBgView.frame.size.height, 320, 50)];
     aView.backgroundColor = [UIColor whiteColor];
@@ -89,13 +89,13 @@ static int selectedTextFieldTag = 0;
     _birthdayText.returnKeyType = UIReturnKeyDone;
     _birthdayText.delegate = self;
     _birthdayText.keyboardType = UIKeyboardTypeDecimalPad;
-     _birthdayText.font = [UIFont systemFontOfSize:SECOND_TITLE_SIZE];
+    _birthdayText.font = [UIFont systemFontOfSize:SECOND_TITLE_SIZE];
     _birthdayText.placeholder = @"生日";
     _birthdayText.textAlignment = NSTextAlignmentCenter;
     [_birthdayText addPreviousAndNextAndDoneOnDatepickerWithTarget:self previousAction:@selector(previousClicked:) nextAction:@selector(nextClicked:) doneAction:@selector(doneClicked:)];
-
+    
     [aView addSubview:_birthdayText];
-
+    
     
     // menstrual
     BTView *bView= [[BTView alloc] initWithFrame:CGRectMake(0, aView.frame.origin.y + aView.frame.size.height, 320, 50)];
@@ -119,9 +119,9 @@ static int selectedTextFieldTag = 0;
     _menstrualText.placeholder = @"末次月经时间";
     _menstrualText.textAlignment = NSTextAlignmentCenter;
     [_menstrualText addPreviousAndNextAndDoneOnDatepickerWithTarget:self previousAction:@selector(previousClicked:) nextAction:@selector(nextClicked:) doneAction:@selector(doneClicked:)];
-
+    
     [bView addSubview:_menstrualText];
-
+    
     //duedate
     BTView *cView= [[BTView alloc] initWithFrame:CGRectMake(0, bView.frame.origin.y + bView.frame.size.height, 320, 50)];
     cView.backgroundColor = [UIColor whiteColor];
@@ -144,10 +144,10 @@ static int selectedTextFieldTag = 0;
     _duedateText.placeholder = @"预产期";
     _duedateText.textAlignment = NSTextAlignmentCenter;
     [_duedateText addPreviousAndNextAndDoneOnDatepickerWithTarget:self previousAction:@selector(previousClicked:) nextAction:@selector(nextClicked:) doneAction:@selector(doneClicked:)];
-
-
+    
+    
     [cView addSubview:_duedateText];
-
+    
     
     
     
@@ -175,7 +175,7 @@ static int selectedTextFieldTag = 0;
     NSString *dateString = [NSString stringWithFormat:@"%@.%@.%@",year,month,day];
     
     field.text = dateString;
-
+    
 }
 
 - (void)textFieldDidBeginEditing:(UITextField *)aTextField{
@@ -185,7 +185,7 @@ static int selectedTextFieldTag = 0;
     UITextField *field = (UITextField*)[self.view viewWithTag:selectedTextFieldTag];
     NSDate *localDate = [NSDate localdate];
     NSNumber *year = [BTUtils getYear:localDate];
-
+    
     switch (aTextField.tag) {
         case TEXTFIELD_TAG + 3://生日
         {
@@ -196,7 +196,7 @@ static int selectedTextFieldTag = 0;
             self.datePicker.maximumDate = maxDate;
             
             
-
+            
         }
             break;
         case TEXTFIELD_TAG + 4://末次月经
@@ -219,13 +219,13 @@ static int selectedTextFieldTag = 0;
             
         }
             break;
-
+            
         default:
             break;
     }
     field.inputView = self.datePicker;
- 
-
+    
+    
 }
 - (void)showDatePicker
 {
@@ -236,7 +236,7 @@ static int selectedTextFieldTag = 0;
         _datePicker.datePickerMode = UIDatePickerModeDate;
         [self.view addSubview:_datePicker];
     }
-   
+    
 }
 - (void)dateChanged
 {
@@ -257,7 +257,7 @@ static int selectedTextFieldTag = 0;
     if ([self isCompleted]) {
         //写入coredata
         [self writeToCoredataWithBirthday:_birthdayText.text menstruation:_menstrualText.text dueDate:_duedateText.text];
-        [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"firstAppear"];
+        [[NSUserDefaults standardUserDefaults] setBool:NO forKey:FIRST_APPEAR];
         [[NSUserDefaults standardUserDefaults] synchronize];
         
         NSDate *localdate = [NSDate localdate];
@@ -270,12 +270,12 @@ static int selectedTextFieldTag = 0;
         [[NSNotificationCenter defaultCenter] postNotificationName:FIRSTENTERNOTICE object:nil userInfo:userinfoDic];
         
         [self dismissViewControllerAnimated:YES completion:nil];
-
+        
     }
     else{
         UIAlertView * alertview = [[UIAlertView alloc]initWithTitle:@"提示" message:@"请完善数据" delegate:self cancelButtonTitle:nil otherButtonTitles:@"我知道了", nil ,nil];
         [alertview show];
-
+        
     }
 }
 #pragma mark - 判断每个输入框是否都输完了

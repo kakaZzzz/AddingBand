@@ -8,7 +8,6 @@
 
 #import "BTMainViewController.h"
 #import "BTPhysicalViewController.h"
-#import "BTSyncViewController.h"
 #import "BTMineViewController.h"
 
 #import "BTNavicationController.h"//

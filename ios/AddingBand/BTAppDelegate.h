@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @class BTCustomTabBarController;
-@interface BTAppDelegate : UIResponder <UIApplicationDelegate>
+@interface BTAppDelegate : UIResponder <UIApplicationDelegate,UITabBarControllerDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
 

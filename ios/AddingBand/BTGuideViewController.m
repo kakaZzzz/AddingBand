@@ -140,7 +140,7 @@
 - (void)pressEnterButton:(UIButton *)enterButton
 {
     [self hideGuide];
-    [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"firstLaunch"];
+    [[NSUserDefaults standardUserDefaults] setBool:NO forKey:FIRST_LAUNCHED];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 

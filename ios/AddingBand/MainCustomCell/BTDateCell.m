@@ -49,7 +49,7 @@
     _lineView.hidden = YES;
     [self.contentView addSubview:_lineView];
     
-    self.countdownLabel = [[UILabel alloc] initWithFrame:CGRectMake(320 - 200 + 10,_dayLabel.frame.origin.y, 200, kDayLabelHeight)];
+    self.countdownLabel = [[UILabel alloc] initWithFrame:CGRectMake(320 - 200 - 12,_dayLabel.frame.origin.y, 200, kDayLabelHeight)];
     _countdownLabel.font = [UIFont fontWithName:kCharacterAndNumberFont size:10.0f];
     _countdownLabel.backgroundColor = [UIColor clearColor];
     _countdownLabel.textAlignment = NSTextAlignmentRight;
@@ -69,7 +69,7 @@
     _knowledgeModel = knowledgeModel;
     self.dayLabel.frame = CGRectMake(kDayLabelX,self.frame.size.height - kDayLabelHeight, kDayLabelWidth, kDayLabelHeight);
     self.lineView.frame = CGRectMake(5, _dayLabel.frame.origin.y + _dayLabel.frame.size.height - 1.0, 40, 1.0);
-    self.countdownLabel.frame = CGRectMake(320 - 200,_dayLabel.frame.origin.y, 200, kDayLabelHeight);
+    self.countdownLabel.frame = CGRectMake(320 - 200 - 12,_dayLabel.frame.origin.y, 200, kDayLabelHeight);
     
     NSArray *subString = [_knowledgeModel.date componentsSeparatedByString:@"-"];
     NSString *date = [NSString stringWithFormat:@"%@.%@",[subString objectAtIndex:1],[subString objectAtIndex:2]];
