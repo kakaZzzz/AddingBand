@@ -2568,7 +2568,7 @@
 				GCC_PREFIX_HEADER = "AddingBand/AddingBand-Prefix.pch";
 				INFOPLIST_FILE = "AddingBand/AddingBand-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
-				LIBRARY_SEARCH_PATHS = /Users/lanyu/dev/AddingBand/ios/UM;
+				LIBRARY_SEARCH_PATHS = UM;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -2589,7 +2589,7 @@
 				GCC_PREFIX_HEADER = "AddingBand/AddingBand-Prefix.pch";
 				INFOPLIST_FILE = "AddingBand/AddingBand-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
-				LIBRARY_SEARCH_PATHS = /Users/lanyu/dev/AddingBand/ios/UM;
+				LIBRARY_SEARCH_PATHS = UM;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
