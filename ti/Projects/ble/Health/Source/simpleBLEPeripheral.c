@@ -187,7 +187,7 @@
 #define EEPROM_ADDRESS                      0x50
 
 //define i2c clock rate
-#define I2C_CLOCK_RATE                      i2cClock_33KHZ
+#define I2C_CLOCK_RATE                      i2cClock_267KHZ
 
 // define for eeprom
 #define EEPROM_ADDRESS_BLOCK_SIZE           8

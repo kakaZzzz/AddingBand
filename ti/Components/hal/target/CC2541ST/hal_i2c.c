@@ -101,8 +101,7 @@ typedef enum
 
 // Must clear SI before setting STA and then STA must be manually cleared.
 #define I2C_STRT() st (             \
-  I2CCFG &= ~I2C_SI;                \
-  I2CCFG |= I2C_STA;                \
+  I2CCFG =(I2CCFG & ~I2C_SI) | I2C_STA;	  \
   while ((I2CCFG & I2C_SI) == 0);   \
   I2CCFG &= ~I2C_STA; \
 )
