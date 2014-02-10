@@ -157,7 +157,7 @@
                 CGContextRef context = UIGraphicsGetCurrentContext();
                 CGContextMoveToPoint(context, point.x, point.y);
                 CGContextAddLineToPoint(context, nextPoint.x, nextPoint.y);
-                CGContextSetStrokeColorWithColor(context, [UIColor blueColor].CGColor);
+                CGContextSetStrokeColorWithColor(context, [UIColor whiteColor].CGColor);
                 
                 CGContextSetLineWidth(context, self.lineWidth);
                 CGContextClosePath(context);
@@ -191,7 +191,7 @@
             CGContextRef context = UIGraphicsGetCurrentContext();
             CGContextMoveToPoint(context, point.x, point.y);
             CGContextAddLineToPoint(context, nextPoint.x, nextPoint.y);
-            CGContextSetStrokeColorWithColor(context, [UIColor yellowColor].CGColor);
+            CGContextSetStrokeColorWithColor(context, [UIColor whiteColor].CGColor);
             
             CGContextSetLineWidth(context, self.lineWidth);
             CGContextClosePath(context);

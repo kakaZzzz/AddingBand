@@ -20,4 +20,14 @@
 #define IOS7_OR_EARLIER ([[[UIDevice currentDevice] systemVersion] floatValue] < 7.0 ? YES:NO)
 
 #define IPHONE_5_OR_LATER ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? CGSizeEqualToSize(CGSizeMake(640, 1136), [[UIScreen mainScreen] currentMode].size) : NO)
+
+
 #endif
+
+//release下屏蔽NSLog
+#ifndef __OPTIMIZE__
+#define NSLog(...) NSLog(__VA_ARGS__)
+#else
+#define NSLog(...) {}
+#endif
+
