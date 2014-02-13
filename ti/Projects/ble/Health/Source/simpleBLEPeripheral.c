@@ -217,11 +217,11 @@
 #define TIME_DISPLAY_INTERVAL               3000
 #define READ_INTERVAL                       100
 
-#define ACC_STATIC_COUNT_MAX                10
+#define ACC_STATIC_COUNT_MAX                1
 
 
-#define ALT_MIN_DEFAULT                     4000
-#define ALT_MIN_10X                         400
+#define ALT_MIN_DEFAULT                     2000
+#define ALT_MIN_10X                         200
 
 
 uint8 X0, X1, Y0, Y1, Z1, Z0;
@@ -376,7 +376,7 @@ static void closeAllPIO(void);
 
 static void time(void);
 
-static void cycleLED6(void);
+static void longPressAndCycleLED6(void);
 static void cycleLED12(void);
 
 static void toggleLEDWithTime(uint8 num, uint8 io);
@@ -856,8 +856,7 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
 
         if (onTheKey)
         {
-            eepromWrite(TAP_DATA_TYPE);
-            cycleLED6();
+            longPressAndCycleLED6();
         }
 
         return (events ^ LONG_PRESS_EVT);
@@ -1384,16 +1383,17 @@ static void time(void){
 
 }
 
-static void cycleLED6(void){
+static void longPressAndCycleLED6(void){
 
     lockSlip = 1;
 
+    eepromWrite(TAP_DATA_TYPE);
     osal_set_event( simpleBLEPeripheral_TaskID, CYCLE_LED_6_EVT );
 }
 
 static void cycleLED12(void){
 
-    lockSlip = 1;
+    // lockSlip = 1;
 
     osal_set_event( simpleBLEPeripheral_TaskID, CYCLE_LED_12_EVT );
 }
