@@ -1561,7 +1561,7 @@ static void accLoop(void)
 
                     eepromWrite(STEP_DATA_TYPE);
 
-                    accLoadInterval = 0;
+                    accLoadInterval = ACC_LOAD_INTERVAL;
                     ALT_MIN = ALT_MIN_DEFAULT;
 
                 }
