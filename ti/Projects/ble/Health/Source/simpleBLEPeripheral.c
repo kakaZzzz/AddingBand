@@ -82,7 +82,7 @@
 #define CLOSE_PIO                             1
 
 // How often to perform periodic event
-#define SBP_PERIODIC_EVT_PERIOD               0//5000
+#define SBP_PERIODIC_EVT_PERIOD               5000
 
 // What is the advertising interval when device is discoverable (units of 625us, 160=100ms)
 #define DEFAULT_ADVERTISING_INTERVAL          16000
@@ -663,7 +663,7 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
         toggleAdvert(TRUE);
 
         // Set timer for first periodic event
-        osal_start_timerEx( simpleBLEPeripheral_TaskID, SBP_PERIODIC_EVT, SBP_PERIODIC_EVT_PERIOD );
+        //osal_start_timerEx( simpleBLEPeripheral_TaskID, SBP_PERIODIC_EVT, SBP_PERIODIC_EVT_PERIOD );
 
         return ( events ^ SBP_START_DEVICE_EVT );
     }

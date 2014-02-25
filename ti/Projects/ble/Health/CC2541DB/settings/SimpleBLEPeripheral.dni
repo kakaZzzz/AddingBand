@@ -1,5 +1,5 @@
 [DebugChecksum]
-Checksum=896919911
+Checksum=-667251684
 [DisAssemblyWindow]
 NumStates=_ 1
 State 1=_ 1
@@ -20,6 +20,16 @@ ByteLimit=50
 [RegisterFilter]
 FilePath=_ ""
 UseFilter=_ 0
+[Breakpoints]
+Bp0=_ "STD_CODE" "{$PROJ_DIR$\..\..\..\..\Components\hal\common\hal_drivers.c}.103.1@1" 0 0 0 0 "" 0 ""
+Bp1=_ "STD_CODE" "{$PROJ_DIR$\..\..\..\..\Components\hal\common\hal_drivers.c}.134.1@1" 1 0 0 0 "" 0 ""
+Bp2=_ "STD_CODE" "{$PROJ_DIR$\..\..\..\..\Components\hal\common\hal_drivers.c}.134.1@1" 1 0 0 0 "" 0 ""
+Bp3=_ "STD_CODE" "{$PROJ_DIR$\..\..\..\..\Components\hal\common\hal_drivers.c}.129.3@1" 1 0 0 0 "" 0 ""
+Bp4=_ "STD_CODE" "{$PROJ_DIR$\..\Source\simpleBLEPeripheral.c}.730.9@1" 1 0 0 0 "" 0 ""
+Count=5
+[ChipconEmu]
+Stop timers on halt=0
+Leave target running=1
 [Log file]
 LoggingEnabled=_ 0
 LogFile=_ ""
@@ -27,16 +37,6 @@ Category=_ 0
 [TermIOLog]
 LoggingEnabled=_ 0
 LogFile=_ ""
-[Breakpoints]
-Bp0=_ "STD_CODE" "{$PROJ_DIR$\..\Source\SimpleBLEPeripheral_Main.c}.90.3@1" 1 0 0 0 "" 0 ""
-Bp1=_ "STD_CODE" "{$PROJ_DIR$\..\..\..\..\Components\hal\common\hal_drivers.c}.102.3@1" 0 0 0 0 "" 0 ""
-Bp2=_ "STD_CODE" "{$PROJ_DIR$\..\..\..\..\Components\hal\common\hal_drivers.c}.134.1@1" 1 0 0 0 "" 0 ""
-Bp3=_ "STD_CODE" "{$PROJ_DIR$\..\..\..\..\Components\hal\common\hal_drivers.c}.134.1@1" 1 0 0 0 "" 0 ""
-Bp4=_ "STD_CODE" "{$PROJ_DIR$\..\..\..\..\Components\hal\common\hal_drivers.c}.129.3@1" 1 0 0 0 "" 0 ""
-Count=5
-[ChipconEmu]
-Stop timers on halt=0
-Leave target running=1
 [Aliases]
 Count=0
 SuppressDialog=0
