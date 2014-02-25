@@ -99,7 +99,7 @@ void Hal_Init( uint8 task_id )
 #ifdef CC2591_COMPRESSION_WORKAROUND
   osal_start_reload_timer( Hal_TaskID, PERIOD_RSSI_RESET_EVT, PERIOD_RSSI_RESET_TIMEOUT );
 #endif
-  osal_start_reload_timer( Hal_TaskID, HAL_FDDOG_EVENT, FEEDDOG_EVT_PERIOD);//feed dog period 500ms
+  //osal_start_reload_timer( Hal_TaskID, HAL_FDDOG_EVENT, FEEDDOG_EVT_PERIOD);//feed dog period 500ms
 }
 /**************************************************************************************************
  * @fn      Watchdog init

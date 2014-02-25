@@ -82,7 +82,7 @@
 #define CLOSE_PIO                             1
 
 // How often to perform periodic event
-#define SBP_PERIODIC_EVT_PERIOD               5000
+#define SBP_PERIODIC_EVT_PERIOD               0//5000
 
 // What is the advertising interval when device is discoverable (units of 625us, 160=100ms)
 #define DEFAULT_ADVERTISING_INTERVAL          16000
@@ -217,7 +217,7 @@
 #define TIME_DISPLAY_INTERVAL               3000
 #define READ_INTERVAL                       100
 
-#define ACC_STATIC_COUNT_MAX                1
+#define ACC_STATIC_COUNT_MAX                5
 
 
 #define ALT_MIN_DEFAULT                     2000
@@ -350,6 +350,7 @@ uint8 tapWaitFor = 0, lockSlip = 0, blinkPIO = 0, blinkMinutes = 13, onTheKey = 
 uint8 readTheI = 0;
 
 uint32 accLoadInterval = ACC_LOAD_INTERVAL, accStaticCount = 0;
+bool	flagAccStatic=FALSE;
 
 /*********************************************************************
  * LOCAL FUNCTIONS
@@ -699,7 +700,8 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
 
         // restart timer
         // osal_start_timerEx( simpleBLEPeripheral_TaskID, ACC_PERIODIC_EVT, 100 );
-        osal_start_timerEx( simpleBLEPeripheral_TaskID, ACC_PERIODIC_EVT, accLoadInterval );
+        if(FALSE==flagAccStatic)
+          osal_start_timerEx( simpleBLEPeripheral_TaskID, ACC_PERIODIC_EVT, accLoadInterval );
 
         return (events ^ ACC_PERIODIC_EVT);
     }
@@ -908,57 +910,85 @@ static void simpleBLEPeripheral_ProcessOSALMsg( osal_event_hdr_t *pMsg )
       // press > 0
       // release == 0
       uint8 keys = ((keyChange_t *)pMsg)->keys;
-
-      onTheKey = keys ? 1 : 0;
-
-      // LED6_PIO = !onTheKey;
-
-      if (lockSlip)
+      uint8 pBuf[2];
+      if((keys&HAL_KEY_SW_1)!=0)//sw_1
       {
-          break;
+        onTheKey = keys ? 1 : 0;
+  
+        // LED6_PIO = !onTheKey;
+  
+        if (lockSlip)
+        {
+            break;
+        }
+  
+        // for long press
+        if (onTheKey)
+        {
+            osal_start_timerEx( simpleBLEPeripheral_TaskID, LONG_PRESS_EVT , LONG_PRESS_INTERVAL );
+        }else{
+          osal_stop_timerEx( simpleBLEPeripheral_TaskID, LONG_PRESS_EVT );
+        }
+  
+        if (onTheKey)
+        {
+            
+            // for tap
+            if (tapWaitFor == 0)
+            {
+              tapWaitFor = 2;
+  
+            }else if (tapWaitFor == 2){
+  
+              tapWaitFor = 3;
+  
+              osal_stop_timerEx( simpleBLEPeripheral_TaskID, TAP_TIMEOUT_EVT );
+  
+            }else if (tapWaitFor == 3){
+  
+              // trible tap!!
+              tribleTap();
+  
+              osal_stop_timerEx( simpleBLEPeripheral_TaskID, TAP_TIMEOUT_EVT );
+  
+              //stop long press
+              osal_stop_timerEx( simpleBLEPeripheral_TaskID, LONG_PRESS_EVT );
+  
+              tapWaitFor = 0;
+            }
+        }
+  
+        if (tapWaitFor != 0)
+        {
+            osal_start_timerEx( simpleBLEPeripheral_TaskID, TAP_TIMEOUT_EVT , NEXT_TAP_INTERVAL );
+        }
       }
-
-      // for long press
-      if (onTheKey)
-      {
-          osal_start_timerEx( simpleBLEPeripheral_TaskID, LONG_PRESS_EVT , LONG_PRESS_INTERVAL );
-      }else{
-        osal_stop_timerEx( simpleBLEPeripheral_TaskID, LONG_PRESS_EVT );
+      if((keys&HAL_KEY_SW_2)!=0)//sw_2 motion int
+      { 
+        HalI2CInit(ACC_ADDRESS, I2C_CLOCK_RATE);
+        //set acc into standby, so can write
+        pBuf[0] = CTRL_REG1;
+        pBuf[1] = 0;
+        HalI2CWrite(2, pBuf);
+        //read register to clr interrupt flag in acc
+        pBuf[0] = FF_MT_SRC;
+        HalMotionI2CWrite(1, pBuf);
+        HalMotionI2CRead(1, &pBuf[1]);
+        //disable motion int
+        pBuf[0] = CTRL_REG4;
+        pBuf[1] = 0;
+        HalI2CWrite(2, pBuf);
+        //set acc back into active
+        pBuf[0] = CTRL_REG1;
+        pBuf[1] = (ASLP_RATE_12_5HZ + DATA_RATE_12_5HZ) | ACTIVE_MASK;
+        HalI2CWrite(2, pBuf);
+        //restart acc periodic evt and static count
+        accStaticCount=0;
+        flagAccStatic=FALSE;
+        osal_start_timerEx( simpleBLEPeripheral_TaskID, ACC_PERIODIC_EVT, accLoadInterval );
+        //LED0_PIO=OPEN_PIO;
+        //LED1_PIO=OPEN_PIO;
       }
-
-      if (onTheKey)
-      {
-          
-          // for tap
-          if (tapWaitFor == 0)
-          {
-            tapWaitFor = 2;
-
-          }else if (tapWaitFor == 2){
-
-            tapWaitFor = 3;
-
-            osal_stop_timerEx( simpleBLEPeripheral_TaskID, TAP_TIMEOUT_EVT );
-
-          }else if (tapWaitFor == 3){
-
-            // trible tap!!
-            tribleTap();
-
-            osal_stop_timerEx( simpleBLEPeripheral_TaskID, TAP_TIMEOUT_EVT );
-
-            //stop long press
-            osal_stop_timerEx( simpleBLEPeripheral_TaskID, LONG_PRESS_EVT );
-
-            tapWaitFor = 0;
-          }
-      }
-
-      if (tapWaitFor != 0)
-      {
-          osal_start_timerEx( simpleBLEPeripheral_TaskID, TAP_TIMEOUT_EVT , NEXT_TAP_INTERVAL );
-      }
-
     }
 
       break;
@@ -1489,7 +1519,31 @@ static void accInit( void )
     pBuf[0] = F_SETUP;
     pBuf[1] = 0x40;
     HalI2CWrite(2, pBuf);
-
+	 
+    pBuf[0] = FF_MT_CFG;//11 111 111
+    pBuf[1] = 0xFF;
+    HalI2CWrite(2, pBuf);
+		  
+    pBuf[0] = FF_MT_THS;//1010 0000
+    pBuf[1] = 0x11;
+    HalI2CWrite(2, pBuf); 
+		  
+    pBuf[0] = FF_MT_COUNT;//0000 0011
+    pBuf[1] = 0x03;
+    HalI2CWrite(2, pBuf); 
+		  
+    pBuf[0] = CTRL_REG3;
+    pBuf[1] = WAKE_FF_MT_MASK;//|PP_OD_MASK;
+    HalI2CWrite(2, pBuf);
+	 
+    pBuf[0] = CTRL_REG4;
+    pBuf[1] = INT_EN_FF_MT_MASK;//|INT_EN_DRDY_MASK;//0
+    HalI2CWrite(2, pBuf);
+	 
+    pBuf[0] = CTRL_REG5;
+    pBuf[1] = INT_CFG_FF_MT_MASK;
+    HalI2CWrite(2, pBuf);
+    
     // 50hz + low power mode, 15ua
     // put acc to active
     pBuf[0] = CTRL_REG2;
@@ -1615,6 +1669,7 @@ static void accLoop(void)
 // static void accGetAccData(void)
 static void accGetAccData(uint8 count)
 {
+    uint8 pBuf[2];
     HalI2CInit(ACC_ADDRESS, I2C_CLOCK_RATE);
 
     // uint8 addr = OUT_X_MSB, accBuf[6];
@@ -1630,8 +1685,23 @@ static void accGetAccData(uint8 count)
 
     if (accStaticCount > ACC_STATIC_COUNT_MAX * 2)
     {
-        accLoadInterval = ACC_LOAD_INTERVAL * ACC_STATIC_COUNT_MAX;
+        accLoadInterval = ACC_LOAD_INTERVAL;// * ACC_STATIC_COUNT_MAX;
         ALT_MIN = ALT_MIN_10X;
+        flagAccStatic=TRUE;
+	//set acc into standby, so can write
+	pBuf[0] = CTRL_REG1;
+    	pBuf[1] = 0;
+    	HalI2CWrite(2, pBuf);
+	//enable motion int
+	pBuf[0] = CTRL_REG4;
+    	pBuf[1] = INT_EN_FF_MT_MASK;
+    	HalI2CWrite(2, pBuf);
+	//set acc back into active
+	pBuf[0] = CTRL_REG1;
+    	pBuf[1] = (ASLP_RATE_12_5HZ + DATA_RATE_12_5HZ) | ACTIVE_MASK;
+	HalI2CWrite(2, pBuf);
+	//LED0_PIO=CLOSE_PIO;
+	//LED1_PIO=CLOSE_PIO;
     }
 
     uint8 addr = OUT_X_MSB, accBuf[192];

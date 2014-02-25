@@ -22,7 +22,7 @@
   its documentation for any purpose.
 
   YOU FURTHER ACKNOWLEDGE AND AGREE THAT THE SOFTWARE AND DOCUMENTATION ARE
-  PROVIDED “AS IS” WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED,
+  PROVIDED “AS IS?WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED,
   INCLUDING WITHOUT LIMITATION, ANY WARRANTY OF MERCHANTABILITY, TITLE,
   NON-INFRINGEMENT AND FITNESS FOR A PARTICULAR PURPOSE. IN NO EVENT SHALL
   TEXAS INSTRUMENTS OR ITS LICENSORS BE LIABLE OR OBLIGATED UNDER CONTRACT,
@@ -117,6 +117,19 @@
 
 #define HAL_KEY_SW_1_EDGEBIT  BV(0)
 
+/* SW_2 is at P1.2 */
+#define HAL_KEY_SW_2_PORT   P1
+#define HAL_KEY_SW_2_BIT    BV(2)
+#define HAL_KEY_SW_2_SEL    P1SEL
+#define HAL_KEY_SW_2_DIR    P1DIR
+
+#define HAL_KEY_SW_2_IEN      IEN2  /* CPU interrupt mask register */
+#define HAL_KEY_SW_2_ICTL     P1IEN /* Port Interrupt Control register */
+#define HAL_KEY_SW_2_ICTLBIT  BV(2) /* P1IEN - P1.2 enable/disable bit */
+#define HAL_KEY_SW_2_IENBIT   BV(4) /* Mask bit for all of Port_1 */
+#define HAL_KEY_SW_2_PXIFG    P1IFG /* Interrupt flag at source */
+
+#define HAL_KEY_SW_2_EDGEBIT  BV(1)
 
 /**************************************************************************************************
  *                                            TYPEDEFS
@@ -160,6 +173,9 @@ void HalKeyInit( void )
   HAL_KEY_SW_1_SEL &= ~(HAL_KEY_SW_1_BIT);    /* Set pin function to GPIO */
   HAL_KEY_SW_1_DIR &= ~(HAL_KEY_SW_1_BIT);    /* Set pin direction to Input */
 
+  HAL_KEY_SW_2_SEL &= ~(HAL_KEY_SW_2_BIT);	 /* Set pin function to GPIO */
+  HAL_KEY_SW_2_DIR &= ~(HAL_KEY_SW_2_BIT); 	/* Set pin direction to Input */
+
   /* Initialize callback function */
   pHalKeyProcessFunction  = NULL;
 
@@ -190,11 +206,15 @@ void HalKeyConfig (bool interruptEnable, halKeyCBack_t cback)
   if (Hal_KeyIntEnable)
   {
     /* Rising/Falling edge configuratinn */
-    PICTL |= HAL_KEY_SW_1_EDGEBIT;   /* Set the edge bit to set falling edge to give int */
+    PICTL |= HAL_KEY_SW_1_EDGEBIT|HAL_KEY_SW_2_EDGEBIT;   /* Set the edge bit to set falling edge to give int */
 
     HAL_KEY_SW_1_ICTL |= HAL_KEY_SW_1_ICTLBIT; /* enable interrupt generation at port */
     HAL_KEY_SW_1_IEN |= HAL_KEY_SW_1_IENBIT;   /* enable CPU interrupt */
     HAL_KEY_SW_1_PXIFG = ~(HAL_KEY_SW_1_BIT); /* Clear any pending interrupt */
+
+    HAL_KEY_SW_2_ICTL |= HAL_KEY_SW_2_ICTLBIT; /* enable interrupt generation at port */
+    HAL_KEY_SW_2_IEN |= HAL_KEY_SW_2_IENBIT;   /* enable CPU interrupt */
+    HAL_KEY_SW_2_PXIFG = ~(HAL_KEY_SW_2_BIT); /* Clear any pending interrupt */
 
     /* Do this only after the hal_key is configured - to work with sleep stuff */
     if (HalKeyConfigured == TRUE)
@@ -206,6 +226,9 @@ void HalKeyConfig (bool interruptEnable, halKeyCBack_t cback)
   {
     HAL_KEY_SW_1_ICTL &= ~(HAL_KEY_SW_1_ICTLBIT); /* don't generate interrupt */
     HAL_KEY_SW_1_IEN &= ~(HAL_KEY_SW_1_IENBIT);   /* Clear interrupt enable bit */
+
+    HAL_KEY_SW_2_ICTL &= ~(HAL_KEY_SW_2_ICTLBIT); /* don't generate interrupt */
+    HAL_KEY_SW_2_IEN &= ~(HAL_KEY_SW_2_IENBIT);   /* Clear interrupt enable bit */
 
     osal_set_event(Hal_TaskID, HAL_KEY_EVENT);
   }
@@ -232,6 +255,10 @@ uint8 HalKeyRead ( void )
   {
     keys |= HAL_KEY_SW_1;
   }
+  if (!(HAL_KEY_SW_2_PORT & HAL_KEY_SW_2_BIT))	  /* Key is active low */
+  {
+    keys |= HAL_KEY_SW_2;
+  }
 
   return keys;
 }
@@ -255,7 +282,10 @@ void HalKeyPoll (void)
   {
     keys |= HAL_KEY_SW_1;
   }
-
+  if (!(HAL_KEY_SW_2_PORT & HAL_KEY_SW_2_BIT))    /* Key is active low */
+  {
+    keys |= HAL_KEY_SW_2;
+  }
   /* If interrupts are not enabled, previous key status and current key status
    * are compared to find out if a key has changed status.
    */
@@ -311,7 +341,12 @@ void halProcessKeyInterrupt (void)
     HAL_KEY_SW_1_PXIFG = ~(HAL_KEY_SW_1_BIT); /* Clear Interrupt Flag */
     valid = TRUE;
   }
-
+  if( HAL_KEY_SW_2_PXIFG & HAL_KEY_SW_2_BIT) /* Interrupt Flag has been set by SW2 */
+  {
+    HAL_KEY_SW_2_PXIFG = ~(HAL_KEY_SW_2_BIT); /* Clear Interrupt Flag */
+    valid = TRUE;
+  }
+  
   if (valid)
   {
     osal_start_timerEx (Hal_TaskID, HAL_KEY_EVENT, HAL_KEY_DEBOUNCE_VALUE);
@@ -376,6 +411,40 @@ HAL_ISR_FUNCTION( halKeyPort0Isr, P0INT_VECTOR )
   HAL_KEY_SW_1_PXIFG = 0;
 
   HAL_KEY_CPU_PORT_0_IF = 0;
+
+  CLEAR_SLEEP_MODE();
+
+  HAL_EXIT_ISR();
+
+  return;
+}
+
+/**************************************************************************************************
+ * @fn      halKeyPort1Isr
+ *
+ * @brief   Port1 ISR
+ *
+ * @param
+ *
+ * @return
+ **************************************************************************************************/
+HAL_ISR_FUNCTION( halKeyPort1Isr, P1INT_VECTOR )
+{
+  HAL_ENTER_ISR();
+
+  if (HAL_KEY_SW_2_PXIFG & HAL_KEY_SW_2_BIT)
+  {
+    halProcessKeyInterrupt();
+  }
+
+  /*
+    Clear the CPU interrupt flag for Port_1
+    PxIFG has to be cleared before PxIF
+  */
+
+  HAL_KEY_SW_2_PXIFG = 0;
+
+  HAL_KEY_CPU_PORT_1_IF = 0;
 
   CLEAR_SLEEP_MODE();
 
