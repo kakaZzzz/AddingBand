@@ -217,7 +217,7 @@
 #define TIME_DISPLAY_INTERVAL               3000
 #define READ_INTERVAL                       100
 
-#define ACC_STATIC_COUNT_MAX                5
+#define ACC_STATIC_COUNT_MAX                4
 
 
 #define ALT_MIN_DEFAULT                     2000
@@ -350,7 +350,7 @@ uint8 tapWaitFor = 0, lockSlip = 0, blinkPIO = 0, blinkMinutes = 13, onTheKey = 
 uint8 readTheI = 0;
 
 uint32 accLoadInterval = ACC_LOAD_INTERVAL, accStaticCount = 0;
-bool	flagAccStatic=FALSE;
+bool    flagAccStatic=FALSE;
 
 /*********************************************************************
  * LOCAL FUNCTIONS
@@ -1519,27 +1519,27 @@ static void accInit( void )
     pBuf[0] = F_SETUP;
     pBuf[1] = 0x40;
     HalI2CWrite(2, pBuf);
-	 
+     
     pBuf[0] = FF_MT_CFG;//11 111 111
     pBuf[1] = 0xFF;
     HalI2CWrite(2, pBuf);
-		  
+          
     pBuf[0] = FF_MT_THS;//1010 0000
     pBuf[1] = 0x11;
     HalI2CWrite(2, pBuf); 
-		  
+          
     pBuf[0] = FF_MT_COUNT;//0000 0011
     pBuf[1] = 0x03;
     HalI2CWrite(2, pBuf); 
-		  
+          
     pBuf[0] = CTRL_REG3;
     pBuf[1] = WAKE_FF_MT_MASK;//|PP_OD_MASK;
     HalI2CWrite(2, pBuf);
-	 
+     
     pBuf[0] = CTRL_REG4;
     pBuf[1] = INT_EN_FF_MT_MASK;//|INT_EN_DRDY_MASK;//0
     HalI2CWrite(2, pBuf);
-	 
+     
     pBuf[0] = CTRL_REG5;
     pBuf[1] = INT_CFG_FF_MT_MASK;
     HalI2CWrite(2, pBuf);
@@ -1615,6 +1615,8 @@ static void accLoop(void)
 
                     eepromWrite(STEP_DATA_TYPE);
 
+                    accStaticCount = 0;
+
                     accLoadInterval = ACC_LOAD_INTERVAL;
                     ALT_MIN = ALT_MIN_DEFAULT;
 
@@ -1683,25 +1685,26 @@ static void accGetAccData(uint8 count)
 
     accStaticCount++;
 
-    if (accStaticCount > ACC_STATIC_COUNT_MAX * 2)
+    if (accStaticCount > ACC_STATIC_COUNT_MAX)
     {
         accLoadInterval = ACC_LOAD_INTERVAL;// * ACC_STATIC_COUNT_MAX;
-        ALT_MIN = ALT_MIN_10X;
+        ALT_MIN = ALT_MIN_DEFAULT;
+
         flagAccStatic=TRUE;
-	//set acc into standby, so can write
-	pBuf[0] = CTRL_REG1;
-    	pBuf[1] = 0;
-    	HalI2CWrite(2, pBuf);
-	//enable motion int
-	pBuf[0] = CTRL_REG4;
-    	pBuf[1] = INT_EN_FF_MT_MASK;
-    	HalI2CWrite(2, pBuf);
-	//set acc back into active
-	pBuf[0] = CTRL_REG1;
-    	pBuf[1] = (ASLP_RATE_12_5HZ + DATA_RATE_12_5HZ) | ACTIVE_MASK;
-	HalI2CWrite(2, pBuf);
-	//LED0_PIO=CLOSE_PIO;
-	//LED1_PIO=CLOSE_PIO;
+    //set acc into standby, so can write
+    pBuf[0] = CTRL_REG1;
+        pBuf[1] = 0;
+        HalI2CWrite(2, pBuf);
+    //enable motion int
+    pBuf[0] = CTRL_REG4;
+        pBuf[1] = INT_EN_FF_MT_MASK;
+        HalI2CWrite(2, pBuf);
+    //set acc back into active
+    pBuf[0] = CTRL_REG1;
+        pBuf[1] = (ASLP_RATE_12_5HZ + DATA_RATE_12_5HZ) | ACTIVE_MASK;
+    HalI2CWrite(2, pBuf);
+    //LED0_PIO=CLOSE_PIO;
+    //LED1_PIO=CLOSE_PIO;
     }
 
     uint8 addr = OUT_X_MSB, accBuf[192];
