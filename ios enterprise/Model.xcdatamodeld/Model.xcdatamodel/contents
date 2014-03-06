@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="3400" systemVersion="13A603" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
+    <entity name="BTBleList" representedClassName="BTBleList" syncable="YES">
+        <attribute name="lastSync" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="setupDate" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+    </entity>
+    <entity name="BTEntity" representedClassName="BTEntity" syncable="YES">
+        <attribute name="hasAskGrade" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="installDate" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="lastCheckVersionDate" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+    </entity>
+    <entity name="BTGirthStandard" representedClassName="BTGirthStandard" syncable="YES">
+        <attribute name="day" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="offLimit" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="onLimit" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="BTPhsicalData" representedClassName="BTPhsicalData" syncable="YES">
+        <attribute name="babyHeart" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="babyHeight" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="babyWeight" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="mamaTempetature" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="mamaWeight" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
+    </entity>
+    <entity name="BTPhysicalStandard" representedClassName="BTPhysicalStandard" syncable="YES">
+        <attribute name="day" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="offLimit" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="onLimit" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="BTRawData" representedClassName="BTRawData" syncable="YES">
+        <attribute name="count" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="day" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="from" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="hour" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="minute" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="month" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="seconds1970" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="type" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="year" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+    </entity>
+    <entity name="BTUserData" representedClassName="BTUserData" syncable="YES">
+        <attribute name="day" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="fundalHeight" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="girth" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="minute" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="month" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="production" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="weight" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="year" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+    </entity>
+    <entity name="BTUserSetting" representedClassName="BTUserSetting" syncable="YES">
+        <attribute name="birthday" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="dueDate" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="mamHeight" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="menstruation" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="previousWeight" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="BTWarnData" representedClassName="BTWarnData" syncable="YES">
+        <attribute name="warnId" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="BTBleList" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="BTEntity" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="BTGirthStandard" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="BTPhsicalData" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="BTPhysicalStandard" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="BTRawData" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="BTUserData" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="BTUserSetting" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="BTWarnData" positionX="0" positionY="0" width="0" height="0"/>
+    </elements>
+</model>
