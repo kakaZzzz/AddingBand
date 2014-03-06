@@ -157,7 +157,7 @@
     //    [mineNav.tabBarItem setFinishedSelectedImage:[UIImage imageNamed:@"shezhi_selected.png"] withFinishedUnselectedImage:[UIImage imageNamed:@"shezhi_unselected.png"]];
     if (IOS7_OR_LATER) {
         mineNav.tabBarItem.title = @"设置";
-        [mineNav.tabBarItem setFinishedSelectedImage:[UIImage imageNamed:@"shezhi_selected1.png"] withFinishedUnselectedImage:[UIImage imageNamed:@"shezhi_unselected1.png"]];        //5.0之后新特性
+        [mineNav.tabBarItem setFinishedSelectedImage:[UIImage imageNamed:@"shezhi_selected.png"] withFinishedUnselectedImage:[UIImage imageNamed:@"shezhi_unselected.png"]];        //5.0之后新特性
         [mineNav.tabBarItem setTitleTextAttributes:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:kContentTextColor, nil] forKeys:[NSArray arrayWithObjects:UITextAttributeTextColor, nil]] forState:UIControlStateNormal];
         [mineNav.tabBarItem setTitleTextAttributes:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:kGlobalColor, nil] forKeys:[NSArray arrayWithObjects:UITextAttributeTextColor,nil]] forState:UIControlStateSelected];
         

@@ -323,6 +323,7 @@ static int battery = 0;
     NSString *subString = [self.syncTwoVC.linkLabel.text substringToIndex:4];
     if ([subString isEqualToString:LASTSYNC_TEXT]) {
      self.syncTwoVC.linkLabel.text = _lastSyncTime;
+   
     }
    
     //计算使用时间

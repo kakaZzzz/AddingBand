@@ -203,14 +203,14 @@ static NSString *version = nil;//版本号
         case 5://检查更新
         {
            // 检查更新
-            [BTCheckVersion checkVersion];
+           // [BTCheckVersion checkVersion];
 
         }
             break;
         case 6:
         {
             //打开AppStore去评分
-            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://itunes.apple.com/cn/app/bai-du-yin-le/id468623917?mt=8"]];
+            //[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://itunes.apple.com/cn/app/bai-du-yin-le/id468623917?mt=8"]];
         }
             break;
         case 7://关于
