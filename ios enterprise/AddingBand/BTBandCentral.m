@@ -252,36 +252,7 @@
     
 //    self.globals.bleListCount = [_allPeripherals count];//王鹏 12月13日修改 不要反复调用刷新列表
     
-    //查找之前是否连接过
-    Boolean never = YES;
     
-    for (BTBleList* old in _localBleLIst) {
-        if ([old.name isEqualToString:find.name]) {
-            never = NO;
-        }
-    }
-    
-    //从来没有连接过
-    if (never) {
-        //新建一条记录
-        BTBleList* first = [NSEntityDescription insertNewObjectForEntityForName:@"BTBleList" inManagedObjectContext:_context];
-        
-        first.name = find.name;
-        first.lastSync = 0;
-        
-        //记录设备绑定时间
-        first.setupDate = [NSNumber numberWithInt:[[NSDate date] timeIntervalSince1970]];
-        
-        find.setupDate = [first.setupDate intValue];//时间
-        
-        //及时保存
-        NSError* error;
-        if(![_context save:&error]){
-            NSLog(@"%@", [error localizedDescription]);
-        }
-        
-        self.globals.displayBleList = NO;
-    }
     
     self.globals.bleListCount = [_allPeripherals count];
     
@@ -456,6 +427,37 @@
         BTBandPeripheral* bp = [_allPeripherals objectForKey:peripheral.name];
         
         bp.isConnected = YES;
+        
+        //查找之前是否连接过
+        Boolean never = YES;
+        
+        for (BTBleList* old in _localBleLIst) {
+            if ([old.name isEqualToString:bp.name]) {
+                never = NO;
+            }
+        }
+        
+        //从来没有连接过
+        if (never) {
+            //新建一条记录
+            BTBleList* first = [NSEntityDescription insertNewObjectForEntityForName:@"BTBleList" inManagedObjectContext:_context];
+            
+            first.name = bp.name;
+            first.lastSync = 0;
+            
+            //记录设备绑定时间
+            first.setupDate = [NSNumber numberWithInt:[[NSDate date] timeIntervalSince1970]];
+            
+            bp.setupDate = [first.setupDate intValue];//时间
+            
+            //及时保存
+            NSError* error;
+            if(![_context save:&error]){
+                NSLog(@"%@", [error localizedDescription]);
+            }
+            
+            self.globals.displayBleList = NO;
+        }
         
         [self sync:[BTUtils getModel:peripheral.name]];
         
