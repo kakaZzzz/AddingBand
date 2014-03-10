@@ -911,9 +911,13 @@ static void simpleBLEPeripheral_ProcessOSALMsg( osal_event_hdr_t *pMsg )
       // release == 0
       uint8 keys = ((keyChange_t *)pMsg)->keys;
       uint8 pBuf[2];
+
+      //fixed long press bug
+      onTheKey = keys ? 1 : 0;
+
       if((keys&HAL_KEY_SW_1)!=0)//sw_1
       {
-        onTheKey = keys ? 1 : 0;
+        
   
         // LED6_PIO = !onTheKey;
   
