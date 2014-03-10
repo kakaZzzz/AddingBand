@@ -220,7 +220,7 @@
 #define ACC_STATIC_COUNT_MAX                4
 
 
-#define ALT_MIN_DEFAULT                     2000
+#define ALT_MIN_DEFAULT                     4000
 #define ALT_MIN_10X                         200
 
 
