@@ -1528,6 +1528,7 @@
           <state>$PROJ_DIR$\..\..\Profiles\DevInfo</state>
           <state>$PROJ_DIR$\..\..\Profiles\Batt</state>
           <state>$PROJ_DIR$\..\..\Profiles\HIDDev</state>
+          <state>$PROJ_DIR$\..\..\Profiles\TouchIC</state>
         </option>
         <option>
           <name>CCStdIncCheck</name>

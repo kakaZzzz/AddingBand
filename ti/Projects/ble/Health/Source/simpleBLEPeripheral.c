@@ -40,6 +40,8 @@
 #include "oad_target.h"
 #endif
 
+#include "mpr03x.h"
+
 /*********************************************************************
  * MACROS
  */
@@ -204,6 +206,10 @@
 
 #define DATA_TYPE_COUNT                     3
 
+//define for touch sensor mpr
+#define TOUCH_ADDRESS								  0x4A
+
+
 //same with app
 #define SYNC_CODE                           22
 
@@ -223,6 +229,7 @@
 #define ALT_MIN_DEFAULT                     4000
 #define ALT_MIN_10X                         200
 
+#define AUTO_CONFIG			TRUE
 
 uint8 X0, X1, Y0, Y1, Z1, Z0;
 int16 X_out, Y_out, Z_out;
@@ -352,6 +359,25 @@ uint8 readTheI = 0;
 uint32 accLoadInterval = ACC_LOAD_INTERVAL, accStaticCount = 0;
 bool    flagAccStatic=FALSE;
 
+struct mpr03x_touchkey_data {
+///	struct i2c_client	*client;
+//	struct input_dev	*input_dev;
+//	struct mpr03x_platform_data * pdata;
+//#ifdef DEBUG
+//	struct input_dev	*th_dev;   // use to report baseline and fiter data to calculate threshold 
+//#endif
+//	struct delayed_work  work;
+//    u8 			CDC;
+//	u8 			CDT;
+	uint8 CDC;
+	uint8 CDT;
+//	u8		 	key_status;
+//	int			statusbits;
+//	int			keycount;
+//	u16			keycodes[MPR03X_MAX_KEY_COUNT];
+};
+
+
 /*********************************************************************
  * LOCAL FUNCTIONS
  */
@@ -391,6 +417,9 @@ static void loadRawDataIndex(void);
 static void tribleTap(void);
 
 static uint16 dataLength(void);
+
+static int mpr03x_phys_init(void);
+static void mpr03x_start(void);
 
 
 /*********************************************************************
@@ -563,7 +592,8 @@ void SimpleBLEPeripheral_Init( uint8 task_id )
     P0DIR = 0xF7;
     P0SEL = 0x00;
 
-    P1DIR = 0xF3;
+    //P1DIR = 0xF3;//1111 0011
+    P1DIR = 0xFB;//1111 1011
     P1SEL = 0x00;
 
     P2DIR = 0xFF;
@@ -572,6 +602,9 @@ void SimpleBLEPeripheral_Init( uint8 task_id )
     //close all
     closeAllPIO();
 
+	 mpr03x_phys_init();
+	 mpr03x_start();
+	 
     //sunshine
     // LED0_PIO = OPEN_PIO;
     // LED1_PIO = OPEN_PIO;
@@ -1309,6 +1342,7 @@ static void closeAllPIO(void){
     LED10_PIO = CLOSE_PIO;
     LED11_PIO = CLOSE_PIO;
 
+	 P1_3 = 0;
     P1_4 = 0;
     P1_5 = 0;
 }
@@ -2074,6 +2108,319 @@ static void loadRawDataIndex(void){
     // osal_memcpy(d, &rawDataStart, 2);
     // osal_memcpy(&d[2], &rawDataStop, 2);
     // SimpleProfile_SetParameter( HEALTH_SYNC, 8, d);
+}
+
+
+/*********************************************************************
+ * @fn      touchInit
+ *
+ * @param   none
+ *
+ * @return  none
+*********************************************************************/
+	
+	
+	void DelayMs(uint16 cnt)
+	{
+		uint16 i,j;
+		for(i=0;i<cnt;i++)// cnt ms
+			for(j=0;j<2666;j++); // 1ms
+	}
+
+//static void mpr03x_soft_reset(void)//(struct i2c_client *client)
+//{
+//    i2c_smbus_write_byte_data(client,0x5f,0x55);  
+//}
+//there's no register in address 0x5f
+
+static void  mpr03x_stop(void)//(struct i2c_client *client)
+{
+ 	//u8 data;
+  	//data = i2c_smbus_read_byte_data(client , MPR03X_EC_REG);
+  	//i2c_smbus_write_byte_data(client ,MPR03X_EC_REG, (data & 0x40));    
+
+	uint8 addr, val;
+	uint8 pBuf[2];
+
+	//read MPR03X_EC_REG
+	addr=MPR03X_EC_REG;
+	HalMotionI2CWrite(1, &addr);
+	HalMotionI2CRead(1,&val);
+	//write MPR03X_EC_REG
+	pBuf[0]=MPR03X_EC_REG;
+	pBuf[1]=val&0x40;
+	HalI2CWrite(2,pBuf);
+}
+static void mpr03x_start(void)//(struct i2c_client *client)
+{
+	//set mpr031 run mode with Run1 mode, 2 pad with INT 
+	//u8 data;
+  	//data = i2c_smbus_read_byte_data(client , MPR03X_EC_REG);
+	//data &= ~0x0f;
+	//i2c_smbus_write_byte_data(client ,MPR03X_EC_REG, (data | MPR03X_E1_E2_IRQ));    
+
+	uint8 addr, val;
+	uint8 pBuf[2];
+
+	//read MPR03X_EC_REG
+	addr=MPR03X_EC_REG;
+	HalMotionI2CWrite(1, &addr);
+	HalMotionI2CRead(1,&val);
+	//write MPR03X_EC_REG
+	val &=~0x0f;
+	pBuf[0]=MPR03X_EC_REG;
+	pBuf[1]=val | MPR03X_E1_IRQ;//MPR03X_E1_E2_IRQ;
+	HalI2CWrite(2,pBuf);
+} 
+
+
+//Auto config CDC CDT with Run1 mode, 2 pad with INT
+//For other senario, set the MPR03X_EC_REG accordingly, and use Exdata accordingly
+//reture CDC and CDT with optimized value  
+static int  mpr03x_autoconfig(struct mpr03x_touchkey_data  *pdata) 
+{
+  uint8 i;                                                             
+  uint16 result, e1data;//, e2data;
+  uint8 CDC = 30;  		
+  uint8 CDT = 0x00;
+  uint8 addr,value1,value2;
+  uint8 pBuf[2];
+  //struct i2c_client * client = pdata->client;
+  //i2c_smbus_write_byte_data(client,MPR03X_EC_REG, 0x00);
+	pBuf[0]=MPR03X_EC_REG;
+	pBuf[1]=0x00;
+	HalI2CWrite(2,pBuf);
+  
+  for( i=0; i<3; i++ ) 
+  {
+    CDT = CDT | (1<<(3-1-i));
+    //i2c_smbus_write_byte_data(client,MPR03X_AFEC_REG,MPR03X_FFI_6| CDC); 
+    //i2c_smbus_write_byte_data(client,MPR03X_FC_REG,CDT<<5 | MPR03X_SFI_4 | MPR03X_ESI_1MS);
+    //i2c_smbus_write_byte_data(client,MPR03X_EC_REG, MPR03X_E1_E2_IRQ);
+	pBuf[0]=MPR03X_AFEC_REG;
+	pBuf[1]=MPR03X_FFI_6| CDC;
+	HalI2CWrite(2,pBuf);
+	pBuf[0]=MPR03X_FC_REG;
+	pBuf[1]=CDT<<5 | MPR03X_SFI_4 | MPR03X_ESI_1MS;
+	HalI2CWrite(2,pBuf);
+	pBuf[0]=MPR03X_EC_REG;
+	pBuf[1]=MPR03X_E1_IRQ;//MPR03X_E1_E2_IRQ
+	HalI2CWrite(2,pBuf);
+	 
+    //msleep(10);
+	 DelayMs(10);
+	 
+	//i2c_smbus_write_byte_data(client,MPR03X_EC_REG, 0x00);
+   // e1data=((u16)i2c_smbus_read_byte_data(client,MPR03X_E0FDL_REG)) | 
+	//				(((u16)i2c_smbus_read_byte_data(client,MPR03X_E0FDH_REG))<<8);
+	//e2data=((u16)i2c_smbus_read_byte_data(client,MPR03X_E1FDL_REG)) | 
+	//				(((u16)i2c_smbus_read_byte_data(client,MPR03X_E1FDH_REG))<<8);	
+	pBuf[0]=MPR03X_EC_REG;
+	pBuf[1]=0x00;
+	HalI2CWrite(2,pBuf);
+	addr=MPR03X_E0FDL_REG;
+	HalMotionI2CWrite(1, &addr);
+	HalMotionI2CRead(1,&value1);
+	addr=MPR03X_E0FDH_REG;
+	HalMotionI2CWrite(1, &addr);
+	HalMotionI2CRead(1,&value2);
+	e1data=((uint16)value1)|(((uint16)value2)<<8);
+	
+    //not used for Run1 mode, 2 pad with INT
+	//if (e1data > e2data) 
+	//   result=e1data;
+	//else 
+	//   result=e2data;
+	
+	if(result > MPR03X_AC_USL_CT)
+	   CDT = CDT ^ (1<<(3-1-i));	
+  } 
+  if(CDT== 0) CDT = 1;
+	   CDC = 0x00;
+  for( i=0; i < 6; i++ ) 
+  {
+    CDC = CDC | (1 << (6 - 1 - i));
+    //i2c_smbus_write_byte_data(client,MPR03X_AFEC_REG,MPR03X_FFI_6| CDC); 
+    //i2c_smbus_write_byte_data(client,MPR03X_FC_REG,CDT << 5 | MPR03X_SFI_4 | MPR03X_ESI_1MS);
+    //i2c_smbus_write_byte_data(client,MPR03X_EC_REG, MPR03X_E1_E2_IRQ);
+	pBuf[0]=MPR03X_AFEC_REG;
+	pBuf[1]=MPR03X_FFI_6| CDC;
+	HalI2CWrite(2,pBuf);
+	pBuf[0]=MPR03X_FC_REG;
+	pBuf[1]=CDT << 5 | MPR03X_SFI_4 | MPR03X_ESI_1MS;
+	HalI2CWrite(2,pBuf);
+	pBuf[0]=MPR03X_EC_REG;
+	pBuf[1]=MPR03X_E1_IRQ;//MPR03X_E1_E2_IRQ
+	HalI2CWrite(2,pBuf);
+	
+    //msleep(10);
+	 DelayMs(10);
+	//i2c_smbus_write_byte_data(client,MPR03X_EC_REG, 0x00);
+	//e1data=((u16)i2c_smbus_read_byte_data(client,MPR03X_E0FDL_REG)) | 
+	//				(((u16)i2c_smbus_read_byte_data(client,MPR03X_E0FDH_REG))<<8);
+	//e2data=((u16)i2c_smbus_read_byte_data(client,MPR03X_E1FDL_REG)) | 
+	//				(((u16)i2c_smbus_read_byte_data(client,MPR03X_E1FDH_REG))<<8);	
+	//not used 
+	//e3data=((u16)i2c_smbus_read_byte_data(client,MPR03X_E2FDL_REG)) | 
+	//				(((u16)i2c_smbus_read_byte_data(client,MPR03X_E2FDH_REG))<<8);
+	pBuf[0]=MPR03X_EC_REG;
+	pBuf[1]=0x00;
+	HalI2CWrite(2,pBuf);
+	addr=MPR03X_E0FDL_REG;
+	HalMotionI2CWrite(1, &addr);
+	HalMotionI2CRead(1,&value1);
+	addr=MPR03X_E0FDH_REG;
+	HalMotionI2CWrite(1, &addr);
+	HalMotionI2CRead(1,&value2);
+	e1data=((uint16)value1)|(((uint16)value2)<<8);	
+	
+	//if (e1data > e2data) 
+	//	result = e1data;
+	//else 
+	//	result = e2data;
+
+	if ( result > MPR03X_AC_LSL_CS ) 
+		  CDC = CDC ^(1 << (6 - 1 - i)) ;
+   } 
+		
+	if (result > MPR03X_AC_USL_CT || result < MPR03X_AC_LSL_CT ) 
+	  return 0;
+	else
+	{
+	  pdata->CDC = CDC;
+	  pdata->CDT = CDT;
+	  return 1;
+	}
+}
+
+static int mpr03x_phys_init(void)
+	//(struct mpr03x_platform_data *platdata,
+		//	    struct mpr03x_touchkey_data *pdata,
+			//    struct i2c_client *client)
+{
+	uint8 CDC , CDT ,data1,data2; //u8 CDC , CDT , data ,data1,data2; 
+	uint8 flagAutoConfigReturn=FALSE;
+	uint8 addr, val;
+	uint8 pBuf[2];
+	struct mpr03x_touchkey_data *pdata;
+	
+	//set i2c device address
+	HalI2CInit(TOUCH_ADDRESS, I2C_CLOCK_RATE);
+
+	//Reset if has not reset properly
+	//mpr03x_soft_reset();//(client);
+	//if(i2c_smbus_read_byte_data(client,MPR03X_AFEC_REG)!=0x10 
+	//		&& i2c_smbus_read_byte_data(client,MPR03X_EC_REG)!=0x00)
+	//	dev_info(&client->dev,"mpr03x reset fail\n");
+   pdata=osal_mem_alloc(sizeof(struct mpr03x_touchkey_data));
+  	pdata->CDC = 0x24;
+   pdata->CDT = 1;
+#ifdef AUTO_CONFIG
+		//Auto search CDC, CDT
+	//if (mpr03x_autoconfig(pdata))
+	//   dev_info(&client->dev, "mpr03x auto Config Success\r\n"); 
+	//else
+	//   dev_info(&client->dev, "mpr03x auto Config Fail\r\n");
+	flagAutoConfigReturn=mpr03x_autoconfig(pdata);
+#endif
+   CDC =  pdata->CDC;
+  	CDT =  pdata->CDT ;
+	//Configure AFE,then set into Run1 mode, 2 pad with INT
+	mpr03x_stop();//(client);	
+	//i2c_smbus_write_byte_data(client,MPR03X_AFEC_REG,MPR03X_FFI_6| CDC); 
+	//i2c_smbus_write_byte_data(client,MPR03X_FC_REG,CDT<<5 | MPR03X_SFI_4 | MPR03X_ESI_1MS);
+	pBuf[0]=MPR03X_AFEC_REG;
+	pBuf[1]=MPR03X_FFI_6| CDC;
+	HalI2CWrite(2,pBuf);
+	pBuf[0]=MPR03X_FC_REG;
+	pBuf[1]=CDT<<5 | MPR03X_SFI_4 | MPR03X_ESI_1MS;	
+	HalI2CWrite(2,pBuf);
+	mpr03x_start();//(client);
+	  
+	//Wait for enough time (10ms example here) to get stable electrode data
+	//msleep(10);		  
+	DelayMs(10);
+	
+	mpr03x_stop();//(client);
+	//load 5MSB to set E1 baseline, baseline<=signal level
+	//data1 = (i2c_smbus_read_byte_data(client,MPR03X_E0FDH_REG)<<6);
+	//data2 = (i2c_smbus_read_byte_data(client,MPR03X_E0FDL_REG)>>2) & 0xF8;  
+	//data = data1 | data2;
+	//i2c_smbus_write_byte_data(client,MPR03X_E0BV_REG,data);
+	addr=MPR03X_E0FDH_REG;
+	HalMotionI2CWrite(1, &addr);
+	HalMotionI2CRead(1,&val);
+	data1=val<<6;
+	addr=MPR03X_E0FDL_REG;
+	HalMotionI2CWrite(1, &addr);
+	HalMotionI2CRead(1,&val);
+	data2=(val>>2)&0xF8;
+	pBuf[0]=MPR03X_E0BV_REG;
+	pBuf[1]= data1 | data2;
+	HalI2CWrite(2,pBuf);
+	  
+	//load 5MSB to set E2 baseline, baseline<=signal level
+	//data1 = (i2c_smbus_read_byte_data(client,MPR03X_E1FDH_REG)<<6);
+	//data2 = (i2c_smbus_read_byte_data(client,MPR03X_E1FDL_REG)>>2) & 0xF8;
+	//data = data1 | data2;
+	//i2c_smbus_write_byte_data(client,MPR03X_E1BV_REG,data); 
+
+	//addr=MPR03X_E1FDH_REG;
+	//HalMotionI2CWrite(1, &addr);
+	//HalMotionI2CRead(1,&val);
+	//data1=val<<6;
+	//addr=MPR03X_E1FDL_REG;
+	//HalMotionI2CWrite(1, &addr);
+	//HalMotionI2CRead(1,&val);
+	//data2=(val>>2)&0xF8;
+	//pBuf[0]=MPR03X_E1BV_REG;
+	//pBuf[1]= data1 | data2;
+	//HalI2CWrite(2,pBuf);
+	//because we use one electrode only
+	
+	//load 5MSB to set E3 baseline, baseline<=signal level
+	//data= (i2c_smbus_read_byte_data(client,MPR03X_E2FDH_REG)<<6)|(i2c_smbus_read_byte_data(client,MPR03X_E2FDL_REG)>>2) & 0xF8;;  
+	//i2c_smbus_write_byte_data(client,MPR03X_E2BV_REG,data); 
+	  
+	//Set baseline filtering
+	//i2c_smbus_write_byte_data(client,MPR03X_MHD_REG,0x01); 
+	//i2c_smbus_write_byte_data(client,MPR03X_NHD_REG,0x01); 
+	//i2c_smbus_write_byte_data(client,MPR03X_NCL_REG,0x0f); 	
+	pBuf[0]=MPR03X_MHD_REG;
+	pBuf[1]=0x01;
+	HalI2CWrite(2,pBuf);	
+	pBuf[0]=MPR03X_NHD_REG;
+	pBuf[1]=0x01;
+	HalI2CWrite(2,pBuf);	
+	pBuf[0]=MPR03X_NCL_REG;
+	pBuf[1]=0x0f;
+	HalI2CWrite(2,pBuf);
+	  
+	//Set touch/release threshold
+	//i2c_smbus_write_byte_data(client,MPR03X_E0TTH_REG,MPR03X_TOUCH_THRESHOLD); 
+	//i2c_smbus_write_byte_data(client,MPR03X_E0RTH_REG,MPR03X_RELEASE_THRESHOLD);
+	//i2c_smbus_write_byte_data(client,MPR03X_E1TTH_REG,MPR03X_TOUCH_THRESHOLD); 
+	//i2c_smbus_write_byte_data(client,MPR03X_E1RTH_REG,MPR03X_RELEASE_THRESHOLD);
+	//i2c_smbus_write_byte_data(client,MPR03X_E2TTH_REG,MPR03X_TOUCH_THRESHOLD); 
+	//i2c_smbus_write_byte_data(client,MPR03X_E2RTH_REG,MPR03X_RELEASE_THRESHOLD);	
+	pBuf[0]=MPR03X_E0TTH_REG;
+	pBuf[1]=MPR03X_TOUCH_THRESHOLD;
+	HalI2CWrite(2,pBuf);
+	pBuf[0]=MPR03X_E0RTH_REG;
+	pBuf[1]=MPR03X_RELEASE_THRESHOLD;
+	HalI2CWrite(2,pBuf);
+	
+	//Set AFE  
+	//i2c_smbus_write_byte_data(client,MPR03X_AFEC_REG,MPR03X_FFI_6| CDC); 
+	//i2c_smbus_write_byte_data(client,MPR03X_FC_REG,CDT<<5 | MPR03X_SFI_4 | MPR03X_ESI_4MS);
+	pBuf[0]=MPR03X_AFEC_REG;
+	pBuf[1]=MPR03X_FFI_6| CDC;
+	HalI2CWrite(2,pBuf);
+	pBuf[0]=MPR03X_FC_REG;
+	pBuf[1]=CDT<<5 | MPR03X_SFI_4 | MPR03X_ESI_4MS;
+	HalI2CWrite(2,pBuf);
+	return 0;
+		 
 }
 
 /*********************************************************************
