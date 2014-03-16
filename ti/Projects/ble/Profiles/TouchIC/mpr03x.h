@@ -64,8 +64,8 @@
 //adjust according to system SNR
 //Set to lower threshold to optimize sensitivity vs. noise
 //make sure touch delta change >> MPR03X_TOUCH_THRESHOLD >> MPR03X_RELEASE_THRESHOLD >> noise
-#define MPR03X_TOUCH_THRESHOLD 	  	0x0f //0x08
-#define MPR03X_RELEASE_THRESHOLD 	0x0a //0x05
+#define MPR03X_TOUCH_THRESHOLD 	  	0x08//0x0f //0x08
+#define MPR03X_RELEASE_THRESHOLD 	0x05//0x0a //0x05
 
 #define MPR03X_FFI_6     		0x00
 #define MPR03X_FFI_10    		0x40
@@ -93,11 +93,11 @@
 #define MPR03X_E1_E2_E3      	0x03        
 
 
-#define MPR03X_AC_VDD			1.8
-#define MPR03X_AC_USL_CT		900			//900//950   // USL_CT =(MPR03X_AC_VDD-0.7)/MPR03X_AC_VDD*1024 if for linear cap detection
-#define MPR03X_AC_LSL_CT		450  		//equ: MPR03X_AC_ LSL_CT=MPR03X_AC_USL_CT / 2
-#define MPR03X_AC_USL_CS		USL_CT		//equ: MPR03X_AC_USL_CS= MPR03X_AC_USL_CT
-#define	MPR03X_AC_LSL_CS		850			//850//900    equ: MPR03X_AC_LSL_CS=MPR03X_AC_USL_CS * 0.9	
+#define MPR03X_AC_VDD			2.2	// 1.8
+#define MPR03X_AC_USL_CT		698  //900   // USL_CT =(MPR03X_AC_VDD-0.7)/MPR03X_AC_VDD*1024 if for linear cap detection
+#define MPR03X_AC_LSL_CT		349  //450  		//equ: MPR03X_AC_ LSL_CT=MPR03X_AC_USL_CT / 2
+#define MPR03X_AC_USL_CS		MPR03X_AC_USL_CT  //USL_CT		//equ: MPR03X_AC_USL_CS= MPR03X_AC_USL_CT
+#define	MPR03X_AC_LSL_CS		628  //850	equ: MPR03X_AC_LSL_CS=MPR03X_AC_USL_CS * 0.9	
 
 
 #define MPR03X_MAX_KEY_COUNT    3

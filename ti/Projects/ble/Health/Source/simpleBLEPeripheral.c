@@ -84,7 +84,7 @@
 #define CLOSE_PIO                             1
 
 // How often to perform periodic event
-#define SBP_PERIODIC_EVT_PERIOD               5000
+#define SBP_PERIODIC_EVT_PERIOD               100//5000
 
 // What is the advertising interval when device is discoverable (units of 625us, 160=100ms)
 #define DEFAULT_ADVERTISING_INTERVAL          16000
@@ -420,6 +420,11 @@ static uint16 dataLength(void);
 
 static int mpr03x_phys_init(void);
 static void mpr03x_start(void);
+void Delay1(uint16 cnt);
+void Delay2(uint16 cnt);
+void DelayMs(uint16 cnt);
+
+
 
 
 /*********************************************************************
@@ -696,7 +701,7 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
         toggleAdvert(TRUE);
 
         // Set timer for first periodic event
-        //osal_start_timerEx( simpleBLEPeripheral_TaskID, SBP_PERIODIC_EVT, SBP_PERIODIC_EVT_PERIOD );
+        osal_start_timerEx( simpleBLEPeripheral_TaskID, SBP_PERIODIC_EVT, SBP_PERIODIC_EVT_PERIOD );
 
         return ( events ^ SBP_START_DEVICE_EVT );
     }
@@ -1190,6 +1195,18 @@ static void battPeriodicTask( void )
  */
 static void performPeriodicTask( void )
 {
+	uint8 addr,val;
+	
+	HalI2CInit(TOUCH_ADDRESS, I2C_CLOCK_RATE);
+	
+	addr=MPR03X_TS_REG;
+	HalMotionI2CWrite(1, &addr);
+	HalMotionI2CRead(1,&val);
+	if((val&0x01)==0)//E0S=0, NO TOUCH
+		LED7_PIO=0;
+	else
+		LED7_PIO=1;
+	
     // if (testAddr < 32768)
     // {
     //     HalI2CInit(EEPROM_ADDRESS, I2C_CLOCK_RATE);
@@ -2119,13 +2136,30 @@ static void loadRawDataIndex(void){
  * @return  none
 *********************************************************************/
 	
-	
-	void DelayMs(uint16 cnt)
+	void Delay1(uint16 cnt)
 	{
-		uint16 i,j;
-		for(i=0;i<cnt;i++)// cnt ms
-			for(j=0;j<2666;j++); // 1ms
+		uint16 i;
+		for(i=0;i<cnt;i++)
+                {}
 	}
+
+	void Delay2(uint16 cnt)
+	{
+		uint16 i;
+		for(i=0;i<cnt;i++)
+                { 
+		  Delay1(1000);
+		}
+	}
+        void DelayMs(uint16 cnt)
+        {
+          uint16 i;
+          for(i=0;i<cnt;i++)
+          {
+            Delay1(360);;
+            Delay2(1);
+          }
+        }
 
 //static void mpr03x_soft_reset(void)//(struct i2c_client *client)
 //{
@@ -2228,7 +2262,7 @@ static int  mpr03x_autoconfig(struct mpr03x_touchkey_data  *pdata)
 	
     //not used for Run1 mode, 2 pad with INT
 	//if (e1data > e2data) 
-	//   result=e1data;
+	   result=e1data;
 	//else 
 	//   result=e2data;
 	
@@ -2338,9 +2372,9 @@ static int mpr03x_phys_init(void)
 	mpr03x_start();//(client);
 	  
 	//Wait for enough time (10ms example here) to get stable electrode data
-	//msleep(10);		  
-	DelayMs(10);
-	
+	//msleep(10);	
+        DelayMs(10);
+        
 	mpr03x_stop();//(client);
 	//load 5MSB to set E1 baseline, baseline<=signal level
 	//data1 = (i2c_smbus_read_byte_data(client,MPR03X_E0FDH_REG)<<6);
