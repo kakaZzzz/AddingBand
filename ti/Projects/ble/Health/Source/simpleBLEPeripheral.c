@@ -229,7 +229,7 @@
 #define ALT_MIN_DEFAULT                     4000
 #define ALT_MIN_10X                         200
 
-#define AUTO_CONFIG			TRUE
+//#define AUTO_CONFIG			TRUE
 
 uint8 X0, X1, Y0, Y1, Z1, Z0;
 int16 X_out, Y_out, Z_out;
@@ -2390,6 +2390,9 @@ static int mpr03x_phys_init(void)
 	//data2 = (i2c_smbus_read_byte_data(client,MPR03X_E0FDL_REG)>>2) & 0xF8;  
 	//data = data1 | data2;
 	//i2c_smbus_write_byte_data(client,MPR03X_E0BV_REG,data);
+
+	//if define baseline value on power up everytime
+	/*
 	addr=MPR03X_E0FDH_REG;
 	HalMotionI2CWrite(1, &addr);
 	HalMotionI2CRead(1,&val);
@@ -2400,6 +2403,11 @@ static int mpr03x_phys_init(void)
 	data2=(val>>2)&0xF8;
 	pBuf[0]=MPR03X_E0BV_REG;
 	pBuf[1]= data1 | data2;
+	HalI2CWrite(2,pBuf);
+	*/
+	//if define baseline value defaultly
+	pBuf[0]=MPR03X_E0BV_REG;
+	pBuf[1]=0xA8;
 	HalI2CWrite(2,pBuf);
 	  
 	//load 5MSB to set E2 baseline, baseline<=signal level
