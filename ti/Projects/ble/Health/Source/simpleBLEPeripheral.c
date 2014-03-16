@@ -653,7 +653,7 @@ void SimpleBLEPeripheral_Init( uint8 task_id )
     SimpleProfile_SetParameter( HEALTH_DATA_HEADER, 2,  &length);
 
     // Setup a delayed profile startup
-    osal_set_event( simpleBLEPeripheral_TaskID, SBP_START_DEVICE_EVT );
+    //osal_set_event( simpleBLEPeripheral_TaskID, SBP_START_DEVICE_EVT );
 }
 
 /*********************************************************************
@@ -949,13 +949,22 @@ static void simpleBLEPeripheral_ProcessOSALMsg( osal_event_hdr_t *pMsg )
       // release == 0
       uint8 keys = ((keyChange_t *)pMsg)->keys;
       uint8 pBuf[2];
+		uint8 addr,val;
 
       //fixed long press bug
-      onTheKey = keys ? 1 : 0;
+      //onTheKey = keys ? 1 : 0;
+        //set i2c device address
+			HalI2CInit(TOUCH_ADDRESS, I2C_CLOCK_RATE);
+		   addr=MPR03X_TS_REG;
+			HalMotionI2CWrite(1, &addr);
+			HalMotionI2CRead(1,&val);
+			if((val&0x01)==0)
+				onTheKey=0;
+			else
+				onTheKey=1;
 
       if((keys&HAL_KEY_SW_1)!=0)//sw_1
       {
-        
   
         // LED6_PIO = !onTheKey;
   

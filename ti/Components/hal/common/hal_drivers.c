@@ -273,7 +273,7 @@ uint16 Hal_ProcessEvent( uint8 task_id, uint16 events )
     /* if interrupt disabled, do next polling */
     if (!Hal_KeyIntEnable)
     {
-      osal_start_timerEx( Hal_TaskID, HAL_KEY_EVENT, 100); 
+      osal_start_timerEx( Hal_TaskID, HAL_KEY_EVENT, 100);
     }
 #endif
     return events ^ HAL_KEY_EVENT;

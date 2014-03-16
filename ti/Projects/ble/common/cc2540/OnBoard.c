@@ -284,7 +284,7 @@ void OnBoard_KeyCallback ( uint8 keys, uint8 state )
   }
 
   /* If any key is currently pressed down and interrupt
-     is still enabled, disable interrupt and switch to polling */
+     is still enabled, disable interrupt and switch to polling 
   if( keys != 0 )
   {
     if( OnboardKeyIntEnable == HAL_KEY_INTERRUPT_ENABLE )
@@ -292,9 +292,9 @@ void OnBoard_KeyCallback ( uint8 keys, uint8 state )
       OnboardKeyIntEnable = HAL_KEY_INTERRUPT_DISABLE;
       HalKeyConfig( OnboardKeyIntEnable, OnBoard_KeyCallback);
     }
-  }
+  }*/
   /* If no key is currently pressed down and interrupt
-     is disabled, enable interrupt and turn off polling */
+     is disabled, enable interrupt and turn off polling 
   else
   {
     if( OnboardKeyIntEnable == HAL_KEY_INTERRUPT_DISABLE )
@@ -302,7 +302,7 @@ void OnBoard_KeyCallback ( uint8 keys, uint8 state )
       OnboardKeyIntEnable = HAL_KEY_INTERRUPT_ENABLE;
       HalKeyConfig( OnboardKeyIntEnable, OnBoard_KeyCallback);
     }
-  }
+  }*/
 }
 
 /*********************************************************************
