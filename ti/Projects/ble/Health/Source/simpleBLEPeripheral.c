@@ -84,7 +84,7 @@
 #define CLOSE_PIO                             1
 
 // How often to perform periodic event
-#define SBP_PERIODIC_EVT_PERIOD               100//5000
+#define SBP_PERIODIC_EVT_PERIOD               5000
 
 // What is the advertising interval when device is discoverable (units of 625us, 160=100ms)
 #define DEFAULT_ADVERTISING_INTERVAL          16000
@@ -653,7 +653,7 @@ void SimpleBLEPeripheral_Init( uint8 task_id )
     SimpleProfile_SetParameter( HEALTH_DATA_HEADER, 2,  &length);
 
     // Setup a delayed profile startup
-    //osal_set_event( simpleBLEPeripheral_TaskID, SBP_START_DEVICE_EVT );
+    osal_set_event( simpleBLEPeripheral_TaskID, SBP_START_DEVICE_EVT );
 }
 
 /*********************************************************************
@@ -1204,6 +1204,7 @@ static void battPeriodicTask( void )
  */
 static void performPeriodicTask( void )
 {
+/*
 	uint8 addr,val;
 	
 	HalI2CInit(TOUCH_ADDRESS, I2C_CLOCK_RATE);
@@ -1215,7 +1216,7 @@ static void performPeriodicTask( void )
 		LED7_PIO=0;
 	else
 		LED7_PIO=1;
-	
+	*/
     // if (testAddr < 32768)
     // {
     //     HalI2CInit(EEPROM_ADDRESS, I2C_CLOCK_RATE);
@@ -2376,7 +2377,7 @@ static int mpr03x_phys_init(void)
 	pBuf[1]=MPR03X_FFI_6| CDC;
 	HalI2CWrite(2,pBuf);
 	pBuf[0]=MPR03X_FC_REG;
-	pBuf[1]=CDT<<5 | MPR03X_SFI_4 | MPR03X_ESI_1MS;	
+	pBuf[1]=CDT<<5 | MPR03X_SFI_4 | MPR03X_ESI_8MS;//MPR03X_ESI_1MS;	
 	HalI2CWrite(2,pBuf);
 	mpr03x_start();//(client);
 	  
@@ -2468,7 +2469,7 @@ static int mpr03x_phys_init(void)
 	pBuf[1]=MPR03X_FFI_6| CDC;
 	HalI2CWrite(2,pBuf);
 	pBuf[0]=MPR03X_FC_REG;
-	pBuf[1]=CDT<<5 | MPR03X_SFI_4 | MPR03X_ESI_4MS;
+	pBuf[1]=CDT<<5 | MPR03X_SFI_4 | MPR03X_ESI_8MS;//MPR03X_ESI_4MS
 	HalI2CWrite(2,pBuf);
 	return 0;
 		 

@@ -84,7 +84,7 @@
 #define MPR03X_ESI_16MS  		0x04
 #define MPR03X_ESI_32MS  		0x05
 #define MPR03X_ESI_64MS  		0x06
-#define MPR03X_ESI_12MS 		0x07
+#define MPR03X_ESI_128MS 		0x07
 
 #define MPR03X_CALI_DISABLE  	0x40
 #define MPR03X_RUN2_MODE     	0x10
