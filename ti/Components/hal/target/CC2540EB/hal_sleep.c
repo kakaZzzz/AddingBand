@@ -254,7 +254,7 @@ void halSetSleepMode(void)
   // WARNING: DO NOT ADD ANY ADDITIONAL CODE; THIS IS A FIXED SIZED SEGMENT!
   PCON = halSleepPconValue;
   // Disallow waking ISR from running in order to give the highest priority to LL_PowerOnReq().
-  HAL_DISABLE_INTERRUPTS();
+  HAL_DISABLE_INTERRUPTS();   
 }
 
 /*******************************************************************************

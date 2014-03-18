@@ -82,6 +82,9 @@
 
 #define OPEN_PIO                              0
 #define CLOSE_PIO                             1
+#define LED_POWER										P1_3
+#define	BOOSTON										1
+#define	BOOSTOFF										0
 
 // How often to perform periodic event
 #define SBP_PERIODIC_EVT_PERIOD               5000
@@ -246,6 +249,7 @@ int16 PACE_BOTTOM = 0;
 int16 time_count = 0;
 int16 cross_count = 0; //0
 int16 ACC_CUR = 0;
+uint16 led_status=0x00;//BIT11~BIT0 represent LED11~LED0 status, 1-on, 0-off
 
 
 /*********************************************************************
@@ -1368,8 +1372,10 @@ static void closeAllPIO(void){
     LED9_PIO = CLOSE_PIO;
     LED10_PIO = CLOSE_PIO;
     LED11_PIO = CLOSE_PIO;
+	 led_status=0x00;
+	 LED_POWER=BOOSTOFF;
 
-	 P1_3 = 0;
+	 //P1_3 = 0;
     P1_4 = 0;
     P1_5 = 0;
 }
@@ -1386,6 +1392,15 @@ static void closeAllPIO(void){
 
 static void toggleLEDWithTime(uint8 num, uint8 io){
 
+	if(CLOSE_PIO==io)
+		led_status &=~ BV(num);
+	else
+		led_status |= BV(num);
+	if(0 == led_status)
+		LED_POWER=BOOSTOFF;
+	else
+		LED_POWER=BOOSTON;
+	
     switch(num){
         case 1:
             LED1_PIO = io;
