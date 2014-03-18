@@ -598,8 +598,10 @@ void SimpleBLEPeripheral_Init( uint8 task_id )
 
     // initialize IO's settings    
 
-    P0DIR = 0xF7;
-    P0SEL = 0x00;
+    //P0DIR = 0xF7;//1111 0111
+    //P0SEL = 0x00;//0000 0000
+    P0DIR = 0xF6;//1111 0110
+    P0SEL = 0x01;//0000 0001
 
     //P1DIR = 0xF3;//1111 0011
     P1DIR = 0xFB;//1111 1011
@@ -610,6 +612,8 @@ void SimpleBLEPeripheral_Init( uint8 task_id )
 
     //close all
     closeAllPIO();
+	 HalADCPeripheralSetting(HAL_ADC_CHANNEL_0,IO_FUNCTION_PERI);
+	 HalADCToggleChannel(HAL_ADC_CHANNEL_0,ADC_CHANNEL_ON);
 
 	 mpr03x_phys_init();
 	 mpr03x_start();
@@ -1184,7 +1188,7 @@ static void battPeriodicTask( void )
 {
     if (gapProfileState == GAPROLE_CONNECTED)
     {
-        // perform battery level check
+			// perform battery level check
         Batt_MeasLevel( );
 
         // Restart timer
@@ -1376,6 +1380,7 @@ static void closeAllPIO(void){
 	 LED_POWER=BOOSTOFF;
 
 	 //P1_3 = 0;
+	 P0_0 = 0;//VBAT ANALOG INPUT GPIO PORT
     P1_4 = 0;
     P1_5 = 0;
 }
