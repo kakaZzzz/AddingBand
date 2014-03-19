@@ -197,6 +197,17 @@ extern void Batt_Setup( uint8 adc_ch, uint16 minVal, uint16 maxVal,
 void Batt_HandleConnStatusCB( uint16 connHandle, uint8 changeType );
 
 /*********************************************************************
+ * @fn      battMeasureCalibration
+ *
+ * @brief   Measure VDD_2V2 with the ADC internal reference and return the 
+ * 			calibration result --- a actual Vref
+ *          	it as an uint32 
+ *
+ * @return  the Actual Vref.
+ */
+extern void battMeasureCalibration( void );
+
+/*********************************************************************
 *********************************************************************/
 
 #ifdef __cplusplus

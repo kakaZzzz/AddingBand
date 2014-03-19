@@ -69,6 +69,9 @@
 #define BATT_LEVEL_VALUE_IDX        2 // Position of battery level in attribute array
 #define BATT_LEVEL_VALUE_CCCD_IDX   3 // Position of battery level CCCD in attribute array
 
+#define BATT_NOMINAL_2V2_ADC			302//when vref=1.24V, the adc of 2.2V should be 302
+#define BATT_NOMINAL_VREF				1240 // 1.240 *1000
+
 /*********************************************************************
  * TYPEDEFS
  */
@@ -121,7 +124,7 @@ static uint8 battCriticalLevel;
 // ADC channel to be used for reading
 static uint8 battServiceAdcCh = HAL_ADC_CHN_AIN0;
 // Calibration
-static uint16 actualVref=1175, nominalVref=1240;
+static uint16 actualVref=1175;
 /*********************************************************************
  * Profile Attributes - variables
  */
@@ -588,7 +591,7 @@ static uint8 battMeasure( void )
   
   adc = adc/10;
 	//calibrate the adc result
-	adc=(uint16)(((uint32)adc*(uint32)actualVref)/(uint32)nominalVref);
+	adc=(uint16)(((uint32)adc*(uint32)actualVref)/(uint32)BATT_NOMINAL_VREF);
 
   // Call measurement teardown callback
   if (battServiceTeardownCB != NULL)
@@ -624,6 +627,54 @@ static uint8 battMeasure( void )
 
   return percent;
 }
+
+/*********************************************************************
+ * @fn      battMeasureCalibration
+ *
+ * @brief   Measure VDD_2V2 with the ADC internal reference and return the 
+ * 			calibration result --- a actual Vref
+ *          	it as an uint32 
+ *
+ * @return  the Actual Vref.
+ */
+void battMeasureCalibration( void )
+{
+  uint16 adc = 0;
+  //uint8 percent;
+
+  // Call measurement setup callback
+  //if (battServiceSetupCB != NULL)
+  //{
+  //  battServiceSetupCB();
+  //}
+  HalADCPeripheralSetting(HAL_ADC_CHANNEL_0,IO_FUNCTION_PERI);
+  HalADCToggleChannel(HAL_ADC_CHANNEL_0,ADC_CHANNEL_ON);
+
+	//DelayMs(100);
+  // Configure ADC and perform a read
+  HalAdcSetReference( HAL_ADC_REF_125V );
+  //HalAdcSetReference( HAL_ADC_REF_AVDD );
+
+  // read 10 times, then make average
+  for (int i = 0; i < 10; i++)
+  {
+    adc += HalAdcRead( HAL_ADC_CHN_VDD3, HAL_ADC_RESOLUTION_10 );
+  }
+  
+  adc = adc/10;
+
+  actualVref=((uint32)BATT_NOMINAL_2V2_ADC*(uint32)BATT_NOMINAL_VREF)/(uint32)adc;
+
+  HalADCPeripheralSetting(HAL_ADC_CHANNEL_0,IO_FUNCTION_GPIO);
+  HalADCToggleChannel(HAL_ADC_CHANNEL_0,ADC_CHANNEL_OFF);
+
+  // Call measurement teardown callback
+  //if (battServiceTeardownCB != NULL)
+  //{
+  //  battServiceTeardownCB();
+  //}
+}
+
 
 /*********************************************************************
  * @fn      battNotifyLevelState

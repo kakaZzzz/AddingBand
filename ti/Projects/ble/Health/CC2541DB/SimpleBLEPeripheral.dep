@@ -868,6 +868,10 @@
           <name>ICC8051</name>
           <file> 174 171 178 121 97 176 126 57 104 75 22 56 76 29 105 96 107</file>
         </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 178 121 97 176 126 57 104 75 22 56 76 29 105 96 107</file>
+        </tool>
       </inputs>
     </file>
     <file>

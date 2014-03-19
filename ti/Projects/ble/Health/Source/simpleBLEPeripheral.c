@@ -638,6 +638,7 @@ void SimpleBLEPeripheral_Init( uint8 task_id )
 
     // Register for Battery service callback;
     Batt_Register ( battCB );
+	 battMeasureCalibration();
 
     // Enable clock divide on halt
     // This reduces active current while radio is active and CC254x MCU
