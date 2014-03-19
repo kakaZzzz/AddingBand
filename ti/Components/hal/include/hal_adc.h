@@ -110,6 +110,14 @@ extern "C"
 #define HAL_ADC_REF_DIFF          0xc0    /* AIN7,AIN6 Differential Reference */
 #define HAL_ADC_REF_BITS          0xc0    /* Bits [7:6] */
 
+#define IO_FUNCTION_GPIO	0
+#define IO_FUNCTION_PERI	1
+
+#define ADC_CHANNEL_OFF	0
+#define ADC_CHANNEL_ON	1
+
+
+
 /**************************************************************************************************
  *                                        FUNCTIONS - API
  **************************************************************************************************/
@@ -133,6 +141,19 @@ extern void HalAdcSetReference ( uint8 reference );
  * Check for minimum Vdd specified.
  */
 extern bool HalAdcCheckVdd(uint8 vdd);
+/*
+ * Close one channel of ADC
+ */
+extern void HalADCToggleChannel(uint8 channel, uint8 status);
+/*
+ * set the correspond ADC based on given channel and io_function
+ */
+extern void HalADCPeripheralSetting(uint8 channel, uint8 io_function);
+/*
+ * just delay
+ */
+extern void DelayMs(uint16 cnt);
+
 
 /**************************************************************************************************
 **************************************************************************************************/

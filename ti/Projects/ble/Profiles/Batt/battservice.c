@@ -61,8 +61,10 @@
  */
 
 // ADC voltage levels
-#define BATT_ADC_LEVEL_3V           409
-#define BATT_ADC_LEVEL_2V           273
+#define BATT_ADC_LEVEL_3V           232//409
+//#define BATT_ADC_LEVEL_2V           155//273
+#define BATT_ADC_LEVEL_2V           170//170for2.2V//155//273
+
 
 #define BATT_LEVEL_VALUE_IDX        2 // Position of battery level in attribute array
 #define BATT_LEVEL_VALUE_CCCD_IDX   3 // Position of battery level CCCD in attribute array
@@ -117,7 +119,7 @@ static uint16 battMaxLevel = BATT_ADC_LEVEL_3V; // For VDD/3 measurements
 static uint8 battCriticalLevel;
 
 // ADC channel to be used for reading
-static uint8 battServiceAdcCh = HAL_ADC_CHANNEL_VDD;
+static uint8 battServiceAdcCh = HAL_ADC_CHN_AIN0;
 
 /*********************************************************************
  * Profile Attributes - variables
@@ -574,7 +576,8 @@ static uint8 battMeasure( void )
   }
 
   // Configure ADC and perform a read
-  HalAdcSetReference( HAL_ADC_REF_125V );
+  //HalAdcSetReference( HAL_ADC_REF_125V );
+  HalAdcSetReference( HAL_ADC_REF_AVDD );
 
   // read 10 times, then make average
   for (int i = 0; i < 10; i++)

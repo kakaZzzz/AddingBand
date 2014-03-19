@@ -90,7 +90,7 @@
 #define SBP_PERIODIC_EVT_PERIOD               5000
 
 // What is the advertising interval when device is discoverable (units of 625us, 160=100ms)
-#define DEFAULT_ADVERTISING_INTERVAL          16000
+#define DEFAULT_ADVERTISING_INTERVAL          1600//0
 
 // Limited discoverable mode advertises for 30.72s, and then stops
 // General discoverable mode advertises indefinitely
@@ -250,7 +250,7 @@ int16 time_count = 0;
 int16 cross_count = 0; //0
 int16 ACC_CUR = 0;
 uint16 led_status=0x00;//BIT11~BIT0 represent LED11~LED0 status, 1-on, 0-off
-
+//uint8 adc_io_status=TRUE;
 
 /*********************************************************************
  * TYPEDEFS
@@ -612,8 +612,8 @@ void SimpleBLEPeripheral_Init( uint8 task_id )
 
     //close all
     closeAllPIO();
-	 HalADCPeripheralSetting(HAL_ADC_CHANNEL_0,IO_FUNCTION_PERI);
-	 HalADCToggleChannel(HAL_ADC_CHANNEL_0,ADC_CHANNEL_ON);
+	 //HalADCPeripheralSetting(HAL_ADC_CHANNEL_0,IO_FUNCTION_PERI);
+	 //HalADCToggleChannel(HAL_ADC_CHANNEL_0,ADC_CHANNEL_ON);
 
 	 mpr03x_phys_init();
 	 mpr03x_start();
@@ -681,6 +681,7 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
 {
 
     VOID task_id; // OSAL required parameter that isn't used in this function
+
 
     if ( events & SYS_EVENT_MSG )
     {
@@ -1106,12 +1107,18 @@ static void peripheralStateNotificationCB( gaprole_States_t newState )
     case GAPROLE_ADVERTISING:
     {
         // LED2_PIO = OPEN_PIO;
+        //when disconnected, adc analog channel off
+		//HalADCPeripheralSetting(HAL_ADC_CHANNEL_0,IO_FUNCTION_GPIO);
+	 	//HalADCToggleChannel(HAL_ADC_CHANNEL_0,ADC_CHANNEL_OFF);
     }
     break;
 
     case GAPROLE_CONNECTED:
     {
         // LED3_PIO = OPEN_PIO;  
+        //when connected, adc analog channel on
+        HalADCPeripheralSetting(HAL_ADC_CHANNEL_0,IO_FUNCTION_PERI);
+			HalADCToggleChannel(HAL_ADC_CHANNEL_0,ADC_CHANNEL_ON);
     }
     break;
 
@@ -1212,7 +1219,21 @@ static void battPeriodicTask( void )
  */
 static void performPeriodicTask( void )
 {
-/*
+	/*
+
+	if(TRUE == adc_io_status)
+	{
+		HalADCPeripheralSetting(HAL_ADC_CHANNEL_0,IO_FUNCTION_PERI);
+		HalADCToggleChannel(HAL_ADC_CHANNEL_0,ADC_CHANNEL_ON);
+	}
+	else
+	{
+		HalADCPeripheralSetting(HAL_ADC_CHANNEL_0,IO_FUNCTION_GPIO);
+	 	HalADCToggleChannel(HAL_ADC_CHANNEL_0,ADC_CHANNEL_OFF);
+	}
+	adc_io_status=~adc_io_status;
+
+
 	uint8 addr,val;
 	
 	HalI2CInit(TOUCH_ADDRESS, I2C_CLOCK_RATE);
@@ -1380,7 +1401,7 @@ static void closeAllPIO(void){
 	 LED_POWER=BOOSTOFF;
 
 	 //P1_3 = 0;
-	 P0_0 = 0;//VBAT ANALOG INPUT GPIO PORT
+	 P0_0 = 0;//VBAT ANALOG INPUT PORT
     P1_4 = 0;
     P1_5 = 0;
 }

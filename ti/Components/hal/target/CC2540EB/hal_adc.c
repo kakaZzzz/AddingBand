@@ -139,8 +139,10 @@ uint16 HalAdcRead (uint8 channel, uint8 resolution)
   }
 
   /* Enable channel */
-  ADCCFG |= adcChannel;
-
+  ADCCFG |= adcChannel;  
+	// HalADCPeripheralSetting(HAL_ADC_CHANNEL_0,IO_FUNCTION_PERI);
+	// HalADCToggleChannel(HAL_ADC_CHANNEL_0,ADC_CHANNEL_ON);
+	//DelayMs(10);
   /* Convert resolution to decimation rate */
   switch (resolution)
   {
@@ -166,7 +168,9 @@ uint16 HalAdcRead (uint8 channel, uint8 resolution)
   while (!(ADCCON1 & HAL_ADC_EOC));
 
   /* Disable channel after done conversion */
-  ADCCFG &= (adcChannel ^ 0xFF);
+  //ADCCFG &= (adcChannel ^ 0xFF);
+	// HalADCPeripheralSetting(HAL_ADC_CHANNEL_0,IO_FUNCTION_GPIO);
+	// HalADCToggleChannel(HAL_ADC_CHANNEL_0,ADC_CHANNEL_OFF);
 
   /* Read the result */
   reading = (int16) (ADCL);
@@ -200,6 +204,43 @@ uint16 HalAdcRead (uint8 channel, uint8 resolution)
 
   return ((uint16)reading);
 }
+/**************************************************************************************************
+ * @fn      HalADCToggleChannel
+ *
+ * @brief   change the correspond ADC channel status based on given channel and  status
+ *
+ * @param   channel - channel which will be closed
+ * @param   status - channel whether on or off
+ *
+ * @return  none
+ *
+ **************************************************************************************************/
+void HalADCToggleChannel(uint8 channel, uint8 status)
+{
+	if(ADC_CHANNEL_ON==status)
+		ADCCFG |= BV(channel);
+	else
+		ADCCFG &= (BV(channel) ^ 0xFF);
+}
+/**************************************************************************************************
+ * @fn      HalADCPeripheralSetting
+ *
+ * @brief   set the correspond ADC based on given channel and io_function
+ *
+ * @param   channel - channel which will be closed
+  * @param   io_function - which function the channel will turn into
+ *
+ * @return  none
+ *
+ **************************************************************************************************/
+void HalADCPeripheralSetting(uint8 channel, uint8 io_function)
+{
+	if(IO_FUNCTION_GPIO==io_function)
+		P0SEL &=~ BV(channel);
+	else
+		P0SEL |=  BV(channel);
+}
+
 
 /**************************************************************************************************
  * @fn      HalAdcSetReference
