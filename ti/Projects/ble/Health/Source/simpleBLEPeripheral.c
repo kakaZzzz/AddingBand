@@ -221,7 +221,6 @@
 
 
 #define ALT_MIN_DEFAULT                     4000
-#define ALT_MIN_10X                         200
 
 
 uint8 X0, X1, Y0, Y1, Z1, Z0;
@@ -1695,20 +1694,21 @@ static void accGetAccData(uint8 count)
         ALT_MIN = ALT_MIN_DEFAULT;
 
         flagAccStatic=TRUE;
-    //set acc into standby, so can write
-    pBuf[0] = CTRL_REG1;
+        
+        //set acc into standby, so can write
+        pBuf[0] = CTRL_REG1;
         pBuf[1] = 0;
         HalI2CWrite(2, pBuf);
-    //enable motion int
-    pBuf[0] = CTRL_REG4;
+        //enable motion int
+        pBuf[0] = CTRL_REG4;
         pBuf[1] = INT_EN_FF_MT_MASK;
         HalI2CWrite(2, pBuf);
-    //set acc back into active
-    pBuf[0] = CTRL_REG1;
+        //set acc back into active
+        pBuf[0] = CTRL_REG1;
         pBuf[1] = (ASLP_RATE_12_5HZ + DATA_RATE_12_5HZ) | ACTIVE_MASK;
-    HalI2CWrite(2, pBuf);
-    //LED0_PIO=CLOSE_PIO;
-    //LED1_PIO=CLOSE_PIO;
+        HalI2CWrite(2, pBuf);
+        //LED0_PIO=CLOSE_PIO;
+        //LED1_PIO=CLOSE_PIO;
     }
 
     uint8 addr = OUT_X_MSB, accBuf[192];
