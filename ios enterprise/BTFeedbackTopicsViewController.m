@@ -9,7 +9,7 @@
 #import "BTFeedbackTopicsViewController.h"
 
 @interface BTFeedbackTopicsViewController ()
-- (void)setSelectedIndex:(int)theIndex;
+
 - (NSInteger)selectedIndex;
 - (void)updateCellselection;
 -(NSArray*)topics;
