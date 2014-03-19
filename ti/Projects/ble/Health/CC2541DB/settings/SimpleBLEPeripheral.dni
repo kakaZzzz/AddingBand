@@ -1,5 +1,5 @@
 [DebugChecksum]
-Checksum=-191391945
+Checksum=493786498
 [DisAssemblyWindow]
 NumStates=_ 1
 State 1=_ 1
@@ -22,7 +22,8 @@ FilePath=_ ""
 UseFilter=_ 0
 [Breakpoints]
 Bp0=_ "STD_CODE" "{$PROJ_DIR$\..\..\..\..\Components\hal\common\hal_drivers.c}.103.1@1" 0 0 0 0 "" 0 ""
-Count=1
+Bp1=_ "STD_CODE" "{$PROJ_DIR$\..\..\Profiles\Batt\battservice.c}.591.3@1" 1 0 0 0 "" 0 ""
+Count=2
 [ChipconEmu]
 Stop timers on halt=0
 Leave target running=1

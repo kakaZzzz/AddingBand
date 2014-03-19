@@ -61,9 +61,9 @@
  */
 
 // ADC voltage levels
-#define BATT_ADC_LEVEL_3V           232//409
-//#define BATT_ADC_LEVEL_2V           155//273
-#define BATT_ADC_LEVEL_2V           170//170for2.2V//155//273
+#define BATT_ADC_LEVEL_3V           413//232//409
+#define BATT_ADC_LEVEL_2V           275//155//273
+//#define BATT_ADC_LEVEL_2V           170//170for2.2V//155//273
 
 
 #define BATT_LEVEL_VALUE_IDX        2 // Position of battery level in attribute array
@@ -120,7 +120,8 @@ static uint8 battCriticalLevel;
 
 // ADC channel to be used for reading
 static uint8 battServiceAdcCh = HAL_ADC_CHN_AIN0;
-
+// Calibration
+static uint16 actualVref=1175, nominalVref=1240;
 /*********************************************************************
  * Profile Attributes - variables
  */
@@ -576,8 +577,8 @@ static uint8 battMeasure( void )
   }
 
   // Configure ADC and perform a read
-  //HalAdcSetReference( HAL_ADC_REF_125V );
-  HalAdcSetReference( HAL_ADC_REF_AVDD );
+  HalAdcSetReference( HAL_ADC_REF_125V );
+  //HalAdcSetReference( HAL_ADC_REF_AVDD );
 
   // read 10 times, then make average
   for (int i = 0; i < 10; i++)
@@ -586,6 +587,8 @@ static uint8 battMeasure( void )
   }
   
   adc = adc/10;
+	//calibrate the adc result
+	adc=(uint16)(((uint32)adc*(uint32)actualVref)/(uint32)nominalVref);
 
   // Call measurement teardown callback
   if (battServiceTeardownCB != NULL)
