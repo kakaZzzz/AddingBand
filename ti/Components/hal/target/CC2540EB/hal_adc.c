@@ -139,9 +139,9 @@ uint16 HalAdcRead (uint8 channel, uint8 resolution)
   }
 
   /* Enable channel */
-  ADCCFG |= adcChannel;  
-	// HalADCPeripheralSetting(HAL_ADC_CHANNEL_0,IO_FUNCTION_PERI);
-	// HalADCToggleChannel(HAL_ADC_CHANNEL_0,ADC_CHANNEL_ON);
+  //ADCCFG |= adcChannel;  
+	 //HalADCPeripheralSetting(HAL_ADC_CHANNEL_0,IO_FUNCTION_PERI);
+	 //HalADCToggleChannel(HAL_ADC_CHANNEL_0,ADC_CHANNEL_ON);
 	//DelayMs(10);
   /* Convert resolution to decimation rate */
   switch (resolution)
@@ -169,8 +169,8 @@ uint16 HalAdcRead (uint8 channel, uint8 resolution)
 
   /* Disable channel after done conversion */
   //ADCCFG &= (adcChannel ^ 0xFF);
-	// HalADCPeripheralSetting(HAL_ADC_CHANNEL_0,IO_FUNCTION_GPIO);
-	// HalADCToggleChannel(HAL_ADC_CHANNEL_0,ADC_CHANNEL_OFF);
+	 //HalADCPeripheralSetting(HAL_ADC_CHANNEL_0,IO_FUNCTION_GPIO);
+	 //HalADCToggleChannel(HAL_ADC_CHANNEL_0,ADC_CHANNEL_OFF);
 
   /* Read the result */
   reading = (int16) (ADCL);

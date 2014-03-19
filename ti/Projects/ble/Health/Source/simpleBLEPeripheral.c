@@ -1109,8 +1109,8 @@ static void peripheralStateNotificationCB( gaprole_States_t newState )
     {
         // LED2_PIO = OPEN_PIO;
         //when disconnected, adc analog channel off
-		//HalADCPeripheralSetting(HAL_ADC_CHANNEL_0,IO_FUNCTION_GPIO);
-	 	//HalADCToggleChannel(HAL_ADC_CHANNEL_0,ADC_CHANNEL_OFF);
+		HalADCPeripheralSetting(HAL_ADC_CHANNEL_0,IO_FUNCTION_GPIO);
+	 	HalADCToggleChannel(HAL_ADC_CHANNEL_0,ADC_CHANNEL_OFF);
     }
     break;
 

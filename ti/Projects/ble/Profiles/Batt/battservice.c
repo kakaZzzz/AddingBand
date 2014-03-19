@@ -578,6 +578,8 @@ static uint8 battMeasure( void )
   {
     battServiceSetupCB();
   }
+  //HalADCPeripheralSetting(HAL_ADC_CHANNEL_0,IO_FUNCTION_PERI);
+  //HalADCToggleChannel(HAL_ADC_CHANNEL_0,ADC_CHANNEL_ON);
 
   // Configure ADC and perform a read
   HalAdcSetReference( HAL_ADC_REF_125V );
@@ -592,6 +594,9 @@ static uint8 battMeasure( void )
   adc = adc/10;
 	//calibrate the adc result
 	adc=(uint16)(((uint32)adc*(uint32)actualVref)/(uint32)BATT_NOMINAL_VREF);
+
+	//HalADCPeripheralSetting(HAL_ADC_CHANNEL_0,IO_FUNCTION_GPIO);
+	  //HalADCToggleChannel(HAL_ADC_CHANNEL_0,ADC_CHANNEL_OFF);
 
   // Call measurement teardown callback
   if (battServiceTeardownCB != NULL)
