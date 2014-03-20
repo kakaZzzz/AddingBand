@@ -2395,8 +2395,12 @@
           <state>HAL_DMA=TRUE</state>
           <state>POWER_SAVING</state>
           <state>xPLUS_BROADCASTER</state>
-          <state>HAL_LCD=TRUE</state>
+          <state>HAL_LCD=FALSE</state>
           <state>HAL_LED=FALSE</state>
+          <state>HAL_UART=FALSE</state>
+          <state>HAL_UART_DMA=0</state>
+          <state>HAL_KEY=TRUE</state>
+          <state>HAL_I2C=TRUE</state>
         </option>
         <option>
           <name>CCPreprocFile</name>
@@ -2575,6 +2579,7 @@
           <state>$PROJ_DIR$\..\..\include</state>
           <state>$PROJ_DIR$\..\..\..\..\Components\hal\include</state>
           <state>$PROJ_DIR$\..\..\..\..\Components\hal\target\CC2540EB</state>
+          <state>$PROJ_DIR$\..\..\..\..\Components\hal\target\CC2541ST</state>
           <state>$PROJ_DIR$\..\..\..\..\Components\osal\include</state>
           <state>$PROJ_DIR$\..\..\..\..\Components\services\saddr</state>
           <state>$PROJ_DIR$\..\..\..\..\Components\ble\include</state>
@@ -2585,9 +2590,11 @@
           <state>$PROJ_DIR$\..\..\common\cc2540</state>
           <state>$PROJ_DIR$\..\..\common\npi\npi_np</state>
           <state>$PROJ_DIR$\..\..\Profiles\Roles</state>
-          <state>$PROJ_DIR$\..\..\Profiles\SimpleProfile</state>
+          <state>$PROJ_DIR$\..\..\Profiles\Health</state>
           <state>$PROJ_DIR$\..\..\Profiles\DevInfo</state>
           <state>$PROJ_DIR$\..\..\Profiles\OAD</state>
+          <state>$PROJ_DIR$\..\..\Profiles\Batt</state>
+          <state>$PROJ_DIR$\..\..\Profiles\HIDDev</state>
         </option>
         <option>
           <name>CCStdIncCheck</name>
@@ -3040,16 +3047,16 @@
         </option>
         <option>
           <name>XExtraOutOverride</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>ExtraOutputFile</name>
-          <state>SimpleBLEPeripheral.sim</state>
+          <state>SimpleBLEPeripheral.a51</state>
         </option>
         <option>
           <name>ExtraOutputFormat</name>
           <version>11</version>
-          <state>60</state>
+          <state>23</state>
         </option>
         <option>
           <name>ExtraFormatVariant</name>
@@ -3455,8 +3462,12 @@
           <state>HAL_DMA=TRUE</state>
           <state>POWER_SAVING</state>
           <state>xPLUS_BROADCASTER</state>
-          <state>HAL_LCD=TRUE</state>
+          <state>HAL_LCD=FALSE</state>
           <state>HAL_LED=FALSE</state>
+          <state>HAL_UART=FALSE</state>
+          <state>HAL_UART_DMA=0</state>
+          <state>HAL_KEY=TRUE</state>
+          <state>HAL_I2C=TRUE</state>
         </option>
         <option>
           <name>CCPreprocFile</name>
@@ -3635,6 +3646,7 @@
           <state>$PROJ_DIR$\..\..\include</state>
           <state>$PROJ_DIR$\..\..\..\..\Components\hal\include</state>
           <state>$PROJ_DIR$\..\..\..\..\Components\hal\target\CC2540EB</state>
+          <state>$PROJ_DIR$\..\..\..\..\Components\hal\target\CC2541ST</state>
           <state>$PROJ_DIR$\..\..\..\..\Components\osal\include</state>
           <state>$PROJ_DIR$\..\..\..\..\Components\services\saddr</state>
           <state>$PROJ_DIR$\..\..\..\..\Components\ble\include</state>
@@ -3645,9 +3657,11 @@
           <state>$PROJ_DIR$\..\..\common\cc2540</state>
           <state>$PROJ_DIR$\..\..\common\npi\npi_np</state>
           <state>$PROJ_DIR$\..\..\Profiles\Roles</state>
-          <state>$PROJ_DIR$\..\..\Profiles\SimpleProfile</state>
+          <state>$PROJ_DIR$\..\..\Profiles\Health</state>
           <state>$PROJ_DIR$\..\..\Profiles\DevInfo</state>
           <state>$PROJ_DIR$\..\..\Profiles\OAD</state>
+          <state>$PROJ_DIR$\..\..\Profiles\Batt</state>
+          <state>$PROJ_DIR$\..\..\Profiles\HIDDev</state>
         </option>
         <option>
           <name>CCStdIncCheck</name>
