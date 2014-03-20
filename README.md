@@ -138,9 +138,9 @@ AddingBand
     saveRawDataIndex：将数据下标存到eepROM里
     loadRawDataIndex：从eepROM里读取下标
 
-####OAD实施
+###OAD实施
 
-#####烧录imageA
+####烧录imageA
 
     1. 用Erase and program方式烧进去ti_utils/BIM_CC254xF256.hex
     2. 用Append and verify方式烧进去imageA.hex
