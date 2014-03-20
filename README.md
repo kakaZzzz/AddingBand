@@ -137,3 +137,24 @@ AddingBand
     eepromRead：从eepROM里读取数据，并通过SimpleProfile_SetParameter传到app里
     saveRawDataIndex：将数据下标存到eepROM里
     loadRawDataIndex：从eepROM里读取下标
+
+####OAD实施
+
+#####烧录imageA
+
+    1. 用Erase and program方式烧进去ti_utils/BIM_CC254xF256.hex
+    2. 用Append and verify方式烧进去imageA.hex
+    
+####编译imageB
+
+    修改oad_target.c文件中#define OAD_IMAGE_VERSION的值
+    
+####第一次OAD
+
+    直接更新imageB.bin
+    
+####以后OAD
+
+    1. 先更新一个最小体积的imageA.bin
+    2. 这时运行的是imageA
+    3. 然后再更新新的imageB
