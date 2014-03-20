@@ -21,7 +21,6 @@ DerivedData
 Pods
 
 #ti
-*.hex
 *.d51
 *.map
 *.r51
