@@ -151,10 +151,11 @@ AddingBand
     
 ####第一次OAD
 
-    直接更新imageB.bin
+    这时运行的是imageA，所以直接更新imageB.bin
     
 ####以后OAD
 
-    1. 先更新一个最小体积的imageA.bin
-    2. 这时运行的是imageA
-    3. 然后再更新新的imageB
+    1. 这时运行的是imageB
+    2. 先更新一个最小体积的imageA.bin
+    3. 运行时变成imageA
+    4. 然后再更新新的imageB
