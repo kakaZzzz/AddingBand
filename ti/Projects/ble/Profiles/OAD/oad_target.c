@@ -70,9 +70,7 @@
   #define BOOTP_E_IMAGE_A
 #endif
 
-#if !defined (OAD_IMAGE_VERSION)
-  #define OAD_IMAGE_VERSION    0x0000
-#endif
+
 
 #if !defined (OAD_IMAGE_A_USER_ID)
   #define OAD_IMAGE_A_USER_ID  {'A', 'A', 'A', 'A'}
