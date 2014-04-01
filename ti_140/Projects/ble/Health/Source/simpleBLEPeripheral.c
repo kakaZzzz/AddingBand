@@ -325,7 +325,7 @@ static uint8 advertData[] =
 };
 
 // GAP GATT Attributes
-uint8 attDeviceName[GAP_DEVICE_NAME_LEN] = "Adding A1-000000";
+uint8 attDeviceName[GAP_DEVICE_NAME_LEN] = "Adding_A1-000000";
 
 // define for eeprom
 uint16 rawDataStart = 0, rawDataStop = 0;
