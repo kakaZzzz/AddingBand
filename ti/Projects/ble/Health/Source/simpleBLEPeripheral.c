@@ -75,7 +75,7 @@
 #define LED5_PIO                              P1_6
 #define LED6_PIO                              P1_7
 #define LED7_PIO                              P2_0
-#define LED8_PIO                              P0_0
+#define LED8_PIO                              P2_1//P0_0
 #define LED9_PIO                              P0_1
 #define LED10_PIO                             P0_2
 #define LED11_PIO                             P0_4
@@ -607,8 +607,8 @@ void SimpleBLEPeripheral_Init( uint8 task_id )
     P1DIR = 0xFB;//1111 1011
     P1SEL = 0x00;
 
-    P2DIR = 0xFF;
-    P2SEL = 0x00;
+    P2DIR = 0xFF;// 1111 1111
+    P2SEL = 0x00;// 0000 0000
 
     //close all
     closeAllPIO();
