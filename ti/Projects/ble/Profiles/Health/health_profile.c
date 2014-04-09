@@ -61,7 +61,7 @@
  * CONSTANTS
  */
 
-#define SERVAPP_NUM_ATTR_SUPPORTED        17
+#define SERVAPP_NUM_ATTR_SUPPORTED        25
 
 /*********************************************************************
  * TYPEDEFS
@@ -70,31 +70,37 @@
 /*********************************************************************
  * GLOBAL VARIABLES
  */
-// Simple GATT Profile Service UUID: 0xFFF0
+
 CONST uint8 simpleProfileServUUID[ATT_BT_UUID_SIZE] =
 { 
   LO_UINT16(HEALTH_SERV_UUID), HI_UINT16(HEALTH_SERV_UUID)
 };
 
-// Characteristic 1 UUID: 0xFFF1
+CONST uint8 healthFirmwareUUID[ATT_BT_UUID_SIZE] =
+{ 
+  LO_UINT16(HEALTH_FIRMWARE_UUID), HI_UINT16(HEALTH_FIRMWARE_UUID)
+};
+
 CONST uint8 healthSyncUUID[ATT_BT_UUID_SIZE] =
 { 
   LO_UINT16(HEALTH_SYNC_UUID), HI_UINT16(HEALTH_SYNC_UUID)
 };
 
-// Characteristic 2 UUID: 0xFFF2
 CONST uint8 healthClockUUID[ATT_BT_UUID_SIZE] =
 { 
   LO_UINT16(HEALTH_CLOCK_UUID), HI_UINT16(HEALTH_CLOCK_UUID)
 };
 
-// Characteristic 3 UUID: 0xFFF3
+CONST uint8 healthTimezoneUUID[ATT_BT_UUID_SIZE] =
+{ 
+  LO_UINT16(HEALTH_TIMEZONE_UUID), HI_UINT16(HEALTH_TIMEZONE_UUID)
+};
+
 CONST uint8 healthDataHeaderUUID[ATT_BT_UUID_SIZE] =
 { 
   LO_UINT16(HEALTH_DATA_HEADER_UUID), HI_UINT16(HEALTH_DATA_HEADER_UUID)
 };
 
-// Characteristic 4 UUID: 0xFFF4
 CONST uint8 healthDataBodyUUID[ATT_BT_UUID_SIZE] =
 { 
   LO_UINT16(HEALTH_DATA_BODY_UUID), HI_UINT16(HEALTH_DATA_BODY_UUID)
@@ -121,6 +127,10 @@ static simpleProfileCBs_t *simpleProfile_AppCBs = NULL;
 // Simple Profile Service attribute
 static CONST gattAttrType_t simpleProfileService = { ATT_BT_UUID_SIZE, simpleProfileServUUID };
 
+static uint8 healthFirmwareProps = GATT_PROP_READ;
+static uint8 healthFirmware[2] = {0,0};                          // uint16
+static uint8 healthFirmwareUserDesp[17] = "Firmware\0";
+
 static uint8 healthSyncProps = GATT_PROP_READ | GATT_PROP_NOTIFY | GATT_PROP_WRITE;
 static uint8 healthSync[8] = {0,0,0,0,0,0,0,0};                   // uint8*8
 static gattCharCfg_t healthSyncConfig[GATT_MAX_NUM_CONN];         // define for notify            
@@ -129,6 +139,10 @@ static uint8 healthSyncUserDesp[17] = "Do Sync\0";
 static uint8 healthClockProps = GATT_PROP_WRITE;
 static uint8 healthClock[4] = {0,0,0,0};                          // uint32
 static uint8 healthClockUserDesp[17] = "APP Set Clock\0";
+
+static uint8 healthTimezoneProps = GATT_PROP_WRITE;
+static uint8 healthTimezone[1] = {0};                          // int8
+static uint8 healthTimezoneUserDesp[17] = "APP Set Timezone\0";
 
 static uint8 healthDataHeaderProps = GATT_PROP_READ | GATT_PROP_NOTIFY;
 static uint8 healthDataHeader[2] = {1,0};                         // uint16, default is 1
@@ -154,6 +168,30 @@ static gattAttribute_t simpleProfileAttrTbl[SERVAPP_NUM_ATTR_SUPPORTED] =
     0,                                        /* handle */
     (uint8 *)&simpleProfileService            /* pValue */
   },
+
+    // Firmware Declaration
+    { 
+      { ATT_BT_UUID_SIZE, characterUUID },
+      GATT_PERMIT_READ, 
+      0,
+      &healthFirmwareProps 
+    },
+
+      // Firmware Value
+      { 
+        { ATT_BT_UUID_SIZE, healthFirmwareUUID },
+        GATT_PERMIT_READ, 
+        0, 
+        healthFirmware 
+      },
+
+      // Firmware User Description
+      { 
+        { ATT_BT_UUID_SIZE, charUserDescUUID },
+        GATT_PERMIT_READ, 
+        0, 
+        healthFirmwareUserDesp 
+      },  
 
     // Sync Declaration
     { 
@@ -209,7 +247,31 @@ static gattAttribute_t simpleProfileAttrTbl[SERVAPP_NUM_ATTR_SUPPORTED] =
         GATT_PERMIT_READ, 
         0, 
         healthClockUserDesp 
-      },           
+      },
+
+    // Timezone Declaration
+    { 
+      { ATT_BT_UUID_SIZE, characterUUID },
+      GATT_PERMIT_READ, 
+      0,
+      &healthTimezoneProps 
+    },
+
+      // Timezone Value
+      { 
+        { ATT_BT_UUID_SIZE, healthTimezoneUUID },
+        GATT_PERMIT_WRITE, 
+        0, 
+        healthTimezone 
+      },
+
+      // Timezone User Description
+      { 
+        { ATT_BT_UUID_SIZE, charUserDescUUID },
+        GATT_PERMIT_READ, 
+        0, 
+        healthTimezoneUserDesp 
+      },         
       
     // Data header Declaration
     { 
@@ -391,6 +453,17 @@ bStatus_t SimpleProfile_SetParameter( uint8 param, uint8 len, void *value )
   bStatus_t ret = SUCCESS;
   switch ( param )
   {
+    case HEALTH_FIRMWARE:
+      if ( len == sizeof ( healthFirmware ) ) 
+      {
+        VOID osal_memcpy( healthFirmware, value, sizeof(healthFirmware) );
+      }
+      else
+      {
+        ret = bleInvalidRange;
+      }
+      break;
+
     case HEALTH_SYNC:
       if ( len == sizeof ( healthSync ) ) 
       {
@@ -408,6 +481,17 @@ bStatus_t SimpleProfile_SetParameter( uint8 param, uint8 len, void *value )
       if ( len == sizeof ( healthClock ) ) 
       {
         VOID osal_memcpy( healthClock, value, sizeof(healthClock) );
+      }
+      else
+      {
+        ret = bleInvalidRange;
+      }
+      break;
+
+    case HEALTH_TIMEZONE:
+      if ( len == sizeof ( healthTimezone ) ) 
+      {
+        VOID osal_memcpy( healthTimezone, value, sizeof(healthTimezone) );
       }
       else
       {
@@ -472,13 +556,21 @@ bStatus_t SimpleProfile_GetParameter( uint8 param, void *value )
   bStatus_t ret = SUCCESS;
   switch ( param )
   {
+    
+    case HEALTH_FIRMWARE:
+      VOID osal_memcpy( value, healthFirmware, sizeof(healthFirmware) );
+      break;
+
     case HEALTH_SYNC:
-      //*((uint8*)value) = healthSync;
       VOID osal_memcpy( value, healthSync, sizeof(healthSync) );
       break;
 
     case HEALTH_CLOCK:
       VOID osal_memcpy( value, healthClock, sizeof(healthClock) );
+      break;
+
+    case HEALTH_TIMEZONE:
+      VOID osal_memcpy( value, healthTimezone, sizeof(healthTimezone) );
       break;      
 
     case HEALTH_DATA_HEADER:
@@ -545,6 +637,7 @@ static uint8 simpleProfile_ReadAttrCB( uint16 connHandle, gattAttribute_t *pAttr
       //   can be sent as a notification, it is included here
       case HEALTH_SYNC_UUID:
       case HEALTH_CLOCK_UUID:
+      case HEALTH_FIRMWARE_UUID:
 
         *pLen = 1;
         pValue[0] = *pAttr->pValue;
@@ -624,6 +717,7 @@ static bStatus_t simpleProfile_WriteAttrCB( uint16 connHandle, gattAttribute_t *
     {
       case HEALTH_SYNC_UUID:
       case HEALTH_CLOCK_UUID:
+      case HEALTH_TIMEZONE_UUID:
       case HEALTH_DATA_HEADER_UUID:
 
         //Validate the value
@@ -655,6 +749,10 @@ static bStatus_t simpleProfile_WriteAttrCB( uint16 connHandle, gattAttribute_t *
           else if( pAttr->pValue == healthDataHeader )
           {
             notifyApp = HEALTH_DATA_HEADER;           
+          }
+          else if( pAttr->pValue == healthTimezone )
+          {
+            notifyApp = HEALTH_TIMEZONE;           
           }
           else{ // Health CLock
             notifyApp = HEALTH_CLOCK;
@@ -761,7 +859,7 @@ static void dataHeaderNotifyCB( linkDBItem_t *pLinkItem )
     {
       attHandleValueNoti_t noti;
 
-      noti.handle = simpleProfileAttrTbl[9].handle;
+      noti.handle = simpleProfileAttrTbl[15].handle;
       noti.len = sizeof(healthDataHeader);
       //noti.value[0] = healthSync;
       
@@ -785,7 +883,7 @@ static void dataBodyNotifyCB( linkDBItem_t *pLinkItem )
     {
       attHandleValueNoti_t noti;
 
-      noti.handle = simpleProfileAttrTbl[13].handle;
+      noti.handle = simpleProfileAttrTbl[19].handle;
       noti.len = sizeof(healthDataBody);
       //noti.value[0] = healthSync;
       

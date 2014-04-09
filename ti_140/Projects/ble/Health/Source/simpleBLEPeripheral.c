@@ -48,6 +48,8 @@
  * CONSTANTS
  */
 
+#define FIRMWARE                              100
+
 #define HI_UINT32(x)                          (((x) >> 16) & 0xffff)
 #define LO_UINT32(x)                          ((x) & 0xffff)
 
@@ -262,6 +264,8 @@ int16 ACC_CUR = 0;
 static uint8 simpleBLEPeripheral_TaskID;   // Task ID for internal task/event processing
 
 static gaprole_States_t gapProfileState = GAPROLE_INIT;
+
+int8 timezone = 0;
 
 // GAP - SCAN RSP data (max size = 31 bytes)
 uint8 scanRspData[] =
@@ -543,10 +547,12 @@ void SimpleBLEPeripheral_Init( uint8 task_id )
         // uint8   healthSync = 1;
         // uint32  healthClock = 0;
         uint16  healthDataHeader = DATA_TYPE_COUNT;
+        uint16  healthFirmware = FIRMWARE;
         // uint8   healthDataBody = 0;
         // SimpleProfile_SetParameter( HEALTH_SYNC, sizeof ( uint8 ), &healthSync );
         // SimpleProfile_SetParameter( HEALTH_CLOCK, sizeof ( uint32 ), &healthClock );
         SimpleProfile_SetParameter( HEALTH_DATA_HEADER, sizeof ( uint16 ), &healthDataHeader );
+        SimpleProfile_SetParameter( HEALTH_FIRMWARE, sizeof ( uint16 ), &healthFirmware );
         // SimpleProfile_SetParameter( HEALTH_DATA_BODY, sizeof ( uint8 ), &healthDataBody );
     }
 
@@ -1235,6 +1241,13 @@ static void simpleProfileChangeCB( uint8 paramID )
 
             osal_start_timerEx( simpleBLEPeripheral_TaskID, READ_EVT, READ_INTERVAL );
         }
+
+        break;
+
+    case HEALTH_TIMEZONE:
+
+        // init clock form app
+        SimpleProfile_GetParameter( HEALTH_TIMEZONE, &timezone );
 
         break;
 
@@ -1928,7 +1941,7 @@ static void eepromWrite(uint8 type){
             LO_UINT16(oneData[pointer].count),
             HI_UINT16(oneData[pointer].count),
             oneData[pointer].type,
-            0
+            timezone
         };
 
         HalI2CWrite(sizeof(dBuf), dBuf);
@@ -2020,7 +2033,7 @@ static uint8 eepromRead(void){
             LO_UINT16(oneData[readTheI].count),
             HI_UINT16(oneData[readTheI].count),
             oneData[readTheI].type,
-            0
+            timezone
         };
 
         SimpleProfile_SetParameter( HEALTH_DATA_BODY, 8,  dBuf);

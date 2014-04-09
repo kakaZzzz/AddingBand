@@ -54,20 +54,23 @@ extern "C"
  */
 
 // Profile Parameters
-#define HEALTH_SYNC                   0  // RW uint8 - Profile Characteristic 1 value 
-#define HEALTH_CLOCK                   1  // RW uint8 - Profile Characteristic 2 value
-#define HEALTH_DATA_HEADER                   2  // RW uint8 - Profile Characteristic 3 value
-#define HEALTH_DATA_BODY                   3  // RW uint8 - Profile Characteristic 4 value
-#define SIMPLEPROFILE_CHAR5                   4  // RW uint8 - Profile Characteristic 4 value
+#define HEALTH_FIRMWARE               0
+#define HEALTH_SYNC                   1  // RW uint8 - Profile Characteristic 1 value 
+#define HEALTH_CLOCK                  2  // RW uint8 - Profile Characteristic 2 value
+#define HEALTH_TIMEZONE               3
+#define HEALTH_DATA_HEADER            4  // RW uint8 - Profile Characteristic 3 value
+#define HEALTH_DATA_BODY              5  // RW uint8 - Profile Characteristic 4 value
   
 // Simple Profile Service UUID
 #define HEALTH_SERV_UUID              0x2300
     
 // Key Pressed UUID
-#define HEALTH_SYNC_UUID              0x2301
-#define HEALTH_CLOCK_UUID             0x2302
-#define HEALTH_DATA_HEADER_UUID       0x2303
-#define HEALTH_DATA_BODY_UUID         0x2304
+#define HEALTH_FIRMWARE_UUID          0x2301
+#define HEALTH_SYNC_UUID              0x2302
+#define HEALTH_CLOCK_UUID             0x2303
+#define HEALTH_TIMEZONE_UUID          0x2304
+#define HEALTH_DATA_HEADER_UUID       0x2305
+#define HEALTH_DATA_BODY_UUID         0x2306
   
 // Simple Keys Profile Services bit fields
 #define SIMPLEPROFILE_SERVICE               0x00000001  
