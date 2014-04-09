@@ -286,7 +286,7 @@
         NSLog(@"DiscoverCharacteristics error: %@", error.localizedDescription);
     }
     
-    NSLog(@"Discover Characteristics sum: %d", service.characteristics.count);
+    NSLog(@"Discover Characteristics sum: %lu", (unsigned long)service.characteristics.count);
     
     //正常连接操作
     
@@ -297,6 +297,12 @@
         NSLog(@"c:%@", c.UUID);
         
         [bp.allCharacteristics setObject:c forKey:c.UUID];
+        
+        // 读取固件版本
+        if ([c.UUID isEqual:[CBUUID UUIDWithString:UUID_HEALTH_FIRMWARE]]) {
+            [peripheral readValueForCharacteristic:c];
+        }
+
         
         // 设置电量通知
         if ([c.UUID isEqual:[CBUUID UUIDWithString:UUID_BATTERY_LEVEL]]) {
@@ -333,10 +339,16 @@
             //取现在距离2000-1-1的秒数
             uint32_t seconds = [BTUtils currentSeconds];
             
+            int8_t timeZone = [[NSTimeZone localTimeZone] secondsFromGMT] / 3600;
+            
+            NSLog(@"Timezone is %d",timeZone);
+            
             NSLog(@"now:%d", seconds);
             
             //初始化手环的时间
             [self writeAll:[NSData dataWithBytes:&seconds length:sizeof(seconds)] withUUID:[CBUUID UUIDWithString:UUID_HEALTH_CLOCK]];
+            
+            [self writeAll:[NSData dataWithBytes:&timeZone length:sizeof(timeZone)] withUUID:[CBUUID UUIDWithString:UUID_HEALTH_TIMEZONE]];
             
             //新增一个连接设备
             [self.connectedList setObject:[NSNumber numberWithBool:YES] forKey:[BTUtils getModel:peripheral.name]];
@@ -378,7 +390,7 @@
         NSLog(@"UpdateValueForCharacteristic error: %@", error.localizedDescription);
     }
     
-    NSLog(@"update:%@", characteristic.UUID);
+    NSLog(@"update:%@ %@", characteristic.UUID, characteristic.value);
     
     //根据uuid取到对象
     BTBandPeripheral* bp = [_allPeripherals objectForKey:peripheral.name];
@@ -486,11 +498,14 @@
         uint32_t seconds;
         uint16_t count;//同步数据的时候的运动步数
         uint8_t type;
+        int8_t timezone;
         
         [characteristic.value getBytes:&seconds range:NSMakeRange(0, 4)];
         [characteristic.value getBytes:&count range:NSMakeRange(4, 2)];
         [characteristic.value getBytes:&type range:NSMakeRange(6, 1)];
+        [characteristic.value getBytes:&timezone range:NSMakeRange(7, 1)];
         
+        NSLog(@"timezone is %d", timezone);
         
         //获取当前时间
         NSDate* date = [NSDate date];

@@ -51,14 +51,16 @@
 #define MAM_BAND_MODEL                  @"A1"
 
 //蓝牙服务uuid
-#define CHARACTERISTICS_COUNT           5
+#define CHARACTERISTICS_COUNT           7
 
 #define UUID_HEALTH_SERVICE             @"2300"
 
-#define UUID_HEALTH_SYNC                @"2301"
-#define UUID_HEALTH_CLOCK               @"2302"
-#define UUID_HEALTH_DATA_HEADER         @"2303"
-#define UUID_HEALTH_DATA_BODY           @"2304"
+#define UUID_HEALTH_FIRMWARE            @"2301"
+#define UUID_HEALTH_SYNC                @"2302"
+#define UUID_HEALTH_CLOCK               @"2303"
+#define UUID_HEALTH_TIMEZONE            @"2304"
+#define UUID_HEALTH_DATA_HEADER         @"2305"
+#define UUID_HEALTH_DATA_BODY           @"2306"
 
 #define UUID_BATTERY_SERVICE            @"180F"
 #define UUID_BATTERY_LEVEL              @"2A19"
