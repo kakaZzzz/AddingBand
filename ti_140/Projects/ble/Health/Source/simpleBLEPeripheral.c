@@ -317,14 +317,25 @@ static uint8 advertData[] =
 
     // service UUID, to notify central devices what services are included
     // in this peripheral
+    
+    
+    #if defined FEATURE_OAD
     0x07,   // length of this data
+    #else
+    0x05,
+    #endif
+    
     GAP_ADTYPE_16BIT_MORE,      // some of the UUID's, but not all
     LO_UINT16( HEALTH_SERV_UUID ),
     HI_UINT16( HEALTH_SERV_UUID ),
     LO_UINT16(BATT_SERVICE_UUID),
-    HI_UINT16(BATT_SERVICE_UUID),
+    HI_UINT16(BATT_SERVICE_UUID)
+      
+    #if defined FEATURE_OAD
+    ,
     LO_UINT16(OAD_SERVICE_UUID),
     HI_UINT16(OAD_SERVICE_UUID)
+    #endif
 
 };
 
