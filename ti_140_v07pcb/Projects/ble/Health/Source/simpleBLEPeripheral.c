@@ -49,37 +49,38 @@
  * CONSTANTS
  */
 
-#define FIRMWARE                              100
+#define FIRMWARE                              101
 
 #define HI_UINT32(x)                          (((x) >> 16) & 0xffff)
 #define LO_UINT32(x)                          ((x) & 0xffff)
 
 // define LEDs
-// #define LED0_PIO                              P0_1
-// #define LED1_PIO                              P0_2
-// #define LED2_PIO                              P0_4
-// #define LED3_PIO                              P0_5
-// #define LED4_PIO                              P0_6
-// #define LED5_PIO                              P0_7
-// #define LED6_PIO                              P1_0
-// #define LED7_PIO                              P1_1
-// #define LED8_PIO                              P1_6
-// #define LED9_PIO                              P1_7
-// #define LED10_PIO                             P2_0
-// #define LED11_PIO                             P0_0
 
-#define LED0_PIO                              P0_5
-#define LED1_PIO                              P0_6
-#define LED2_PIO                              P0_7
-#define LED3_PIO                              P1_0
-#define LED4_PIO                              P1_1
-#define LED5_PIO                              P1_6
-#define LED6_PIO                              P1_7
-#define LED7_PIO                              P2_0
-#define LED8_PIO                              P2_1
-#define LED9_PIO                              P0_1
-#define LED10_PIO                             P0_2
-#define LED11_PIO                             P0_4
+//#define LED0_PIO                              P0_5
+//#define LED1_PIO                              P0_6
+//#define LED2_PIO                              P0_7
+//#define LED3_PIO                              P1_0
+//#define LED4_PIO                              P1_1
+//#define LED5_PIO                              P1_6
+//#define LED6_PIO                              P1_7
+//#define LED7_PIO                              P2_0
+//#define LED8_PIO                              P2_1
+//#define LED9_PIO                              P0_1
+//#define LED10_PIO                             P0_2
+//#define LED11_PIO                             P0_4
+
+#define LED0_PIO                              P1_0
+#define LED1_PIO                              P1_1
+#define LED2_PIO                              P1_6
+#define LED3_PIO                              P1_7
+#define LED4_PIO                              P2_0
+#define LED5_PIO                              P2_1
+#define LED6_PIO                              P0_1
+#define LED7_PIO                             P0_2
+#define LED8_PIO                             P0_4
+#define LED9_PIO                              P0_5
+#define LED10_PIO                              P0_6
+#define LED11_PIO                              P0_7
 
 #define OPEN_PIO                              0
 #define CLOSE_PIO                             1
@@ -91,7 +92,7 @@
 #define SBP_PERIODIC_EVT_PERIOD               5000
 
 // What is the advertising interval when device is discoverable (units of 625us, 160=100ms)
-#define DEFAULT_ADVERTISING_INTERVAL          16000
+#define DEFAULT_ADVERTISING_INTERVAL          8000//16000
 
 // Limited discoverable mode advertises for 30.72s, and then stops
 // General discoverable mode advertises indefinitely
@@ -209,6 +210,8 @@
 #define TAP_HOUR_START_TYPE                 3
 
 #define DATA_TYPE_COUNT                     3
+#define ADC_VREF_ADDRESS_L						0x7d64//address for low byte of actualVref
+#define ADC_VREF_ADDRESS_H						0x7d65//address for high byte of actualVref
 //define for touch sensor mpr
 #define TOUCH_ADDRESS								  0x4A
 
@@ -229,7 +232,8 @@
 
 
 #define ALT_MIN_DEFAULT                     4000
-
+//#define AUTO_CONFIG		TRUE
+#define MANUFACTURE_TEST	FASLE
 
 uint8 X0, X1, Y0, Y1, Z1, Z0;
 int16 X_out, Y_out, Z_out;
@@ -563,7 +567,7 @@ void SimpleBLEPeripheral_Init( uint8 task_id )
     GATTServApp_AddService( GATT_ALL_SERVICES );    // GATT attributes
     // DevInfo_AddService();                           // Device Information Service
     SimpleProfile_AddService( GATT_ALL_SERVICES );  // Simple GATT Profile
-    Batt_AddService();
+	 Batt_AddService();
 
 #if defined FEATURE_OAD
     VOID OADTarget_AddService();                    // OAD Profile
@@ -629,7 +633,13 @@ void SimpleBLEPeripheral_Init( uint8 task_id )
 
     // Register for Battery service callback;
     Batt_Register ( battCB );
-	 battMeasureCalibration();
+
+	 //read actualVref from eeprom
+	 #if (MANUFACTURE_TEST==FALSE)
+	 	battMeasureCalibration();
+	 	WriteActualVref(1190);
+	 #endif
+	 ReadActualVref();
 
     // Enable clock divide on halt
     // This reduces active current while radio is active and CC254x MCU
@@ -2232,7 +2242,7 @@ static void mpr03x_start(void)//(struct i2c_client *client)
 	HalI2CWrite(2,pBuf);
 } 
 
-
+#if defined AUTO_CONFIG
 //Auto config CDC CDT with Run1 mode, 2 pad with INT
 //For other senario, set the MPR03X_EC_REG accordingly, and use Exdata accordingly
 //reture CDC and CDT with optimized value  
@@ -2351,15 +2361,15 @@ static int  mpr03x_autoconfig(struct mpr03x_touchkey_data  *pdata)
 	  return 1;
 	}
 }
-
+#endif
 static int mpr03x_phys_init(void)
 	//(struct mpr03x_platform_data *platdata,
 		//	    struct mpr03x_touchkey_data *pdata,
 			//    struct i2c_client *client)
 {
-	uint8 CDC , CDT ,data1,data2; //u8 CDC , CDT , data ,data1,data2; 
-	uint8 flagAutoConfigReturn=FALSE;
-	uint8 addr, val;
+	uint8 CDC , CDT; //u8 CDC , CDT , data ,data1,data2; 
+	//uint8 flagAutoConfigReturn=FALSE;
+	//uint8 addr, val;
 	uint8 pBuf[2];
 	struct mpr03x_touchkey_data *pdata;
 	
@@ -2372,7 +2382,7 @@ static int mpr03x_phys_init(void)
 	//		&& i2c_smbus_read_byte_data(client,MPR03X_EC_REG)!=0x00)
 	//	dev_info(&client->dev,"mpr03x reset fail\n");
    pdata=osal_mem_alloc(sizeof(struct mpr03x_touchkey_data));
-  	pdata->CDC = 0x24;
+  	pdata->CDC =0x30; //0x24;
    pdata->CDT = 1;
 #ifdef AUTO_CONFIG
 		//Auto search CDC, CDT
@@ -2488,6 +2498,59 @@ static int mpr03x_phys_init(void)
 	HalI2CWrite(2,pBuf);
 	return 0;
 		 
+}
+/*********************************************************************
+ * @fn      ReadActualVref
+ *
+ * @brief  read actualVref from eeprom 
+ *			if value is in correct range, it return 1 and use the reading result as the actualVref
+ *			if value is not in correct range, it return 0 and use default 1240 as the actualVref
+ *
+ * @return  1: read success		0: read fail
+ */
+uint8 ReadActualVref(void)
+{
+	HalI2CInit(EEPROM_ADDRESS, I2C_CLOCK_RATE);
+	uint8 dBuf[2], addr[2] = {
+					HI_UINT16(ADC_VREF_ADDRESS_L),
+					LO_UINT16(ADC_VREF_ADDRESS_L)
+			  };
+	HalI2CWrite(sizeof(addr), addr);
+   HalI2CRead(sizeof(dBuf), dBuf);
+	actualVref=BUILD_UINT16(dBuf[0],dBuf[1]);//dBuf[0]=low byte, dBuf[1]=high byte	
+	if((actualVref>1040)&&(actualVref<1440))// correct range of vref is 1.04v~1.44v
+	{
+		return 1;
+	}
+	else
+	{
+		actualVref=1240;
+		return 0;
+	}
+		
+}
+/*********************************************************************
+ * @fn      WriteActualVref
+ *
+ * @brief  write actualVref into eeprom 
+ *
+ * @param : temp - the value which will be writen into eeprom and used as actualVref
+ *
+ * @return  none
+ */
+void WriteActualVref(uint16 temp)
+{
+	HalI2CInit(EEPROM_ADDRESS, I2C_CLOCK_RATE);
+
+  // define array with address and data
+  uint8 dBuf[4] = {
+      HI_UINT16(ADC_VREF_ADDRESS_L),    // address
+      LO_UINT16(ADC_VREF_ADDRESS_L),    // address
+      LO_UINT16(temp),
+      HI_UINT16(temp)
+  };
+  HalI2CWrite(sizeof(dBuf), dBuf);
+  HalI2CAckPolling();
 }
 
 /*********************************************************************

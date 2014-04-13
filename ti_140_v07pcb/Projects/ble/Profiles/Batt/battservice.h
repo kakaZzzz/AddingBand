@@ -70,6 +70,8 @@ extern "C"
 // HID Report IDs for the service
 #define HID_RPT_ID_BATT_LEVEL_IN        4  // Battery Level input report ID
 
+extern uint16 actualVref;
+
 /*********************************************************************
  * TYPEDEFS
  */
@@ -204,6 +206,26 @@ void Batt_HandleConnStatusCB( uint16 connHandle, uint8 changeType );
  * @return  the Actual Vref.
  */
 extern void battMeasureCalibration( void );
+/*********************************************************************
+ * @fn      ReadActualVref
+ *
+ * @brief  read actualVref from eeprom 
+ *			if value is in correct range, it return 1 and use the reading result as the actualVref
+ *			if value is not in correct range, it return 0 and use default 1240 as the actualVref
+ *
+ * @return  1: read success		0: read fail
+ */
+extern uint8 ReadActualVref(void);
+/*********************************************************************
+ * @fn		WriteActualVref
+ *
+ * @brief  write actualVref into eeprom 
+ *
+ * @param : temp - the value which will be writen into eeprom and used as actualVref
+ *
+ * @return	none
+ */
+extern void WriteActualVref(uint16 temp);
 
 /*********************************************************************
 *********************************************************************/

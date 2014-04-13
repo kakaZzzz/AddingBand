@@ -42,6 +42,7 @@
 #include "bcomdef.h"
 #include "OSAL.h"
 #include "hal_adc.h"
+#include "hal_i2c.h"
 #include "linkdb.h"
 #include "att.h"
 #include "gatt.h"
@@ -61,16 +62,16 @@
  */
 
 // ADC voltage levels
-#define BATT_ADC_LEVEL_3V           413//232//409
-#define BATT_ADC_LEVEL_2V           275//155//273
-//#define BATT_ADC_LEVEL_2V           170//170for2.2V//155//273
-
+#define BATT_ADC_LEVEL_3V           409 //   (3/3)/1.25*511=409
+#define BATT_ADC_LEVEL_2V           273 //   (2/3)/1.25*511=273
 
 #define BATT_LEVEL_VALUE_IDX        2 // Position of battery level in attribute array
 #define BATT_LEVEL_VALUE_CCCD_IDX   3 // Position of battery level CCCD in attribute array
 
-#define BATT_NOMINAL_2V2_ADC			302//when vref=1.24V, the adc of 2.2V should be 302
-#define BATT_NOMINAL_VREF				1240 // 1.240 *1000
+#define BATT_NOMINAL_3V3_ADC			450//when vref=1.25V, the adc of 3.3V should be 450
+													//   (3.3/3)/1.25*511=450
+//#define BATT_NOMINAL_VREF				1240 // 1.240 *1000
+#define BATT_NOMINAL_VREF				1250 // 1.25 *1000
 
 /*********************************************************************
  * TYPEDEFS
@@ -90,6 +91,8 @@ CONST uint8 battLevelUUID[ATT_BT_UUID_SIZE] =
 {
   LO_UINT16(BATT_LEVEL_UUID), HI_UINT16(BATT_LEVEL_UUID)
 };
+// Calibration
+uint16 actualVref;//=1175;
 
 /*********************************************************************
  * EXTERNAL VARIABLES
@@ -123,8 +126,6 @@ static uint8 battCriticalLevel;
 
 // ADC channel to be used for reading
 static uint8 battServiceAdcCh = HAL_ADC_CHN_AIN0;
-// Calibration
-static uint16 actualVref=1175;
 
 /*********************************************************************
  * Profile Attributes - variables
@@ -539,7 +540,7 @@ static void battNotifyCB( linkDBItem_t *pLinkItem )
  */
 static uint8 battMeasure( void )
 {
-  uint16 adc;
+  uint16 adc=0;
   uint8 percent;
 
   /**
@@ -583,8 +584,8 @@ static uint8 battMeasure( void )
   // Configure ADC and perform a read
   HalAdcSetReference( HAL_ADC_REF_125V );
 
-  //read adc result, before ble stack 1.4.0 it read 10 times, after ble stack 
-  // the ti demo read only 1 time without average anymore, but here we keep it 
+  //read adc result, in ble stack 1.3.2 it read 10 times, after ble stack 
+  // 1.4.0 the ti demo read only 1 time without average anymore, but here we keep it 
   // 10 times reading
   //adc = HalAdcRead( battServiceAdcCh, HAL_ADC_RESOLUTION_10 );
   // read 10 times, then make average
@@ -593,7 +594,7 @@ static uint8 battMeasure( void )
     adc += HalAdcRead( battServiceAdcCh, HAL_ADC_RESOLUTION_10 );
   }  
   adc = adc/10;
-	//calibrate the adc result
+	//calibrate the adc result: ADC_actual=ADC_nominal * VREF_actual / VREF_nominal
 	adc=(uint16)(((uint32)adc*(uint32)actualVref)/(uint32)BATT_NOMINAL_VREF);
 
   // Call measurement teardown callback
@@ -660,13 +661,13 @@ void battMeasureCalibration( void )
   // read 10 times, then make average
   for (int i = 0; i < 10; i++)
   {
-    adc += HalAdcRead( HAL_ADC_CHN_VDD3, HAL_ADC_RESOLUTION_10 );
+    //adc += HalAdcRead( HAL_ADC_CHN_VDD3, HAL_ADC_RESOLUTION_10 );
+	 adc += HalAdcRead( HAL_ADC_CHN_AIN0, HAL_ADC_RESOLUTION_10 );
   }
   
   adc = adc/10;
 
-  actualVref=((uint32)BATT_NOMINAL_2V2_ADC*(uint32)BATT_NOMINAL_VREF)/(uint32)
-adc;
+  actualVref=((uint32)BATT_NOMINAL_3V3_ADC*(uint32)BATT_NOMINAL_VREF)/(uint32)adc;
 
   HalADCPeripheralSetting(HAL_ADC_CHANNEL_0,IO_FUNCTION_GPIO);
   HalADCToggleChannel(HAL_ADC_CHANNEL_0,ADC_CHANNEL_OFF);
@@ -677,6 +678,7 @@ adc;
   //  battServiceTeardownCB();
   //}
 }
+
 
 /*********************************************************************
  * @fn      battNotifyLevelState
