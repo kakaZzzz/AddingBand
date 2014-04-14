@@ -49,7 +49,7 @@
  * CONSTANTS
  */
 
-#define FIRMWARE                              101
+#define FIRMWARE                              102
 
 #define HI_UINT32(x)                          (((x) >> 16) & 0xffff)
 #define LO_UINT32(x)                          ((x) & 0xffff)
@@ -214,7 +214,9 @@
 #define ADC_VREF_ADDRESS_H						0x7d65//address for high byte of actualVref
 //define for touch sensor mpr
 #define TOUCH_ADDRESS								  0x4A
-
+#define TOUCH_BASELINE_DEFAULT					0
+#define TOUCH_BASELINE_EVERYTIME					1
+#define TOUCH_BASELINE_MODE						TOUCH_BASELINE_DEFAULT
 //same with app
 #define SYNC_CODE                           22
 
@@ -2225,8 +2227,7 @@ static void mpr03x_start(void)//(struct i2c_client *client)
 	//u8 data;
   	//data = i2c_smbus_read_byte_data(client , MPR03X_EC_REG);
 	//data &= ~0x0f;
-	//i2c_smbus_write_byte_data(client ,MPR03X_EC_REG, (data | MPR03X_E1_E2_IRQ))
-;    
+	//i2c_smbus_write_byte_data(client ,MPR03X_EC_REG, (data | MPR03X_E1_E2_IRQ));    
 
 	uint8 addr, val;
 	uint8 pBuf[2];
@@ -2238,7 +2239,7 @@ static void mpr03x_start(void)//(struct i2c_client *client)
 	//write MPR03X_EC_REG
 	val &=~0x0f;
 	pBuf[0]=MPR03X_EC_REG;
-	pBuf[1]=val | MPR03X_E1_IRQ;//MPR03X_E1_E2_IRQ;
+	pBuf[1]=val | MPR03X_E1_IRQ;//MPR03X_E1_E2_IRQ;|MPR03X_CALI_DISABLE 
 	HalI2CWrite(2,pBuf);
 } 
 
@@ -2371,6 +2372,9 @@ static int mpr03x_phys_init(void)
 	//uint8 flagAutoConfigReturn=FALSE;
 	//uint8 addr, val;
 	uint8 pBuf[2];
+	#if (TOUCH_BASELINE_MODE==TOUCH_BASELINE_EVERYTIME)
+		uint8 data1, data2, addr, val;
+	#endif
 	struct mpr03x_touchkey_data *pdata;
 	
 	//set i2c device address
@@ -2417,25 +2421,26 @@ static int mpr03x_phys_init(void)
 	//data = data1 | data2;
 	//i2c_smbus_write_byte_data(client,MPR03X_E0BV_REG,data);
 
-	//if define baseline value on power up everytime
-	/*
-	addr=MPR03X_E0FDH_REG;
-	HalMotionI2CWrite(1, &addr);
-	HalMotionI2CRead(1,&val);
-	data1=val<<6;
-	addr=MPR03X_E0FDL_REG;
-	HalMotionI2CWrite(1, &addr);
-	HalMotionI2CRead(1,&val);
-	data2=(val>>2)&0xF8;
-	pBuf[0]=MPR03X_E0BV_REG;
-	pBuf[1]= data1 | data2;
-	HalI2CWrite(2,pBuf);
-	*/
-	//if define baseline value defaultly
-	pBuf[0]=MPR03X_E0BV_REG;
-	pBuf[1]=0xA8;
-	HalI2CWrite(2,pBuf);
-	  
+	#if (TOUCH_BASELINE_MODE==TOUCH_BASELINE_EVERYTIME)
+		//if define baseline value on power up everytime
+		/**/
+		addr=MPR03X_E0FDH_REG;
+		HalMotionI2CWrite(1, &addr);
+		HalMotionI2CRead(1,&val);
+		data1=val<<6;
+		addr=MPR03X_E0FDL_REG;
+		HalMotionI2CWrite(1, &addr);
+		HalMotionI2CRead(1,&val);
+		data2=(val>>2)&0xF8;
+		pBuf[0]=MPR03X_E0BV_REG;
+		pBuf[1]= data1 | data2;
+		HalI2CWrite(2,pBuf);
+	#else//TOUCH_BASELINE_MODE==TOUCH_BASELINE_DEFAULT
+		//if define baseline value defaultly
+		pBuf[0]=MPR03X_E0BV_REG;
+		pBuf[1]=0xBA;
+		HalI2CWrite(2,pBuf);
+	#endif
 	//load 5MSB to set E2 baseline, baseline<=signal level
 	//data1 = (i2c_smbus_read_byte_data(client,MPR03X_E1FDH_REG)<<6);
 	//data2 = (i2c_smbus_read_byte_data(client,MPR03X_E1FDL_REG)>>2) & 0xF8;
