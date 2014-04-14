@@ -49,7 +49,7 @@
  * CONSTANTS
  */
 
-#define FIRMWARE                              102
+#define FIRMWARE                              103
 
 #define HI_UINT32(x)                          (((x) >> 16) & 0xffff)
 #define LO_UINT32(x)                          ((x) & 0xffff)
@@ -2239,7 +2239,7 @@ static void mpr03x_start(void)//(struct i2c_client *client)
 	//write MPR03X_EC_REG
 	val &=~0x0f;
 	pBuf[0]=MPR03X_EC_REG;
-	pBuf[1]=val | MPR03X_E1_IRQ;//MPR03X_E1_E2_IRQ;|MPR03X_CALI_DISABLE 
+	pBuf[1]=val | MPR03X_E1_IRQ|MPR03X_CALI_DISABLE ;//MPR03X_E1_E2_IRQ;
 	HalI2CWrite(2,pBuf);
 } 
 
@@ -2387,7 +2387,7 @@ static int mpr03x_phys_init(void)
 	//	dev_info(&client->dev,"mpr03x reset fail\n");
    pdata=osal_mem_alloc(sizeof(struct mpr03x_touchkey_data));
   	pdata->CDC =0x30; //0x24;
-   pdata->CDT = 1;
+   pdata->CDT =1;
 #ifdef AUTO_CONFIG
 		//Auto search CDC, CDT
 	//if (mpr03x_autoconfig(pdata))
@@ -2438,7 +2438,7 @@ static int mpr03x_phys_init(void)
 	#else//TOUCH_BASELINE_MODE==TOUCH_BASELINE_DEFAULT
 		//if define baseline value defaultly
 		pBuf[0]=MPR03X_E0BV_REG;
-		pBuf[1]=0xBA;
+		pBuf[1]=0xCA;//0xBA;
 		HalI2CWrite(2,pBuf);
 	#endif
 	//load 5MSB to set E2 baseline, baseline<=signal level

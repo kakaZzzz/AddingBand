@@ -64,8 +64,8 @@
 //adjust according to system SNR
 //Set to lower threshold to optimize sensitivity vs. noise
 //make sure touch delta change >> MPR03X_TOUCH_THRESHOLD >> MPR03X_RELEASE_THRESHOLD >> noise
-#define MPR03X_TOUCH_THRESHOLD 	  	0x0f //0x08
-#define MPR03X_RELEASE_THRESHOLD 	0x0a //0x05
+#define MPR03X_TOUCH_THRESHOLD 	  	0x06//0x0f //0x08
+#define MPR03X_RELEASE_THRESHOLD 	0x03//0x0a //0x05
 
 #define MPR03X_FFI_6     		0x00
 #define MPR03X_FFI_10    		0x40
