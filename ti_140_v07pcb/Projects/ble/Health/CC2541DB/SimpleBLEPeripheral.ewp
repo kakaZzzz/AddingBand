@@ -2429,6 +2429,7 @@
           <state>HAL_UART_DMA=0</state>
           <state>HAL_KEY=TRUE</state>
           <state>HAL_I2C=TRUE</state>
+          <state>CC2540_MINIDK</state>
         </option>
         <option>
           <name>CCPreprocFile</name>
@@ -2623,6 +2624,7 @@
           <state>$PROJ_DIR$\..\..\Profiles\OAD</state>
           <state>$PROJ_DIR$\..\..\Profiles\Batt</state>
           <state>$PROJ_DIR$\..\..\Profiles\HIDDev</state>
+          <state>$PROJ_DIR$\..\..\Profiles\TouchIC</state>
         </option>
         <option>
           <name>CCStdIncCheck</name>
@@ -3703,6 +3705,7 @@
           <state>$PROJ_DIR$\..\..\Profiles\OAD</state>
           <state>$PROJ_DIR$\..\..\Profiles\Batt</state>
           <state>$PROJ_DIR$\..\..\Profiles\HIDDev</state>
+          <state>$PROJ_DIR$\..\..\Profiles\TouchIC</state>
         </option>
         <option>
           <name>CCStdIncCheck</name>
