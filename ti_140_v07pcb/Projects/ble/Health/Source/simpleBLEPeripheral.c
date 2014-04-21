@@ -49,7 +49,7 @@
  * CONSTANTS
  */
 
-#define FIRMWARE                              103
+#define FIRMWARE                              104
 
 #define HI_UINT32(x)                          (((x) >> 16) & 0xffff)
 #define LO_UINT32(x)                          ((x) & 0xffff)
@@ -90,6 +90,11 @@
 
 // How often to perform periodic event
 #define SBP_PERIODIC_EVT_PERIOD               5000
+
+// The led all on timing, READY is the time from power on to led all on
+// GO is the time from led all on to led all off
+#define SBP_START_DEVICE_EVT_READY_PERIOD			 3000
+#define SBP_START_DEVICE_EVT_GO_PERIOD				 2000
 
 // What is the advertising interval when device is discoverable (units of 625us, 160=100ms)
 #define DEFAULT_ADVERTISING_INTERVAL          8000//16000
@@ -384,6 +389,8 @@ struct mpr03x_touchkey_data {
 	uint8 CDT;
 };
 
+static bool flagSBPStart=0;
+
 /*********************************************************************
  * LOCAL FUNCTIONS
  */
@@ -406,6 +413,7 @@ static void eepromWrite(uint8 type);
 static uint8 eepromRead(void);
 
 static void closeAllPIO(void);
+static void openAllLED(void);
 
 static void time(void);
 
@@ -704,17 +712,39 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
 
     if ( events & SBP_START_DEVICE_EVT )
     {
-        // Start the Device
-        VOID GAPRole_StartDevice( &simpleBLEPeripheral_PeripheralCBs );
+    		if(0==flagSBPStart)
+    		{
+	        // Start the Device
+	        VOID GAPRole_StartDevice( &simpleBLEPeripheral_PeripheralCBs );
 
-        // Start Bond Manager
-        VOID GAPBondMgr_Register( &simpleBLEPeripheral_BondMgrCBs );
+	        // Start Bond Manager
+	        VOID GAPBondMgr_Register( &simpleBLEPeripheral_BondMgrCBs );
 
-        toggleAdvert(TRUE);
+	        toggleAdvert(TRUE);
 
-        // Set timer for first periodic event
-        osal_start_timerEx( simpleBLEPeripheral_TaskID, SBP_PERIODIC_EVT, SBP_PERIODIC_EVT_PERIOD );
+	        // Set timer for first periodic event
+	        osal_start_timerEx( simpleBLEPeripheral_TaskID, SBP_PERIODIC_EVT, SBP_PERIODIC_EVT_PERIOD );
 
+			  // Set timer for led all on, READY period
+			  osal_start_timerEx( simpleBLEPeripheral_TaskID, SBP_START_DEVICE_EVT, SBP_START_DEVICE_EVT_READY_PERIOD );
+			  flagSBPStart++;
+			}
+			else if(1==flagSBPStart)
+			{
+				//Open all LED and set timer for led all off, GO period
+			  openAllLED();
+	        osal_start_timerEx( simpleBLEPeripheral_TaskID, SBP_START_DEVICE_EVT, SBP_START_DEVICE_EVT_GO_PERIOD );
+	        flagSBPStart++;
+			}
+			else if(2==flagSBPStart)
+			{
+				//Close all LED and the timer
+				closeAllPIO();
+				osal_stop_timerEx( simpleBLEPeripheral_TaskID, SBP_START_DEVICE_EVT);
+				flagSBPStart++;
+			}
+			else
+			{}
         return ( events ^ SBP_START_DEVICE_EVT );
     }
 
@@ -1381,7 +1411,7 @@ static void closeAllPIO(void){
     LED9_PIO = CLOSE_PIO;
     LED10_PIO = CLOSE_PIO;
     LED11_PIO = CLOSE_PIO;
-	 led_status=0x00;
+	 led_status=0x0000;
 	 LED_POWER=BOOSTOFF;
 
 	 //P1_3 = 0;
@@ -1391,6 +1421,31 @@ static void closeAllPIO(void){
     P1_5 = 0;
 }
 
+/*********************************************************************
+ * @fn      openAllLED
+ *
+ * @param   none
+ *
+ * @return  none
+ */
+
+static void openAllLED(void){
+
+    LED0_PIO = OPEN_PIO;
+    LED1_PIO = OPEN_PIO;
+    LED2_PIO = OPEN_PIO;
+    LED3_PIO = OPEN_PIO;
+    LED4_PIO = OPEN_PIO;
+    LED5_PIO = OPEN_PIO;
+    LED6_PIO = OPEN_PIO;
+    LED7_PIO = OPEN_PIO;
+    LED8_PIO = OPEN_PIO;
+    LED9_PIO = OPEN_PIO;
+    LED10_PIO = OPEN_PIO;
+    LED11_PIO = OPEN_PIO;
+	 led_status=0x0FFF;
+	 LED_POWER=BOOSTON;
+}
 
 
 /*********************************************************************
