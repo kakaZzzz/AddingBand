@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 @class BTGlobals;
 @class BTBandCentral;
-@interface BTSyncTwoViewController : UIViewController
+@interface BTSyncTwoViewController : UIViewController<UITextFieldDelegate>
 
 //全局变量
 @property(strong, nonatomic) BTGlobals* g;

@@ -395,6 +395,8 @@ static int battery = 0;
     
     if ([keyPath isEqualToString:@"connectedBleStatus"]) {
         
+        
+        NSLog(@"哈哈哈哈哈哈");
         if (self.g.connectedBleStatus == CONNECTED_BLE_HAS_GONE) {
             
             if (!self.timerAnimation.isValid) {
@@ -563,6 +565,8 @@ static int battery = 0;
     
     BOOL isDisplayBleList = self.g.displayBleList;
     
+    NSLog(@"isFinded %d \n isConnected=%d \n isConnecting=%d \n isWaitforSync=%d \n isDisplayBleList=%d",isFinded,isConnected,isConnecting,isWaitforSync,isDisplayBleList);
+
     //设备名称
     NSString* name = bp.name;
     

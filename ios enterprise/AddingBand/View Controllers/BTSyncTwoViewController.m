@@ -32,6 +32,9 @@
 
 static BTSyncTwoViewController *syncTwoVC = nil;
 @interface BTSyncTwoViewController ()
+{
+    UITextField *lanyuTextField;
+}
 @property(nonatomic,strong)UIScrollView *aScrollView;
 @end
 
@@ -229,7 +232,25 @@ static BTSyncTwoViewController *syncTwoVC = nil;
    // [_aRedView addSubview:_syncProgress];
 
     
+    
+    //添加兰宇需要的输入框
+    lanyuTextField = [[UITextField alloc] initWithFrame:CGRectMake((320 - 300)/2, 0, 300, 40)];
+    lanyuTextField.backgroundColor = [UIColor whiteColor];
+    lanyuTextField.delegate = self;
+    [_aRedView addSubview:lanyuTextField];
 }
+#pragma  mark - 输入框的代理方法
+- (void)textFieldDidEndEditing:(UITextField *)textField
+{
+    NSLog(@"textFieldDidEndEditing");
+}
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+    [textField resignFirstResponder];
+    return  YES;
+}
+
+
 - (void)toSyncByYourself:(UITapGestureRecognizer *)tap
 {
     
