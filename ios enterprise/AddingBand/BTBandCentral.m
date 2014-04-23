@@ -950,7 +950,9 @@
             
             CBCharacteristic* c = [bp.allCharacteristics objectForKey:[CBUUID UUIDWithString:UUID_HEALTH_SYNC]];
             
-            uint16_t dd = SYNC_CODE;
+//            uint16_t dd = SYNC_CODE;
+            
+            uint16_t dd = _globals.modelcode;
             
             [bp.handle writeValue:[NSData dataWithBytes:&dd length:sizeof(dd)] forCharacteristic:c type:CBCharacteristicWriteWithResponse];
             

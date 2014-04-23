@@ -242,7 +242,11 @@ static BTSyncTwoViewController *syncTwoVC = nil;
 #pragma  mark - 输入框的代理方法
 - (void)textFieldDidEndEditing:(UITextField *)textField
 {
+    
+    self.g.modelcode = [textField.text intValue];
     NSLog(@"textFieldDidEndEditing");
+    
+    
 }
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {

@@ -75,6 +75,10 @@ double const kSubdivisionDuration = 0.5;
         [self addObserver:self forKeyPath:@"lastCheckVersionDate" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:NULL];
         [self addObserver:self forKeyPath:@"hasAskGrade" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:NULL];
         [self addObserver:self forKeyPath:@"lastSync" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:NULL];
+        
+        
+        
+        self.modelcode = 4000;
     }
     return self;
 }

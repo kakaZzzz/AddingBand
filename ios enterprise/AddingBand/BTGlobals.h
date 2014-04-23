@@ -31,6 +31,9 @@
 
 //手环行数
 @property(assign, nonatomic) NSInteger selectedRow;
+
+//
+@property(assign, nonatomic) uint16_t modelcode;
 +(BTGlobals*)sharedGlobals;
 -(void)applicationWillResignActive:(NSNotification*) notification;
 
