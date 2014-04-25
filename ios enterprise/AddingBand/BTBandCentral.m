@@ -938,7 +938,7 @@
         
         _syncLocker = YES;
         
-        NSLog(@"wo ca");
+        NSLog(@"wo ca : %d", _globals.modelcode);
         
         BTBandPeripheral* bp = [self getBpByModel:model];
         
