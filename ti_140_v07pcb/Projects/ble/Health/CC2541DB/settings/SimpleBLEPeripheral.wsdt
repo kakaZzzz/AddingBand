@@ -3,7 +3,7 @@
 <Workspace>
   <ConfigDictionary>
     
-  <CurrentConfigs><Project>SimpleBLEPeripheral/CC2541</Project></CurrentConfigs></ConfigDictionary>
+  <CurrentConfigs><Project>SimpleBLEPeripheral/CC2541-OAD-ImgB</Project></CurrentConfigs></ConfigDictionary>
   <Desktop>
     <Static>
       <Workspace>
@@ -12,7 +12,7 @@
           
           
           
-        <Column0>214</Column0><Column1>27</Column1><Column2>27</Column2><Column3>27</Column3></ColumnWidths>
+        <Column0>178</Column0><Column1>27</Column1><Column2>27</Column2><Column3>27</Column3></ColumnWidths>
       </Workspace>
       <Build>
         
@@ -25,7 +25,7 @@
     <Windows>
       
       
-    <Wnd1>
+    <Wnd0>
         <Tabs>
           <Tab>
             <Identity>TabID-2084-12631</Identity>
@@ -37,7 +37,7 @@
           </Tab>
         </Tabs>
         
-      <SelectedTab>0</SelectedTab></Wnd1><Wnd3><Tabs><Tab><Identity>TabID-394-27195</Identity><TabName>Find in Files</TabName><Factory>Find-in-Files</Factory><Session/></Tab><Tab><Identity>TabID-22498-1791</Identity><TabName>Build</TabName><Factory>Build</Factory><Session/></Tab><Tab><Identity>TabID-531-12906</Identity><TabName>Debug Log</TabName><Factory>Debug-Log</Factory><Session/></Tab><Tab><Identity>TabID-30094-6428</Identity><TabName>Breakpoints</TabName><Factory>Breakpoints</Factory></Tab></Tabs><SelectedTab>1</SelectedTab></Wnd3></Windows>
+      <SelectedTab>0</SelectedTab></Wnd0><Wnd2><Tabs><Tab><Identity>TabID-394-27195</Identity><TabName>Find in Files</TabName><Factory>Find-in-Files</Factory><Session/></Tab><Tab><Identity>TabID-22498-1791</Identity><TabName>Build</TabName><Factory>Build</Factory><Session/></Tab><Tab><Identity>TabID-531-12906</Identity><TabName>Debug Log</TabName><Factory>Debug-Log</Factory><Session/></Tab><Tab><Identity>TabID-30094-6428</Identity><TabName>Breakpoints</TabName><Factory>Breakpoints</Factory></Tab></Tabs><SelectedTab>1</SelectedTab></Wnd2></Windows>
     <Editor>
       
       
@@ -50,7 +50,7 @@
       
       
       
-    <Top><Row0><Sizes><Toolbar-01c8f8e8><key>iaridepm.enu1</key></Toolbar-01c8f8e8></Sizes></Row0><Row1><Sizes/></Row1><Row2><Sizes/></Row2></Top><Left><Row0><Sizes><Wnd1><Rect><Top>-2</Top><Left>-2</Left><Bottom>498</Bottom><Right>305</Right><x>-2</x><y>-2</y><xscreen>566</xscreen><yscreen>456</yscreen><sizeHorzCX>419570</sizeHorzCX><sizeHorzCY>531469</sizeHorzCY><sizeVertCX>227576</sizeVertCX><sizeVertCY>582751</sizeVertCY></Rect></Wnd1></Sizes></Row0></Left><Right><Row0><Sizes/></Row0></Right><Bottom><Row0><Sizes><Wnd3><Rect><Top>-2</Top><Left>-2</Left><Bottom>315</Bottom><Right>1351</Right><x>-2</x><y>-2</y><xscreen>1353</xscreen><yscreen>317</yscreen><sizeHorzCX>1002965</sizeHorzCX><sizeHorzCY>369464</sizeHorzCY><sizeVertCX>803558</sizeVertCX><sizeVertCY>686480</sizeVertCY></Rect></Wnd3></Sizes></Row0></Bottom><Float><Sizes/></Float></Positions>
+    <Top><Row0><Sizes><Toolbar-002a24b8><key>iaridepm.enu1</key></Toolbar-002a24b8></Sizes></Row0></Top><Left><Row0><Sizes><Wnd0><Rect><Top>-2</Top><Left>-2</Left><Bottom>435</Bottom><Right>269</Right><x>-2</x><y>-2</y><xscreen>500</xscreen><yscreen>403</yscreen><sizeHorzCX>419815</sizeHorzCX><sizeHorzCY>531662</sizeHorzCY><sizeVertCX>227540</sizeVertCX><sizeVertCY>576517</sizeVertCY></Rect></Wnd0></Sizes></Row0></Left><Right><Row0><Sizes/></Row0></Right><Bottom><Row0><Sizes><Wnd2><Rect><Top>-2</Top><Left>-2</Left><Bottom>278</Bottom><Right>1193</Right><x>-2</x><y>-2</y><xscreen>1195</xscreen><yscreen>280</yscreen><sizeHorzCX>1003359</sizeHorzCX><sizeHorzCY>369393</sizeHorzCY><sizeVertCX>803526</sizeVertCX><sizeVertCY>686016</sizeVertCY></Rect></Wnd2></Sizes></Row0></Bottom><Float><Sizes/></Float></Positions>
   </Desktop>
 </Workspace>
 

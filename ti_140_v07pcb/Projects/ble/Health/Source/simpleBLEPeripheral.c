@@ -1318,8 +1318,10 @@ static void simpleProfileChangeCB( uint8 paramID )
 
         SimpleProfile_GetParameter( HEALTH_SYNC, &newValue );
 
-        if (newValue == SYNC_CODE)
+        // if (newValue == SYNC_CODE)
         {
+
+            ALT_MIN = (int16)newValue;
             
             // send data length
             uint16 length = dataLength();
@@ -1537,20 +1539,20 @@ static void time(void){
         hour = hour - 12;
     }
 
-    toggleLEDWithTime(hour, OPEN_PIO);
-
     // display minutes
     blinkMinutes = currentTm.minutes / 5;
 
     if (hour == blinkMinutes)
     {
-        if (blinkMinutes == 0)
+        if (blinkMinutes ==11)
         {
-            blinkMinutes = 1;
+            blinkMinutes = 10;
         }else{
-            blinkMinutes--;
+            blinkMinutes++;
         }
     }
+
+    toggleLEDWithTime(hour, OPEN_PIO);
 
     blinkLED();
 
@@ -1764,7 +1766,7 @@ static void accLoop(void)
                     accStaticCount = 0;
 
                     accLoadInterval = ACC_LOAD_INTERVAL;
-                    ALT_MIN = ALT_MIN_DEFAULT;
+                    // ALT_MIN = ALT_MIN_DEFAULT;
 
                 }
                 else
@@ -1834,7 +1836,7 @@ static void accGetAccData(uint8 count)
     if (accStaticCount > ACC_STATIC_COUNT_MAX)
     {
         accLoadInterval = ACC_LOAD_INTERVAL;// * ACC_STATIC_COUNT_MAX;
-        ALT_MIN = ALT_MIN_DEFAULT;
+        // ALT_MIN = ALT_MIN_DEFAULT;
 
         flagAccStatic=TRUE;
         
