@@ -97,3 +97,5 @@
 #define DEFAULT_INTERVAL                0.01
 #define LOCK_TIME                       0.002
 
+//是否写入
+#define IS_WRITEFILE @"isWriteFile"

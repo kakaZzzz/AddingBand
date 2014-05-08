@@ -238,7 +238,60 @@ static BTSyncTwoViewController *syncTwoVC = nil;
     lanyuTextField.backgroundColor = [UIColor whiteColor];
     lanyuTextField.delegate = self;
     [_aRedView addSubview:lanyuTextField];
+    
+    
+    //
+    UIButton *buttonStart = [UIButton buttonWithType:UIButtonTypeCustom];
+    buttonStart.frame = CGRectMake(0, _syncIcon.frame.origin.y, 50, 50);
+    [buttonStart setTitle:@"开始" forState:UIControlStateNormal];
+    [buttonStart setBackgroundColor:[UIColor blueColor]];
+    [buttonStart addTarget:self action:@selector(startWrite:) forControlEvents:UIControlEventTouchUpInside];
+    [_aRedView addSubview:buttonStart];
+    
+    UIButton *buttonEnd = [UIButton buttonWithType:UIButtonTypeCustom];
+    buttonEnd.frame = CGRectMake(320 - 50, _syncIcon.frame.origin.y, 50, 50);
+    [buttonEnd setTitle:@"结束" forState:UIControlStateNormal];
+    [buttonEnd setBackgroundColor:[UIColor blueColor]];
+    [buttonEnd addTarget:self action:@selector(endWrite:) forControlEvents:UIControlEventTouchUpInside];
+    [_aRedView addSubview:buttonEnd];
+
 }
+ -(void)startWrite:(UIButton *)button
+{
+    self.g.writeArray = [NSMutableArray arrayWithCapacity:1];
+    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:IS_WRITEFILE];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+-(void)endWrite:(UIButton *)button
+{
+    [[NSUserDefaults standardUserDefaults] setBool:NO forKey:IS_WRITEFILE];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    
+    [self writeXYZDataTofile:self.g.writeArray];
+}
+
+- (void)writeXYZDataTofile:(NSArray *)array
+{
+    NSDate* date = [NSDate date];//得到0时区日期
+    NSTimeZone *zone = [NSTimeZone systemTimeZone];
+    NSInteger interval = [zone secondsFromGMTForDate: date];
+    NSDate *localeDate = [date  dateByAddingTimeInterval: interval];
+   
+    NSString*rootPath =[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask,YES)objectAtIndex:0];
+    NSLog(@"文件路径是 11 %@",rootPath);
+    NSString*plistPath = [rootPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@-.txt",localeDate]];
+    
+    NSLog(@"文件路径是  %@",plistPath);
+    NSFileManager*fileManager = [NSFileManager defaultManager];
+    if(![fileManager fileExistsAtPath:plistPath]) {
+        [fileManager createFileAtPath:plistPath contents:nil attributes:nil];//创建一个dictionary文件
+    }
+    
+    [array writeToFile:plistPath atomically:YES];//将数组中的数据写入document下xxx.txt。
+    
+}
+
 #pragma  mark - 输入框的代理方法
 - (void)textFieldDidEndEditing:(UITextField *)textField
 {

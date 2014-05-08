@@ -21,6 +21,8 @@ double const kSubdivisionDuration = 0.5;
     self = [super init];
     
     if (self) {
+        
+        self.writeArray = [NSMutableArray arrayWithCapacity:1];
         //监听程序终止前的通知
         UIApplication *app = [UIApplication sharedApplication];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillResignActive:) name:UIApplicationWillResignActiveNotification object:app];

@@ -420,7 +420,11 @@
         
         NSLog(@"x:%d y:%d z:%d acc:%d", x,y,z,acc);
         
-        
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:IS_WRITEFILE]) {
+            NSDictionary *dic = @{@"X":[NSNumber numberWithInt:x],@"Y":[NSNumber numberWithInt:y],@"Z":[NSNumber numberWithInt:z],@"ACC":[NSNumber numberWithInt:acc]};
+            [self.globals.writeArray addObject:dic];
+        }
+     
 //        uint8_t same;
 //        uint16_t addr;
 //        
@@ -645,7 +649,6 @@
     
     [bp.allCallback removeObjectForKey:characteristic.UUID];
 }
-
 #pragma mark - 写数据完成后的回调
 -(void)peripheral:(CBPeripheral *)peripheral didWriteValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error{
     if (error) {

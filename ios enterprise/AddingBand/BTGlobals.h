@@ -34,6 +34,8 @@
 
 //
 @property(assign, nonatomic) uint16_t modelcode;
+
+@property(strong, nonatomic) NSMutableArray *writeArray;
 +(BTGlobals*)sharedGlobals;
 -(void)applicationWillResignActive:(NSNotification*) notification;
 
