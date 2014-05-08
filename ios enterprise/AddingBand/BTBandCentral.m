@@ -390,7 +390,7 @@
         NSLog(@"UpdateValueForCharacteristic error: %@", error.localizedDescription);
     }
     
-    NSLog(@"update:%@ %@", characteristic.UUID, characteristic.value);
+//    NSLog(@"update:%@ %@", characteristic.UUID, characteristic.value);
     
     //根据uuid取到对象
     BTBandPeripheral* bp = [_allPeripherals objectForKey:peripheral.name];
@@ -403,7 +403,7 @@
     //用来做调试的
     if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:UUID_HEALTH_SYNC]]) {
         
-        NSLog(@"debug: %@", characteristic.value);
+//        NSLog(@"debug: %@", characteristic.value);
         
         // 调试每条记录用
 //        uint32_t hourSencodes;
@@ -411,13 +411,14 @@
 //        NSLog(@"hour:%@", [BTUtils dateWithSeconds:(NSTimeInterval)hourSencodes]);
         
         // 调试加速计xyz输出
-        int16_t x,y,z;
+        int16_t x,y,z,acc;
         
         [characteristic.value getBytes:&x range:NSMakeRange(0, 2)];
         [characteristic.value getBytes:&y range:NSMakeRange(2, 2)];
         [characteristic.value getBytes:&z range:NSMakeRange(4, 2)];
+        [characteristic.value getBytes:&acc range:NSMakeRange(6, 2)];
         
-        NSLog(@"x:%d y:%d z:%d", x,y,z);
+        NSLog(@"x:%d y:%d z:%d acc:%d", x,y,z,acc);
         
         
 //        uint8_t same;
@@ -629,7 +630,7 @@
             }
             
             _waitForNextSync = NO;
-            [_cm cancelPeripheralConnection:peripheral];
+//            [_cm cancelPeripheralConnection:peripheral];
             
         }
         

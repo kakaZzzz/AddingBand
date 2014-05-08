@@ -78,7 +78,7 @@ double const kSubdivisionDuration = 0.5;
         
         
         
-        self.modelcode = 4000;
+        self.modelcode = 500;
     }
     return self;
 }
