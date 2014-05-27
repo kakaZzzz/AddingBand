@@ -238,7 +238,7 @@
 #define ACC_STATIC_COUNT_MAX                4
 
 
-#define ALT_MIN_DEFAULT                     4000
+#define ALT_MIN_DEFAULT                     300
 //#define AUTO_CONFIG		TRUE
 #define MANUFACTURE_TEST	FASLE
 
@@ -246,8 +246,8 @@ uint8 X0, X1, Y0, Y1, Z1, Z0;
 int16 X_out, Y_out, Z_out;
 uint8 INT_STATUS;
 
-int16 PACE_DUR_MIN = 6; //0.3s
-int16 PACE_DUR_MAX = 12; //1.2s
+int16 PACE_DUR_MIN = 2; //0.16s
+int16 PACE_DUR_MAX = 12; //1s
 int16 ALT_MIN = ALT_MIN_DEFAULT;
 int16 DIR = 1; //12
 int16 first_pace = 1; //
@@ -258,6 +258,10 @@ int16 time_count = 0;
 int16 cross_count = 0; //0
 int16 ACC_CUR = 0;
 uint16 led_status=0x00;//BIT11~BIT0 represent LED11~LED0 status, 1-on, 0-off
+
+uint16 VALID_STEP_CONUT = 0, TIME_LINE = 0, B_INTERVAL = 0;
+int16 B1 = 0, B2 = 0, PEAK = 0;
+
 
 /*********************************************************************
  * TYPEDEFS
@@ -409,7 +413,7 @@ static void accLoop(void);
 // static void accGetAccData(void);
 static void accGetAccData(uint8 count);
 
-static void eepromWrite(uint8 type);
+static void eepromWrite(uint8 type, uint8 cnt);
 static uint8 eepromRead(void);
 
 static void closeAllPIO(void);
@@ -1565,7 +1569,7 @@ static void longPressAndCycleLED6(void){
 
     lockSlip = 1;
 
-    eepromWrite(TAP_DATA_TYPE);
+    eepromWrite(TAP_DATA_TYPE, 1);
     osal_set_event( simpleBLEPeripheral_TaskID, CYCLE_LED_6_EVT );
 }
 
@@ -1580,7 +1584,7 @@ static void tribleTap(void){
 
     lockSlip = 1;
 
-    eepromWrite(TAP_HOUR_START_TYPE);
+    eepromWrite(TAP_HOUR_START_TYPE, 1);
     osal_start_timerEx( simpleBLEPeripheral_TaskID, RUN_TRIBLE_TAP_EVT, TRIBLE_TAP_INTERVAL );
 }
 
@@ -1707,112 +1711,217 @@ static void accInit( void )
 static void accLoop(void)
 {
     //todo
-    X_out = X_out >> 6;
-    Y_out = Y_out >> 6;
-    Z_out = Z_out >> 6;
+    // X_out = X_out >> 6;
+    // Y_out = Y_out >> 6;
+    // Z_out = Z_out >> 6;
 
-    // uint8 d[8];
-
-    // osal_memcpy(&d[0], &X_out, sizeof(int16));
-    // osal_memcpy(&d[2], &Y_out, sizeof(int16));
-    // osal_memcpy(&d[4], &Z_out, sizeof(int16));
-
-    // SimpleProfile_SetParameter( HEALTH_SYNC, sizeof ( d ), d );
+    
 
 
     ACC_CUR = X_out * X_out + Y_out * Y_out + Z_out * Z_out - 4096;
 
     //SimpleProfile_SetParameter( HEALTH_SYNC, sizeof ( ACC_CUR ), &ACC_CUR );
 
-    if ((DIR == 1) && (ACC_CUR > 0))
+    uint8 d[8];
+
+    osal_memcpy(&d[0], &X_out, sizeof(int16));
+    osal_memcpy(&d[2], &Y_out, sizeof(int16));
+    osal_memcpy(&d[4], &Z_out, sizeof(int16));
+    osal_memcpy(&d[6], &ACC_CUR, sizeof(int16));
+
+    SimpleProfile_SetParameter( HEALTH_SYNC, sizeof ( d ), d );
+
+
+    if (ACC_CUR > ALT_MIN || ACC_CUR < -ALT_MIN)
     {
-
-        if (first_pace == 0)
+        
+        if (ACC_CUR > 0)
         {
-            cross_count = cross_count + 1;
-            if (cross_count == 1)
+            if (B1 < 0 && B2 < 0)
             {
-
-                time_count = 0;
-                PACE_PEAK = ACC_CUR;
-                PACE_BOTTOM = 0;
-
-            }
-            else if (cross_count == 2)
-            {
-
-                if (((time_count) >= PACE_DUR_MIN) && ((time_count) <= PACE_DUR_MAX) && ((PACE_PEAK - PACE_BOTTOM) >= ALT_MIN))
+                
+                if (B_INTERVAL > PACE_DUR_MIN && B_INTERVAL < PACE_DUR_MAX)
                 {
-                    // add one step
-                    pace_count = pace_count + 1;
-
-                    // LED0_PIO = OPEN_PIO;
-                    // LED3_PIO = OPEN_PIO;
-                    // LED6_PIO = OPEN_PIO;
-                    // LED9_PIO = OPEN_PIO;
-
-                    // osal_start_timerEx( simpleBLEPeripheral_TaskID, CLOSE_ALL_EVT, 300 );
-
-                    cross_count = 0;
-
-                    // uint8 d[6];
-
-                    // osal_memcpy(&d[0], &pace_count, sizeof(int16));
-
-                    // SimpleProfile_SetParameter( HEALTH_SYNC, sizeof ( d ), d );
-
-                    eepromWrite(STEP_DATA_TYPE);
+                    pace_count++;
 
                     accStaticCount = 0;
 
-                    accLoadInterval = ACC_LOAD_INTERVAL;
-                    // ALT_MIN = ALT_MIN_DEFAULT;
+                    // eepromWrite(STEP_DATA_TYPE, 1);
 
+                    if (VALID_STEP_CONUT >= 125)
+                    {
+                        if (pace_count >= 10)
+                        {
+                            eepromWrite(STEP_DATA_TYPE, pace_count);
+                        }
+
+                        pace_count = 0;
+                        VALID_STEP_CONUT = 0;
+                    }
+
+                    // uint8 d[8];
+
+                    // osal_memcpy(&d[0], &B1, sizeof(int16));
+                    // osal_memcpy(&d[2], &B2, sizeof(int16));
+
+                    // SimpleProfile_SetParameter( HEALTH_SYNC, sizeof ( d ), d );
                 }
-                else
-                {
 
-                    time_count = 0;
-                    PACE_PEAK = ACC_CUR;
-                    PACE_BOTTOM = 0;
-                    cross_count = 1;
+                B1 = B2;
+                B2 = 0;
+                PEAK = 0;
+
+                TIME_LINE = TIME_LINE - B_INTERVAL;
+            }
+
+            if (B1 < 0)
+            {
+                if (ACC_CUR > PEAK)
+                {
+                    PEAK = ACC_CUR;
+                }
+            }
+
+        }else{
+
+            if (PEAK > 0)
+            {
+                
+                if (ACC_CUR < B2)
+                {
+                    B2 = ACC_CUR;
+
+                    B_INTERVAL = TIME_LINE;
+                }
+
+            }else{
+
+                if (ACC_CUR < B1)
+                {
+                    B1 = ACC_CUR;
+
+                    TIME_LINE = 0;
                 }
             }
         }
-        else
-        {
-            first_pace = 0;
-
-            time_count = 0;
-            PACE_PEAK = ACC_CUR;
-            PACE_BOTTOM = 0;
-        }
-        DIR = 2;
-    }
-    else if ((DIR == 2) && (ACC_CUR >= 0))
-    {
-        if (ACC_CUR > PACE_PEAK) PACE_PEAK = ACC_CUR;
-    }
-    else if ((DIR == 2) && (ACC_CUR < 0))
-    {
-        PACE_BOTTOM = ACC_CUR;
-        DIR = 1;
-    }
-    else if ((DIR == 1) && (ACC_CUR <= 0))
-    {
-        if (ACC_CUR < PACE_BOTTOM) PACE_BOTTOM = ACC_CUR;
     }
 
-    // accGetIntData();//read INT registers
+    TIME_LINE++;
 
-    // if (INT_STATUS & 0x80)
+    if (pace_count > 0)
+    {
+        VALID_STEP_CONUT++;
+    }
+
+    // if ((DIR == 1) && (ACC_CUR > 0))
     // {
 
-    //     // time();
+    //     if (first_pace == 0)
+    //     {
+    //         cross_count = cross_count + 1;
+    //         if (cross_count == 1)
+    //         {
 
+    //             time_count = 0;
+    //             PACE_PEAK = ACC_CUR;
+    //             PACE_BOTTOM = 0;
+
+    //         }
+    //         else if (cross_count == 2)
+    //         {
+
+    //             // uint8 d[6];
+
+    //             // int16 minus = PACE_PEAK - PACE_BOTTOM;
+
+    //             // osal_memcpy(&d[0], &minus, sizeof(int16));
+
+    //             // SimpleProfile_SetParameter( HEALTH_SYNC, sizeof ( d ), d );
+
+    //             if (((time_count) >= PACE_DUR_MIN) && ((time_count) <= PACE_DUR_MAX) && ((PACE_PEAK - PACE_BOTTOM) >= ALT_MIN))
+    //             {
+    //                 // add one step
+    //                 pace_count = pace_count + 1;
+
+
+    //                 if (VALID_STEP_CONUT >= 50)
+    //                 {
+    //                     if (pace_count > 3)
+    //                     {
+    //                         eepromWrite(STEP_DATA_TYPE, pace_count);
+    //                     }
+
+    //                     pace_count = 0;
+
+    //                     VALID_STEP_CONUT = 0;
+    //                 }
+
+    //                 // LED0_PIO = OPEN_PIO;
+    //                 // LED3_PIO = OPEN_PIO;
+    //                 // LED6_PIO = OPEN_PIO;
+    //                 // LED9_PIO = OPEN_PIO;
+
+    //                 // osal_start_timerEx( simpleBLEPeripheral_TaskID, CLOSE_ALL_EVT, 300 );
+
+    //                 cross_count = 0;
+
+                   
+
+    //                 accStaticCount = 0;
+
+    //                 accLoadInterval = ACC_LOAD_INTERVAL;
+    //                 // ALT_MIN = ALT_MIN_DEFAULT;
+
+    //             }
+    //             else
+    //             {
+
+    //                 time_count = 0;
+    //                 PACE_PEAK = ACC_CUR;
+    //                 PACE_BOTTOM = 0;
+    //                 cross_count = 1;
+    //             }
+    //         }
+    //     }
+    //     else
+    //     {
+    //         first_pace = 0;
+
+    //         time_count = 0;
+    //         PACE_PEAK = ACC_CUR;
+    //         PACE_BOTTOM = 0;
+    //     }
+    //     DIR = 2;
+    // }
+    // else if ((DIR == 2) && (ACC_CUR >= 0))
+    // {
+    //     if (ACC_CUR > PACE_PEAK) PACE_PEAK = ACC_CUR;
+    // }
+    // else if ((DIR == 2) && (ACC_CUR < 0))
+    // {
+    //     PACE_BOTTOM = ACC_CUR;
+    //     DIR = 1;
+    // }
+    // else if ((DIR == 1) && (ACC_CUR <= 0))
+    // {
+    //     if (ACC_CUR < PACE_BOTTOM) PACE_BOTTOM = ACC_CUR;
     // }
 
-    time_count++;
+    // // accGetIntData();//read INT registers
+
+    // // if (INT_STATUS & 0x80)
+    // // {
+
+    // //     // time();
+
+    // // }
+
+    // time_count++;
+
+    // if (pace_count > 0)
+    // {
+    //     VALID_STEP_CONUT++;
+    // }
 }
 
 
@@ -2023,7 +2132,7 @@ static void accGetAccData(uint8 count)
 
 // for eeprom
 
-static void eepromWrite(uint8 type){
+static void eepromWrite(uint8 type, uint8 cnt){
 
     // convert type to pointer
     uint8 pointer = type - 1;
@@ -2048,7 +2157,7 @@ static void eepromWrite(uint8 type){
         oneData[pointer].tm = currentTm;
         oneData[pointer].hourSeconds = osal_ConvertUTCSecs(&oneData[pointer].tm);
 
-        oneData[pointer].count = 1;
+        oneData[pointer].count = cnt;
         oneData[pointer].type = type;
 
     }else if(oneData[pointer].tm.year != currentTm.year ||
@@ -2103,14 +2212,14 @@ static void eepromWrite(uint8 type){
         oneData[pointer].tm = currentTm;
         oneData[pointer].hourSeconds = osal_ConvertUTCSecs(&oneData[pointer].tm);
 
-        oneData[pointer].count = 1;
+        oneData[pointer].count = cnt;
 
         // save start and stop index of raw data
         saveRawDataIndex();
 
     }else{      // if in same hour
 
-        oneData[pointer].count ++;
+        oneData[pointer].count += cnt;
     }
 
 }
@@ -2144,7 +2253,7 @@ static uint8 eepromRead(void){
         }
 
         SimpleProfile_SetParameter( HEALTH_DATA_BODY, 8,  dBuf);
-        // SimpleProfile_SetParameter( HEALTH_SYNC, 8, dBuf);
+        SimpleProfile_SetParameter( HEALTH_SYNC, 8, dBuf);
 
         saveRawDataIndex();
 
@@ -2167,6 +2276,7 @@ static uint8 eepromRead(void){
         };
 
         SimpleProfile_SetParameter( HEALTH_DATA_BODY, 8,  dBuf);
+        SimpleProfile_SetParameter( HEALTH_SYNC, 8, dBuf);
 
         oneData[readTheI].count = 0;
 

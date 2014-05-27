@@ -835,7 +835,7 @@ static void debugNotifyCB( linkDBItem_t *pLinkItem )
     {
       attHandleValueNoti_t noti;
 
-      noti.handle = simpleProfileAttrTbl[2].handle;
+      noti.handle = simpleProfileAttrTbl[5].handle;
       noti.len = sizeof(healthSync);
       //noti.value[0] = healthSync;
       
