@@ -1,5 +1,5 @@
 [DebugChecksum]
-Checksum=-2131441970
+Checksum=-962805355
 [DisAssemblyWindow]
 NumStates=_ 1
 State 1=_ 1
@@ -42,10 +42,8 @@ Category=_ 0
 LoggingEnabled=_ 0
 LogFile=_ ""
 [Breakpoints]
-Bp0=_ "STD_CODE" "{$PROJ_DIR$\..\..\..\..\Components\hal\common\hal_drivers.c}.119.6@1" 0 0 0 0 "" 0 ""
-Bp1=_ "STD_CODE" "{$PROJ_DIR$\..\Source\simpleBLEPeripheral.c}.2436.2" 1 0 0 0 "" 0 ""
-Bp2=_ "STD_CODE" "{$PROJ_DIR$\..\Source\simpleBLEPeripheral.c}.498.8" 1 0 0 0 "" 0 ""
-Count=3
+Bp0=_ "STD_CODE" "{$PROJ_DIR$\..\..\..\..\Components\hal\common\hal_drivers.c}.119.10@1" 0 0 0 0 "" 0 ""
+Count=1
 [ChipconEmu]
 Stop timers on halt=0
 Leave target running=1
