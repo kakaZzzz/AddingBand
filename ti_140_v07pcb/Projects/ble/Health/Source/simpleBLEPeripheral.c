@@ -49,7 +49,7 @@
  * CONSTANTS
  */
 
-#define FIRMWARE                              105
+#define FIRMWARE                              106
 
 #define HI_UINT32(x)                          (((x) >> 16) & 0xffff)
 #define LO_UINT32(x)                          ((x) & 0xffff)
@@ -97,7 +97,7 @@
 #define SBP_START_DEVICE_EVT_GO_PERIOD				 2000
 
 // What is the advertising interval when device is discoverable (units of 625us, 160=100ms)
-#define DEFAULT_ADVERTISING_INTERVAL          8000//16000
+#define DEFAULT_ADVERTISING_INTERVAL          800//16000
 
 // Limited discoverable mode advertises for 30.72s, and then stops
 // General discoverable mode advertises indefinitely
@@ -263,6 +263,7 @@
 #define DONOT_COUNT_ONE	2
 #define ACC_RUN_COUNT_MODE		COUNT_ONE
 #define ACC_POPUP_DATA_BLE		TRUE
+//#define ACC_POPUP_DATA_BLE		FALSE
 uint8 X0, X1, Y0, Y1, Z1, Z0;
 int16 X_out, Y_out, Z_out;
 uint8 INT_STATUS;
@@ -304,9 +305,9 @@ typedef struct
 
 mma_data_t mmaDataA[DATA_A_CNT_MAX];
 mma_data_t mmaDataA_txbuf[DATA_A_CNT_MAX];
-mma_data_t mmaDataBA[DATA_BA_CNT_MAX];
-mma_data_t mmaDataBA_diff[DATA_BA_CNT_MAX];
-mma_data_t mmaDataB[DATA_B_CNT_MAX];
+//mma_data_t mmaDataBA[DATA_BA_CNT_MAX];
+//mma_data_t mmaDataBA_diff[DATA_BA_CNT_MAX];
+//mma_data_t mmaDataB[DATA_B_CNT_MAX];
 
 uint8 mmaCurSmoothestAxis=X_AXIS, mmaLastSmoothestAxis=X_AXIS;
 uint8 accRunCnt_txbuf=0;
@@ -314,6 +315,41 @@ uint8 accRunCntAy[4]={0,0,0,0};
 uint8 accRunCntValid=0;
 uint8 accRunCntAyDebugCnt;
 uint8 accRunK1=0;
+
+//***************************adding Bernie.hou
+#define FilterCofdepth		11
+#define DetectWindowWith     20
+#define timeWindowCountMax 25
+#define timeWindowCountMin  2
+#define XyzAxisAbsdataAvgTH 2000000//500
+#define DYNAMIC_PRECISE 100000//50
+uint8 filterCof[6] =  {14,31,74,127,170,186};
+union mma_data_int32
+{
+	int32	int32data;
+};
+typedef struct
+{
+	union mma_data_int32 mmaAxis[2];
+}mma_data_type;
+
+mma_data_type mmaDataFilter[DATA_A_CNT_MAX];
+mma_data_type mmaDataFilterTemp[DATA_A_CNT_MAX+FilterCofdepth-1];
+mma_data_type mmaDataFilterPredata[FilterCofdepth-1] = {0,0,0,0,0,0,0,0,0,0};
+//uint32 xyzAxisAbsdata[DATA_A_CNT_MAX];
+uint32 xyzAxisAbsdataNew[DATA_A_CNT_MAX];
+uint32 xyzAxisAbsdataOld[DATA_A_CNT_MAX];
+uint32 xyzAxisAbsdataAvg[2];
+uint32 xyzAxisAbsdataAvgPre = 0;
+uint32 xyzAxisAbsdataDiff[2];
+uint8 countPeriod = 0;
+uint8 stepCount[4]={0,0,0,0};
+uint8 stepCountTotal;
+uint8 timeWindowCount = 0;
+uint8 count0 = 0;
+uint8 count1 = 0;
+uint8 count2 = 0;
+uint8 count3 = 0;
 /*********************************************************************
  * TYPEDEFS
  */
@@ -459,11 +495,11 @@ static void battPeriodicTask( void );
 static void battCB(uint8 event);
 
 static void accInit(void);
-static void accLoop(void);
+//static void accLoop(void);
 
 // static void accGetIntData(void);
 // static void accGetAccData(void);
-static void accGetAccData(uint8 count);
+//static void accGetAccData(uint8 count);
 static uint8 accDataProcess(uint8 count);
 
 static void eepromWrite(uint8 type, uint8 cnt);
@@ -1838,398 +1874,389 @@ static void accInit( void )
 
 }
 
-static void accLoop(void)
-{
-    //todo
-    // X_out = X_out >> 6;
-    // Y_out = Y_out >> 6;
-    // Z_out = Z_out >> 6;
-
-    
-
-
-    ACC_CUR = X_out * X_out + Y_out * Y_out + Z_out * Z_out - 4096;
-
-    //SimpleProfile_SetParameter( HEALTH_SYNC, sizeof ( ACC_CUR ), &ACC_CUR );
-
-    uint8 d[8];
-
-    osal_memcpy(&d[0], &X_out, sizeof(int16));
-    osal_memcpy(&d[2], &Y_out, sizeof(int16));
-    osal_memcpy(&d[4], &Z_out, sizeof(int16));
-    osal_memcpy(&d[6], &ACC_CUR, sizeof(int16));
-
-    SimpleProfile_SetParameter( HEALTH_SYNC, sizeof ( d ), d );
-
-
-    if (ACC_CUR > ALT_MIN || ACC_CUR < -ALT_MIN)
-    {
-        
-        if (ACC_CUR > 0)
-        {
-            if (B1 < 0 && B2 < 0)
-            {
-                
-                if (B_INTERVAL > PACE_DUR_MIN && B_INTERVAL < PACE_DUR_MAX)
-                {
-                    pace_count++;
-
-                    accStaticCount = 0;
-
-                    // eepromWrite(STEP_DATA_TYPE, 1);
-
-                    if (VALID_STEP_CONUT >= 125)
-                    {
-                        if (pace_count >= 10)
-                        {
-                            eepromWrite(STEP_DATA_TYPE, pace_count);
-                        }
-
-                        pace_count = 0;
-                        VALID_STEP_CONUT = 0;
-                    }
-
-                    // uint8 d[8];
-
-                    // osal_memcpy(&d[0], &B1, sizeof(int16));
-                    // osal_memcpy(&d[2], &B2, sizeof(int16));
-
-                    // SimpleProfile_SetParameter( HEALTH_SYNC, sizeof ( d ), d );
-                }
-
-                B1 = B2;
-                B2 = 0;
-                PEAK = 0;
-
-                TIME_LINE = TIME_LINE - B_INTERVAL;
-            }
-
-            if (B1 < 0)
-            {
-                if (ACC_CUR > PEAK)
-                {
-                    PEAK = ACC_CUR;
-                }
-            }
-
-        }else{
-
-            if (PEAK > 0)
-            {
-                
-                if (ACC_CUR < B2)
-                {
-                    B2 = ACC_CUR;
-
-                    B_INTERVAL = TIME_LINE;
-                }
-
-            }else{
-
-                if (ACC_CUR < B1)
-                {
-                    B1 = ACC_CUR;
-
-                    TIME_LINE = 0;
-                }
-            }
-        }
-    }
-
-    TIME_LINE++;
-
-    if (pace_count > 0)
-    {
-        VALID_STEP_CONUT++;
-    }
-
-     if ((DIR == 1) && (ACC_CUR > 0))
-     {
-
-         if (first_pace == 0)
-         {
-             cross_count = cross_count + 1;
-             if (cross_count == 1)
-             {
-
-                 time_count = 0;
-                 PACE_PEAK = ACC_CUR;
-                 PACE_BOTTOM = 0;
-
-             }
-             else if (cross_count == 2)
-             {
-
-                 // uint8 d[6];
-
-                 // int16 minus = PACE_PEAK - PACE_BOTTOM;
-
-                 // osal_memcpy(&d[0], &minus, sizeof(int16));
-
-                 // SimpleProfile_SetParameter( HEALTH_SYNC, sizeof ( d ), d );
-
-                 if (((time_count) >= PACE_DUR_MIN) && ((time_count) <= PACE_DUR_MAX) && ((PACE_PEAK - PACE_BOTTOM) >= ALT_MIN))
-                 {
-                     // add one step
-                     pace_count = pace_count + 1;
-
-
-                     if (VALID_STEP_CONUT >= 50)
-                     {
-                         if (pace_count > 3)
-                         {
-                             eepromWrite(STEP_DATA_TYPE, pace_count);
-                         }
-
-                         pace_count = 0;
-
-                         VALID_STEP_CONUT = 0;
-                     }
-
-                     // LED0_PIO = OPEN_PIO;
-                     // LED3_PIO = OPEN_PIO;
-                     // LED6_PIO = OPEN_PIO;
-                     // LED9_PIO = OPEN_PIO;
-
-                     // osal_start_timerEx( simpleBLEPeripheral_TaskID, CLOSE_ALL_EVT, 300 );
-
-                     cross_count = 0;
-
-                   
-
-                     accStaticCount = 0;
-
-                     accLoadInterval = ACC_LOAD_INTERVAL;
-                     // ALT_MIN = ALT_MIN_DEFAULT;
-
-                 }
-                 else
-                 {
-
-                     time_count = 0;
-                     PACE_PEAK = ACC_CUR;
-                     PACE_BOTTOM = 0;
-                     cross_count = 1;
-                 }
-             }
-         }
-         else
-         {
-             first_pace = 0;
-
-             time_count = 0;
-             PACE_PEAK = ACC_CUR;
-             PACE_BOTTOM = 0;
-         }
-         DIR = 2;
-     }
-     else if ((DIR == 2) && (ACC_CUR >= 0))
-     {
-         if (ACC_CUR > PACE_PEAK) PACE_PEAK = ACC_CUR;
-     }
-     else if ((DIR == 2) && (ACC_CUR < 0))
-     {
-         PACE_BOTTOM = ACC_CUR;
-         DIR = 1;
-     }
-     else if ((DIR == 1) && (ACC_CUR <= 0))
-     {
-         if (ACC_CUR < PACE_BOTTOM) PACE_BOTTOM = ACC_CUR;
-     }
-
-     // accGetIntData();//read INT registers
-
-     // if (INT_STATUS & 0x80)
-     // {
-
-     //     // time();
-
-     // }
-
-     time_count++;
-
-     if (pace_count > 0)
-     {
-         VALID_STEP_CONUT++;
-     }
-}
+//static void accLoop(void)
+//{
+//    //todo
+//    // X_out = X_out >> 6;
+//    // Y_out = Y_out >> 6;
+//    // Z_out = Z_out >> 6;
+//
+//    
+//
+//
+//    ACC_CUR = X_out * X_out + Y_out * Y_out + Z_out * Z_out - 4096;
+//
+//    //SimpleProfile_SetParameter( HEALTH_SYNC, sizeof ( ACC_CUR ), &ACC_CUR );
+//
+//    uint8 d[8];
+//
+//    osal_memcpy(&d[0], &X_out, sizeof(int16));
+//    osal_memcpy(&d[2], &Y_out, sizeof(int16));
+//    osal_memcpy(&d[4], &Z_out, sizeof(int16));
+//    osal_memcpy(&d[6], &ACC_CUR, sizeof(int16));
+//
+//    SimpleProfile_SetParameter( HEALTH_SYNC, sizeof ( d ), d );
+//
+//
+//    if (ACC_CUR > ALT_MIN || ACC_CUR < -ALT_MIN)
+//    {
+//        
+//        if (ACC_CUR > 0)
+//        {
+//            if (B1 < 0 && B2 < 0)
+//            {
+//                
+//                if (B_INTERVAL > PACE_DUR_MIN && B_INTERVAL < PACE_DUR_MAX)
+//                {
+//                    pace_count++;
+//
+//                    accStaticCount = 0;
+//
+//                    // eepromWrite(STEP_DATA_TYPE, 1);
+//
+//                    if (VALID_STEP_CONUT >= 125)
+//                    {
+//                        if (pace_count >= 10)
+//                        {
+//                            eepromWrite(STEP_DATA_TYPE, pace_count);
+//                        }
+//
+//                        pace_count = 0;
+//                        VALID_STEP_CONUT = 0;
+//                    }
+//
+//                    // uint8 d[8];
+//
+//                    // osal_memcpy(&d[0], &B1, sizeof(int16));
+//                    // osal_memcpy(&d[2], &B2, sizeof(int16));
+//
+//                    // SimpleProfile_SetParameter( HEALTH_SYNC, sizeof ( d ), d );
+//                }
+//
+//                B1 = B2;
+//                B2 = 0;
+//                PEAK = 0;
+//
+//                TIME_LINE = TIME_LINE - B_INTERVAL;
+//            }
+//
+//            if (B1 < 0)
+//            {
+//                if (ACC_CUR > PEAK)
+//                {
+//                    PEAK = ACC_CUR;
+//                }
+//            }
+//
+//        }else{
+//
+//            if (PEAK > 0)
+//            {
+//                
+//                if (ACC_CUR < B2)
+//                {
+//                    B2 = ACC_CUR;
+//
+//                    B_INTERVAL = TIME_LINE;
+//                }
+//
+//            }else{
+//
+//                if (ACC_CUR < B1)
+//                {
+//                    B1 = ACC_CUR;
+//
+//                    TIME_LINE = 0;
+//                }
+//            }
+//        }
+//    }
+//
+//    TIME_LINE++;
+//
+//    if (pace_count > 0)
+//    {
+//        VALID_STEP_CONUT++;
+//    }
+//
+//     if ((DIR == 1) && (ACC_CUR > 0))
+//     {
+//
+//         if (first_pace == 0)
+//         {
+//             cross_count = cross_count + 1;
+//             if (cross_count == 1)
+//             {
+//
+//                 time_count = 0;
+//                 PACE_PEAK = ACC_CUR;
+//                 PACE_BOTTOM = 0;
+//
+//             }
+//             else if (cross_count == 2)
+//             {
+//
+//                 // uint8 d[6];
+//
+//                 // int16 minus = PACE_PEAK - PACE_BOTTOM;
+//
+//                 // osal_memcpy(&d[0], &minus, sizeof(int16));
+//
+//                 // SimpleProfile_SetParameter( HEALTH_SYNC, sizeof ( d ), d );
+//
+//                 if (((time_count) >= PACE_DUR_MIN) && ((time_count) <= PACE_DUR_MAX) && ((PACE_PEAK - PACE_BOTTOM) >= ALT_MIN))
+//                 {
+//                     // add one step
+//                     pace_count = pace_count + 1;
+//
+//
+//                     if (VALID_STEP_CONUT >= 50)
+//                     {
+//                         if (pace_count > 3)
+//                         {
+//                             eepromWrite(STEP_DATA_TYPE, pace_count);
+//                         }
+//
+//                         pace_count = 0;
+//
+//                         VALID_STEP_CONUT = 0;
+//                     }
+//
+//                     // LED0_PIO = OPEN_PIO;
+//                     // LED3_PIO = OPEN_PIO;
+//                     // LED6_PIO = OPEN_PIO;
+//                     // LED9_PIO = OPEN_PIO;
+//
+//                     // osal_start_timerEx( simpleBLEPeripheral_TaskID, CLOSE_ALL_EVT, 300 );
+//
+//                     cross_count = 0;
+//
+//                   
+//
+//                     accStaticCount = 0;
+//
+//                     accLoadInterval = ACC_LOAD_INTERVAL;
+//                     // ALT_MIN = ALT_MIN_DEFAULT;
+//
+//                 }
+//                 else
+//                 {
+//
+//                     time_count = 0;
+//                     PACE_PEAK = ACC_CUR;
+//                     PACE_BOTTOM = 0;
+//                     cross_count = 1;
+//                 }
+//             }
+//         }
+//         else
+//         {
+//             first_pace = 0;
+//
+//             time_count = 0;
+//             PACE_PEAK = ACC_CUR;
+//             PACE_BOTTOM = 0;
+//         }
+//         DIR = 2;
+//     }
+//     else if ((DIR == 2) && (ACC_CUR >= 0))
+//     {
+//         if (ACC_CUR > PACE_PEAK) PACE_PEAK = ACC_CUR;
+//     }
+//     else if ((DIR == 2) && (ACC_CUR < 0))
+//     {
+//         PACE_BOTTOM = ACC_CUR;
+//         DIR = 1;
+//     }
+//     else if ((DIR == 1) && (ACC_CUR <= 0))
+//     {
+//         if (ACC_CUR < PACE_BOTTOM) PACE_BOTTOM = ACC_CUR;
+//     }
+//
+//     // accGetIntData();//read INT registers
+//
+//     // if (INT_STATUS & 0x80)
+//     // {
+//
+//     //     // time();
+//
+//     // }
+//
+//     time_count++;
+//
+//     if (pace_count > 0)
+//     {
+//         VALID_STEP_CONUT++;
+//     }
+//}
 
 
 // static void accGetAccData(void)
-static void accGetAccData(uint8 count)
-{
-    uint8 pBuf[2];
-    HalI2CInit(ACC_ADDRESS, I2C_CLOCK_RATE);
-
-    // uint8 addr = OUT_X_MSB, accBuf[6];
-
-    // HalMotionI2CWrite(1, &addr);
-    // HalMotionI2CRead(6, accBuf);
-
-    // X_out = (int16)((accBuf[0] << 8) | accBuf[1]);
-    // Y_out = (int16)((accBuf[2] << 8) | accBuf[3]);
-    // Z_out = (int16)((accBuf[4] << 8) | accBuf[5]);
-
-    accStaticCount++;
-
-    if (accStaticCount > ACC_STATIC_COUNT_MAX)
-    {
-        accLoadInterval = ACC_LOAD_INTERVAL;// * ACC_STATIC_COUNT_MAX;
-        // ALT_MIN = ALT_MIN_DEFAULT;
-
-        flagAccStatic=TRUE;
-        
-        //set acc into standby, so can write
-        pBuf[0] = CTRL_REG1;
-        pBuf[1] = 0;
-        HalI2CWrite(2, pBuf);
-        //enable motion int
-        pBuf[0] = CTRL_REG4;
-        pBuf[1] = INT_EN_FF_MT_MASK;
-        HalI2CWrite(2, pBuf);
-        //set acc back into active
-        pBuf[0] = CTRL_REG1;
-        pBuf[1] = (ASLP_RATE_12_5HZ + DATA_RATE_12_5HZ) | ACTIVE_MASK;
-        HalI2CWrite(2, pBuf);
-        //LED0_PIO=CLOSE_PIO;
-        //LED1_PIO=CLOSE_PIO;
-    }
-
-    uint8 addr = OUT_X_MSB, accBuf[MMA_FIFO_DEEPTH];
-
-    HalMotionI2CWrite(1, &addr);
-    HalMotionI2CRead(count * 6, accBuf);
-
-    for (int i = 0; i < count * 6; i += 6)
-    {
-        X_out = (int16)((accBuf[i] << 8) | accBuf[i+1]);
-        Y_out = (int16)((accBuf[i+2] << 8) | accBuf[i+3]);
-        Z_out = (int16)((accBuf[i+4] << 8) | accBuf[i+5]);
-
-        accLoop();
-    }
-}
+//static void accGetAccData(uint8 count)
+//{
+//    uint8 pBuf[2];
+//    HalI2CInit(ACC_ADDRESS, I2C_CLOCK_RATE);
+//
+//    // uint8 addr = OUT_X_MSB, accBuf[6];
+//
+//    // HalMotionI2CWrite(1, &addr);
+//    // HalMotionI2CRead(6, accBuf);
+//
+//    // X_out = (int16)((accBuf[0] << 8) | accBuf[1]);
+//    // Y_out = (int16)((accBuf[2] << 8) | accBuf[3]);
+//    // Z_out = (int16)((accBuf[4] << 8) | accBuf[5]);
+//
+//    accStaticCount++;
+//
+//    if (accStaticCount > ACC_STATIC_COUNT_MAX)
+//    {
+//        accLoadInterval = ACC_LOAD_INTERVAL;// * ACC_STATIC_COUNT_MAX;
+//        // ALT_MIN = ALT_MIN_DEFAULT;
+//
+//        flagAccStatic=TRUE;
+//        
+//        //set acc into standby, so can write
+//        pBuf[0] = CTRL_REG1;
+//        pBuf[1] = 0;
+//        HalI2CWrite(2, pBuf);
+//        //enable motion int
+//        pBuf[0] = CTRL_REG4;
+//        pBuf[1] = INT_EN_FF_MT_MASK;
+//        HalI2CWrite(2, pBuf);
+//        //set acc back into active
+//        pBuf[0] = CTRL_REG1;
+//        pBuf[1] = (ASLP_RATE_12_5HZ + DATA_RATE_12_5HZ) | ACTIVE_MASK;
+//        HalI2CWrite(2, pBuf);
+//        //LED0_PIO=CLOSE_PIO;
+//        //LED1_PIO=CLOSE_PIO;
+//    }
+//
+//    uint8 addr = OUT_X_MSB, accBuf[MMA_FIFO_DEEPTH];
+//
+//    HalMotionI2CWrite(1, &addr);
+//    HalMotionI2CRead(count * 6, accBuf);
+//
+//    for (int i = 0; i < count * 6; i += 6)
+//    {
+//        X_out = (int16)((accBuf[i] << 8) | accBuf[i+1]);
+//        Y_out = (int16)((accBuf[i+2] << 8) | accBuf[i+3]);
+//        Z_out = (int16)((accBuf[i+4] << 8) | accBuf[i+5]);
+//
+//        accLoop();
+//    }
+//}
 
 static uint8 accDataProcess(uint8 count)
 {
-	uint8 pBuf[2];
-	uint8 i,k;
-	uint16 mmaDataCntTemp=0;
-	//int32 accSlideSumTemp[3]={0,0,0};
-	int32 accSlideSumTemp=0;
-	#if ((MMA_DEBUG_SIMULATION==TRUE)&&(MMA_DEBUG_DATA_MODEL==1))
-		int16 accBufDebug[32*3]={-12,42,48,-13,42,45,-10,38,46,-12,41,50,-12,36,41,\
-			-9,32,36,-13,24,40,-14,20,44,-21,14,44,-38,9,49,-53,3,50,-66,1,42,-73,-6,31,\
-			-82,-13,21,-83,-13,24,-78,-11,31,-81,-13,39,-70,-17,33,-73,-18,22,-90,-15,\
-			12,-86,-15,5,-73,-15,3,-64,-11,3,-65,-4,-5,-60,4,-6,-72,-1,4,-75,-8,12,-59,\
-			-13,17,-75,-14,22,-82,-23,30,-84,-29,30,-71,-25,21\
-			};
-	#endif
-	#if((MMA_DEBUG_SIMULATION==TRUE)&&(MMA_DEBUG_DATA_MODEL==2))
-/*		int16 accBufDebug[32*3]={-92,-20,10,-76,-16,6,-68,-14,4,-65,-8,0,-67,1,-7,\
-			-62,1,-3,-91,-6,3,-65,-7,12,-54,-14,16,-65,-16,23,-81,-20,30,-87,-26,27,-81,\
-			-23,18,-82,-19,7,-64,-15,6,-60,-13,4,-65,-7,-1,-68,0,-8,-71,-3,1,-87,-8,4,-50,\
-			-8,14,-52,-12,17,-68,-16,23,-81,-17,30,-81,-21,26,-90,-21,17,-77,-15,9,-61,-12,\
-			7,-55,-9,3,-65,-2,-4,-71,0,-9,-80,-3,3\
-			};*/
-		int16 accBufDebug[32*3]={128,-1248,3920,-1264,576,3104,-1568,1744,2944,\
-		-1968,1840,2384,-2896,2720,2656,-3200,2928,2976,-3504,3216,2640,-2912,\
-		2368,2256,-2432,1744,2000,-1664,512,2496,-336,-384,3408,640,-1536,4960,\
-		368,-1392,5776,304,-1088,5312,224,-1568,4944,64,-1424,4288,-816,-800,\
-		3840,-2416,800,3040,-3104,656,1088,-3856,912,1904,-3712,1280,1616,-4160,\
-		1328,2256,-3728,1760,1808,-3680,2496,1856,-2752,1840,1504,-1792,1104,2512,\
-		176,-80,3248,512,-608,5104,928,-1232,6080,1520,-1792,5840,784,-672,4800,\
-		256,-608,4240\
-		};
-		mmaDataBA[0].mmaAxis[0].int16data=189;
-		mmaDataBA[1].mmaAxis[0].int16data=183;
-		mmaDataBA[2].mmaAxis[0].int16data=174;
-		mmaDataBACnt=3;
-	#endif
-	#if((MMA_DEBUG_SIMULATION==TRUE)&&(MMA_DEBUG_DATA_MODEL==3))
-		int16 accBufDebug[32*3]={-5024,-432,448,-3152,-592,832,-3616,-880,\
-		1280,-4624,-1120,1808,-5344,-1296,1984,-4800,-1552,1568,-5840,-1344,\
-		816,-5040,-976,416,-3936,-944,384,-3440,-672,192,-3872,-368,0,-4288,\
-		-336,-80,-4464,-624,528,-5536,-672,496,-3456,-800,864,-3616,-1136,\
-		1072,-4256,-1136,1488,-5280,-1392,1728,-5008,-1568,1488,-5632,-1408,\
-		960,-5184,-976,384,-4096,-912,400,-3952,-672,128,-3952,-160,-256,-4352,\
-		-32,-464,-4832,-432,400,-5136,-400,512,-3344,-608,928,-3664,-896,1248,\
-		-4528,-1216,1712,-5440,-1520,1888,-4768,-1664,1520\
-			};
-		mmaDataBA[0].mmaAxis[0].int16data=57;
-		mmaDataBA[1].mmaAxis[0].int16data=53;
-		mmaDataBA[2].mmaAxis[0].int16data=51;
-		mmaDataBA[3].mmaAxis[0].int16data=51;
-		mmaDataBACnt=4;
-	#endif
-	#if((MMA_DEBUG_SIMULATION==TRUE)&&(MMA_DEBUG_DATA_MODEL==4))
-		int16 accBufDebug[32*3]={-4896,-944,-272,-4160,320,176,-4000,32,96,\
-		-6400,-1328,304,-4352,-1520,480,-3104,-1728,432,-4048,-2432,624,-5424,\
-		-3312,640,-3856,-3200,624,-5408,-3008,48,-5760,-1712,96,-4048,-1616,96,\
-		-4256,-1392,64,-4832,-512,16,-4224,64,144,-4624,-832,512,-5488,-1456,\
-		560,-3072,-1440,672,-3440,-1872,448,-5280,-2816,592,-4608,-3360,528,\
-		-3984,-3376,272,-6208,-2576,-176\
-			};
-		mmaDataBA[0].mmaAxis[0].int16data=60;
-		mmaDataBACnt=1;
-		uint8 accRunCntAyDebug[27]={0,0,1,2,2,1,1,1,1,1,2,3,0,1,1,1,1,1,1,1,1,1,0,2,0,0,0};
-		accRunCntAyDebugCnt=27;
-	#endif
-/*
-	//first piece of data, round mode
-	int16 accBufDebug[32*3]={-43,-27,-36,-42,-30,-32,-42,-25,-38,-40,-26,-38,-35,-36,-39,-39,-34,-35,-39,\
-		-34,-30,-46,-34,-22,-54,-31,-15,-61,-18,-8,-70,-14,-6,-72,-16,-4,-71,-20,-2,-68,-25,\
-		-1,-64,-34,1,-59,-44,1,-57,-37,1,-50,-31,1,-72,-28,-1,-82,-21,1,-78,-20,3,-73,-15,6,\
-		-72,0,8,-69,-1,6,-66,-9,6,-76,-16,9,-59,-24,8,-60,-28,7,-61,-36,9,-62,-41,7,-59,-34,9,-71,-30,2\
-	};
-	//second piece of data, round mode
-	int16 accBufDebug[32*3]={-74,-21,6,-63,-20,4,-68,-17,4,-76,-5,8,-71,1,10,-60,-11,9,-77,-12,11,-55,\
-	-23,8,-57,-25,7,-58,-35,9,-61,-41,7,-68,-39,6,-65,-34,3,-76,-21,4,-60,-18,1,-60,-13,4,-70,-11,2,-62,\
-	-6,8,-61,-11,8,-81,-16,10,-58,-17,9,-47,-23,4,-52,-28,6,-63,-33,5,-79,-41,6,-61,-33,6,-73,-25,5,-54,\
-	-21,3,-52,-16,3,-62,-15,-1,-68,-11,7,-65,-14,8\
-	};	
-	//third piece of data, round mode
-	int16 accBufDebug[32*3]={-76,-17,9,-51,-17,11,-45,-23,4,-50,-26,9,-63,-39,9,-72,-38,8,-65,-32,5,-72,\
-		-24,6,-55,-21,3,-50,-19,2,-58,-16,3,-66,-11,6,-65,-14,8,-79,-19,9,-55,-17,12,-43,-23,5,-51,-26,8,\
-		-63,-33,10,-77,-38,10,-59,-32,10,-74,-26,9,-58,-21,5,-55,-16,6,-59,-13,4,-68,-3,9,-64,-8,9,-77,\
-		-17,6,-59,-20,13,-46,-26,6,-51,-26,10,-59,-33,10,-74,-34,11\
-	};*/
-/*	//first piece of data, fix mode
-	int16 accBufDebug[32*3]={-43,-27,-35,-41,-29,-32,-41,-24,-38,-40,-26,-37,-35,-36,-38,-38,-33,-35,\
-		-39,-34,-29,-45,-34,-22,-53,-30,-15,-61,-18,-7,-70,-14,-6,-72,-16,-3,-71,-20,-2,-68,-25,0,-64,\
-		-33,0,-59,-44,0,-56,-37,1,-49,-30,1,-71,-27,0,-81,-20,1,-77,-20,3,-73,-14,6,-71,0,8,-69,0,5,-65,\
-		-9,5,-75,-15,8,-59,-23,7,-59,-28,7,-60,-35,8,-61,-40,7,-58,-34,8,-70,-30,2\
-		};
-	//second piece of data, fix mode
-	int16 accBufDebug[32*3]={-73,-20,5,-62,-19,4,-67,-16,4,-76,-5,7,-70,0,9,-60,-11,9,-77,-12,11,-54,\
-		-23,8,-57,-24,6,-58,-34,9,-61,-40,6,-68,-39,6,-64,-33,2,-75,-21,3,-60,-18,0,-60,-12,3,-70,\
-		-10,1,-62,-6,8,-61,-11,7,-81,-16,9,-57,-17,9,-46,-22,3,-52,-28,5,-62,-32,5,-79,-41,6,-60,\
-		-33,5,-73,-24,5,-53,-20,3,-52,-16,2,-62,-14,0,-68,-10,7,-64,-14,8\
-	};
-	//third piece of data, fix mode
-	int16 accBufDebug[32*3]={-75,-17,9,-50,-16,10,-44,-22,4,-50,-26,9,-62,-39,9,-72,\
-		-38,7,-65,-31,4,-72,-23,6,-55,-20,2,-50,-18,2,-57,-16,3,-66,-11,6,-64,-13,8,-78,\
-		-19,9,-55,-16,11,-43,-22,4,-50,-25,8,-63,-32,9,-76,-37,9,-59,-31,9,-73,-25,8,-58,\
-		-21,5,-55,-15,5,-59,-13,4,-67,-2,8,-63,-7,8,-77,-16,6,-59,-20,13,-46,-25,5,-51,\
-		-26,10,-59,-32,10,-73,-34,10\
-	};*/
-		//debug usage
-		//toggleLEDWithTime(1,OPEN_PIO);
-	uint16 mmaDataPeakCnt[3]={0,0,0};
-	uint16 accBufCutLineSuf=0;
-	uint16 mmaCutLineCnt=0;
-	int16 accBufMean=0;
-	int32 accBufSum=0;
-	int16 accBufLastPeakValue=5000;
-	uint8 accLastValleySuf=ACC_LAST_VALLEY_SUF_DEFAULT;
-	uint8 accRunCounter=0;
-	//uint8 addr = OUT_X_MSB, accBufCur[MMA_FIFO_DEEPTH];
+//	uint8 pBuf[2];
+//	uint8 i,k;
+        uint8 i;
+        uint32 xyzAxisAbsdataMax[2] = {0,0};
+        uint32 xyzAxisAbsdataMin[2] = {100000000,100000000};
+//	uint16 mmaDataCntTemp=0;
+//	int32 accSlideSumTemp[3]={0,0,0};
+
+//	#if((MMA_DEBUG_SIMULATION==TRUE)&&(MMA_DEBUG_DATA_MODEL==2))
+//		int16 accBufDebug[32*3]={128,-1248,3920,-1264,576,3104,-1568,1744,2944,\
+//		-1968,1840,2384,-2896,2720,2656,-3200,2928,2976,-3504,3216,2640,-2912,\
+//		2368,2256,-2432,1744,2000,-1664,512,2496,-336,-384,3408,640,-1536,4960,\
+//		368,-1392,5776,304,-1088,5312,224,-1568,4944,64,-1424,4288,-816,-800,\
+//		3840,-2416,800,3040,-3104,656,1088,-3856,912,1904,-3712,1280,1616,-4160,\
+//		1328,2256,-3728,1760,1808,-3680,2496,1856,-2752,1840,1504,-1792,1104,2512,\
+//		176,-80,3248,512,-608,5104,928,-1232,6080,1520,-1792,5840,784,-672,4800,\
+//		256,-608,4240\
+//		};
+//		mmaDataBA[0].mmaAxis[0].int16data=189;
+//		mmaDataBA[1].mmaAxis[0].int16data=183;
+//		mmaDataBA[2].mmaAxis[0].int16data=174;
+//		mmaDataBACnt=32;
+//	#endif
+//	#if((MMA_DEBUG_SIMULATION==TRUE)&&(MMA_DEBUG_DATA_MODEL==3))
+//		int16 accBufDebug[32*3]={-5024,-432,448,-3152,-592,832,-3616,-880,\
+//		1280,-4624,-1120,1808,-5344,-1296,1984,-4800,-1552,1568,-5840,-1344,\
+//		816,-5040,-976,416,-3936,-944,384,-3440,-672,192,-3872,-368,0,-4288,\
+//		-336,-80,-4464,-624,528,-5536,-672,496,-3456,-800,864,-3616,-1136,\
+//		1072,-4256,-1136,1488,-5280,-1392,1728,-5008,-1568,1488,-5632,-1408,\
+//		960,-5184,-976,384,-4096,-912,400,-3952,-672,128,-3952,-160,-256,-4352,\
+//		-32,-464,-4832,-432,400,-5136,-400,512,-3344,-608,928,-3664,-896,1248,\
+//		-4528,-1216,1712,-5440,-1520,1888,-4768,-1664,1520\
+//			};
+//		mmaDataBA[0].mmaAxis[0].int16data=57;
+//		mmaDataBA[1].mmaAxis[0].int16data=53;
+//		mmaDataBA[2].mmaAxis[0].int16data=51;
+//		mmaDataBA[3].mmaAxis[0].int16data=51;
+//		mmaDataBACnt=4;
+//	#endif
+//	#if((MMA_DEBUG_SIMULATION==TRUE)&&(MMA_DEBUG_DATA_MODEL==4))
+//		int16 accBufDebug[32*3]={-4896,-944,-272,-4160,320,176,-4000,32,96,\
+//		-6400,-1328,304,-4352,-1520,480,-3104,-1728,432,-4048,-2432,624,-5424,\
+//		-3312,640,-3856,-3200,624,-5408,-3008,48,-5760,-1712,96,-4048,-1616,96,\
+//		-4256,-1392,64,-4832,-512,16,-4224,64,144,-4624,-832,512,-5488,-1456,\
+//		560,-3072,-1440,672,-3440,-1872,448,-5280,-2816,592,-4608,-3360,528,\
+//		-3984,-3376,272,-6208,-2576,-176\
+//			};
+//		mmaDataBA[0].mmaAxis[0].int16data=60;
+//		mmaDataBACnt=1;
+//		uint8 accRunCntAyDebug[27]={0,0,1,2,2,1,1,1,1,1,2,3,0,1,1,1,1,1,1,1,1,1,0,2,0,0,0};
+//		accRunCntAyDebugCnt=27;
+//	#endif
+///*
+//	//first piece of data, round mode
+//	int16 accBufDebug[32*3]={-43,-27,-36,-42,-30,-32,-42,-25,-38,-40,-26,-38,-35,-36,-39,-39,-34,-35,-39,\
+//		-34,-30,-46,-34,-22,-54,-31,-15,-61,-18,-8,-70,-14,-6,-72,-16,-4,-71,-20,-2,-68,-25,\
+//		-1,-64,-34,1,-59,-44,1,-57,-37,1,-50,-31,1,-72,-28,-1,-82,-21,1,-78,-20,3,-73,-15,6,\
+//		-72,0,8,-69,-1,6,-66,-9,6,-76,-16,9,-59,-24,8,-60,-28,7,-61,-36,9,-62,-41,7,-59,-34,9,-71,-30,2\
+//	};
+//	//second piece of data, round mode
+//	int16 accBufDebug[32*3]={-74,-21,6,-63,-20,4,-68,-17,4,-76,-5,8,-71,1,10,-60,-11,9,-77,-12,11,-55,\
+//	-23,8,-57,-25,7,-58,-35,9,-61,-41,7,-68,-39,6,-65,-34,3,-76,-21,4,-60,-18,1,-60,-13,4,-70,-11,2,-62,\
+//	-6,8,-61,-11,8,-81,-16,10,-58,-17,9,-47,-23,4,-52,-28,6,-63,-33,5,-79,-41,6,-61,-33,6,-73,-25,5,-54,\
+//	-21,3,-52,-16,3,-62,-15,-1,-68,-11,7,-65,-14,8\
+//	};	
+//	//third piece of data, round mode
+//	int16 accBufDebug[32*3]={-76,-17,9,-51,-17,11,-45,-23,4,-50,-26,9,-63,-39,9,-72,-38,8,-65,-32,5,-72,\
+//		-24,6,-55,-21,3,-50,-19,2,-58,-16,3,-66,-11,6,-65,-14,8,-79,-19,9,-55,-17,12,-43,-23,5,-51,-26,8,\
+//		-63,-33,10,-77,-38,10,-59,-32,10,-74,-26,9,-58,-21,5,-55,-16,6,-59,-13,4,-68,-3,9,-64,-8,9,-77,\
+//		-17,6,-59,-20,13,-46,-26,6,-51,-26,10,-59,-33,10,-74,-34,11\
+//	};*/
+///*	//first piece of data, fix mode
+//	int16 accBufDebug[32*3]={-43,-27,-35,-41,-29,-32,-41,-24,-38,-40,-26,-37,-35,-36,-38,-38,-33,-35,\
+//		-39,-34,-29,-45,-34,-22,-53,-30,-15,-61,-18,-7,-70,-14,-6,-72,-16,-3,-71,-20,-2,-68,-25,0,-64,\
+//		-33,0,-59,-44,0,-56,-37,1,-49,-30,1,-71,-27,0,-81,-20,1,-77,-20,3,-73,-14,6,-71,0,8,-69,0,5,-65,\
+//		-9,5,-75,-15,8,-59,-23,7,-59,-28,7,-60,-35,8,-61,-40,7,-58,-34,8,-70,-30,2\
+//		};
+//	//second piece of data, fix mode
+//	int16 accBufDebug[32*3]={-73,-20,5,-62,-19,4,-67,-16,4,-76,-5,7,-70,0,9,-60,-11,9,-77,-12,11,-54,\
+//		-23,8,-57,-24,6,-58,-34,9,-61,-40,6,-68,-39,6,-64,-33,2,-75,-21,3,-60,-18,0,-60,-12,3,-70,\
+//		-10,1,-62,-6,8,-61,-11,7,-81,-16,9,-57,-17,9,-46,-22,3,-52,-28,5,-62,-32,5,-79,-41,6,-60,\
+//		-33,5,-73,-24,5,-53,-20,3,-52,-16,2,-62,-14,0,-68,-10,7,-64,-14,8\
+//	};
+//	//third piece of data, fix mode
+//	int16 accBufDebug[32*3]={-75,-17,9,-50,-16,10,-44,-22,4,-50,-26,9,-62,-39,9,-72,\
+//		-38,7,-65,-31,4,-72,-23,6,-55,-20,2,-50,-18,2,-57,-16,3,-66,-11,6,-64,-13,8,-78,\
+//		-19,9,-55,-16,11,-43,-22,4,-50,-25,8,-63,-32,9,-76,-37,9,-59,-31,9,-73,-25,8,-58,\
+//		-21,5,-55,-15,5,-59,-13,4,-67,-2,8,-63,-7,8,-77,-16,6,-59,-20,13,-46,-25,5,-51,\
+//		-26,10,-59,-32,10,-73,-34,10\
+//	};*/
+//		//debug usage
+//		//toggleLEDWithTime(1,OPEN_PIO);
+//	uint16 mmaDataPeakCnt[3]={0,0,0};
+//	uint16 accBufCutLineSuf=0;
+//	uint16 mmaCutLineCnt=0;
+//	int16 accBufMean=0;
+//	int32 accBufSum=0;
+//	int16 accBufLastPeakValue=5000;
+//	uint8 accLastValleySuf=ACC_LAST_VALLEY_SUF_DEFAULT;
+//	uint8 accRunCounter=0;
+//	//uint8 addr = OUT_X_MSB, accBufCur[MMA_FIFO_DEEPTH];
 	uint8 addr = OUT_X_MSB;
 	uint8 *accBufCur;
-	int16 *mmaDataASum;
-	uint8 flagAccDataError=FALSE;
-	uint8 flagValleyFreeze=FALSE;
-	uint8 mmaDataASumCnt;
+        uint32 *xyzAxisAbsdata;
+       // uint32 xyzAxisAbsdata[DATA_A_CNT_MAX];
+//	int16 *mmaDataASum;
+//	uint8 flagAccDataError=FALSE;
+//	uint8 flagValleyFreeze=FALSE;
+//	uint8 mmaDataASumCnt;
 
 	HalI2CInit(ACC_ADDRESS, I2C_CLOCK_RATE);
 /*
@@ -2256,7 +2283,7 @@ static uint8 accDataProcess(uint8 count)
 	}*/
 	//declare 
 	accBufCur=osal_mem_alloc(MMA_FIFO_DEEPTH);
-	mmaDataASum=osal_mem_alloc(DATA_A_CNT_MAX*sizeof(int16));
+//	mmaDataASum=osal_mem_alloc(DATA_A_CNT_MAX*sizeof(int16));
 	osal_memset(accBufCur,0,MMA_FIFO_DEEPTH);
 	if(accBufCur!=NULL)
 	{
@@ -2267,7 +2294,7 @@ static uint8 accDataProcess(uint8 count)
 	}
 	else
 	{
-		flagAccDataError=TRUE;
+		//flagAccDataError=TRUE;
 		mmaDataACnt=0;
 		return 0;
 	}
@@ -2276,33 +2303,33 @@ static uint8 accDataProcess(uint8 count)
 		return 0;
 	}
 	
-	#if (MMA_DEBUG_SIMULATION==TRUE)
-		//debug build mmaDataA
-		for(i=0;i<32;i++)
-		{
-			mmaDataA[i].mmaAxis[0].int16data=(int32)accBufDebug[i*3];
-			mmaDataA[i].mmaAxis[1].int16data=(int32)accBufDebug[i*3+1];
-			mmaDataA[i].mmaAxis[2].int16data=(int32)accBufDebug[i*3+2];
-		}
-		mmaDataACnt=32;
-		/*
-		//debug build mmaDataBA
-		mmaDataBA[0].mmaAxis[1].int16data=32;
-		mmaDataBA[1].mmaAxis[1].int16data=29;
-		mmaDataBA[2].mmaAxis[1].int16data=23;
-		mmaDataBA[3].mmaAxis[1].int16data=18;
-		mmaDataBA[4].mmaAxis[1].int16data=15;
-		mmaDataBA[5].mmaAxis[1].int16data=13;
-		mmaDataBA[6].mmaAxis[1].int16data=12;
-		mmaDataBA[7].mmaAxis[1].int16data=12;
-		mmaDataBA[8].mmaAxis[1].int16data=14;
-		for(i=0;i<9;i++)
-		{
-			mmaDataBACnt++;
-		}	*/
-	#else
+//	#if (MMA_DEBUG_SIMULATION==TRUE)
+//		//debug build mmaDataA
+//		for(i=0;i<32;i++)
+//		{
+//			mmaDataA[i].mmaAxis[0].int16data=(int32)accBufDebug[i*3];
+//			mmaDataA[i].mmaAxis[1].int16data=(int32)accBufDebug[i*3+1];
+//			mmaDataA[i].mmaAxis[2].int16data=(int32)accBufDebug[i*3+2];
+//		}
+//		mmaDataACnt=32;
+//		/*
+//		//debug build mmaDataBA
+//		mmaDataBA[0].mmaAxis[1].int16data=32;
+//		mmaDataBA[1].mmaAxis[1].int16data=29;
+//		mmaDataBA[2].mmaAxis[1].int16data=23;
+//		mmaDataBA[3].mmaAxis[1].int16data=18;
+//		mmaDataBA[4].mmaAxis[1].int16data=15;
+//		mmaDataBA[5].mmaAxis[1].int16data=13;
+//		mmaDataBA[6].mmaAxis[1].int16data=12;
+//		mmaDataBA[7].mmaAxis[1].int16data=12;
+//		mmaDataBA[8].mmaAxis[1].int16data=14;
+//		for(i=0;i<9;i++)
+//		{
+//			mmaDataBACnt++;
+//		}	*/
+//	#else
 		//change bytes into unions
-		osal_memset(mmaDataA,0,sizeof(mmaDataA));
+//		osal_memset(mmaDataA,0,sizeof(mmaDataA));
 		for(i = 0; i < mmaDataACnt; i ++)
 		{
 			mmaDataA[i].mmaAxis[0].int16data=(int16)((accBufCur[i*6] << 8) | accBufCur[i*6+1]);
@@ -2312,7 +2339,7 @@ static uint8 accDataProcess(uint8 count)
 			mmaDataA[i].mmaAxis[2].int16data=(int16)((accBufCur[i*6+4] << 8) | accBufCur[i*6+5]);
 			//mmaDataA[i].mmaAxis[2].int16data=mmaDataA[i].mmaAxis[2].int16data>>6;
 		}
-	#endif
+//	#endif
 	#if (ACC_POPUP_DATA_BLE==TRUE)
 		//save data into txbuf
 		osal_memset(mmaDataA_txbuf,0,sizeof(mmaDataA));
@@ -2327,413 +2354,642 @@ static uint8 accDataProcess(uint8 count)
 //		accRunCnt_txbuf=accRunCntAy[2];		
 		flagTxAccData=TRUE;
 		osal_set_event( simpleBLEPeripheral_TaskID, SBP_PERIODIC_EVT);
-	/*	
-		//send data through bluetooth
-		uint8 d[8];
-		for(i = 0; i < mmaDataACnt; i ++)
-		{
-			//osal_memcpy(&d[0], &mmaDataA[i].mmaAxis[0].int16data, sizeof(int16));
-			//osal_memcpy(&d[2], &mmaDataA[i].mmaAxis[1].int16data, sizeof(int16));
-			//osal_memcpy(&d[4], &mmaDataA[i].mmaAxis[2].int16data, sizeof(int16));
-			//osal_memcpy(&d[6], &ACC_CUR, sizeof(int16));
-			X_out=mmaDataA[i].mmaAxis[0].int16data;
-			Y_out=mmaDataA[i].mmaAxis[1].int16data;
-			Z_out=mmaDataA[i].mmaAxis[2].int16data;
-			if(i==0)
-			{
-				ACC_CUR=accRunCntAy[2];//popup the last run_counter
-			}
-			else if(i==1)
-			{
-				ACC_CUR=(int16)mmaLastSmoothestAxis;
-			}
-			else
-			{
-				ACC_CUR=0xFFFF;
-			}
-			osal_memcpy(&d[0], &X_out, sizeof(int16));
-			osal_memcpy(&d[2], &Y_out, sizeof(int16));
-			osal_memcpy(&d[4], &Z_out, sizeof(int16));
-			osal_memcpy(&d[6], &ACC_CUR, sizeof(int16));
-			SimpleProfile_SetParameter( HEALTH_SYNC, sizeof ( d ), d );
-		}*/
+//	/*	
+//		//send data through bluetooth
+//		uint8 d[8];
+//		for(i = 0; i < mmaDataACnt; i ++)
+//		{
+//			//osal_memcpy(&d[0], &mmaDataA[i].mmaAxis[0].int16data, sizeof(int16));
+//			//osal_memcpy(&d[2], &mmaDataA[i].mmaAxis[1].int16data, sizeof(int16));
+//			//osal_memcpy(&d[4], &mmaDataA[i].mmaAxis[2].int16data, sizeof(int16));
+//			//osal_memcpy(&d[6], &ACC_CUR, sizeof(int16));
+//			X_out=mmaDataA[i].mmaAxis[0].int16data;
+//			Y_out=mmaDataA[i].mmaAxis[1].int16data;
+//			Z_out=mmaDataA[i].mmaAxis[2].int16data;
+//			if(i==0)
+//			{
+//				ACC_CUR=accRunCntAy[2];//popup the last run_counter
+//			}
+//			else if(i==1)
+//			{
+//				ACC_CUR=(int16)mmaLastSmoothestAxis;
+//			}
+//			else
+//			{
+//				ACC_CUR=0xFFFF;
+//			}
+//			osal_memcpy(&d[0], &X_out, sizeof(int16));
+//			osal_memcpy(&d[2], &Y_out, sizeof(int16));
+//			osal_memcpy(&d[4], &Z_out, sizeof(int16));
+//			osal_memcpy(&d[6], &ACC_CUR, sizeof(int16));
+//			SimpleProfile_SetParameter( HEALTH_SYNC, sizeof ( d ), d );
+//		}*/
 	#endif
 //	#if (MMA_DEBUG_SIMULATION==FALSE)
 		for(i = 0; i < mmaDataACnt; i ++)
 		{
 			//mmaDataA[i].mmaAxis[0].int16data=(int16)((accBufCur[i*6] << 8) | accBufCur[i*6+1]);
-			mmaDataA[i].mmaAxis[0].int16data=mmaDataA[i].mmaAxis[0].int16data>>6;
+			//mmaDataA[i].mmaAxis[0].int16data=mmaDataA[i].mmaAxis[0].int16data>>6;
+                        mmaDataA[i].mmaAxis[0].int16data=mmaDataA[i].mmaAxis[0].int16data;
 			//mmaDataA[i].mmaAxis[1].int16data=(int16)((accBufCur[i*6+2] << 8) | accBufCur[i*6+3]);
-			mmaDataA[i].mmaAxis[1].int16data=mmaDataA[i].mmaAxis[1].int16data>>6;
+			//mmaDataA[i].mmaAxis[1].int16data=mmaDataA[i].mmaAxis[1].int16data>>6;
+                        mmaDataA[i].mmaAxis[1].int16data=mmaDataA[i].mmaAxis[1].int16data;
 			//mmaDataA[i].mmaAxis[2].int16data=(int16)((accBufCur[i*6+4] << 8) | accBufCur[i*6+5]);
-			mmaDataA[i].mmaAxis[2].int16data=mmaDataA[i].mmaAxis[2].int16data>>6;
+			//mmaDataA[i].mmaAxis[2].int16data=mmaDataA[i].mmaAxis[2].int16data>>6;
+                        mmaDataA[i].mmaAxis[2].int16data=mmaDataA[i].mmaAxis[2].int16data;
 		}
+    ///////////////三轴滤波,取Y轴、Z轴的模: 滤波系数放大1024倍，需要右移10?
+	for(i=0;i< FilterCofdepth-1; i++)
+		{
+		mmaDataFilterTemp[i].mmaAxis[0].int32data= (int32)mmaDataFilterPredata[i].mmaAxis[0].int32data;
+		mmaDataFilterTemp[i].mmaAxis[1].int32data= (int32)mmaDataFilterPredata[i].mmaAxis[1].int32data;
+		//mmaDataFilterTemp[i].mmaAxis[2].int32data= (int32)mmaDataFilterPredata[i].mmaAxis[2].int32data;
+		}
+	for(i=FilterCofdepth-1;i< mmaDataACnt+FilterCofdepth; i++)
+		{
+		mmaDataFilterTemp[i].mmaAxis[0].int32data = (int32)mmaDataA[i-FilterCofdepth+1].mmaAxis[1].int16data;
+		mmaDataFilterTemp[i].mmaAxis[1].int32data = (int32)mmaDataA[i-FilterCofdepth+1].mmaAxis[2].int16data;
+		//mmaDataFilterTemp[i].mmaAxis[2].int32data = (int32)mmaDataA[i-FilterCofdepth].mmaAxis[2].int16data;
+		}	
+	xyzAxisAbsdata=osal_mem_alloc(DATA_A_CNT_MAX);
+	osal_memset(xyzAxisAbsdata,0,DATA_A_CNT_MAX);
+         for(i=0;i<mmaDataACnt;i++)
+	{
+		/*mmaDataFilter[i].mmaAxis[0].int32data =   ( (mmaDataFilterTemp[0+i].mmaAxis[0].int32data+ mmaDataFilterTemp[10+i].mmaAxis[0].int32data)*filterCof[0]+\
+	                                                                          (mmaDataFilterTemp[1+i].mmaAxis[0].int32data+ mmaDataFilterTemp[9+i].mmaAxis[0].int32data)*filterCof[1]+\
+	                                                                          (mmaDataFilterTemp[2+i].mmaAxis[0].int32data+ mmaDataFilterTemp[8+i].mmaAxis[0].int32data)*filterCof[2]+\
+	                                                                          (mmaDataFilterTemp[3+i].mmaAxis[0].int32data+ mmaDataFilterTemp[7+i].mmaAxis[0].int32data)*filterCof[3]+\
+	                                                                          (mmaDataFilterTemp[4+i].mmaAxis[0].int32data+ mmaDataFilterTemp[6+i].mmaAxis[0].int32data)*filterCof[4]+\
+	                                                                           mmaDataFilterTemp[5+i].mmaAxis[0].int32data*filterCof[5])>>10;*/
+		mmaDataFilter[i].mmaAxis[0].int32data =   ( (mmaDataFilterTemp[0+i].mmaAxis[0].int32data+ mmaDataFilterTemp[10+i].mmaAxis[0].int32data)*filterCof[0]+\
+	                                                    (mmaDataFilterTemp[1+i].mmaAxis[0].int32data+ mmaDataFilterTemp[9+i].mmaAxis[0].int32data)*filterCof[1]+\
+	                                                    (mmaDataFilterTemp[2+i].mmaAxis[0].int32data+ mmaDataFilterTemp[8+i].mmaAxis[0].int32data)*filterCof[2]+\
+	                                                    (mmaDataFilterTemp[3+i].mmaAxis[0].int32data+ mmaDataFilterTemp[7+i].mmaAxis[0].int32data)*filterCof[3]+\
+	                                                    (mmaDataFilterTemp[4+i].mmaAxis[0].int32data+ mmaDataFilterTemp[6+i].mmaAxis[0].int32data)*filterCof[4]+\
+	                                                     mmaDataFilterTemp[5+i].mmaAxis[0].int32data*filterCof[5])>>10;	
+		mmaDataFilter[i].mmaAxis[1].int32data =   ( (mmaDataFilterTemp[0+i].mmaAxis[1].int32data+ mmaDataFilterTemp[10+i].mmaAxis[1].int32data)*filterCof[0]+\
+	                                                    (mmaDataFilterTemp[1+i].mmaAxis[1].int32data+ mmaDataFilterTemp[9+i].mmaAxis[1].int32data)*filterCof[1]+\
+	                                                    (mmaDataFilterTemp[2+i].mmaAxis[1].int32data+ mmaDataFilterTemp[8+i].mmaAxis[1].int32data)*filterCof[2]+\
+	                                                    (mmaDataFilterTemp[3+i].mmaAxis[1].int32data+ mmaDataFilterTemp[7+i].mmaAxis[1].int32data)*filterCof[3]+\
+	                                                    (mmaDataFilterTemp[4+i].mmaAxis[1].int32data+ mmaDataFilterTemp[6+i].mmaAxis[1].int32data)*filterCof[4]+\
+	                                                     mmaDataFilterTemp[5+i].mmaAxis[1].int32data*filterCof[5])>>10;         
+                xyzAxisAbsdata[i] = (uint32)(mmaDataFilter[i].mmaAxis[0].int32data*mmaDataFilter[i].mmaAxis[0].int32data + mmaDataFilter[i].mmaAxis[1].int32data*mmaDataFilter[i].mmaAxis[1].int32data);
+     
+        }
+
+
+       for(i=0;i<mmaDataACnt;i++)
+       {
+		if(i <( mmaDataACnt>>1))
+			{
+//                          xyzAxisAbsdataMax[0] = MAX(xyzAxisAbsdata[i],xyzAxisAbsdata[i+1]);
+//                          xyzAxisAbsdataMin[0] = MIN(xyzAxisAbsdata[i],xyzAxisAbsdata[i+1]);
+			 if(xyzAxisAbsdata[i] > xyzAxisAbsdataMax[0])
+			     {
+			     xyzAxisAbsdataMax[0]  = xyzAxisAbsdata[i];
+			 	}
+			 else
+			 	{
+			       xyzAxisAbsdataMax[0]  = xyzAxisAbsdataMax[0];
+			 	}
+			 if(xyzAxisAbsdata[i] <  xyzAxisAbsdataMin[0])
+			 	{
+			       xyzAxisAbsdataMin[0]  = xyzAxisAbsdata[i];
+			 	}
+			 else
+			 	{
+			        xyzAxisAbsdataMin[0]  =  xyzAxisAbsdataMin[0];
+			 	}
+			}
+		 else
+			{
+//                          xyzAxisAbsdataMax[1] = MAX(xyzAxisAbsdata[i-1],xyzAxisAbsdata[i]);
+//                          xyzAxisAbsdataMin[1] = MIN(xyzAxisAbsdata[i-1],xyzAxisAbsdata[i]);
+			 if(xyzAxisAbsdata[i] > xyzAxisAbsdataMax[1])
+			     {
+			     xyzAxisAbsdataMax[1]  = xyzAxisAbsdata[i];
+			 	}
+			 else
+			 	{
+			       xyzAxisAbsdataMax[1]  = xyzAxisAbsdataMax[1];
+			 	}
+			 if(xyzAxisAbsdata[i] <  xyzAxisAbsdataMin[1])
+			 	{
+			       xyzAxisAbsdataMin[1]  = xyzAxisAbsdata[i];
+			 	}
+			 else
+			 	{
+			        xyzAxisAbsdataMin[1]  =  xyzAxisAbsdataMin[1];
+			 	}
+			}		 	
+             	}
+	    
+             xyzAxisAbsdataAvg[0] = (xyzAxisAbsdataMax[0]+ xyzAxisAbsdataMin[0])>>1;
+	      xyzAxisAbsdataDiff[0] = xyzAxisAbsdataMax[0]- xyzAxisAbsdataMin[0];
+             xyzAxisAbsdataAvg[1] = (xyzAxisAbsdataMax[1]+ xyzAxisAbsdataMin[1])>>1;
+	      xyzAxisAbsdataDiff[1] = xyzAxisAbsdataMax[1]- xyzAxisAbsdataMin[1];
+
+		///////////////////////////////////////////重新量化 门限判断 初步估计步数
+
+             for (i=0;i<mmaDataACnt-1;i++)
+             	{
+             	    if(xyzAxisAbsdata[i+1]>xyzAxisAbsdata[i])
+             	    	{
+			 if(xyzAxisAbsdata[i+1] - xyzAxisAbsdata[i]>DYNAMIC_PRECISE)
+			 	{
+			 	xyzAxisAbsdataNew[i+1] = xyzAxisAbsdata[i+1];
+			 	}
+			 else
+			 	{
+			 	xyzAxisAbsdataNew[i+1] = xyzAxisAbsdataNew[i];
+			 	}
+             	    	}
+	            else
+	            	{
+			  if(xyzAxisAbsdata[i] - xyzAxisAbsdata[i+1]>DYNAMIC_PRECISE)
+			 	{
+			 	xyzAxisAbsdataNew[i+1] = xyzAxisAbsdata[i+1];
+			 	}
+			  else
+			 	{
+			 	xyzAxisAbsdataNew[i+1] = xyzAxisAbsdataNew[i];
+			 	}		
+             	    	}
+//                   if(ABS(xyzAxisAbsdata[i+1] - xyzAxisAbsdata[i])> DYNAMIC_PRECISE )
+//                      {
+//                       xyzAxisAbsdataNew[i+1] = xyzAxisAbsdata[i+1];
+//                       }
+//                   else
+//		       {
+//		       xyzAxisAbsdataNew[i+1] = xyzAxisAbsdataNew[i];
+//		       }                     
+			
+                        xyzAxisAbsdataOld[i+1] = xyzAxisAbsdataNew[i];
+			if(i <( mmaDataACnt>>1))
+				{
+                             if(((xyzAxisAbsdataOld[i+1]>xyzAxisAbsdataAvg[0]) && (xyzAxisAbsdataAvg[0]> xyzAxisAbsdataNew[i+1] )) ||((xyzAxisAbsdataOld[i+1] < xyzAxisAbsdataAvg[0]) && (xyzAxisAbsdataAvg[0]< xyzAxisAbsdataNew[i+1] )))
+                             	{
+                             	if ((timeWindowCount < timeWindowCountMax) && (timeWindowCount > timeWindowCountMin) )
+				     {
+                                         if(xyzAxisAbsdataAvgPre >xyzAxisAbsdataAvg[0])
+                                             {
+                                             if(xyzAxisAbsdataAvgPre- xyzAxisAbsdataAvg[0] < XyzAxisAbsdataAvgTH)
+                                                 {
+                                                 stepCount[countPeriod] = stepCount[countPeriod] + 1;
+						 }
+                                             }
+					 else
+                                             {
+                                              if(xyzAxisAbsdataAvg[0 ]- xyzAxisAbsdataAvgPre < XyzAxisAbsdataAvgTH)
+                                                  {
+                                                  stepCount[countPeriod] = stepCount[countPeriod] + 1;
+						  }								
+					      }				   
+                                     }
+                                 timeWindowCount = 0;
+                             	 }
+			  else
+			     {
+                              timeWindowCount = timeWindowCount + 1;
+			      }
+				}
+		      else
+				{
+                             if(((xyzAxisAbsdataOld[i+1]>xyzAxisAbsdataAvg[1]) && (xyzAxisAbsdataAvg[1]> xyzAxisAbsdataNew[i+1] )) ||((xyzAxisAbsdataOld[i+1] < xyzAxisAbsdataAvg[1]) && (xyzAxisAbsdataAvg[1]< xyzAxisAbsdataNew[i+1] )))
+                             	{
+                             	if ((timeWindowCount < timeWindowCountMax) && (timeWindowCount > timeWindowCountMin) )
+				    {
+                                        if(xyzAxisAbsdataAvg[1]>xyzAxisAbsdataAvg[0])
+                                            {
+                                            if(xyzAxisAbsdataAvg[1]- xyzAxisAbsdataAvg[0] < XyzAxisAbsdataAvgTH)
+                                                {
+                                                stepCount[countPeriod + 1] = stepCount[countPeriod + 1] + 1;
+						}
+                                            }
+					 else
+                                            {
+                                             if(xyzAxisAbsdataAvg[0]- xyzAxisAbsdataAvg[1] < XyzAxisAbsdataAvgTH)
+                                           	   {
+                                                    stepCount[countPeriod + 1] = stepCount[countPeriod + 1] + 1;
+						    }
+                                            }     
+                                    }
+                                    timeWindowCount = 0;
+                             	    }
+				    else
+				        {
+                                        timeWindowCount = timeWindowCount + 1;
+					}
+				}
+             	}
+       xyzAxisAbsdataAvgPre = xyzAxisAbsdataAvg[1];
+       osal_mem_free(xyzAxisAbsdata);
+	//**********************************************观察5S中，4个TIMEZONE周期
+        count0 = stepCount[countPeriod];
+        count1 = stepCount[countPeriod+1];
+//        //eepromWrite(STEP_DATA_TYPE, stepCount[countPeriod]);
+//        //eepromWrite(STEP_DATA_TYPE, stepCount[countPeriod+1]);
+//        eepromWrite(STEP_DATA_TYPE, count0);
+//        eepromWrite(STEP_DATA_TYPE, count1);
+        countPeriod = countPeriod + 2; 
+	if(countPeriod > 2)
+		{
+               count0 = stepCount[countPeriod-1] ; 
+               count1 = stepCount[countPeriod-2] ; 
+               count2 = stepCount[countPeriod-3] ; 
+               count3 = stepCount[countPeriod-4] ; 
+	       if( count0 + count1 + count2+ count3 >= 4)
+                      	{
+                             stepCountTotal =  count0 +  count1 +  count2+ count3;
+			       eepromWrite(STEP_DATA_TYPE, stepCountTotal);
+		        }
+	       else 
+	        	{                            
+	        	stepCountTotal =  0;
+			       eepromWrite(STEP_DATA_TYPE, stepCountTotal);
+			}
+             countPeriod = 0;
+             stepCount[0]   = 0;
+             stepCount[1]   = 0;
+             stepCount[2]   = 0;
+             stepCount[3]   = 0;
+	};  
+        osal_mem_free(accBufCur);
+        ///////////////////////////////////////补位
+        for(i=0;i< FilterCofdepth-1; i++)
+	    {
+	     mmaDataFilterPredata[i].mmaAxis[0].int32data = mmaDataA[mmaDataACnt-FilterCofdepth+i+1].mmaAxis[1].int16data;
+	     mmaDataFilterPredata[i].mmaAxis[1].int32data = mmaDataA[mmaDataACnt-FilterCofdepth+i+1].mmaAxis[2].int16data;;
+	     //mmaDataFilterPredata[i].mmaAxis[2].int32data = mmaDataA[mmaDataACnt-FilterCofdepth+i+1].mmaAxis[2].int16data;;
+	     }
+        return 1;
+} 
 //	#endif
 
-	//calculate the min value of 3 axises
-	int16 mmaDataAMin[3]={32767,32767,32767};
-	for(i = 0; i < mmaDataACnt; i ++)
-	{
-		for(k=0;k<3;k++)
-		{
-			if(mmaDataAMin[k]>mmaDataA[i].mmaAxis[k].int16data)
-			{
-				mmaDataAMin[k]=mmaDataA[i].mmaAxis[k].int16data;
-			}
-		}
-	}
-	//clear mmaDataASum
-	osal_memset(mmaDataASum,0,DATA_A_CNT_MAX*sizeof(int16));
-	mmaDataASumCnt=0;
-	//shifting all data of 3 axises towards positive side, meanwhile adding 3 axises
-	for(i = 0; i < mmaDataACnt; i ++)
-	{
-		for(k=0;k<3;k++)
-		{
-			mmaDataA[i].mmaAxis[k].int16data=mmaDataA[i].mmaAxis[k].int16data-mmaDataAMin[k]+1;
-			mmaDataASum[i]+=mmaDataA[i].mmaAxis[k].int16data;
-		}				
-	}
-	mmaDataASumCnt=mmaDataACnt;	
-	//average slide
-	mmaDataCntTemp=mmaDataASumCnt-SLIDE_MEAN_WIDTH;
-	for(i=0;i<mmaDataCntTemp;i++)	//slide part
-	{
-		for(k=i;k<i+SLIDE_MEAN_WIDTH;k++)
-		{	
-			accSlideSumTemp=accSlideSumTemp+(int32)mmaDataASum[k];
-		}
-		mmaDataASum[i]=(int16)(accSlideSumTemp/SLIDE_MEAN_WIDTH);	
-		accSlideSumTemp=0;
-	}
-	for(i=0;i<SLIDE_MEAN_WIDTH;i++)
-	{
-		for(k=mmaDataCntTemp+i;k<mmaDataASumCnt;k++)
-		{
-			accSlideSumTemp=accSlideSumTemp+(int32)mmaDataASum[k];
-		}
-		mmaDataASum[mmaDataCntTemp+i]=(int16)(accSlideSumTemp/(SLIDE_MEAN_WIDTH-i));
-		accSlideSumTemp=0;
-	}
-	
-/*	//average slide
-	mmaDataCntTemp=mmaDataACnt-SLIDE_MEAN_WIDTH;
-	//mmaLastSmoothestAxis=Y_AXIS;
-	for(i=0;i<mmaDataCntTemp;i++)	//slide part
-	{
-		for(k=i;k<i+SLIDE_MEAN_WIDTH;k++)
-		{	
-			accSlideSumTemp[0]=accSlideSumTemp[0]+(int32)mmaDataA[k].mmaAxis[0].int16data;
-			accSlideSumTemp[1]=accSlideSumTemp[1]+(int32)mmaDataA[k].mmaAxis[1].int16data;
-			accSlideSumTemp[2]=accSlideSumTemp[2]+(int32)mmaDataA[k].mmaAxis[2].int16data;
-		}
-		mmaDataA[i].mmaAxis[0].int16data=(int16)(accSlideSumTemp[0]/SLIDE_MEAN_WIDTH);	
-		mmaDataA[i].mmaAxis[1].int16data=(int16)(accSlideSumTemp[1]/SLIDE_MEAN_WIDTH);	
-		mmaDataA[i].mmaAxis[2].int16data=(int16)(accSlideSumTemp[2]/SLIDE_MEAN_WIDTH);	
-		accSlideSumTemp[0]=0;
-		accSlideSumTemp[1]=0;
-		accSlideSumTemp[2]=0;	
-	}
-	for(i=0;i<SLIDE_MEAN_WIDTH;i++)
-	{
-		for(k=mmaDataCntTemp+i;k<mmaDataACnt;k++)
-		{
-			accSlideSumTemp[0]=accSlideSumTemp[0]+(int32)mmaDataA[k].mmaAxis[0].int16data;
-			accSlideSumTemp[1]=accSlideSumTemp[1]+(int32)mmaDataA[k].mmaAxis[1].int16data;
-			accSlideSumTemp[2]=accSlideSumTemp[2]+(int32)mmaDataA[k].mmaAxis[2].int16data;
-		}
-		mmaDataA[mmaDataCntTemp+i].mmaAxis[0].int16data=(int16)(accSlideSumTemp[0]/(SLIDE_MEAN_WIDTH-i));
-		mmaDataA[mmaDataCntTemp+i].mmaAxis[1].int16data=(int16)(accSlideSumTemp[1]/(SLIDE_MEAN_WIDTH-i));
-		mmaDataA[mmaDataCntTemp+i].mmaAxis[2].int16data=(int16)(accSlideSumTemp[2]/(SLIDE_MEAN_WIDTH-i));
-		accSlideSumTemp[0]=0;
-		accSlideSumTemp[1]=0;
-		accSlideSumTemp[2]=0;
-	}
-*/	
-/*
-	//find Smoothest Axis
-	for(i=0;i<(mmaDataACnt-1);i++)// diff
-	{
-		mmaDataA_diff[i].mmaAxis[0].int16data=mmaDataA[i+1].mmaAxis[0].int16data-mmaDataA[i].mmaAxis[0].int16data;
-		mmaDataA_diff[i].mmaAxis[1].int16data=mmaDataA[i+1].mmaAxis[1].int16data-mmaDataA[i].mmaAxis[1].int16data;
-		mmaDataA_diff[i].mmaAxis[2].int16data=mmaDataA[i+1].mmaAxis[2].int16data-mmaDataA[i].mmaAxis[2].int16data;
-	}	
-	mmaDataA_diff[mmaDataACnt-1].mmaAxis[0].int16data=0;
-	mmaDataA_diff[mmaDataACnt-1].mmaAxis[1].int16data=0;
-	mmaDataA_diff[mmaDataACnt-1].mmaAxis[2].int16data=0;
-	mmaDataPeakCnt[0]=0;
-	mmaDataPeakCnt[1]=0;
-	mmaDataPeakCnt[2]=0;
-	for(i=0;i<(mmaDataACnt-1);i++)// count peaks
-	{
-		if((mmaDataA_diff[i].mmaAxis[0].int16data>0)&&(mmaDataA_diff[i+1].mmaAxis[0].int16data<=0))
-		{
-			mmaDataPeakCnt[0]++;	
-		}
-		if((mmaDataA_diff[i].mmaAxis[1].int16data>0)&&(mmaDataA_diff[i+1].mmaAxis[1].int16data<=0))
-		{
-			mmaDataPeakCnt[1]++;	
-		}
-		if((mmaDataA_diff[i].mmaAxis[2].int16data>0)&&(mmaDataA_diff[i+1].mmaAxis[2].int16data<=0))
-		{
-			mmaDataPeakCnt[2]++;	
-		}
-	}
-	if(mmaDataPeakCnt[0]<=mmaDataPeakCnt[1])//mmaDataPeakCnt[0] is smaller
-	{
-		if(mmaDataPeakCnt[0]<=mmaDataPeakCnt[2])//mmaDataPeakCnt[0] is smallest
-		{
-			mmaCurSmoothestAxis=X_AXIS;
-		}
-		else //mmaDataPeakCnt[2] is smallest
-		{
-			mmaCurSmoothestAxis=Z_AXIS;
-		}
-	}
-	else //mmaDataPeakCnt[1] is smaller
-	{
-		if(mmaDataPeakCnt[1]<=mmaDataPeakCnt[2])//mmaDataPeakCnt[1] is smallest
-		{
-			mmaCurSmoothestAxis=Y_AXIS;
-		}
-		else //mmaDataPeakCnt[2] is smallest
-		{
-			mmaCurSmoothestAxis=Z_AXIS;
-		}
-	}
-*/	
-	//add tail
-	for(i=0;i<mmaDataASumCnt;i++)//at this time mmaDataBACnt has tail length
-	{
-		mmaDataBA[mmaDataBACnt+i].mmaAxis[mmaCurSmoothestAxis].int16data=mmaDataASum[i];
-	}
-	mmaDataBACnt+=mmaDataASumCnt;//at this time, mmaDataBACnt has cur data plus tail length
-	//calculate the ABS of smoothest axis data
+//	//calculate the min value of 3 axises
+//	int16 mmaDataAMin[3]={32767,32767,32767};
+//	for(i = 0; i < mmaDataACnt; i ++)
+//	{
+//		for(k=0;k<3;k++)
+//		{
+//			if(mmaDataAMin[k]>mmaDataA[i].mmaAxis[k].int16data)
+//			{
+//				mmaDataAMin[k]=mmaDataA[i].mmaAxis[k].int16data;
+//			}
+//		}
+//	}
+//	//clear mmaDataASum
+//	osal_memset(mmaDataASum,0,DATA_A_CNT_MAX*sizeof(int16));
+//	mmaDataASumCnt=0;
+//	//shifting all data of 3 axises towards positive side, meanwhile adding 3 axises
+//	for(i = 0; i < mmaDataACnt; i ++)
+//	{
+//		for(k=0;k<3;k++)
+//		{
+//			mmaDataA[i].mmaAxis[k].int16data=mmaDataA[i].mmaAxis[k].int16data-mmaDataAMin[k]+1;
+//			mmaDataASum[i]+=mmaDataA[i].mmaAxis[k].int16data;
+//		}				
+//	}
+//	mmaDataASumCnt=mmaDataACnt;	
+//	//average slide
+//	mmaDataCntTemp=mmaDataASumCnt-SLIDE_MEAN_WIDTH;
+//	for(i=0;i<mmaDataCntTemp;i++)	//slide part
+//	{
+//		for(k=i;k<i+SLIDE_MEAN_WIDTH;k++)
+//		{	
+//			accSlideSumTemp=accSlideSumTemp+(int32)mmaDataASum[k];
+//		}
+//		mmaDataASum[i]=(int16)(accSlideSumTemp/SLIDE_MEAN_WIDTH);	
+//		accSlideSumTemp=0;
+//	}
+//	for(i=0;i<SLIDE_MEAN_WIDTH;i++)
+//	{
+//		for(k=mmaDataCntTemp+i;k<mmaDataASumCnt;k++)
+//		{
+//			accSlideSumTemp=accSlideSumTemp+(int32)mmaDataASum[k];
+//		}
+//		mmaDataASum[mmaDataCntTemp+i]=(int16)(accSlideSumTemp/(SLIDE_MEAN_WIDTH-i));
+//		accSlideSumTemp=0;
+//	}
+//	
+///*	//average slide
+//	mmaDataCntTemp=mmaDataACnt-SLIDE_MEAN_WIDTH;
+//	//mmaLastSmoothestAxis=Y_AXIS;
+//	for(i=0;i<mmaDataCntTemp;i++)	//slide part
+//	{
+//		for(k=i;k<i+SLIDE_MEAN_WIDTH;k++)
+//		{	
+//			accSlideSumTemp[0]=accSlideSumTemp[0]+(int32)mmaDataA[k].mmaAxis[0].int16data;
+//			accSlideSumTemp[1]=accSlideSumTemp[1]+(int32)mmaDataA[k].mmaAxis[1].int16data;
+//			accSlideSumTemp[2]=accSlideSumTemp[2]+(int32)mmaDataA[k].mmaAxis[2].int16data;
+//		}
+//		mmaDataA[i].mmaAxis[0].int16data=(int16)(accSlideSumTemp[0]/SLIDE_MEAN_WIDTH);	
+//		mmaDataA[i].mmaAxis[1].int16data=(int16)(accSlideSumTemp[1]/SLIDE_MEAN_WIDTH);	
+//		mmaDataA[i].mmaAxis[2].int16data=(int16)(accSlideSumTemp[2]/SLIDE_MEAN_WIDTH);	
+//		accSlideSumTemp[0]=0;
+//		accSlideSumTemp[1]=0;
+//		accSlideSumTemp[2]=0;	
+//	}
+//	for(i=0;i<SLIDE_MEAN_WIDTH;i++)
+//	{
+//		for(k=mmaDataCntTemp+i;k<mmaDataACnt;k++)
+//		{
+//			accSlideSumTemp[0]=accSlideSumTemp[0]+(int32)mmaDataA[k].mmaAxis[0].int16data;
+//			accSlideSumTemp[1]=accSlideSumTemp[1]+(int32)mmaDataA[k].mmaAxis[1].int16data;
+//			accSlideSumTemp[2]=accSlideSumTemp[2]+(int32)mmaDataA[k].mmaAxis[2].int16data;
+//		}
+//		mmaDataA[mmaDataCntTemp+i].mmaAxis[0].int16data=(int16)(accSlideSumTemp[0]/(SLIDE_MEAN_WIDTH-i));
+//		mmaDataA[mmaDataCntTemp+i].mmaAxis[1].int16data=(int16)(accSlideSumTemp[1]/(SLIDE_MEAN_WIDTH-i));
+//		mmaDataA[mmaDataCntTemp+i].mmaAxis[2].int16data=(int16)(accSlideSumTemp[2]/(SLIDE_MEAN_WIDTH-i));
+//		accSlideSumTemp[0]=0;
+//		accSlideSumTemp[1]=0;
+//		accSlideSumTemp[2]=0;
+//	}
+//*/	
+///*
+//	//find Smoothest Axis
+//	for(i=0;i<(mmaDataACnt-1);i++)// diff
+//	{
+//		mmaDataA_diff[i].mmaAxis[0].int16data=mmaDataA[i+1].mmaAxis[0].int16data-mmaDataA[i].mmaAxis[0].int16data;
+//		mmaDataA_diff[i].mmaAxis[1].int16data=mmaDataA[i+1].mmaAxis[1].int16data-mmaDataA[i].mmaAxis[1].int16data;
+//		mmaDataA_diff[i].mmaAxis[2].int16data=mmaDataA[i+1].mmaAxis[2].int16data-mmaDataA[i].mmaAxis[2].int16data;
+//	}	
+//	mmaDataA_diff[mmaDataACnt-1].mmaAxis[0].int16data=0;
+//	mmaDataA_diff[mmaDataACnt-1].mmaAxis[1].int16data=0;
+//	mmaDataA_diff[mmaDataACnt-1].mmaAxis[2].int16data=0;
+//	mmaDataPeakCnt[0]=0;
+//	mmaDataPeakCnt[1]=0;
+//	mmaDataPeakCnt[2]=0;
+//	for(i=0;i<(mmaDataACnt-1);i++)// count peaks
+//	{
+//		if((mmaDataA_diff[i].mmaAxis[0].int16data>0)&&(mmaDataA_diff[i+1].mmaAxis[0].int16data<=0))
+//		{
+//			mmaDataPeakCnt[0]++;	
+//		}
+//		if((mmaDataA_diff[i].mmaAxis[1].int16data>0)&&(mmaDataA_diff[i+1].mmaAxis[1].int16data<=0))
+//		{
+//			mmaDataPeakCnt[1]++;	
+//		}
+//		if((mmaDataA_diff[i].mmaAxis[2].int16data>0)&&(mmaDataA_diff[i+1].mmaAxis[2].int16data<=0))
+//		{
+//			mmaDataPeakCnt[2]++;	
+//		}
+//	}
+//	if(mmaDataPeakCnt[0]<=mmaDataPeakCnt[1])//mmaDataPeakCnt[0] is smaller
+//	{
+//		if(mmaDataPeakCnt[0]<=mmaDataPeakCnt[2])//mmaDataPeakCnt[0] is smallest
+//		{
+//			mmaCurSmoothestAxis=X_AXIS;
+//		}
+//		else //mmaDataPeakCnt[2] is smallest
+//		{
+//			mmaCurSmoothestAxis=Z_AXIS;
+//		}
+//	}
+//	else //mmaDataPeakCnt[1] is smaller
+//	{
+//		if(mmaDataPeakCnt[1]<=mmaDataPeakCnt[2])//mmaDataPeakCnt[1] is smallest
+//		{
+//			mmaCurSmoothestAxis=Y_AXIS;
+//		}
+//		else //mmaDataPeakCnt[2] is smallest
+//		{
+//			mmaCurSmoothestAxis=Z_AXIS;
+//		}
+//	}
+//*/	
+//	//add tail
+//	for(i=0;i<mmaDataASumCnt;i++)//at this time mmaDataBACnt has tail length
+//	{
+//		mmaDataBA[mmaDataBACnt+i].mmaAxis[mmaCurSmoothestAxis].int16data=mmaDataASum[i];
+//	}
+//	mmaDataBACnt+=mmaDataASumCnt;//at this time, mmaDataBACnt has cur data plus tail length
+//	//calculate the ABS of smoothest axis data
+////	for(i=0;i<mmaDataACnt;i++)
+////	{
+////		mmaDataA[i].mmaAxis[mmaCurSmoothestAxis].int16data=ABS((mmaDataA[i].mmaAxis[mmaCurSmoothestAxis].int16data));
+////	}
+//	//calculate the min value of mmaDataA and offset all data towards positive direction by abs(min value)
+///*	int16 minDataA=1;
 //	for(i=0;i<mmaDataACnt;i++)
 //	{
-//		mmaDataA[i].mmaAxis[mmaCurSmoothestAxis].int16data=ABS((mmaDataA[i].mmaAxis[mmaCurSmoothestAxis].int16data));
-//	}
-	//calculate the min value of mmaDataA and offset all data towards positive direction by abs(min value)
-/*	int16 minDataA=1;
-	for(i=0;i<mmaDataACnt;i++)
-	{
-		if(minDataA>mmaDataA[i].mmaAxis[mmaCurSmoothestAxis].int16data)
-		{
-			minDataA=mmaDataA[i].mmaAxis[mmaCurSmoothestAxis].int16data;
-		}
-	}
-	if(minDataA<0)
-	{
-		for(i=0;i<mmaDataACnt;i++)
-		{
-			mmaDataA[i].mmaAxis[mmaCurSmoothestAxis].int16data-=minDataA;
-		}
-	}*/
-	
-	//chose to add the last tail or not
-//	if((mmaCurSmoothestAxis==mmaLastSmoothestAxis)&&(0!=mmaDataBACnt))//add cur data to last tail
-//	{
-//		for(i=0;i<mmaDataACnt;i++)//at this time mmaDataBACnt has tail length
+//		if(minDataA>mmaDataA[i].mmaAxis[mmaCurSmoothestAxis].int16data)
 //		{
-//			mmaDataBA[mmaDataBACnt+i].mmaAxis[mmaCurSmoothestAxis].int16data=mmaDataA[i].mmaAxis[mmaCurSmoothestAxis].int16data;
+//			minDataA=mmaDataA[i].mmaAxis[mmaCurSmoothestAxis].int16data;
 //		}
-//		mmaDataBACnt+=mmaDataACnt;//at this time, mmaDataBACnt has cur data plus tail length
 //	}
-//	else//move cur data to mmaDataBA
+//	if(minDataA<0)
 //	{
-//		//osal_memcpy(mmaDataBA,mmaDataA,mmaDataACnt*3);//(void * dst, const void GENERIC * src, unsigned int len)
-//		for(i=0;i<mmaDataACnt;i++) 
+//		for(i=0;i<mmaDataACnt;i++)
 //		{
-//			mmaDataBA[i].mmaAxis[mmaCurSmoothestAxis].int16data=\
-//				mmaDataA[i].mmaAxis[mmaCurSmoothestAxis].int16data;
+//			mmaDataA[i].mmaAxis[mmaCurSmoothestAxis].int16data-=minDataA;
 //		}
-//		mmaDataBACnt=mmaDataACnt;
-//	}
-	//mmaDataBA diff
-	osal_memset(mmaDataBA_diff,0,sizeof(mmaDataBA_diff));
-	for(i=0;i<mmaDataBACnt-1;i++)
-	{
-		mmaDataBA_diff[i].mmaAxis[mmaCurSmoothestAxis].int16data=\
-		mmaDataBA[i+1].mmaAxis[mmaCurSmoothestAxis].int16data-mmaDataBA[i].mmaAxis[mmaCurSmoothestAxis].int16data;
-	}
-	//identify the last peak
-	for(i=mmaDataBACnt-2;i>0;i--)//because the last diff is meaningless, so decrece 2
-	{
-		if((mmaDataBA_diff[i-1].mmaAxis[mmaCurSmoothestAxis].int16data>0)&&(mmaDataBA_diff[i].mmaAxis[mmaCurSmoothestAxis].int16data<=0))
-		{
-			accBufCutLineSuf=i;
-			break;
-		}
-	}
-	//set the mmaCutLineCnt
-	if(accBufCutLineSuf!=0)
-	{
-		mmaCutLineCnt=accBufCutLineSuf;		
-	}
-	else
-	{
-		mmaCutLineCnt=mmaDataBACnt;
-	}	
-	//arith mean calculation
-	for(i=0;i<mmaDataBACnt;i++)
-	{
-		accBufSum=accBufSum+(int32)mmaDataBA[i].mmaAxis[mmaCurSmoothestAxis].int16data;
-	}
-	accBufMean=(int16)(accBufSum/(int32)mmaDataBACnt);
-	accBufMean=accBufMean-accBufMean/10;
-	
-	//runcount step 1: count valleys
-	uint8 final_min_step_interval=0;
-	//for(i=0;i<mmaDataBACnt-1;i++)
-	for(i=0;i<mmaCutLineCnt-1;i++)
-	{
-		if((mmaDataBA_diff[i].mmaAxis[mmaCurSmoothestAxis].int16data>0)&& \
-			(mmaDataBA_diff[i+1].mmaAxis[mmaCurSmoothestAxis].int16data<=0))
-		{
-			accBufLastPeakValue=mmaDataBA[i+1].mmaAxis[mmaCurSmoothestAxis].int16data;
-		}
-		if(accLastValleySuf==ACC_LAST_VALLEY_SUF_DEFAULT)
-		{
-			final_min_step_interval=0;
-		}
-		else
-		{
-			final_min_step_interval=ACC_MIN_STEP_INTERVAL;
-		}
-		if(mmaDataBA[i].mmaAxis[mmaCurSmoothestAxis].int16data>=accBufMean)
-		{
-			flagValleyFreeze=FALSE;
-		}
-		if((mmaDataBA_diff[i].mmaAxis[mmaCurSmoothestAxis].int16data<0)&& \
-			(mmaDataBA_diff[i+1].mmaAxis[mmaCurSmoothestAxis].int16data>=0)&& \
-			(mmaDataBA[i+1].mmaAxis[mmaCurSmoothestAxis].int16data<accBufMean)&& \
-			((accBufLastPeakValue-mmaDataBA[i+1].mmaAxis[mmaCurSmoothestAxis].int16data)>ACC_DEBOUNCE)&&\
-			((i-accLastValleySuf)>=final_min_step_interval))
-		{
-			if(accLastValleySuf==ACC_LAST_VALLEY_SUF_DEFAULT)
-			{
-				accRunCounter++;
-				accLastValleySuf=i+1;
-				flagValleyFreeze=TRUE;
-			}
-			else
-			{
-				if(((i-accLastValleySuf)<=ACC_MAX_STEP_INTERVAL)&&(flagValleyFreeze==FALSE))
-				{
-					accRunCounter++;
-					accLastValleySuf=i+1;
-					flagValleyFreeze=TRUE;
-				}
-			}
-		}
-	}
-	//put current run_count data into the recording array, run validation
-	#if((MMA_DEBUG_SIMULATION==TRUE)&&(MMA_DEBUG_DATA_MODEL==4))
-		accRunCntAy[RUNK]=accRunCntAyDebug[accRunK1];
-		if(accRunK1<accRunCntAyDebugCnt)
-			accRunK1++;
-		else
-			accRunK1=0;
-	#else
-		accRunCntAy[RUNK]=accRunCounter;
-	#endif
-	#if (ACC_RUN_COUNT_MODE==COUNT_ONE)//when we take one step in 32 data into counting, set mode COUNT_ONE
-		//A condition
-		if((accRunCntAy[RUNK]==1)&&(accRunCntAy[RUNK-1]>=2)&&(accRunCntAy[RUNK-2]>=2))
-		{
-			eepromWrite(STEP_DATA_TYPE, accRunCntAy[RUNK]*2);
-			accRunCntAy[RUNK]=0;
-			flagAccData221=TRUE;
-		}
-		//C condition
-		if((accRunCntAy[RUNK]>=2)&&(accRunCntAy[RUNK-1]>=2)&&(accRunCntAy[RUNK-2]==1))
-		{
-			eepromWrite(STEP_DATA_TYPE, accRunCntAy[RUNK-2]*2);
-		}
-	#endif
-	//B condition
-	if(accRunCntAy[RUNK-1]>=2)
-	{
-		if((accRunCntAy[RUNK-2]+accRunCntAy[RUNK])>2)
-		{
-			eepromWrite(STEP_DATA_TYPE, accRunCntAy[RUNK-1]*2);
-		}
-		else
-		{
-			if((accRunCntAy[RUNK-2]==2)||(accRunCntAy[RUNK]==2))
-			{
-				eepromWrite(STEP_DATA_TYPE, accRunCntAy[RUNK-1]*2);
-			}
-		}
-	}
-	//rotate accRunCntAy
-	accRunCntAy[0]=accRunCntAy[1];
-	accRunCntAy[1]=accRunCntAy[2];
-	accRunCntAy[2]=accRunCntAy[3];
-	accRunCntAy[3]=0;
-	//debug
-	//accRunCounterTemp=accRunCounter;
-	//store run counter
-	//eepromWrite(STEP_DATA_TYPE, accRunCounter*2);
-	//store accBufTail	
-	osal_memset(mmaDataB,0,sizeof(mmaDataB));//clear mmaDataB
-	mmaDataBCnt=0;
-	if(mmaDataBACnt>(accBufCutLineSuf+1))//avoid i condition below zero
-	{		
-		if((mmaDataBACnt-accBufCutLineSuf-1)>=DATA_B_CNT_MAX)//store the last 32 bytes of mmaDataBA
-		{
-			for(i=0;i<DATA_B_CNT_MAX;i++)//move dataBA tail into dataB
-			{
-				mmaDataB[i].mmaAxis[mmaCurSmoothestAxis].int16data=mmaDataBA[mmaDataBACnt-DATA_B_CNT_MAX+i].mmaAxis[mmaCurSmoothestAxis].int16data;
-			}
-			mmaDataBCnt=DATA_B_CNT_MAX;
-		}
-		else//store all bytes of mmaDataBA
-		{
-			for(i=0;i<(mmaDataBACnt-accBufCutLineSuf-1);i++)//move dataBA tail into dataB
-			{
-				mmaDataB[i].mmaAxis[mmaCurSmoothestAxis].int16data=mmaDataBA[accBufCutLineSuf+1+i].mmaAxis[mmaCurSmoothestAxis].int16data;
-			}	
-			mmaDataBCnt=mmaDataBACnt-accBufCutLineSuf-1;
-		}		
-	}	/**/
-	osal_memset(mmaDataBA,0,sizeof(mmaDataBA));//clear mmaDataBA
-	mmaDataBACnt=0;   
-//	for(i=0;i<DATA_BA_CNT_MAX;i++)//clear mmaDataBA
+//	}*/
+//	
+//	//chose to add the last tail or not
+////	if((mmaCurSmoothestAxis==mmaLastSmoothestAxis)&&(0!=mmaDataBACnt))//add cur data to last tail
+////	{
+////		for(i=0;i<mmaDataACnt;i++)//at this time mmaDataBACnt has tail length
+////		{
+////			mmaDataBA[mmaDataBACnt+i].mmaAxis[mmaCurSmoothestAxis].int16data=mmaDataA[i].mmaAxis[mmaCurSmoothestAxis].int16data;
+////		}
+////		mmaDataBACnt+=mmaDataACnt;//at this time, mmaDataBACnt has cur data plus tail length
+////	}
+////	else//move cur data to mmaDataBA
+////	{
+////		//osal_memcpy(mmaDataBA,mmaDataA,mmaDataACnt*3);//(void * dst, const void GENERIC * src, unsigned int len)
+////		for(i=0;i<mmaDataACnt;i++) 
+////		{
+////			mmaDataBA[i].mmaAxis[mmaCurSmoothestAxis].int16data=\
+////				mmaDataA[i].mmaAxis[mmaCurSmoothestAxis].int16data;
+////		}
+////		mmaDataBACnt=mmaDataACnt;
+////	}
+//	//mmaDataBA diff
+//	osal_memset(mmaDataBA_diff,0,sizeof(mmaDataBA_diff));
+//	for(i=0;i<mmaDataBACnt-1;i++)
 //	{
-//		mmaDataBA[i]={0,0,0,0,0,0};
+//		mmaDataBA_diff[i].mmaAxis[mmaCurSmoothestAxis].int16data=\
+//		mmaDataBA[i+1].mmaAxis[mmaCurSmoothestAxis].int16data-mmaDataBA[i].mmaAxis[mmaCurSmoothestAxis].int16data;
+//	}
+//	//identify the last peak
+//	for(i=mmaDataBACnt-2;i>0;i--)//because the last diff is meaningless, so decrece 2
+//	{
+//		if((mmaDataBA_diff[i-1].mmaAxis[mmaCurSmoothestAxis].int16data>0)&&(mmaDataBA_diff[i].mmaAxis[mmaCurSmoothestAxis].int16data<=0))
+//		{
+//			accBufCutLineSuf=i;
+//			break;
+//		}
+//	}
+//	//set the mmaCutLineCnt
+//	if(accBufCutLineSuf!=0)
+//	{
+//		mmaCutLineCnt=accBufCutLineSuf;		
+//	}
+//	else
+//	{
+//		mmaCutLineCnt=mmaDataBACnt;
 //	}	
-	osal_memset(mmaDataA,0,sizeof(mmaDataA));//clear mmaDataBA
-	mmaDataACnt=0;
-//	for(i=0;i<DATA_A_CNT_MAX;i++)//clear mmaDataA
+//	//arith mean calculation
+//	for(i=0;i<mmaDataBACnt;i++)
 //	{
-//		mmaDataA[i]={0,0,0,0,0,0};
+//		accBufSum=accBufSum+(int32)mmaDataBA[i].mmaAxis[mmaCurSmoothestAxis].int16data;
 //	}
-	osal_memcpy(mmaDataBA,mmaDataB,mmaDataBCnt*MMA_DATA_STRUCT_LEGNTH);
-	mmaDataBACnt=mmaDataBCnt;
-	mmaLastSmoothestAxis=mmaCurSmoothestAxis;
-
-	osal_mem_free(accBufCur);
-	osal_mem_free(mmaDataASum);
-	return 1;
-		//debug usage
-		//toggleLEDWithTime(1,CLOSE_PIO);
-//	for(i=0;i<DATA_B_CNT_MAX;i++)
+//	accBufMean=(int16)(accBufSum/(int32)mmaDataBACnt);
+//	accBufMean=accBufMean-accBufMean/10;
+//	
+//	//runcount step 1: count valleys
+//	uint8 final_min_step_interval=0;
+//	//for(i=0;i<mmaDataBACnt-1;i++)
+//	for(i=0;i<mmaCutLineCnt-1;i++)
 //	{
-//		mmaDataBA[i]->mmaAxis[mmaCurSmoothestAxis].int16data=mmaDataB[i]->mmaAxis[mmaCurSmoothestAxis].int16data;
+//		if((mmaDataBA_diff[i].mmaAxis[mmaCurSmoothestAxis].int16data>0)&& \
+//			(mmaDataBA_diff[i+1].mmaAxis[mmaCurSmoothestAxis].int16data<=0))
+//		{
+//			accBufLastPeakValue=mmaDataBA[i+1].mmaAxis[mmaCurSmoothestAxis].int16data;
+//		}
+//		if(accLastValleySuf==ACC_LAST_VALLEY_SUF_DEFAULT)
+//		{
+//			final_min_step_interval=0;
+//		}
+//		else
+//		{
+//			final_min_step_interval=ACC_MIN_STEP_INTERVAL;
+//		}
+//		if(mmaDataBA[i].mmaAxis[mmaCurSmoothestAxis].int16data>=accBufMean)
+//		{
+//			flagValleyFreeze=FALSE;
+//		}
+//		if((mmaDataBA_diff[i].mmaAxis[mmaCurSmoothestAxis].int16data<0)&& \
+//			(mmaDataBA_diff[i+1].mmaAxis[mmaCurSmoothestAxis].int16data>=0)&& \
+//			(mmaDataBA[i+1].mmaAxis[mmaCurSmoothestAxis].int16data<accBufMean)&& \
+//			((accBufLastPeakValue-mmaDataBA[i+1].mmaAxis[mmaCurSmoothestAxis].int16data)>ACC_DEBOUNCE)&&\
+//			((i-accLastValleySuf)>=final_min_step_interval))
+//		{
+//			if(accLastValleySuf==ACC_LAST_VALLEY_SUF_DEFAULT)
+//			{
+//				accRunCounter++;
+//				accLastValleySuf=i+1;
+//				flagValleyFreeze=TRUE;
+//			}
+//			else
+//			{
+//				if(((i-accLastValleySuf)<=ACC_MAX_STEP_INTERVAL)&&(flagValleyFreeze==FALSE))
+//				{
+//					accRunCounter++;
+//					accLastValleySuf=i+1;
+//					flagValleyFreeze=TRUE;
+//				}
+//			}
+//		}
 //	}
-
-	//END OF NEW RUN COUNTER CALCULATION!
-	
-//	    for (int i = 0; i < count * 6; i += 6)
-//	    {
-//	        X_out = (int16)((accBufCur[i] << 8) | accBufCur[i+1]);
-//	        Y_out = (int16)((accBufCur[i+2] << 8) | accBufCur[i+3]);
-//	        Z_out = (int16)((accBufCur[i+4] << 8) | accBufCur[i+5]);
+//	//put current run_count data into the recording array, run validation
+//	#if((MMA_DEBUG_SIMULATION==TRUE)&&(MMA_DEBUG_DATA_MODEL==4))
+//		accRunCntAy[RUNK]=accRunCntAyDebug[accRunK1];
+//		if(accRunK1<accRunCntAyDebugCnt)
+//			accRunK1++;
+//		else
+//			accRunK1=0;
+//	#else
+//		accRunCntAy[RUNK]=accRunCounter;
+//	#endif
+//	#if (ACC_RUN_COUNT_MODE==COUNT_ONE)//when we take one step in 32 data into counting, set mode COUNT_ONE
+//		//A condition
+//		if((accRunCntAy[RUNK]==1)&&(accRunCntAy[RUNK-1]>=2)&&(accRunCntAy[RUNK-2]>=2))
+//		{
+//			eepromWrite(STEP_DATA_TYPE, accRunCntAy[RUNK]*2);
+//			accRunCntAy[RUNK]=0;
+//			flagAccData221=TRUE;
+//		}
+//		//C condition
+//		if((accRunCntAy[RUNK]>=2)&&(accRunCntAy[RUNK-1]>=2)&&(accRunCntAy[RUNK-2]==1))
+//		{
+//			eepromWrite(STEP_DATA_TYPE, accRunCntAy[RUNK-2]*2);
+//		}
+//	#endif
+//	//B condition
+//	if(accRunCntAy[RUNK-1]>=2)
+//	{
+//		if((accRunCntAy[RUNK-2]+accRunCntAy[RUNK])>2)
+//		{
+//			eepromWrite(STEP_DATA_TYPE, accRunCntAy[RUNK-1]*2);
+//		}
+//		else
+//		{
+//			if((accRunCntAy[RUNK-2]==2)||(accRunCntAy[RUNK]==2))
+//			{
+//				eepromWrite(STEP_DATA_TYPE, accRunCntAy[RUNK-1]*2);
+//			}
+//		}
+//	}
+//	//rotate accRunCntAy
+//	accRunCntAy[0]=accRunCntAy[1];
+//	accRunCntAy[1]=accRunCntAy[2];
+//	accRunCntAy[2]=accRunCntAy[3];
+//	accRunCntAy[3]=0;
+//	//debug
+//	//accRunCounterTemp=accRunCounter;
+//	//store run counter
+//	//eepromWrite(STEP_DATA_TYPE, accRunCounter*2);
+//	//store accBufTail	
+//	osal_memset(mmaDataB,0,sizeof(mmaDataB));//clear mmaDataB
+//	mmaDataBCnt=0;
+//	if(mmaDataBACnt>(accBufCutLineSuf+1))//avoid i condition below zero
+//	{		
+//		if((mmaDataBACnt-accBufCutLineSuf-1)>=DATA_B_CNT_MAX)//store the last 32 bytes of mmaDataBA
+//		{
+//			for(i=0;i<DATA_B_CNT_MAX;i++)//move dataBA tail into dataB
+//			{
+//				mmaDataB[i].mmaAxis[mmaCurSmoothestAxis].int16data=mmaDataBA[mmaDataBACnt-DATA_B_CNT_MAX+i].mmaAxis[mmaCurSmoothestAxis].int16data;
+//			}
+//			mmaDataBCnt=DATA_B_CNT_MAX;
+//		}
+//		else//store all bytes of mmaDataBA
+//		{
+//			for(i=0;i<(mmaDataBACnt-accBufCutLineSuf-1);i++)//move dataBA tail into dataB
+//			{
+//				mmaDataB[i].mmaAxis[mmaCurSmoothestAxis].int16data=mmaDataBA[accBufCutLineSuf+1+i].mmaAxis[mmaCurSmoothestAxis].int16data;
+//			}	
+//			mmaDataBCnt=mmaDataBACnt-accBufCutLineSuf-1;
+//		}		
+//	}	/**/
+//	osal_memset(mmaDataBA,0,sizeof(mmaDataBA));//clear mmaDataBA
+//	mmaDataBACnt=0;   
+////	for(i=0;i<DATA_BA_CNT_MAX;i++)//clear mmaDataBA
+////	{
+////		mmaDataBA[i]={0,0,0,0,0,0};
+////	}	
+//	osal_memset(mmaDataA,0,sizeof(mmaDataA));//clear mmaDataBA
+//	mmaDataACnt=0;
+////	for(i=0;i<DATA_A_CNT_MAX;i++)//clear mmaDataA
+////	{
+////		mmaDataA[i]={0,0,0,0,0,0};
+////	}
+//	osal_memcpy(mmaDataBA,mmaDataB,mmaDataBCnt*MMA_DATA_STRUCT_LEGNTH);
+//	mmaDataBACnt=mmaDataBCnt;
+//	mmaLastSmoothestAxis=mmaCurSmoothestAxis;
 //
-//	        accLoop();
-//	    }
-}
+//	osal_mem_free(accBufCur);
+//	osal_mem_free(mmaDataASum);
+//	return 1;
+//		//debug usage
+//		//toggleLEDWithTime(1,CLOSE_PIO);
+////	for(i=0;i<DATA_B_CNT_MAX;i++)
+////	{
+////		mmaDataBA[i]->mmaAxis[mmaCurSmoothestAxis].int16data=mmaDataB[i]->mmaAxis[mmaCurSmoothestAxis].int16data;
+////	}
+//
+//	//END OF NEW RUN COUNTER CALCULATION!
+//	
+////	    for (int i = 0; i < count * 6; i += 6)
+////	    {
+////	        X_out = (int16)((accBufCur[i] << 8) | accBufCur[i+1]);
+////	        Y_out = (int16)((accBufCur[i+2] << 8) | accBufCur[i+3]);
+////	        Z_out = (int16)((accBufCur[i+4] << 8) | accBufCur[i+5]);
+////
+////	        accLoop();
+////	    }
+//}
 // static void accGetIntData(void)
 // {
 //     HalI2CInit(ACC_ADDRESS, I2C_CLOCK_RATE);
