@@ -54,7 +54,8 @@ extern "C"
  * CONSTANTS
  */
 
-#define GAP_DEVICE_NAME_LEN                     (20+1)
+//#define GAP_DEVICE_NAME_LEN                     (20+1)
+ #define GAP_DEVICE_NAME_LEN                     9 //v1007 modify
 
 // Privacy Flag States
 #define GAP_PRIVACY_DISABLED                    0x00

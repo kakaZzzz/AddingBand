@@ -63,7 +63,8 @@
 
 // ADC voltage levels
 #define BATT_ADC_LEVEL_3V           409 //   (3/3)/1.25*511=409
-#define BATT_ADC_LEVEL_2V           273 //   (2/3)/1.25*511=273
+//#define BATT_ADC_LEVEL_2V           273 //   (2/3)/1.25*511=273
+#define BATT_ADC_LEVEL_2_2V           300
 
 #define BATT_LEVEL_VALUE_IDX        2 // Position of battery level in attribute array
 #define BATT_LEVEL_VALUE_CCCD_IDX   3 // Position of battery level CCCD in attribute array
@@ -97,11 +98,10 @@ uint16 actualVref;//=1175;
 /*********************************************************************
  * EXTERNAL VARIABLES
  */
-
 /*********************************************************************
  * EXTERNAL FUNCTIONS
  */
-
+extern uint8 battADword;
 /*********************************************************************
  * LOCAL VARIABLES
  */
@@ -118,7 +118,8 @@ static battServiceTeardownCB_t battServiceTeardownCB = NULL;
 // Measurement calculation callback
 static battServiceCalcCB_t battServiceCalcCB = NULL;
 
-static uint16 battMinLevel = BATT_ADC_LEVEL_2V; // For VDD/3 measurements
+//static uint16 battMinLevel = BATT_ADC_LEVEL_2V; // For VDD/3 measurements
+static uint16 battMinLevel = BATT_ADC_LEVEL_2_2V; // For VDD/3 measurements
 static uint16 battMaxLevel = BATT_ADC_LEVEL_3V; // For VDD/3 measurements
 
 // Critical battery level setting
@@ -136,7 +137,8 @@ static CONST gattAttrType_t battService = { ATT_BT_UUID_SIZE, battServUUID };
 
 // Battery level characteristic
 static uint8 battLevelProps = GATT_PROP_READ | GATT_PROP_NOTIFY;
-static uint8 battLevel = 100;
+//static uint8 battLevel = 100;
+static uint8 battLevel = 153;
 static gattCharCfg_t battLevelClientCharCfg[GATT_MAX_NUM_CONN];
 
 // HID Report Reference characteristic descriptor, battery level
@@ -199,7 +201,7 @@ static uint8 battReadAttrCB( uint16 connHandle, gattAttribute_t *pAttr,
 static bStatus_t battWriteAttrCB( uint16 connHandle, gattAttribute_t *pAttr,
                                   uint8 *pValue, uint8 len, uint16 offset );
 static void battNotifyCB( linkDBItem_t *pLinkItem );
-static uint8 battMeasure( void );
+extern uint8 battMeasure( void );//115
 static void battNotifyLevel( void );
 
 /*********************************************************************
@@ -358,17 +360,18 @@ bStatus_t Batt_MeasLevel( void )
 {
   uint8 level;
 
-  level = battMeasure();
+  //level = battMeasure();//v115
+  level = battADword;
 
   // If level has gone down
-  if (level < battLevel)
-  {
+  //if (level < battLevel)//v115
+  //{                       //v115
     // Update level
     battLevel = level;
 
     // Send a notification
     battNotifyLevel();
-  }
+ // }                         //v115
 
   return SUCCESS;
 }
@@ -432,14 +435,15 @@ static uint8 battReadAttrCB( uint16 connHandle, gattAttribute_t *pAttr,
   {
     uint8 level;
 
-    level = battMeasure();
+    //level = battMeasure();
+    level = battADword; //v115
 
     // If level has gone down
-    if (level < battLevel)
-    {
+    //if (level < battLevel)//v115
+    //{                       //v115
       // Update level
       battLevel = level;
-    }
+    //}                         //v115
 
     *pLen = 1;
     pValue[0] = battLevel;
@@ -538,7 +542,8 @@ static void battNotifyCB( linkDBItem_t *pLinkItem )
  *
  * @return  Battery level.
  */
-static uint8 battMeasure( void )
+//static uint8 battMeasure( void )
+extern uint8 battMeasure( void )
 {
   uint16 adc=0;
   uint8 percent;
@@ -551,14 +556,14 @@ static uint8 battMeasure( void )
    * this maximum value corresponds to a voltage of 3.75v.
    *
    * For a coin cell battery 3.0v = 100%.  The minimum operating
-   * voltage of the CC2540 is 2.0v so 2.0v = 0%.
+   * voltage of the CC2540 is 2.2v so 2.2v = 0%.
    *
    * To convert a voltage to an ADC value use:
    *
    *   (v/3)/1.25 * 511 = adc
    *
    * 3.0v = 409 ADC
-   * 2.0v = 273 ADC
+   * 2.2v = 300 ADC
    *
    * We need to map ADC values from 409-273 to 100%-0%.
    *
@@ -605,28 +610,34 @@ static uint8 battMeasure( void )
 
   if (adc >= battMaxLevel)
   {
-    percent = 100;
+    //percent = 100;
+    percent = (uint8)(battMaxLevel - 256); //v114
   }
   else if (adc <= battMinLevel)
   {
-    percent = 0;
+    //percent = 0;
+    percent =  (uint8)(battMinLevel - 256);  //v114
   }
   else
   {
+    
     if (battServiceCalcCB != NULL)
     {
       percent = battServiceCalcCB(adc);
     }
     else
     {
-      uint16 range =  battMaxLevel - battMinLevel + 1;
-
-      // optional if you want to keep it even, otherwise just take floor of divide
-      // range += (range & 1);
-      range >>= 2; // divide by 4
-
-      percent = (uint8) ((((adc - battMinLevel) * 25) + (range - 1)) / range);
+      percent =  (uint8)(adc - 256);         //v114
     }
+//    {
+//      uint16 range =  battMaxLevel - battMinLevel + 1;
+//
+//      // optional if you want to keep it even, otherwise just take floor of divide
+//      // range += (range & 1);
+//      range >>= 2; // divide by 4
+//
+//      percent = (uint8) ((((adc - battMinLevel) * 25) + (range - 1)) / range);
+//    }
   }
 
   return percent;

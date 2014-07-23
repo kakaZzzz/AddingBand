@@ -49,25 +49,11 @@
  * CONSTANTS
  */
 
-#define FIRMWARE                              106
+#define FIRMWARE                              118
 
 #define HI_UINT32(x)                          (((x) >> 16) & 0xffff)
 #define LO_UINT32(x)                          ((x) & 0xffff)
 
-// define LEDs
-
-//#define LED0_PIO                              P0_5
-//#define LED1_PIO                              P0_6
-//#define LED2_PIO                              P0_7
-//#define LED3_PIO                              P1_0
-//#define LED4_PIO                              P1_1
-//#define LED5_PIO                              P1_6
-//#define LED6_PIO                              P1_7
-//#define LED7_PIO                              P2_0
-//#define LED8_PIO                              P2_1
-//#define LED9_PIO                              P0_1
-//#define LED10_PIO                             P0_2
-//#define LED11_PIO                             P0_4
 
 #define LED0_PIO                              P1_0
 #define LED1_PIO                              P1_1
@@ -89,15 +75,21 @@
 #define	BOOSTOFF										0
 
 // How often to perform periodic event
-#define SBP_PERIODIC_EVT_PERIOD               200
+//#define SBP_PERIODIC_EVT_PERIOD               200
+#define SBP_PERIODIC_1s_EVT_PERIOD              1000
+#define SBP_PERIODIC_300s_EVT_PERIOD            300000
+#define MPR03X_CALIBRATION_EVT_1min_EVT_PERIOD  60000   
+#define MPR03XCALIBRATIONCOUNT                  10
+     
 
 // The led all on timing, READY is the time from power on to led all on
 // GO is the time from led all on to led all off
 #define SBP_START_DEVICE_EVT_READY_PERIOD			 3000
-#define SBP_START_DEVICE_EVT_GO_PERIOD				 2000
+//#define SBP_START_DEVICE_EVT_GO_PERIOD				 2000
+#define SBP_START_DEVICE_EVT_GO_PERIOD				 1000
 
 // What is the advertising interval when device is discoverable (units of 625us, 160=100ms)
-#define DEFAULT_ADVERTISING_INTERVAL          800//16000
+#define DEFAULT_ADVERTISING_INTERVAL          8000//16000
 
 // Limited discoverable mode advertises for 30.72s, and then stops
 // General discoverable mode advertises indefinitely
@@ -235,12 +227,12 @@
 #define TIME_DISPLAY_INTERVAL               3000
 #define READ_INTERVAL                       100
 
-#define ACC_STATIC_COUNT_MAX                4
+#define ACC_STATIC_COUNT_MAX                24  //24*2.5S = 60S 
 
 
 #define ALT_MIN_DEFAULT                     300
 //#define AUTO_CONFIG		TRUE
-#define MANUFACTURE_TEST	FASLE
+//#define MANUFACTURE_TEST	TRUE
 
 #define SLIDE_MEAN_WIDTH	4
 #define X_AXIS				0
@@ -291,6 +283,7 @@ uint8 dataAtxbufCnt=0;
 uint8 dataAtxbufpointer=0;
 uint8 flagTxAccData=FALSE;
 uint8 flagAccData221=FALSE;
+uint8 activeAccAction = TRUE;
 
 union mma_data_u
 {
@@ -323,6 +316,7 @@ uint8 accRunK1=0;
 #define timeWindowCountMin  2
 #define XyzAxisAbsdataAvgTH 2000000//500
 #define DYNAMIC_PRECISE 100000//50
+#define XyzAxisAbsdataDiffTH 16777216 //1g
 uint8 filterCof[6] =  {14,31,74,127,170,186};
 union mma_data_int32
 {
@@ -350,6 +344,15 @@ uint8 count0 = 0;
 uint8 count1 = 0;
 uint8 count2 = 0;
 uint8 count3 = 0;
+uint8 SilentCountPeriod = 0;
+uint8 SilentCount = 0;
+uint8 battADword = 153;
+uint8 battMeasure( void );
+uint8 countAdcSample = FALSE;
+uint8 mpr03xCalCount;
+uint8 mpr03xCalReadState = TRUE;
+uint8 mpr03xCalDatePos = 0xCA;
+uint8 mpr03xCalDateCur = 0xCA;
 /*********************************************************************
  * TYPEDEFS
  */
@@ -379,16 +382,9 @@ int8 timezone = 0;
 uint8 scanRspData[] =
 {
     // complete name
-    0x11,   // length of this data, p.s. contain header and body
+    0x0a,   // length of this data, p.s. contain header and body
     GAP_ADTYPE_LOCAL_NAME_COMPLETE,
-    'A',
-    'd',
-    'd',
-    'i',
-    'n',
-    'g',
-    '_',
-    'A',
+    'L',
     '1',
     '-',
     '0',
@@ -397,7 +393,6 @@ uint8 scanRspData[] =
     '0',
     '0',
     '0',
-
     // connection interval range
     0x05,   // length of this data
     GAP_ADTYPE_SLAVE_CONN_INTERVAL_RANGE,
@@ -448,7 +443,8 @@ static uint8 advertData[] =
 };
 
 // GAP GATT Attributes
-uint8 attDeviceName[GAP_DEVICE_NAME_LEN] = "Adding_A1-000000";
+//uint8 attDeviceName[GAP_DEVICE_NAME_LEN] = "Adding_A1-000000";
+uint8 attDeviceName[GAP_DEVICE_NAME_LEN] = "L1-000000";  //V1007 MODIFY
 
 // define for eeprom
 uint16 rawDataStart = 0, rawDataStop = 0;
@@ -480,7 +476,8 @@ struct mpr03x_touchkey_data {
 	uint8 CDT;
 };
 
-static bool flagSBPStart=0;
+//static bool flagSBPStart=0;
+uint8 flagSBPStart=0;
 
 
 /*********************************************************************
@@ -488,25 +485,21 @@ static bool flagSBPStart=0;
  */
 static void simpleBLEPeripheral_ProcessOSALMsg( osal_event_hdr_t *pMsg );
 static void peripheralStateNotificationCB( gaprole_States_t newState );
-static void performPeriodicTask( void );
+//static void performPeriodicTask( void );
 static void simpleProfileChangeCB( uint8 paramID );
 
 static void battPeriodicTask( void );
 static void battCB(uint8 event);
 
 static void accInit(void);
-//static void accLoop(void);
 
-// static void accGetIntData(void);
-// static void accGetAccData(void);
-//static void accGetAccData(uint8 count);
 static uint8 accDataProcess(uint8 count);
 
 static void eepromWrite(uint8 type, uint8 cnt);
 static uint8 eepromRead(void);
 
 static void closeAllPIO(void);
-static void openAllLED(void);
+//static void openAllLED(void);
 
 static void time(void);
 
@@ -521,16 +514,16 @@ static void toggleAdvert(uint8 status);
 static void saveRawDataIndex(void);
 static void loadRawDataIndex(void);
 
-static void tribleTap(void);
+//static void tribleTap(void);
 
 static uint16 dataLength(void);
 
 static int mpr03x_phys_init(void);
 static void mpr03x_start(void);
+static void mpr03x_stop(void); //v114
 void Delay1(uint16 cnt);
 void Delay2(uint16 cnt);
 void DelayMs(uint16 cnt);
-
 
 /*********************************************************************
  * PROFILE CALLBACKS
@@ -601,8 +594,10 @@ void SimpleBLEPeripheral_Init( uint8 task_id )
     };
 
     // rewrite device name
-    osal_memcpy(&scanRspData[12], sn, sizeof(sn));
-    osal_memcpy(&attDeviceName[10], sn, sizeof(sn));
+    //osal_memcpy(&scanRspData[12], sn, sizeof(sn));
+    osal_memcpy(&scanRspData[5], sn, sizeof(sn));  //v1007 modify
+    //osal_memcpy(&attDeviceName[10], sn, sizeof(sn));
+    osal_memcpy(&attDeviceName[3], sn, sizeof(sn));//v1007 modify
 
     // Setup the GAP
     VOID GAP_SetParamValue( TGAP_CONN_PAUSE_PERIPHERAL, DEFAULT_CONN_PAUSE_PERIPHERAL );
@@ -683,11 +678,9 @@ void SimpleBLEPeripheral_Init( uint8 task_id )
         uint16  healthDataHeader = DATA_TYPE_COUNT;
         uint16  healthFirmware = FIRMWARE;
         // uint8   healthDataBody = 0;
-        // SimpleProfile_SetParameter( HEALTH_SYNC, sizeof ( uint8 ), &healthSync );
-        // SimpleProfile_SetParameter( HEALTH_CLOCK, sizeof ( uint32 ), &healthClock );
+
         SimpleProfile_SetParameter( HEALTH_DATA_HEADER, sizeof ( uint16 ), &healthDataHeader );
         SimpleProfile_SetParameter( HEALTH_FIRMWARE, sizeof ( uint16 ), &healthFirmware );
-        // SimpleProfile_SetParameter( HEALTH_DATA_BODY, sizeof ( uint8 ), &healthDataBody );
     }
 
     // Setup Battery Characteristic Values
@@ -716,21 +709,6 @@ void SimpleBLEPeripheral_Init( uint8 task_id )
 	 mpr03x_phys_init();
 	 mpr03x_start();
 
-    //sunshine
-    // LED0_PIO = OPEN_PIO;
-    // LED1_PIO = OPEN_PIO;
-    // LED2_PIO = OPEN_PIO;
-    // LED3_PIO = OPEN_PIO;
-    // LED4_PIO = OPEN_PIO;
-    // LED5_PIO = OPEN_PIO;
-    // LED6_PIO = OPEN_PIO;
-    // LED7_PIO = OPEN_PIO;
-    // LED8_PIO = OPEN_PIO;
-    // LED9_PIO = OPEN_PIO;
-    // LED10_PIO = OPEN_PIO;
-    // LED11_PIO = OPEN_PIO;
-
-
     // Register callback with SimpleGATTprofile
     VOID SimpleProfile_RegisterAppCBs( &simpleBLEPeripheral_SimpleProfileCBs );
 
@@ -738,10 +716,10 @@ void SimpleBLEPeripheral_Init( uint8 task_id )
     Batt_Register ( battCB );
 
 	 //read actualVref from eeprom
-	 #if (MANUFACTURE_TEST==FALSE)
-	 	battMeasureCalibration();
-	 	WriteActualVref(1190);
-	 #endif
+//	 #if (MANUFACTURE_TEST==FALSE)
+//	 	battMeasureCalibration();
+//	 	WriteActualVref(1190);
+//	 #endif
 	 ReadActualVref();
 
     // Enable clock divide on halt
@@ -767,6 +745,10 @@ void SimpleBLEPeripheral_Init( uint8 task_id )
 
     // Setup a delayed profile startup
     osal_set_event( simpleBLEPeripheral_TaskID, SBP_START_DEVICE_EVT );
+    //battery ADC read  period funtion
+    osal_set_event( simpleBLEPeripheral_TaskID, SBP_PERIODIC_EVT);
+    //MPR03X self-calibration funciton
+    osal_set_event( simpleBLEPeripheral_TaskID, MPR03X_CALIBRATION_EVT);
 }
 
 /*********************************************************************
@@ -798,7 +780,6 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
             // Release the OSAL message
             VOID osal_msg_deallocate( pMsg );
         }
-
         // return unprocessed events
         return (events ^ SYS_EVENT_MSG);
     }
@@ -816,7 +797,11 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
 	        toggleAdvert(TRUE);
 
 	        // Set timer for first periodic event
-	        osal_start_timerEx( simpleBLEPeripheral_TaskID, SBP_PERIODIC_EVT, SBP_PERIODIC_EVT_PERIOD );
+	       // osal_start_timerEx( simpleBLEPeripheral_TaskID, SBP_PERIODIC_EVT, SBP_PERIODIC_EVT_PERIOD );
+                osal_start_timerEx( simpleBLEPeripheral_TaskID, SBP_PERIODIC_EVT, SBP_PERIODIC_1s_EVT_PERIOD );
+                
+                osal_start_timerEx( simpleBLEPeripheral_TaskID, MPR03X_CALIBRATION_EVT, MPR03X_CALIBRATION_EVT_1min_EVT_PERIOD );
+                
 
 			  // Set timer for led all on, READY period
 			  osal_start_timerEx( simpleBLEPeripheral_TaskID, SBP_START_DEVICE_EVT, SBP_START_DEVICE_EVT_READY_PERIOD );
@@ -825,11 +810,139 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
 			else if(1==flagSBPStart)
 			{
 				//Open all LED and set timer for led all off, GO period
-			  openAllLED();
-	        osal_start_timerEx( simpleBLEPeripheral_TaskID, SBP_START_DEVICE_EVT, SBP_START_DEVICE_EVT_GO_PERIOD );
-	        flagSBPStart++;
+			  //openAllLED();
+                              LED0_PIO = OPEN_PIO;
+                              LED1_PIO = CLOSE_PIO;
+                              LED2_PIO = CLOSE_PIO;
+                              LED3_PIO = CLOSE_PIO;
+                              LED4_PIO = CLOSE_PIO;
+                              LED5_PIO = CLOSE_PIO;
+                              LED6_PIO = OPEN_PIO;
+                              LED7_PIO = CLOSE_PIO;
+                              LED8_PIO = CLOSE_PIO;
+                              LED9_PIO = CLOSE_PIO;
+                              LED10_PIO =CLOSE_PIO;
+                              LED11_PIO = CLOSE_PIO;
+	                      led_status=0x0021;
+	                      LED_POWER=BOOSTON;
+	                      osal_start_timerEx( simpleBLEPeripheral_TaskID, SBP_START_DEVICE_EVT, SBP_START_DEVICE_EVT_GO_PERIOD );
+	                      flagSBPStart++;
 			}
 			else if(2==flagSBPStart)
+			{
+                              LED0_PIO = CLOSE_PIO;
+                              LED1_PIO = OPEN_PIO;
+                              LED2_PIO = CLOSE_PIO;
+                              LED3_PIO = CLOSE_PIO;
+                              LED4_PIO = CLOSE_PIO;
+                              LED5_PIO = CLOSE_PIO;
+                              LED6_PIO = CLOSE_PIO;
+                              LED7_PIO = OPEN_PIO;
+                              LED8_PIO = CLOSE_PIO;
+                              LED9_PIO = CLOSE_PIO;
+                              LED10_PIO =CLOSE_PIO;
+                              LED11_PIO = CLOSE_PIO;
+	                      led_status=0x0042;
+	                      LED_POWER=BOOSTON;
+				osal_start_timerEx( simpleBLEPeripheral_TaskID, SBP_START_DEVICE_EVT,SBP_START_DEVICE_EVT_GO_PERIOD);
+				flagSBPStart++;
+			}
+ 			else if(3==flagSBPStart)
+			{
+                              LED0_PIO = CLOSE_PIO;
+                              LED1_PIO = CLOSE_PIO;
+                              LED2_PIO = OPEN_PIO;
+                              LED3_PIO = CLOSE_PIO;
+                              LED4_PIO = CLOSE_PIO;
+                              LED5_PIO = CLOSE_PIO;
+                              LED6_PIO = CLOSE_PIO;
+                              LED7_PIO = CLOSE_PIO;
+                              LED8_PIO = OPEN_PIO;
+                              LED9_PIO = CLOSE_PIO;
+                              LED10_PIO =CLOSE_PIO;
+                              LED11_PIO = CLOSE_PIO;
+	                      led_status=0x0084;
+	                      LED_POWER=BOOSTON;
+				osal_start_timerEx( simpleBLEPeripheral_TaskID, SBP_START_DEVICE_EVT,SBP_START_DEVICE_EVT_GO_PERIOD);
+				flagSBPStart++;
+			}
+  			else if(4==flagSBPStart)
+			{
+                              LED0_PIO = CLOSE_PIO;
+                              LED1_PIO = CLOSE_PIO;
+                              LED2_PIO = CLOSE_PIO;
+                              LED3_PIO = OPEN_PIO;
+                              LED4_PIO = CLOSE_PIO;
+                              LED5_PIO = CLOSE_PIO;
+                              LED6_PIO = CLOSE_PIO;
+                              LED7_PIO = CLOSE_PIO;
+                              LED8_PIO = CLOSE_PIO;
+                              LED9_PIO = OPEN_PIO;
+                              LED10_PIO =CLOSE_PIO;
+                              LED11_PIO = CLOSE_PIO;
+	                      led_status=0x0108;
+	                      LED_POWER=BOOSTON;
+				osal_start_timerEx( simpleBLEPeripheral_TaskID, SBP_START_DEVICE_EVT,SBP_START_DEVICE_EVT_GO_PERIOD);
+				flagSBPStart++;
+			}
+  			else if(5==flagSBPStart)
+			{
+                              LED0_PIO = CLOSE_PIO;
+                              LED1_PIO = CLOSE_PIO;
+                              LED2_PIO = CLOSE_PIO;
+                              LED3_PIO = CLOSE_PIO;
+                              LED4_PIO = OPEN_PIO;
+                              LED5_PIO = CLOSE_PIO;
+                              LED6_PIO = CLOSE_PIO;
+                              LED7_PIO = CLOSE_PIO;
+                              LED8_PIO = CLOSE_PIO;
+                              LED9_PIO = CLOSE_PIO;
+                              LED10_PIO =OPEN_PIO;
+                              LED11_PIO = CLOSE_PIO;
+	                      led_status=0x0210;
+	                      LED_POWER=BOOSTON;
+				osal_start_timerEx( simpleBLEPeripheral_TaskID, SBP_START_DEVICE_EVT,SBP_START_DEVICE_EVT_GO_PERIOD);
+				flagSBPStart++;
+			}
+  			else if(6==flagSBPStart)
+			{
+                              LED0_PIO = CLOSE_PIO;
+                              LED1_PIO = CLOSE_PIO;
+                              LED2_PIO = CLOSE_PIO;
+                              LED3_PIO = CLOSE_PIO;
+                              LED4_PIO = CLOSE_PIO;
+                              LED5_PIO = OPEN_PIO;
+                              LED6_PIO = CLOSE_PIO;
+                              LED7_PIO = CLOSE_PIO;
+                              LED8_PIO = CLOSE_PIO;
+                              LED9_PIO = CLOSE_PIO;
+                              LED10_PIO =CLOSE_PIO;
+                              LED11_PIO = OPEN_PIO;
+	                      led_status=0x0420;
+	                      LED_POWER=BOOSTON;
+				osal_start_timerEx( simpleBLEPeripheral_TaskID, SBP_START_DEVICE_EVT,SBP_START_DEVICE_EVT_GO_PERIOD);
+				flagSBPStart++;
+			}
+   			else if(7==flagSBPStart)
+			{
+                              LED0_PIO = OPEN_PIO;
+                              LED1_PIO = CLOSE_PIO;
+                              LED2_PIO = CLOSE_PIO;
+                              LED3_PIO = CLOSE_PIO;
+                              LED4_PIO = CLOSE_PIO;
+                              LED5_PIO = CLOSE_PIO;
+                              LED6_PIO = OPEN_PIO;
+                              LED7_PIO = CLOSE_PIO;
+                              LED8_PIO = CLOSE_PIO;
+                              LED9_PIO = CLOSE_PIO;
+                              LED10_PIO =CLOSE_PIO;
+                              LED11_PIO = CLOSE_PIO;
+	                      led_status=0x0840;
+	                      LED_POWER=BOOSTON;
+				osal_start_timerEx( simpleBLEPeripheral_TaskID, SBP_START_DEVICE_EVT,SBP_START_DEVICE_EVT_GO_PERIOD);
+				flagSBPStart++;
+			}
+   			else if(8==flagSBPStart)
 			{
 				//Close all LED and the timer
 				closeAllPIO();
@@ -862,21 +975,10 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
 		//accGetAccData(val);
         }
 
-        // {
-        //     uint8 d[8] = {val,0,0,0,0,0,0,0};
-
-        //     // osal_memcpy(&d[0], &X_out, sizeof(int16));
-        //     // osal_memcpy(&d[2], &Y_out, sizeof(int16));
-        //     // osal_memcpy(&d[4], &Z_out, sizeof(int16));
-
-        //     SimpleProfile_SetParameter( HEALTH_SYNC, 8, d );
-        // }
-
-        // restart timer
-        // osal_start_timerEx( simpleBLEPeripheral_TaskID, ACC_PERIODIC_EVT, 100 );
         if(FALSE==flagAccStatic)
+        {
           osal_start_timerEx( simpleBLEPeripheral_TaskID, ACC_PERIODIC_EVT, accLoadInterval );
-
+        }
         return (events ^ ACC_PERIODIC_EVT);
     }
 
@@ -892,20 +994,26 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
 
     if ( events & SBP_PERIODIC_EVT )
     {
-        // Restart timer
-//        if ( SBP_PERIODIC_EVT_PERIOD )
-//       {
-//            osal_start_timerEx( simpleBLEPeripheral_TaskID, SBP_PERIODIC_EVT, SBP_PERIODIC_EVT_PERIOD );
-//        }
+      if(countAdcSample == FALSE)
+      {
+      HalADCPeripheralSetting(HAL_ADC_CHANNEL_0,IO_FUNCTION_PERI);
+      HalADCToggleChannel(HAL_ADC_CHANNEL_0,ADC_CHANNEL_ON);
+      countAdcSample = TRUE;
+      osal_start_timerEx( simpleBLEPeripheral_TaskID, SBP_PERIODIC_EVT, SBP_PERIODIC_1s_EVT_PERIOD );
+      }  
+      else
+      {
+       if(gapProfileState == GAPROLE_ADVERTISING) 
+      {
+        battADword = battMeasure();      
+     }
+      HalADCPeripheralSetting(HAL_ADC_CHANNEL_0,IO_FUNCTION_GPIO);
+      HalADCToggleChannel(HAL_ADC_CHANNEL_0,ADC_CHANNEL_OFF);
+      countAdcSample = FALSE;
+      osal_start_timerEx( simpleBLEPeripheral_TaskID, SBP_PERIODIC_EVT, SBP_PERIODIC_300s_EVT_PERIOD );     
+      }
 
-        // Perform periodic application task
-	performPeriodicTask();
-	if(flagTxAccData==TRUE)
-	{
-		osal_start_timerEx( simpleBLEPeripheral_TaskID, SBP_PERIODIC_EVT, SBP_PERIODIC_EVT_PERIOD );
-	}
-
-        return (events ^ SBP_PERIODIC_EVT);
+      return (events ^ SBP_PERIODIC_EVT);
     }
 
     if ( events & TAP_TIMEOUT_EVT )
@@ -1003,23 +1111,6 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
             ledCycleCount = 0;
             lockSlip = 0;
         }
-        //test watchdog code
-//        {
-//          uint8 i = 1;
-//          HAL_DISABLE_INTERRUPTS();
-//          while(i)
-//          {
-//            toggleLEDWithTime(2, OPEN_PIO); 
-//            toggleLEDWithTime(4, OPEN_PIO); 
-//            toggleLEDWithTime(6, OPEN_PIO);
-//            toggleLEDWithTime(8, OPEN_PIO);
-//            toggleLEDWithTime(10, OPEN_PIO);
-//            i++;
-//            if(i>100)i=1;
-//          }
-//          HAL_ENABLE_INTERRUPTS();
-//        }
-       //end test code
         return (events ^ CYCLE_LED_12_EVT);
     }
 
@@ -1062,7 +1153,46 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
 
         return (events ^ READ_EVT);
     }
-
+    
+    if ( events & MPR03X_CALIBRATION_EVT )
+    {
+        uint8 mpr03xaddr,mpr03xdata1,mpr03xval,mpr03xdata2;
+        uint8 mpr03xpbuf[2];     
+       	//set i2c device address
+	HalI2CInit(TOUCH_ADDRESS, I2C_CLOCK_RATE); 
+        mpr03xaddr=MPR03X_E0FDH_REG;
+	HalMotionI2CWrite(1, &mpr03xaddr);
+	HalMotionI2CRead(1,&mpr03xval);
+	mpr03xdata1=mpr03xval<<6;
+	mpr03xaddr=MPR03X_E0FDL_REG;
+	HalMotionI2CWrite(1, &mpr03xaddr);
+	HalMotionI2CRead(1,&mpr03xval);
+	mpr03xdata2=(mpr03xval>>2)&0xF8;        
+        mpr03xCalDateCur = mpr03xdata1 | mpr03xdata2;
+        //if match need ,write baseline to the address
+        if(mpr03xCalDatePos == mpr03xCalDateCur)
+        {
+           mpr03xCalCount = mpr03xCalCount + 1;
+           if(mpr03xCalCount >= MPR03XCALIBRATIONCOUNT)
+           {
+           mpr03xCalCount = 0;
+           mpr03x_stop();//(client);
+           mpr03xpbuf[0]= MPR03X_E0BV_REG;
+	   mpr03xpbuf[1]= mpr03xCalDateCur;
+	   HalI2CWrite(2,mpr03xpbuf);
+           mpr03x_start();//(client);
+           }
+        }
+        else
+        {
+          mpr03xCalCount = 0;
+        }
+        //refresh data
+        mpr03xCalDatePos = mpr03xCalDateCur;
+        //set events per minutus
+        osal_start_timerEx( simpleBLEPeripheral_TaskID, MPR03X_CALIBRATION_EVT, MPR03X_CALIBRATION_EVT_1min_EVT_PERIOD );
+        return (events ^ MPR03X_CALIBRATION_EVT);
+    }  
     // Discard unknown events
     return 0;
 }
@@ -1089,19 +1219,15 @@ static void simpleBLEPeripheral_ProcessOSALMsg( osal_event_hdr_t *pMsg )
       // release == 0
       uint8 keys = ((keyChange_t *)pMsg)->keys;
       uint8 pBuf[2];
-		uint8 addr,val;
-
-      //fixed long press bug
-      //onTheKey = keys ? 1 : 0;
-        //set i2c device address
-			HalI2CInit(TOUCH_ADDRESS, I2C_CLOCK_RATE);
-		   addr=MPR03X_TS_REG;
-			HalMotionI2CWrite(1, &addr);
-			HalMotionI2CRead(1,&val);
-			if((val&0x01)==0)
-				onTheKey=0;
-			else
-				onTheKey=1;
+      uint8 addr,val;
+      HalI2CInit(TOUCH_ADDRESS, I2C_CLOCK_RATE);
+      addr=MPR03X_TS_REG;
+      HalMotionI2CWrite(1, &addr);
+      HalMotionI2CRead(1,&val);
+      if((val&0x01)==0)
+	 onTheKey=0;
+      else
+	 onTheKey=1;
 
       if((keys&HAL_KEY_SW_1)!=0)//sw_1
       {
@@ -1139,7 +1265,7 @@ static void simpleBLEPeripheral_ProcessOSALMsg( osal_event_hdr_t *pMsg )
             }else if (tapWaitFor == 3){
   
               // trible tap!!
-              tribleTap();
+              //tribleTap();   //remove 3 tick function
   
               osal_stop_timerEx( simpleBLEPeripheral_TaskID, TAP_TIMEOUT_EVT );
   
@@ -1206,7 +1332,8 @@ static void peripheralStateNotificationCB( gaprole_States_t newState )
 {
     
     // closeAllPIO();
-
+    uint8 pBuf[2]; //v1008 modify
+    uint8 CDT = 1;
     switch ( newState )
     {
     case GAPROLE_STARTED:
@@ -1233,8 +1360,7 @@ static void peripheralStateNotificationCB( gaprole_States_t newState )
 
         DevInfo_SetParameter(DEVINFO_SYSTEM_ID, DEVINFO_SYSTEM_ID_LEN, systemId);
 
-        // LED1_PIO = OPEN_PIO;
-        
+        // LED1_PIO = OPEN_PIO; 
     }
     break;
 
@@ -1242,8 +1368,8 @@ static void peripheralStateNotificationCB( gaprole_States_t newState )
     {
         // LED2_PIO = OPEN_PIO;
 			 //when disconnected, adc analog channel off
-		  HalADCPeripheralSetting(HAL_ADC_CHANNEL_0,IO_FUNCTION_GPIO);
-		  HalADCToggleChannel(HAL_ADC_CHANNEL_0,ADC_CHANNEL_OFF);
+//		  HalADCPeripheralSetting(HAL_ADC_CHANNEL_0,IO_FUNCTION_GPIO);
+//		  HalADCToggleChannel(HAL_ADC_CHANNEL_0,ADC_CHANNEL_ON);
     }
     break;
 
@@ -1251,26 +1377,36 @@ static void peripheralStateNotificationCB( gaprole_States_t newState )
     {
         // LED3_PIO = OPEN_PIO;  
         //when connected, adc analog channel on
-        HalADCPeripheralSetting(HAL_ADC_CHANNEL_0,IO_FUNCTION_PERI);
-			HalADCToggleChannel(HAL_ADC_CHANNEL_0,ADC_CHANNEL_ON);
+        //HalADCPeripheralSetting(HAL_ADC_CHANNEL_0,IO_FUNCTION_PERI);
+	//HalADCToggleChannel(HAL_ADC_CHANNEL_0,ADC_CHANNEL_ON);       
+        //set i2c device address  //v112 modify
+	HalI2CInit(TOUCH_ADDRESS, I2C_CLOCK_RATE);                         //v112 modify
+        if(activeAccAction == TRUE)
+        {
+          mpr03x_stop();//(client);
+        //avtive acc //v1008 modify
+        pBuf[0]=MPR03X_FC_REG; //v1008 modify
+        pBuf[1]=CDT<<5 | MPR03X_SFI_4 | MPR03X_ESI_8MS;//MPR03X_ESI_1MS;//v1008 modify	
+	HalI2CWrite(2,pBuf);         //v1008 modify  
+        activeAccAction = FALSE;
+        mpr03x_start();//(client);
+        }     
+        
     }
     break;
 
     case GAPROLE_WAITING:
     {
-        // LED4_PIO = OPEN_PIO;
     }
     break;
 
     case GAPROLE_WAITING_AFTER_TIMEOUT:
     {
-        // LED5_PIO = OPEN_PIO;
     }
     break;
 
     case GAPROLE_ERROR:
     {
-        // LED6_PIO = OPEN_PIO;
     }
     break;
 
@@ -1304,7 +1440,7 @@ static void battCB(uint8 event)
     if (event == BATT_LEVEL_NOTI_ENABLED)
     {
         // if connected start periodic measurement
-        if (gapProfileState == GAPROLE_CONNECTED)
+       if (gapProfileState == GAPROLE_CONNECTED)
         {
             osal_start_timerEx( simpleBLEPeripheral_TaskID, BATT_PERIODIC_EVT, DEFAULT_BATT_PERIOD );
         }
@@ -1330,142 +1466,11 @@ static void battPeriodicTask( void )
     if (gapProfileState == GAPROLE_CONNECTED)
     {
         // perform battery level check
-        Batt_MeasLevel( );
+        Batt_MeasLevel( ); 
 
         // Restart timer
         osal_start_timerEx( simpleBLEPeripheral_TaskID, BATT_PERIODIC_EVT, DEFAULT_BATT_PERIOD );
     }
-}
-
-/*********************************************************************
- * @fn      performPeriodicTask
- *
- * @brief   Perform a periodic application task. This function gets
- *          called every five seconds as a result of the SBP_PERIODIC_EVT
- *          OSAL event. In this example, the value of the third
- *          characteristic in the SimpleGATTProfile service is retrieved
- *          from the profile, and then copied into the value of the
- *          the fourth characteristic.
- *
- * @param   none
- *
- * @return  none
- */
-static void performPeriodicTask( void )
-{
-	#if (ACC_POPUP_DATA_BLE==TRUE)
-		uint8 i;
-		uint8 d[8];
-		if((flagTxAccData==TRUE)&&(dataAtxbufCnt>dataAtxbufpointer))
-		{
-			if((dataAtxbufCnt-dataAtxbufpointer)>5)
-			{
-				//send 5 data
-				for(i=dataAtxbufpointer;i<(dataAtxbufpointer+5);i++)
-				{
-					X_out=mmaDataA_txbuf[i].mmaAxis[0].int16data;
-					Y_out=mmaDataA_txbuf[i].mmaAxis[1].int16data;
-					Z_out=mmaDataA_txbuf[i].mmaAxis[2].int16data;
-					if(i==0)
-					{
-						ACC_CUR=accRunCnt_txbuf;//popup the last run_counter
-					}
-					else if(i==1)
-					{
-						ACC_CUR=(int16)dataAtxbufCnt;
-					}
-					else
-					{
-						ACC_CUR=0xFFFF;
-					}
-					osal_memcpy(&d[0], &X_out, sizeof(int16));
-					osal_memcpy(&d[2], &Y_out, sizeof(int16));
-					osal_memcpy(&d[4], &Z_out, sizeof(int16));
-					osal_memcpy(&d[6], &ACC_CUR, sizeof(int16));
-					SimpleProfile_SetParameter( HEALTH_SYNC, sizeof ( d ), d );
-				}
-				dataAtxbufpointer+=5;
-				//reset timer
-			}
-			else
-			{
-				//send the rest
-				for(i=dataAtxbufpointer;i<dataAtxbufCnt;i++)
-				{
-					X_out=mmaDataA_txbuf[i].mmaAxis[0].int16data;
-					Y_out=mmaDataA_txbuf[i].mmaAxis[1].int16data;
-					Z_out=mmaDataA_txbuf[i].mmaAxis[2].int16data;
-					if(i==0)
-					{
-						ACC_CUR=accRunCnt_txbuf;//popup the last run_counter
-					}
-					else if(i==1)
-					{
-						ACC_CUR=(int16)dataAtxbufCnt;
-					}
-					else
-					{
-						ACC_CUR=0xFFFF;
-					}
-					osal_memcpy(&d[0], &X_out, sizeof(int16));
-					osal_memcpy(&d[2], &Y_out, sizeof(int16));
-					osal_memcpy(&d[4], &Z_out, sizeof(int16));
-					osal_memcpy(&d[6], &ACC_CUR, sizeof(int16));
-					SimpleProfile_SetParameter( HEALTH_SYNC, sizeof ( d ), d );	
-				}
-				dataAtxbufpointer=dataAtxbufCnt;
-				//reset timer
-			}
-		}
-		else
-		{
-			//end timer ,end sending
-			flagTxAccData=FALSE;
-		}
-	#endif
-    // if (testAddr < 32768)
-    // {
-    //     HalI2CInit(EEPROM_ADDRESS, I2C_CLOCK_RATE);
-
-    //     uint8 addr[2] = {
-    //         HI_UINT16(testAddr),    // address
-    //         LO_UINT16(testAddr)
-    //     };
-
-    //     uint8 data[8] = {1,2,0,4,7,9,2,8};
-
-    //     uint8 send[10], back[8];
-
-    //     uint8 d[8] = {
-    //             LO_UINT16(testAddr),
-    //             HI_UINT16(testAddr),
-    //             0,0,0,0,0,0
-    //         };
-
-    //     osal_memcpy(&send[0], addr, 2);
-    //     osal_memcpy(&send[2], data, 8);
-
-    //     // uint8 send[3] = {
-    //     //     HI_UINT16(testAddr),
-    //     //     LO_UINT16(testAddr),
-    //     //     15
-    //     // }, back;
-
-    //     HalI2CWrite(sizeof(send), send);
-    //     HalI2CAckPolling();
-
-    //     HalI2CWrite(sizeof(addr), addr);
-    //     HalI2CRead(sizeof(back), back);
-
-    //     if(osal_memcmp(back, data, 8)){
-    //         d[2] = 1;
-    //     }
-
-    //     SimpleProfile_SetParameter( HEALTH_SYNC, sizeof ( d ), d );
-
-    //     testAddr += 8;
-    // }
-    
 }
 
 /*********************************************************************
@@ -1527,16 +1532,6 @@ static void simpleProfileChangeCB( uint8 paramID )
 
         osal_ConvertUTCTime(&date, now);
 
-        // {
-        //     uint8 d[8] = {1,2,3,4,5,6,7,8};
-
-        //     // osal_memcpy(&d[0], &X_out, sizeof(int16));
-        //     // osal_memcpy(&d[2], &Y_out, sizeof(int16));
-        //     // osal_memcpy(&d[4], &Z_out, sizeof(int16));
-
-        //     SimpleProfile_SetParameter( HEALTH_SYNC, 8, d );
-        // }
-
         break;
 
     case HEALTH_DATA_BODY:
@@ -1560,16 +1555,6 @@ static void simpleProfileChangeCB( uint8 paramID )
  */
 
 static void closeAllPIO(void){
-
-    // P0 = 0xFF;
-
-    // // open
-    // P1 = 0xC1;
-
-    // // close
-    // // P1 = 0xC3;
-
-    // P2 = 0x07;
 
     LED0_PIO = CLOSE_PIO;
     LED1_PIO = CLOSE_PIO;
@@ -1601,23 +1586,23 @@ static void closeAllPIO(void){
  * @return  none
  */
 
-static void openAllLED(void){
-
-    LED0_PIO = OPEN_PIO;
-    LED1_PIO = OPEN_PIO;
-    LED2_PIO = OPEN_PIO;
-    LED3_PIO = OPEN_PIO;
-    LED4_PIO = OPEN_PIO;
-    LED5_PIO = OPEN_PIO;
-    LED6_PIO = OPEN_PIO;
-    LED7_PIO = OPEN_PIO;
-    LED8_PIO = OPEN_PIO;
-    LED9_PIO = OPEN_PIO;
-    LED10_PIO = OPEN_PIO;
-    LED11_PIO = OPEN_PIO;
-	 led_status=0x0FFF;
-	 LED_POWER=BOOSTON;
-}
+//static void openAllLED(void){
+//
+//    LED0_PIO = OPEN_PIO;
+//    LED1_PIO = OPEN_PIO;
+//    LED2_PIO = OPEN_PIO;
+//    LED3_PIO = OPEN_PIO;
+//    LED4_PIO = OPEN_PIO;
+//    LED5_PIO = OPEN_PIO;
+//    LED6_PIO = OPEN_PIO;
+//    LED7_PIO = OPEN_PIO;
+//    LED8_PIO = OPEN_PIO;
+//    LED9_PIO = OPEN_PIO;
+//    LED10_PIO = OPEN_PIO;
+//    LED11_PIO = OPEN_PIO;
+//	 led_status=0x0FFF;
+//	 LED_POWER=BOOSTON;
+//}
 
 
 /*********************************************************************
@@ -1746,13 +1731,6 @@ static void cycleLED12(void){
     osal_set_event( simpleBLEPeripheral_TaskID, CYCLE_LED_12_EVT );
 }
 
-static void tribleTap(void){
-
-    lockSlip = 1;
-
-    eepromWrite(TAP_HOUR_START_TYPE, 1);
-    osal_start_timerEx( simpleBLEPeripheral_TaskID, RUN_TRIBLE_TAP_EVT, TRIBLE_TAP_INTERVAL );
-}
 
 static void toggleAdvert(uint8 status){
 
@@ -1797,41 +1775,7 @@ static void accInit( void )
 
     pBuf[0] = XYZ_DATA_CFG;
     pBuf[1] = FULL_SCALE_8G;
-    HalI2CWrite(2, pBuf);    
-
-    //tap config
-
-    // pBuf[0] = PULSE_CFG;
-    // pBuf[1] = (DPA_MASK|PELE_MASK|ZDPEFE_MASK);
-    // HalI2CWrite(2, pBuf);
-
-    // pBuf[0] = PULSE_THSX;
-    // pBuf[1] = 0x06;//0x01;//0x00;   
-    // HalI2CWrite(2, pBuf); 
-
-    // pBuf[0] = PULSE_THSY;
-    // pBuf[1] = 0x06;//0x01;//0x00;   
-    // HalI2CWrite(2, pBuf); 
-
-    // pBuf[0] = PULSE_THSZ;
-    // pBuf[1] = 0x08;//0x01;//0x00;   
-    // HalI2CWrite(2, pBuf);
-
-    // pBuf[0] = PULSE_TMLT;
-    // pBuf[1] = 0x06;     //about 1 sec in 12.5Hz low power 
-    // HalI2CWrite(2, pBuf);
-
-    // pBuf[0] = PULSE_LTCY;
-    // pBuf[1] = 0x06;//0x00;  
-    // HalI2CWrite(2, pBuf);
-
-    // pBuf[0] = PULSE_WIND;
-    // pBuf[1] = 0x0C;     
-    // HalI2CWrite(2, pBuf);     
-
-    // pBuf[0] = HP_FILTER_CUTOFF_REG;
-    // pBuf[1] = 0x00;     
-    // HalI2CWrite(2, pBuf);   
+    HalI2CWrite(2, pBuf);      
 
     //use fifo
     pBuf[0] = F_SETUP;
@@ -1874,416 +1818,23 @@ static void accInit( void )
 
 }
 
-//static void accLoop(void)
-//{
-//    //todo
-//    // X_out = X_out >> 6;
-//    // Y_out = Y_out >> 6;
-//    // Z_out = Z_out >> 6;
-//
-//    
-//
-//
-//    ACC_CUR = X_out * X_out + Y_out * Y_out + Z_out * Z_out - 4096;
-//
-//    //SimpleProfile_SetParameter( HEALTH_SYNC, sizeof ( ACC_CUR ), &ACC_CUR );
-//
-//    uint8 d[8];
-//
-//    osal_memcpy(&d[0], &X_out, sizeof(int16));
-//    osal_memcpy(&d[2], &Y_out, sizeof(int16));
-//    osal_memcpy(&d[4], &Z_out, sizeof(int16));
-//    osal_memcpy(&d[6], &ACC_CUR, sizeof(int16));
-//
-//    SimpleProfile_SetParameter( HEALTH_SYNC, sizeof ( d ), d );
-//
-//
-//    if (ACC_CUR > ALT_MIN || ACC_CUR < -ALT_MIN)
-//    {
-//        
-//        if (ACC_CUR > 0)
-//        {
-//            if (B1 < 0 && B2 < 0)
-//            {
-//                
-//                if (B_INTERVAL > PACE_DUR_MIN && B_INTERVAL < PACE_DUR_MAX)
-//                {
-//                    pace_count++;
-//
-//                    accStaticCount = 0;
-//
-//                    // eepromWrite(STEP_DATA_TYPE, 1);
-//
-//                    if (VALID_STEP_CONUT >= 125)
-//                    {
-//                        if (pace_count >= 10)
-//                        {
-//                            eepromWrite(STEP_DATA_TYPE, pace_count);
-//                        }
-//
-//                        pace_count = 0;
-//                        VALID_STEP_CONUT = 0;
-//                    }
-//
-//                    // uint8 d[8];
-//
-//                    // osal_memcpy(&d[0], &B1, sizeof(int16));
-//                    // osal_memcpy(&d[2], &B2, sizeof(int16));
-//
-//                    // SimpleProfile_SetParameter( HEALTH_SYNC, sizeof ( d ), d );
-//                }
-//
-//                B1 = B2;
-//                B2 = 0;
-//                PEAK = 0;
-//
-//                TIME_LINE = TIME_LINE - B_INTERVAL;
-//            }
-//
-//            if (B1 < 0)
-//            {
-//                if (ACC_CUR > PEAK)
-//                {
-//                    PEAK = ACC_CUR;
-//                }
-//            }
-//
-//        }else{
-//
-//            if (PEAK > 0)
-//            {
-//                
-//                if (ACC_CUR < B2)
-//                {
-//                    B2 = ACC_CUR;
-//
-//                    B_INTERVAL = TIME_LINE;
-//                }
-//
-//            }else{
-//
-//                if (ACC_CUR < B1)
-//                {
-//                    B1 = ACC_CUR;
-//
-//                    TIME_LINE = 0;
-//                }
-//            }
-//        }
-//    }
-//
-//    TIME_LINE++;
-//
-//    if (pace_count > 0)
-//    {
-//        VALID_STEP_CONUT++;
-//    }
-//
-//     if ((DIR == 1) && (ACC_CUR > 0))
-//     {
-//
-//         if (first_pace == 0)
-//         {
-//             cross_count = cross_count + 1;
-//             if (cross_count == 1)
-//             {
-//
-//                 time_count = 0;
-//                 PACE_PEAK = ACC_CUR;
-//                 PACE_BOTTOM = 0;
-//
-//             }
-//             else if (cross_count == 2)
-//             {
-//
-//                 // uint8 d[6];
-//
-//                 // int16 minus = PACE_PEAK - PACE_BOTTOM;
-//
-//                 // osal_memcpy(&d[0], &minus, sizeof(int16));
-//
-//                 // SimpleProfile_SetParameter( HEALTH_SYNC, sizeof ( d ), d );
-//
-//                 if (((time_count) >= PACE_DUR_MIN) && ((time_count) <= PACE_DUR_MAX) && ((PACE_PEAK - PACE_BOTTOM) >= ALT_MIN))
-//                 {
-//                     // add one step
-//                     pace_count = pace_count + 1;
-//
-//
-//                     if (VALID_STEP_CONUT >= 50)
-//                     {
-//                         if (pace_count > 3)
-//                         {
-//                             eepromWrite(STEP_DATA_TYPE, pace_count);
-//                         }
-//
-//                         pace_count = 0;
-//
-//                         VALID_STEP_CONUT = 0;
-//                     }
-//
-//                     // LED0_PIO = OPEN_PIO;
-//                     // LED3_PIO = OPEN_PIO;
-//                     // LED6_PIO = OPEN_PIO;
-//                     // LED9_PIO = OPEN_PIO;
-//
-//                     // osal_start_timerEx( simpleBLEPeripheral_TaskID, CLOSE_ALL_EVT, 300 );
-//
-//                     cross_count = 0;
-//
-//                   
-//
-//                     accStaticCount = 0;
-//
-//                     accLoadInterval = ACC_LOAD_INTERVAL;
-//                     // ALT_MIN = ALT_MIN_DEFAULT;
-//
-//                 }
-//                 else
-//                 {
-//
-//                     time_count = 0;
-//                     PACE_PEAK = ACC_CUR;
-//                     PACE_BOTTOM = 0;
-//                     cross_count = 1;
-//                 }
-//             }
-//         }
-//         else
-//         {
-//             first_pace = 0;
-//
-//             time_count = 0;
-//             PACE_PEAK = ACC_CUR;
-//             PACE_BOTTOM = 0;
-//         }
-//         DIR = 2;
-//     }
-//     else if ((DIR == 2) && (ACC_CUR >= 0))
-//     {
-//         if (ACC_CUR > PACE_PEAK) PACE_PEAK = ACC_CUR;
-//     }
-//     else if ((DIR == 2) && (ACC_CUR < 0))
-//     {
-//         PACE_BOTTOM = ACC_CUR;
-//         DIR = 1;
-//     }
-//     else if ((DIR == 1) && (ACC_CUR <= 0))
-//     {
-//         if (ACC_CUR < PACE_BOTTOM) PACE_BOTTOM = ACC_CUR;
-//     }
-//
-//     // accGetIntData();//read INT registers
-//
-//     // if (INT_STATUS & 0x80)
-//     // {
-//
-//     //     // time();
-//
-//     // }
-//
-//     time_count++;
-//
-//     if (pace_count > 0)
-//     {
-//         VALID_STEP_CONUT++;
-//     }
-//}
-
-
-// static void accGetAccData(void)
-//static void accGetAccData(uint8 count)
-//{
-//    uint8 pBuf[2];
-//    HalI2CInit(ACC_ADDRESS, I2C_CLOCK_RATE);
-//
-//    // uint8 addr = OUT_X_MSB, accBuf[6];
-//
-//    // HalMotionI2CWrite(1, &addr);
-//    // HalMotionI2CRead(6, accBuf);
-//
-//    // X_out = (int16)((accBuf[0] << 8) | accBuf[1]);
-//    // Y_out = (int16)((accBuf[2] << 8) | accBuf[3]);
-//    // Z_out = (int16)((accBuf[4] << 8) | accBuf[5]);
-//
-//    accStaticCount++;
-//
-//    if (accStaticCount > ACC_STATIC_COUNT_MAX)
-//    {
-//        accLoadInterval = ACC_LOAD_INTERVAL;// * ACC_STATIC_COUNT_MAX;
-//        // ALT_MIN = ALT_MIN_DEFAULT;
-//
-//        flagAccStatic=TRUE;
-//        
-//        //set acc into standby, so can write
-//        pBuf[0] = CTRL_REG1;
-//        pBuf[1] = 0;
-//        HalI2CWrite(2, pBuf);
-//        //enable motion int
-//        pBuf[0] = CTRL_REG4;
-//        pBuf[1] = INT_EN_FF_MT_MASK;
-//        HalI2CWrite(2, pBuf);
-//        //set acc back into active
-//        pBuf[0] = CTRL_REG1;
-//        pBuf[1] = (ASLP_RATE_12_5HZ + DATA_RATE_12_5HZ) | ACTIVE_MASK;
-//        HalI2CWrite(2, pBuf);
-//        //LED0_PIO=CLOSE_PIO;
-//        //LED1_PIO=CLOSE_PIO;
-//    }
-//
-//    uint8 addr = OUT_X_MSB, accBuf[MMA_FIFO_DEEPTH];
-//
-//    HalMotionI2CWrite(1, &addr);
-//    HalMotionI2CRead(count * 6, accBuf);
-//
-//    for (int i = 0; i < count * 6; i += 6)
-//    {
-//        X_out = (int16)((accBuf[i] << 8) | accBuf[i+1]);
-//        Y_out = (int16)((accBuf[i+2] << 8) | accBuf[i+3]);
-//        Z_out = (int16)((accBuf[i+4] << 8) | accBuf[i+5]);
-//
-//        accLoop();
-//    }
-//}
 
 static uint8 accDataProcess(uint8 count)
 {
-//	uint8 pBuf[2];
+	uint8 pBuf[2];
 //	uint8 i,k;
         uint8 i;
         uint32 xyzAxisAbsdataMax[2] = {0,0};
         uint32 xyzAxisAbsdataMin[2] = {100000000,100000000};
-//	uint16 mmaDataCntTemp=0;
-//	int32 accSlideSumTemp[3]={0,0,0};
 
-//	#if((MMA_DEBUG_SIMULATION==TRUE)&&(MMA_DEBUG_DATA_MODEL==2))
-//		int16 accBufDebug[32*3]={128,-1248,3920,-1264,576,3104,-1568,1744,2944,\
-//		-1968,1840,2384,-2896,2720,2656,-3200,2928,2976,-3504,3216,2640,-2912,\
-//		2368,2256,-2432,1744,2000,-1664,512,2496,-336,-384,3408,640,-1536,4960,\
-//		368,-1392,5776,304,-1088,5312,224,-1568,4944,64,-1424,4288,-816,-800,\
-//		3840,-2416,800,3040,-3104,656,1088,-3856,912,1904,-3712,1280,1616,-4160,\
-//		1328,2256,-3728,1760,1808,-3680,2496,1856,-2752,1840,1504,-1792,1104,2512,\
-//		176,-80,3248,512,-608,5104,928,-1232,6080,1520,-1792,5840,784,-672,4800,\
-//		256,-608,4240\
-//		};
-//		mmaDataBA[0].mmaAxis[0].int16data=189;
-//		mmaDataBA[1].mmaAxis[0].int16data=183;
-//		mmaDataBA[2].mmaAxis[0].int16data=174;
-//		mmaDataBACnt=32;
-//	#endif
-//	#if((MMA_DEBUG_SIMULATION==TRUE)&&(MMA_DEBUG_DATA_MODEL==3))
-//		int16 accBufDebug[32*3]={-5024,-432,448,-3152,-592,832,-3616,-880,\
-//		1280,-4624,-1120,1808,-5344,-1296,1984,-4800,-1552,1568,-5840,-1344,\
-//		816,-5040,-976,416,-3936,-944,384,-3440,-672,192,-3872,-368,0,-4288,\
-//		-336,-80,-4464,-624,528,-5536,-672,496,-3456,-800,864,-3616,-1136,\
-//		1072,-4256,-1136,1488,-5280,-1392,1728,-5008,-1568,1488,-5632,-1408,\
-//		960,-5184,-976,384,-4096,-912,400,-3952,-672,128,-3952,-160,-256,-4352,\
-//		-32,-464,-4832,-432,400,-5136,-400,512,-3344,-608,928,-3664,-896,1248,\
-//		-4528,-1216,1712,-5440,-1520,1888,-4768,-1664,1520\
-//			};
-//		mmaDataBA[0].mmaAxis[0].int16data=57;
-//		mmaDataBA[1].mmaAxis[0].int16data=53;
-//		mmaDataBA[2].mmaAxis[0].int16data=51;
-//		mmaDataBA[3].mmaAxis[0].int16data=51;
-//		mmaDataBACnt=4;
-//	#endif
-//	#if((MMA_DEBUG_SIMULATION==TRUE)&&(MMA_DEBUG_DATA_MODEL==4))
-//		int16 accBufDebug[32*3]={-4896,-944,-272,-4160,320,176,-4000,32,96,\
-//		-6400,-1328,304,-4352,-1520,480,-3104,-1728,432,-4048,-2432,624,-5424,\
-//		-3312,640,-3856,-3200,624,-5408,-3008,48,-5760,-1712,96,-4048,-1616,96,\
-//		-4256,-1392,64,-4832,-512,16,-4224,64,144,-4624,-832,512,-5488,-1456,\
-//		560,-3072,-1440,672,-3440,-1872,448,-5280,-2816,592,-4608,-3360,528,\
-//		-3984,-3376,272,-6208,-2576,-176\
-//			};
-//		mmaDataBA[0].mmaAxis[0].int16data=60;
-//		mmaDataBACnt=1;
-//		uint8 accRunCntAyDebug[27]={0,0,1,2,2,1,1,1,1,1,2,3,0,1,1,1,1,1,1,1,1,1,0,2,0,0,0};
-//		accRunCntAyDebugCnt=27;
-//	#endif
-///*
-//	//first piece of data, round mode
-//	int16 accBufDebug[32*3]={-43,-27,-36,-42,-30,-32,-42,-25,-38,-40,-26,-38,-35,-36,-39,-39,-34,-35,-39,\
-//		-34,-30,-46,-34,-22,-54,-31,-15,-61,-18,-8,-70,-14,-6,-72,-16,-4,-71,-20,-2,-68,-25,\
-//		-1,-64,-34,1,-59,-44,1,-57,-37,1,-50,-31,1,-72,-28,-1,-82,-21,1,-78,-20,3,-73,-15,6,\
-//		-72,0,8,-69,-1,6,-66,-9,6,-76,-16,9,-59,-24,8,-60,-28,7,-61,-36,9,-62,-41,7,-59,-34,9,-71,-30,2\
-//	};
-//	//second piece of data, round mode
-//	int16 accBufDebug[32*3]={-74,-21,6,-63,-20,4,-68,-17,4,-76,-5,8,-71,1,10,-60,-11,9,-77,-12,11,-55,\
-//	-23,8,-57,-25,7,-58,-35,9,-61,-41,7,-68,-39,6,-65,-34,3,-76,-21,4,-60,-18,1,-60,-13,4,-70,-11,2,-62,\
-//	-6,8,-61,-11,8,-81,-16,10,-58,-17,9,-47,-23,4,-52,-28,6,-63,-33,5,-79,-41,6,-61,-33,6,-73,-25,5,-54,\
-//	-21,3,-52,-16,3,-62,-15,-1,-68,-11,7,-65,-14,8\
-//	};	
-//	//third piece of data, round mode
-//	int16 accBufDebug[32*3]={-76,-17,9,-51,-17,11,-45,-23,4,-50,-26,9,-63,-39,9,-72,-38,8,-65,-32,5,-72,\
-//		-24,6,-55,-21,3,-50,-19,2,-58,-16,3,-66,-11,6,-65,-14,8,-79,-19,9,-55,-17,12,-43,-23,5,-51,-26,8,\
-//		-63,-33,10,-77,-38,10,-59,-32,10,-74,-26,9,-58,-21,5,-55,-16,6,-59,-13,4,-68,-3,9,-64,-8,9,-77,\
-//		-17,6,-59,-20,13,-46,-26,6,-51,-26,10,-59,-33,10,-74,-34,11\
-//	};*/
-///*	//first piece of data, fix mode
-//	int16 accBufDebug[32*3]={-43,-27,-35,-41,-29,-32,-41,-24,-38,-40,-26,-37,-35,-36,-38,-38,-33,-35,\
-//		-39,-34,-29,-45,-34,-22,-53,-30,-15,-61,-18,-7,-70,-14,-6,-72,-16,-3,-71,-20,-2,-68,-25,0,-64,\
-//		-33,0,-59,-44,0,-56,-37,1,-49,-30,1,-71,-27,0,-81,-20,1,-77,-20,3,-73,-14,6,-71,0,8,-69,0,5,-65,\
-//		-9,5,-75,-15,8,-59,-23,7,-59,-28,7,-60,-35,8,-61,-40,7,-58,-34,8,-70,-30,2\
-//		};
-//	//second piece of data, fix mode
-//	int16 accBufDebug[32*3]={-73,-20,5,-62,-19,4,-67,-16,4,-76,-5,7,-70,0,9,-60,-11,9,-77,-12,11,-54,\
-//		-23,8,-57,-24,6,-58,-34,9,-61,-40,6,-68,-39,6,-64,-33,2,-75,-21,3,-60,-18,0,-60,-12,3,-70,\
-//		-10,1,-62,-6,8,-61,-11,7,-81,-16,9,-57,-17,9,-46,-22,3,-52,-28,5,-62,-32,5,-79,-41,6,-60,\
-//		-33,5,-73,-24,5,-53,-20,3,-52,-16,2,-62,-14,0,-68,-10,7,-64,-14,8\
-//	};
-//	//third piece of data, fix mode
-//	int16 accBufDebug[32*3]={-75,-17,9,-50,-16,10,-44,-22,4,-50,-26,9,-62,-39,9,-72,\
-//		-38,7,-65,-31,4,-72,-23,6,-55,-20,2,-50,-18,2,-57,-16,3,-66,-11,6,-64,-13,8,-78,\
-//		-19,9,-55,-16,11,-43,-22,4,-50,-25,8,-63,-32,9,-76,-37,9,-59,-31,9,-73,-25,8,-58,\
-//		-21,5,-55,-15,5,-59,-13,4,-67,-2,8,-63,-7,8,-77,-16,6,-59,-20,13,-46,-25,5,-51,\
-//		-26,10,-59,-32,10,-73,-34,10\
-//	};*/
-//		//debug usage
-//		//toggleLEDWithTime(1,OPEN_PIO);
-//	uint16 mmaDataPeakCnt[3]={0,0,0};
-//	uint16 accBufCutLineSuf=0;
-//	uint16 mmaCutLineCnt=0;
-//	int16 accBufMean=0;
-//	int32 accBufSum=0;
-//	int16 accBufLastPeakValue=5000;
-//	uint8 accLastValleySuf=ACC_LAST_VALLEY_SUF_DEFAULT;
-//	uint8 accRunCounter=0;
-//	//uint8 addr = OUT_X_MSB, accBufCur[MMA_FIFO_DEEPTH];
 	uint8 addr = OUT_X_MSB;
 	uint8 *accBufCur;
         uint32 *xyzAxisAbsdata;
-       // uint32 xyzAxisAbsdata[DATA_A_CNT_MAX];
-//	int16 *mmaDataASum;
-//	uint8 flagAccDataError=FALSE;
-//	uint8 flagValleyFreeze=FALSE;
-//	uint8 mmaDataASumCnt;
 
 	HalI2CInit(ACC_ADDRESS, I2C_CLOCK_RATE);
-/*
-	accStaticCount++;
-	if (accStaticCount > ACC_STATIC_COUNT_MAX)
-	{
-		accLoadInterval = ACC_LOAD_INTERVAL;// * ACC_STATIC_COUNT_MAX;
-		// ALT_MIN = ALT_MIN_DEFAULT;
-		flagAccStatic=TRUE;
-		//debug usage
-		toggleLEDWithTime(0,OPEN_PIO);
-		//set acc into standby, so can write
-		pBuf[0] = CTRL_REG1;
-		pBuf[1] = 0;
-		HalI2CWrite(2, pBuf);
-		//enable motion int
-		pBuf[0] = CTRL_REG4;
-		pBuf[1] = INT_EN_FF_MT_MASK;
-		HalI2CWrite(2, pBuf);
-		//set acc back into active
-		pBuf[0] = CTRL_REG1;
-		pBuf[1] = (ASLP_RATE_12_5HZ + DATA_RATE_12_5HZ) | ACTIVE_MASK;
-		HalI2CWrite(2, pBuf);
-	}*/
-	//declare 
+        
+     accStaticCount++;          
 	accBufCur=osal_mem_alloc(MMA_FIFO_DEEPTH);
-//	mmaDataASum=osal_mem_alloc(DATA_A_CNT_MAX*sizeof(int16));
 	osal_memset(accBufCur,0,MMA_FIFO_DEEPTH);
 	if(accBufCur!=NULL)
 	{
@@ -2303,31 +1854,6 @@ static uint8 accDataProcess(uint8 count)
 		return 0;
 	}
 	
-//	#if (MMA_DEBUG_SIMULATION==TRUE)
-//		//debug build mmaDataA
-//		for(i=0;i<32;i++)
-//		{
-//			mmaDataA[i].mmaAxis[0].int16data=(int32)accBufDebug[i*3];
-//			mmaDataA[i].mmaAxis[1].int16data=(int32)accBufDebug[i*3+1];
-//			mmaDataA[i].mmaAxis[2].int16data=(int32)accBufDebug[i*3+2];
-//		}
-//		mmaDataACnt=32;
-//		/*
-//		//debug build mmaDataBA
-//		mmaDataBA[0].mmaAxis[1].int16data=32;
-//		mmaDataBA[1].mmaAxis[1].int16data=29;
-//		mmaDataBA[2].mmaAxis[1].int16data=23;
-//		mmaDataBA[3].mmaAxis[1].int16data=18;
-//		mmaDataBA[4].mmaAxis[1].int16data=15;
-//		mmaDataBA[5].mmaAxis[1].int16data=13;
-//		mmaDataBA[6].mmaAxis[1].int16data=12;
-//		mmaDataBA[7].mmaAxis[1].int16data=12;
-//		mmaDataBA[8].mmaAxis[1].int16data=14;
-//		for(i=0;i<9;i++)
-//		{
-//			mmaDataBACnt++;
-//		}	*/
-//	#else
 		//change bytes into unions
 //		osal_memset(mmaDataA,0,sizeof(mmaDataA));
 		for(i = 0; i < mmaDataACnt; i ++)
@@ -2339,53 +1865,6 @@ static uint8 accDataProcess(uint8 count)
 			mmaDataA[i].mmaAxis[2].int16data=(int16)((accBufCur[i*6+4] << 8) | accBufCur[i*6+5]);
 			//mmaDataA[i].mmaAxis[2].int16data=mmaDataA[i].mmaAxis[2].int16data>>6;
 		}
-//	#endif
-	#if (ACC_POPUP_DATA_BLE==TRUE)
-		//save data into txbuf
-		osal_memset(mmaDataA_txbuf,0,sizeof(mmaDataA));
-		osal_memcpy(mmaDataA_txbuf,mmaDataA,sizeof(mmaDataA));
-		dataAtxbufCnt=mmaDataACnt;
-		dataAtxbufpointer=0;
-		if(flagAccData221==TRUE)
-			accRunCnt_txbuf=1;
-		else
-			accRunCnt_txbuf=accRunCntAy[2];	
-		flagAccData221=FALSE;
-//		accRunCnt_txbuf=accRunCntAy[2];		
-		flagTxAccData=TRUE;
-		osal_set_event( simpleBLEPeripheral_TaskID, SBP_PERIODIC_EVT);
-//	/*	
-//		//send data through bluetooth
-//		uint8 d[8];
-//		for(i = 0; i < mmaDataACnt; i ++)
-//		{
-//			//osal_memcpy(&d[0], &mmaDataA[i].mmaAxis[0].int16data, sizeof(int16));
-//			//osal_memcpy(&d[2], &mmaDataA[i].mmaAxis[1].int16data, sizeof(int16));
-//			//osal_memcpy(&d[4], &mmaDataA[i].mmaAxis[2].int16data, sizeof(int16));
-//			//osal_memcpy(&d[6], &ACC_CUR, sizeof(int16));
-//			X_out=mmaDataA[i].mmaAxis[0].int16data;
-//			Y_out=mmaDataA[i].mmaAxis[1].int16data;
-//			Z_out=mmaDataA[i].mmaAxis[2].int16data;
-//			if(i==0)
-//			{
-//				ACC_CUR=accRunCntAy[2];//popup the last run_counter
-//			}
-//			else if(i==1)
-//			{
-//				ACC_CUR=(int16)mmaLastSmoothestAxis;
-//			}
-//			else
-//			{
-//				ACC_CUR=0xFFFF;
-//			}
-//			osal_memcpy(&d[0], &X_out, sizeof(int16));
-//			osal_memcpy(&d[2], &Y_out, sizeof(int16));
-//			osal_memcpy(&d[4], &Z_out, sizeof(int16));
-//			osal_memcpy(&d[6], &ACC_CUR, sizeof(int16));
-//			SimpleProfile_SetParameter( HEALTH_SYNC, sizeof ( d ), d );
-//		}*/
-	#endif
-//	#if (MMA_DEBUG_SIMULATION==FALSE)
 		for(i = 0; i < mmaDataACnt; i ++)
 		{
 			//mmaDataA[i].mmaAxis[0].int16data=(int16)((accBufCur[i*6] << 8) | accBufCur[i*6+1]);
@@ -2514,15 +1993,7 @@ static uint8 accDataProcess(uint8 count)
 			 	{
 			 	xyzAxisAbsdataNew[i+1] = xyzAxisAbsdataNew[i];
 			 	}		
-             	    	}
-//                   if(ABS(xyzAxisAbsdata[i+1] - xyzAxisAbsdata[i])> DYNAMIC_PRECISE )
-//                      {
-//                       xyzAxisAbsdataNew[i+1] = xyzAxisAbsdata[i+1];
-//                       }
-//                   else
-//		       {
-//		       xyzAxisAbsdataNew[i+1] = xyzAxisAbsdataNew[i];
-//		       }                     
+             	    	}           
 			
                         xyzAxisAbsdataOld[i+1] = xyzAxisAbsdataNew[i];
 			if(i <( mmaDataACnt>>1))
@@ -2531,20 +2002,27 @@ static uint8 accDataProcess(uint8 count)
                              	{
                              	if ((timeWindowCount < timeWindowCountMax) && (timeWindowCount > timeWindowCountMin) )
 				     {
-                                         if(xyzAxisAbsdataAvgPre >xyzAxisAbsdataAvg[0])
-                                             {
-                                             if(xyzAxisAbsdataAvgPre- xyzAxisAbsdataAvg[0] < XyzAxisAbsdataAvgTH)
+                                       if(xyzAxisAbsdataDiff[0] < XyzAxisAbsdataDiffTH)
+                                           {
+                                            if(xyzAxisAbsdataAvgPre >xyzAxisAbsdataAvg[0])
                                                  {
-                                                 stepCount[countPeriod] = stepCount[countPeriod] + 1;
-						 }
-                                             }
-					 else
-                                             {
-                                              if(xyzAxisAbsdataAvg[0 ]- xyzAxisAbsdataAvgPre < XyzAxisAbsdataAvgTH)
-                                                  {
-                                                  stepCount[countPeriod] = stepCount[countPeriod] + 1;
-						  }								
-					      }				   
+                                                 if(xyzAxisAbsdataAvgPre- xyzAxisAbsdataAvg[0] < XyzAxisAbsdataAvgTH)
+                                                     {
+                                                     stepCount[countPeriod] = stepCount[countPeriod] + 1;
+                                                     }
+                                                 } 
+                                            else
+                                               {  
+                                               if(xyzAxisAbsdataAvg[0]-xyzAxisAbsdataAvgPre < XyzAxisAbsdataAvgTH)
+                                                     {
+                                                     stepCount[countPeriod] = stepCount[countPeriod] + 1;
+                                                     }
+                                                 }                                            
+                                           }
+                                       else
+                                           {
+                                           stepCount[countPeriod] = stepCount[countPeriod] + 1;
+                                           }			   
                                      }
                                  timeWindowCount = 0;
                              	 }
@@ -2559,20 +2037,27 @@ static uint8 accDataProcess(uint8 count)
                              	{
                              	if ((timeWindowCount < timeWindowCountMax) && (timeWindowCount > timeWindowCountMin) )
 				    {
-                                        if(xyzAxisAbsdataAvg[1]>xyzAxisAbsdataAvg[0])
-                                            {
-                                            if(xyzAxisAbsdataAvg[1]- xyzAxisAbsdataAvg[0] < XyzAxisAbsdataAvgTH)
-                                                {
-                                                stepCount[countPeriod + 1] = stepCount[countPeriod + 1] + 1;
-						}
-                                            }
-					 else
-                                            {
-                                             if(xyzAxisAbsdataAvg[0]- xyzAxisAbsdataAvg[1] < XyzAxisAbsdataAvgTH)
-                                           	   {
-                                                    stepCount[countPeriod + 1] = stepCount[countPeriod + 1] + 1;
-						    }
-                                            }     
+                                       if(xyzAxisAbsdataDiff[1] < XyzAxisAbsdataDiffTH)
+                                           {
+                                            if(xyzAxisAbsdataAvg[1] >xyzAxisAbsdataAvg[0])
+                                                 {
+                                                 if(xyzAxisAbsdataAvg[1]- xyzAxisAbsdataAvg[0] < XyzAxisAbsdataAvgTH)
+                                                     {
+                                                     stepCount[countPeriod] = stepCount[countPeriod] + 1;
+                                                     }
+                                                 } 
+                                            else
+                                               {  
+                                               if(xyzAxisAbsdataAvg[0]-xyzAxisAbsdataAvg[1] < XyzAxisAbsdataAvgTH)
+                                                     {
+                                                     stepCount[countPeriod] = stepCount[countPeriod] + 1;
+                                                     }
+                                                 }                                            
+                                           }
+                                       else
+                                           {
+                                           stepCount[countPeriod] = stepCount[countPeriod] + 1;
+                                           }    
                                     }
                                     timeWindowCount = 0;
                              	    }
@@ -2585,12 +2070,6 @@ static uint8 accDataProcess(uint8 count)
        xyzAxisAbsdataAvgPre = xyzAxisAbsdataAvg[1];
        osal_mem_free(xyzAxisAbsdata);
 	//**********************************************观察5S中，4个TIMEZONE周期
-        count0 = stepCount[countPeriod];
-        count1 = stepCount[countPeriod+1];
-//        //eepromWrite(STEP_DATA_TYPE, stepCount[countPeriod]);
-//        //eepromWrite(STEP_DATA_TYPE, stepCount[countPeriod+1]);
-//        eepromWrite(STEP_DATA_TYPE, count0);
-//        eepromWrite(STEP_DATA_TYPE, count1);
         countPeriod = countPeriod + 2; 
 	if(countPeriod > 2)
 		{
@@ -2622,523 +2101,41 @@ static uint8 accDataProcess(uint8 count)
 	     mmaDataFilterPredata[i].mmaAxis[1].int32data = mmaDataA[mmaDataACnt-FilterCofdepth+i+1].mmaAxis[2].int16data;;
 	     //mmaDataFilterPredata[i].mmaAxis[2].int32data = mmaDataA[mmaDataACnt-FilterCofdepth+i+1].mmaAxis[2].int16data;;
 	     }
+        //////////////////////////////////////静止算法
+        SilentCountPeriod = SilentCountPeriod + 1; 
+	if(SilentCountPeriod <= ACC_STATIC_COUNT_MAX)
+		{
+               SilentCount  = SilentCount + stepCountTotal;
+                }
+        else
+             {
+             SilentCountPeriod  = 0;
+             if(SilentCount == 0 )
+                {
+                //////////////////////////////////silent operation
+                flagAccStatic=TRUE;    
+                //set acc into standby, so can write
+                pBuf[0] = CTRL_REG1; //0x2A
+                pBuf[1] = 0;
+                HalI2CWrite(2, pBuf);
+                //enable motion int
+                pBuf[0] = CTRL_REG4;
+                pBuf[1] = INT_EN_FF_MT_MASK;
+                HalI2CWrite(2, pBuf);
+                //set acc back into active
+                pBuf[0] = CTRL_REG1;
+                pBuf[1] = (ASLP_RATE_12_5HZ + DATA_RATE_12_5HZ) | ACTIVE_MASK;
+                HalI2CWrite(2, pBuf);  
+                //////////////////////////////////////////////////                
+                }
+             else
+                {
+                SilentCount = 0;
+                }
+             }    
+       ////////////////////////////////////////////////////////        
         return 1;
 } 
-//	#endif
-
-//	//calculate the min value of 3 axises
-//	int16 mmaDataAMin[3]={32767,32767,32767};
-//	for(i = 0; i < mmaDataACnt; i ++)
-//	{
-//		for(k=0;k<3;k++)
-//		{
-//			if(mmaDataAMin[k]>mmaDataA[i].mmaAxis[k].int16data)
-//			{
-//				mmaDataAMin[k]=mmaDataA[i].mmaAxis[k].int16data;
-//			}
-//		}
-//	}
-//	//clear mmaDataASum
-//	osal_memset(mmaDataASum,0,DATA_A_CNT_MAX*sizeof(int16));
-//	mmaDataASumCnt=0;
-//	//shifting all data of 3 axises towards positive side, meanwhile adding 3 axises
-//	for(i = 0; i < mmaDataACnt; i ++)
-//	{
-//		for(k=0;k<3;k++)
-//		{
-//			mmaDataA[i].mmaAxis[k].int16data=mmaDataA[i].mmaAxis[k].int16data-mmaDataAMin[k]+1;
-//			mmaDataASum[i]+=mmaDataA[i].mmaAxis[k].int16data;
-//		}				
-//	}
-//	mmaDataASumCnt=mmaDataACnt;	
-//	//average slide
-//	mmaDataCntTemp=mmaDataASumCnt-SLIDE_MEAN_WIDTH;
-//	for(i=0;i<mmaDataCntTemp;i++)	//slide part
-//	{
-//		for(k=i;k<i+SLIDE_MEAN_WIDTH;k++)
-//		{	
-//			accSlideSumTemp=accSlideSumTemp+(int32)mmaDataASum[k];
-//		}
-//		mmaDataASum[i]=(int16)(accSlideSumTemp/SLIDE_MEAN_WIDTH);	
-//		accSlideSumTemp=0;
-//	}
-//	for(i=0;i<SLIDE_MEAN_WIDTH;i++)
-//	{
-//		for(k=mmaDataCntTemp+i;k<mmaDataASumCnt;k++)
-//		{
-//			accSlideSumTemp=accSlideSumTemp+(int32)mmaDataASum[k];
-//		}
-//		mmaDataASum[mmaDataCntTemp+i]=(int16)(accSlideSumTemp/(SLIDE_MEAN_WIDTH-i));
-//		accSlideSumTemp=0;
-//	}
-//	
-///*	//average slide
-//	mmaDataCntTemp=mmaDataACnt-SLIDE_MEAN_WIDTH;
-//	//mmaLastSmoothestAxis=Y_AXIS;
-//	for(i=0;i<mmaDataCntTemp;i++)	//slide part
-//	{
-//		for(k=i;k<i+SLIDE_MEAN_WIDTH;k++)
-//		{	
-//			accSlideSumTemp[0]=accSlideSumTemp[0]+(int32)mmaDataA[k].mmaAxis[0].int16data;
-//			accSlideSumTemp[1]=accSlideSumTemp[1]+(int32)mmaDataA[k].mmaAxis[1].int16data;
-//			accSlideSumTemp[2]=accSlideSumTemp[2]+(int32)mmaDataA[k].mmaAxis[2].int16data;
-//		}
-//		mmaDataA[i].mmaAxis[0].int16data=(int16)(accSlideSumTemp[0]/SLIDE_MEAN_WIDTH);	
-//		mmaDataA[i].mmaAxis[1].int16data=(int16)(accSlideSumTemp[1]/SLIDE_MEAN_WIDTH);	
-//		mmaDataA[i].mmaAxis[2].int16data=(int16)(accSlideSumTemp[2]/SLIDE_MEAN_WIDTH);	
-//		accSlideSumTemp[0]=0;
-//		accSlideSumTemp[1]=0;
-//		accSlideSumTemp[2]=0;	
-//	}
-//	for(i=0;i<SLIDE_MEAN_WIDTH;i++)
-//	{
-//		for(k=mmaDataCntTemp+i;k<mmaDataACnt;k++)
-//		{
-//			accSlideSumTemp[0]=accSlideSumTemp[0]+(int32)mmaDataA[k].mmaAxis[0].int16data;
-//			accSlideSumTemp[1]=accSlideSumTemp[1]+(int32)mmaDataA[k].mmaAxis[1].int16data;
-//			accSlideSumTemp[2]=accSlideSumTemp[2]+(int32)mmaDataA[k].mmaAxis[2].int16data;
-//		}
-//		mmaDataA[mmaDataCntTemp+i].mmaAxis[0].int16data=(int16)(accSlideSumTemp[0]/(SLIDE_MEAN_WIDTH-i));
-//		mmaDataA[mmaDataCntTemp+i].mmaAxis[1].int16data=(int16)(accSlideSumTemp[1]/(SLIDE_MEAN_WIDTH-i));
-//		mmaDataA[mmaDataCntTemp+i].mmaAxis[2].int16data=(int16)(accSlideSumTemp[2]/(SLIDE_MEAN_WIDTH-i));
-//		accSlideSumTemp[0]=0;
-//		accSlideSumTemp[1]=0;
-//		accSlideSumTemp[2]=0;
-//	}
-//*/	
-///*
-//	//find Smoothest Axis
-//	for(i=0;i<(mmaDataACnt-1);i++)// diff
-//	{
-//		mmaDataA_diff[i].mmaAxis[0].int16data=mmaDataA[i+1].mmaAxis[0].int16data-mmaDataA[i].mmaAxis[0].int16data;
-//		mmaDataA_diff[i].mmaAxis[1].int16data=mmaDataA[i+1].mmaAxis[1].int16data-mmaDataA[i].mmaAxis[1].int16data;
-//		mmaDataA_diff[i].mmaAxis[2].int16data=mmaDataA[i+1].mmaAxis[2].int16data-mmaDataA[i].mmaAxis[2].int16data;
-//	}	
-//	mmaDataA_diff[mmaDataACnt-1].mmaAxis[0].int16data=0;
-//	mmaDataA_diff[mmaDataACnt-1].mmaAxis[1].int16data=0;
-//	mmaDataA_diff[mmaDataACnt-1].mmaAxis[2].int16data=0;
-//	mmaDataPeakCnt[0]=0;
-//	mmaDataPeakCnt[1]=0;
-//	mmaDataPeakCnt[2]=0;
-//	for(i=0;i<(mmaDataACnt-1);i++)// count peaks
-//	{
-//		if((mmaDataA_diff[i].mmaAxis[0].int16data>0)&&(mmaDataA_diff[i+1].mmaAxis[0].int16data<=0))
-//		{
-//			mmaDataPeakCnt[0]++;	
-//		}
-//		if((mmaDataA_diff[i].mmaAxis[1].int16data>0)&&(mmaDataA_diff[i+1].mmaAxis[1].int16data<=0))
-//		{
-//			mmaDataPeakCnt[1]++;	
-//		}
-//		if((mmaDataA_diff[i].mmaAxis[2].int16data>0)&&(mmaDataA_diff[i+1].mmaAxis[2].int16data<=0))
-//		{
-//			mmaDataPeakCnt[2]++;	
-//		}
-//	}
-//	if(mmaDataPeakCnt[0]<=mmaDataPeakCnt[1])//mmaDataPeakCnt[0] is smaller
-//	{
-//		if(mmaDataPeakCnt[0]<=mmaDataPeakCnt[2])//mmaDataPeakCnt[0] is smallest
-//		{
-//			mmaCurSmoothestAxis=X_AXIS;
-//		}
-//		else //mmaDataPeakCnt[2] is smallest
-//		{
-//			mmaCurSmoothestAxis=Z_AXIS;
-//		}
-//	}
-//	else //mmaDataPeakCnt[1] is smaller
-//	{
-//		if(mmaDataPeakCnt[1]<=mmaDataPeakCnt[2])//mmaDataPeakCnt[1] is smallest
-//		{
-//			mmaCurSmoothestAxis=Y_AXIS;
-//		}
-//		else //mmaDataPeakCnt[2] is smallest
-//		{
-//			mmaCurSmoothestAxis=Z_AXIS;
-//		}
-//	}
-//*/	
-//	//add tail
-//	for(i=0;i<mmaDataASumCnt;i++)//at this time mmaDataBACnt has tail length
-//	{
-//		mmaDataBA[mmaDataBACnt+i].mmaAxis[mmaCurSmoothestAxis].int16data=mmaDataASum[i];
-//	}
-//	mmaDataBACnt+=mmaDataASumCnt;//at this time, mmaDataBACnt has cur data plus tail length
-//	//calculate the ABS of smoothest axis data
-////	for(i=0;i<mmaDataACnt;i++)
-////	{
-////		mmaDataA[i].mmaAxis[mmaCurSmoothestAxis].int16data=ABS((mmaDataA[i].mmaAxis[mmaCurSmoothestAxis].int16data));
-////	}
-//	//calculate the min value of mmaDataA and offset all data towards positive direction by abs(min value)
-///*	int16 minDataA=1;
-//	for(i=0;i<mmaDataACnt;i++)
-//	{
-//		if(minDataA>mmaDataA[i].mmaAxis[mmaCurSmoothestAxis].int16data)
-//		{
-//			minDataA=mmaDataA[i].mmaAxis[mmaCurSmoothestAxis].int16data;
-//		}
-//	}
-//	if(minDataA<0)
-//	{
-//		for(i=0;i<mmaDataACnt;i++)
-//		{
-//			mmaDataA[i].mmaAxis[mmaCurSmoothestAxis].int16data-=minDataA;
-//		}
-//	}*/
-//	
-//	//chose to add the last tail or not
-////	if((mmaCurSmoothestAxis==mmaLastSmoothestAxis)&&(0!=mmaDataBACnt))//add cur data to last tail
-////	{
-////		for(i=0;i<mmaDataACnt;i++)//at this time mmaDataBACnt has tail length
-////		{
-////			mmaDataBA[mmaDataBACnt+i].mmaAxis[mmaCurSmoothestAxis].int16data=mmaDataA[i].mmaAxis[mmaCurSmoothestAxis].int16data;
-////		}
-////		mmaDataBACnt+=mmaDataACnt;//at this time, mmaDataBACnt has cur data plus tail length
-////	}
-////	else//move cur data to mmaDataBA
-////	{
-////		//osal_memcpy(mmaDataBA,mmaDataA,mmaDataACnt*3);//(void * dst, const void GENERIC * src, unsigned int len)
-////		for(i=0;i<mmaDataACnt;i++) 
-////		{
-////			mmaDataBA[i].mmaAxis[mmaCurSmoothestAxis].int16data=\
-////				mmaDataA[i].mmaAxis[mmaCurSmoothestAxis].int16data;
-////		}
-////		mmaDataBACnt=mmaDataACnt;
-////	}
-//	//mmaDataBA diff
-//	osal_memset(mmaDataBA_diff,0,sizeof(mmaDataBA_diff));
-//	for(i=0;i<mmaDataBACnt-1;i++)
-//	{
-//		mmaDataBA_diff[i].mmaAxis[mmaCurSmoothestAxis].int16data=\
-//		mmaDataBA[i+1].mmaAxis[mmaCurSmoothestAxis].int16data-mmaDataBA[i].mmaAxis[mmaCurSmoothestAxis].int16data;
-//	}
-//	//identify the last peak
-//	for(i=mmaDataBACnt-2;i>0;i--)//because the last diff is meaningless, so decrece 2
-//	{
-//		if((mmaDataBA_diff[i-1].mmaAxis[mmaCurSmoothestAxis].int16data>0)&&(mmaDataBA_diff[i].mmaAxis[mmaCurSmoothestAxis].int16data<=0))
-//		{
-//			accBufCutLineSuf=i;
-//			break;
-//		}
-//	}
-//	//set the mmaCutLineCnt
-//	if(accBufCutLineSuf!=0)
-//	{
-//		mmaCutLineCnt=accBufCutLineSuf;		
-//	}
-//	else
-//	{
-//		mmaCutLineCnt=mmaDataBACnt;
-//	}	
-//	//arith mean calculation
-//	for(i=0;i<mmaDataBACnt;i++)
-//	{
-//		accBufSum=accBufSum+(int32)mmaDataBA[i].mmaAxis[mmaCurSmoothestAxis].int16data;
-//	}
-//	accBufMean=(int16)(accBufSum/(int32)mmaDataBACnt);
-//	accBufMean=accBufMean-accBufMean/10;
-//	
-//	//runcount step 1: count valleys
-//	uint8 final_min_step_interval=0;
-//	//for(i=0;i<mmaDataBACnt-1;i++)
-//	for(i=0;i<mmaCutLineCnt-1;i++)
-//	{
-//		if((mmaDataBA_diff[i].mmaAxis[mmaCurSmoothestAxis].int16data>0)&& \
-//			(mmaDataBA_diff[i+1].mmaAxis[mmaCurSmoothestAxis].int16data<=0))
-//		{
-//			accBufLastPeakValue=mmaDataBA[i+1].mmaAxis[mmaCurSmoothestAxis].int16data;
-//		}
-//		if(accLastValleySuf==ACC_LAST_VALLEY_SUF_DEFAULT)
-//		{
-//			final_min_step_interval=0;
-//		}
-//		else
-//		{
-//			final_min_step_interval=ACC_MIN_STEP_INTERVAL;
-//		}
-//		if(mmaDataBA[i].mmaAxis[mmaCurSmoothestAxis].int16data>=accBufMean)
-//		{
-//			flagValleyFreeze=FALSE;
-//		}
-//		if((mmaDataBA_diff[i].mmaAxis[mmaCurSmoothestAxis].int16data<0)&& \
-//			(mmaDataBA_diff[i+1].mmaAxis[mmaCurSmoothestAxis].int16data>=0)&& \
-//			(mmaDataBA[i+1].mmaAxis[mmaCurSmoothestAxis].int16data<accBufMean)&& \
-//			((accBufLastPeakValue-mmaDataBA[i+1].mmaAxis[mmaCurSmoothestAxis].int16data)>ACC_DEBOUNCE)&&\
-//			((i-accLastValleySuf)>=final_min_step_interval))
-//		{
-//			if(accLastValleySuf==ACC_LAST_VALLEY_SUF_DEFAULT)
-//			{
-//				accRunCounter++;
-//				accLastValleySuf=i+1;
-//				flagValleyFreeze=TRUE;
-//			}
-//			else
-//			{
-//				if(((i-accLastValleySuf)<=ACC_MAX_STEP_INTERVAL)&&(flagValleyFreeze==FALSE))
-//				{
-//					accRunCounter++;
-//					accLastValleySuf=i+1;
-//					flagValleyFreeze=TRUE;
-//				}
-//			}
-//		}
-//	}
-//	//put current run_count data into the recording array, run validation
-//	#if((MMA_DEBUG_SIMULATION==TRUE)&&(MMA_DEBUG_DATA_MODEL==4))
-//		accRunCntAy[RUNK]=accRunCntAyDebug[accRunK1];
-//		if(accRunK1<accRunCntAyDebugCnt)
-//			accRunK1++;
-//		else
-//			accRunK1=0;
-//	#else
-//		accRunCntAy[RUNK]=accRunCounter;
-//	#endif
-//	#if (ACC_RUN_COUNT_MODE==COUNT_ONE)//when we take one step in 32 data into counting, set mode COUNT_ONE
-//		//A condition
-//		if((accRunCntAy[RUNK]==1)&&(accRunCntAy[RUNK-1]>=2)&&(accRunCntAy[RUNK-2]>=2))
-//		{
-//			eepromWrite(STEP_DATA_TYPE, accRunCntAy[RUNK]*2);
-//			accRunCntAy[RUNK]=0;
-//			flagAccData221=TRUE;
-//		}
-//		//C condition
-//		if((accRunCntAy[RUNK]>=2)&&(accRunCntAy[RUNK-1]>=2)&&(accRunCntAy[RUNK-2]==1))
-//		{
-//			eepromWrite(STEP_DATA_TYPE, accRunCntAy[RUNK-2]*2);
-//		}
-//	#endif
-//	//B condition
-//	if(accRunCntAy[RUNK-1]>=2)
-//	{
-//		if((accRunCntAy[RUNK-2]+accRunCntAy[RUNK])>2)
-//		{
-//			eepromWrite(STEP_DATA_TYPE, accRunCntAy[RUNK-1]*2);
-//		}
-//		else
-//		{
-//			if((accRunCntAy[RUNK-2]==2)||(accRunCntAy[RUNK]==2))
-//			{
-//				eepromWrite(STEP_DATA_TYPE, accRunCntAy[RUNK-1]*2);
-//			}
-//		}
-//	}
-//	//rotate accRunCntAy
-//	accRunCntAy[0]=accRunCntAy[1];
-//	accRunCntAy[1]=accRunCntAy[2];
-//	accRunCntAy[2]=accRunCntAy[3];
-//	accRunCntAy[3]=0;
-//	//debug
-//	//accRunCounterTemp=accRunCounter;
-//	//store run counter
-//	//eepromWrite(STEP_DATA_TYPE, accRunCounter*2);
-//	//store accBufTail	
-//	osal_memset(mmaDataB,0,sizeof(mmaDataB));//clear mmaDataB
-//	mmaDataBCnt=0;
-//	if(mmaDataBACnt>(accBufCutLineSuf+1))//avoid i condition below zero
-//	{		
-//		if((mmaDataBACnt-accBufCutLineSuf-1)>=DATA_B_CNT_MAX)//store the last 32 bytes of mmaDataBA
-//		{
-//			for(i=0;i<DATA_B_CNT_MAX;i++)//move dataBA tail into dataB
-//			{
-//				mmaDataB[i].mmaAxis[mmaCurSmoothestAxis].int16data=mmaDataBA[mmaDataBACnt-DATA_B_CNT_MAX+i].mmaAxis[mmaCurSmoothestAxis].int16data;
-//			}
-//			mmaDataBCnt=DATA_B_CNT_MAX;
-//		}
-//		else//store all bytes of mmaDataBA
-//		{
-//			for(i=0;i<(mmaDataBACnt-accBufCutLineSuf-1);i++)//move dataBA tail into dataB
-//			{
-//				mmaDataB[i].mmaAxis[mmaCurSmoothestAxis].int16data=mmaDataBA[accBufCutLineSuf+1+i].mmaAxis[mmaCurSmoothestAxis].int16data;
-//			}	
-//			mmaDataBCnt=mmaDataBACnt-accBufCutLineSuf-1;
-//		}		
-//	}	/**/
-//	osal_memset(mmaDataBA,0,sizeof(mmaDataBA));//clear mmaDataBA
-//	mmaDataBACnt=0;   
-////	for(i=0;i<DATA_BA_CNT_MAX;i++)//clear mmaDataBA
-////	{
-////		mmaDataBA[i]={0,0,0,0,0,0};
-////	}	
-//	osal_memset(mmaDataA,0,sizeof(mmaDataA));//clear mmaDataBA
-//	mmaDataACnt=0;
-////	for(i=0;i<DATA_A_CNT_MAX;i++)//clear mmaDataA
-////	{
-////		mmaDataA[i]={0,0,0,0,0,0};
-////	}
-//	osal_memcpy(mmaDataBA,mmaDataB,mmaDataBCnt*MMA_DATA_STRUCT_LEGNTH);
-//	mmaDataBACnt=mmaDataBCnt;
-//	mmaLastSmoothestAxis=mmaCurSmoothestAxis;
-//
-//	osal_mem_free(accBufCur);
-//	osal_mem_free(mmaDataASum);
-//	return 1;
-//		//debug usage
-//		//toggleLEDWithTime(1,CLOSE_PIO);
-////	for(i=0;i<DATA_B_CNT_MAX;i++)
-////	{
-////		mmaDataBA[i]->mmaAxis[mmaCurSmoothestAxis].int16data=mmaDataB[i]->mmaAxis[mmaCurSmoothestAxis].int16data;
-////	}
-//
-//	//END OF NEW RUN COUNTER CALCULATION!
-//	
-////	    for (int i = 0; i < count * 6; i += 6)
-////	    {
-////	        X_out = (int16)((accBufCur[i] << 8) | accBufCur[i+1]);
-////	        Y_out = (int16)((accBufCur[i+2] << 8) | accBufCur[i+3]);
-////	        Z_out = (int16)((accBufCur[i+4] << 8) | accBufCur[i+5]);
-////
-////	        accLoop();
-////	    }
-//}
-// static void accGetIntData(void)
-// {
-//     HalI2CInit(ACC_ADDRESS, I2C_CLOCK_RATE);
-
-//     uint8 pBuf[2];
-
-//     //read INT
-//     pBuf[0] = PULSE_SRC;
-//     HalMotionI2CWrite(1, pBuf);
-//     HalMotionI2CRead(1, &pBuf[1]);
-//     INT_STATUS = pBuf[1];
-
-//     //DebugValue(INT_STATUS);
-// }
-
-// for memcpy
-
-// static void eepromWrite(uint8 type){
-
-//     toggleAdvert(TRUE);
-
-//     uint8 pointer = type - 1;
-
-//     UTCTime current;
-//     UTCTimeStruct currentTm;
-
-//     current = osal_getClock();
-//     osal_ConvertUTCTime(&currentTm, current);
-
-//     // if there is step data, count it by hour
-//     if (type == STEP_DATA_TYPE)
-//     {
-//         currentTm.minutes = 0;
-//     }
-
-//     currentTm.seconds = 0;
-
-//     if (oneData[pointer].hourSeconds == 0)       // data is empty
-//     {
-//         oneData[pointer].tm = currentTm;
-//         oneData[pointer].hourSeconds = osal_ConvertUTCSecs(&oneData[pointer].tm);
-
-//         oneData[pointer].count = 1;
-//         oneData[pointer].type = type;
-
-//     }else if(oneData[pointer].tm.year != currentTm.year ||
-//              oneData[pointer].tm.month != currentTm.month ||
-//              oneData[pointer].tm.day != currentTm.day ||
-//              oneData[pointer].tm.minutes != currentTm.minutes ||         // for test, one minutes
-//              oneData[pointer].tm.hour != currentTm.hour){                // pass a hour, need to write
-
-//         // uint8 aBuf[2];
-//         uint8 dBuf[8] = {
-//             LO_UINT16(LO_UINT32(oneData[pointer].hourSeconds)),
-//             HI_UINT16(LO_UINT32(oneData[pointer].hourSeconds)),
-//             LO_UINT16(HI_UINT32(oneData[pointer].hourSeconds)),
-//             HI_UINT16(HI_UINT32(oneData[pointer].hourSeconds)),
-//             LO_UINT16(oneData[pointer].count),
-//             HI_UINT16(oneData[pointer].count),
-//             oneData[pointer].type,
-//             0
-//         };
-
-//         osal_memcpy(&db[rawDataStop], &dBuf[0], 8);
-
-//         rawDataStop += 8;
-
-//         // arrive maxsize
-//         if (rawDataStop >= EEPROM_ADDRESS_DATA_MAX)
-//         {
-//             rawDataStop = 0;
-//         }
-
-//         // space is full
-//         if (rawDataStop == rawDataStart)
-//         {
-//             rawDataStart += 8;
-//         }
-
-//         uint16 length = dataLength();
-
-//         // SimpleProfile_SetParameter( HEALTH_DATA_HEADER, 2,  &rawDataStop);
-//         SimpleProfile_SetParameter( HEALTH_DATA_HEADER, 2,  &length);
-//         SimpleProfile_SetParameter( HEALTH_SYNC, 8, dBuf);
-
-//         // refresh oneData[pointer]
-//         oneData[pointer].tm = currentTm;
-//         oneData[pointer].hourSeconds = osal_ConvertUTCSecs(&oneData[pointer].tm);
-
-//         oneData[pointer].count = 1;
-
-//     }else{      // in same hour
-
-//         oneData[pointer].count ++;
-//     }
-
-// }
-
-// static void eepromRead(void){
-
-//     while(rawDataStart != rawDataStop){
-//         uint8 dBuf[8];
-
-//         osal_memcpy(&dBuf[0], &db[rawDataStart], 8);
-
-//         rawDataStart += 8;
-
-//         // arrive maxsize
-//         if (rawDataStart >= EEPROM_ADDRESS_DATA_MAX)
-//         {
-//             rawDataStart = 0;
-//         }
-
-//         SimpleProfile_SetParameter( HEALTH_DATA_BODY, 8,  dBuf);
-//         SimpleProfile_SetParameter( HEALTH_SYNC, 8, dBuf);
-//     }
-
-//     if (rawDataStart == rawDataStop)
-//     {
-        
-//         int i;
-
-//         for (i = 0; i < DATA_TYPE_COUNT; i++)
-//         {
-//             uint8 dBuf[8] = {
-//                 LO_UINT16(LO_UINT32(oneData[i].hourSeconds)),
-//                 HI_UINT16(LO_UINT32(oneData[i].hourSeconds)),
-//                 LO_UINT16(HI_UINT32(oneData[i].hourSeconds)),
-//                 HI_UINT16(HI_UINT32(oneData[i].hourSeconds)),
-//                 LO_UINT16(oneData[i].count),
-//                 HI_UINT16(oneData[i].count),
-//                 oneData[i].type,
-//                 0
-//             };
-
-//             SimpleProfile_SetParameter( HEALTH_DATA_BODY, 8,  dBuf);
-
-//             oneData[i].count = 0;
-//         }
-//     }
-
-//     uint16 length = DATA_TYPE_COUNT;
-//     SimpleProfile_SetParameter( HEALTH_DATA_HEADER, 2,  &length);
-// }
-
-
-
-
-
 
 // for eeprom
 
@@ -3618,33 +2615,8 @@ static int mpr03x_phys_init(void)
 		pBuf[1]=0xCA;//0xBA;
 		HalI2CWrite(2,pBuf);
 	#endif
-	//load 5MSB to set E2 baseline, baseline<=signal level
-	//data1 = (i2c_smbus_read_byte_data(client,MPR03X_E1FDH_REG)<<6);
-	//data2 = (i2c_smbus_read_byte_data(client,MPR03X_E1FDL_REG)>>2) & 0xF8;
-	//data = data1 | data2;
-	//i2c_smbus_write_byte_data(client,MPR03X_E1BV_REG,data); 
 
-	//addr=MPR03X_E1FDH_REG;
-	//HalMotionI2CWrite(1, &addr);
-	//HalMotionI2CRead(1,&val);
-	//data1=val<<6;
-	//addr=MPR03X_E1FDL_REG;
-	//HalMotionI2CWrite(1, &addr);
-	//HalMotionI2CRead(1,&val);
-	//data2=(val>>2)&0xF8;
-	//pBuf[0]=MPR03X_E1BV_REG;
-	//pBuf[1]= data1 | data2;
-	//HalI2CWrite(2,pBuf);
-	//because we use one electrode only
-	
-	//load 5MSB to set E3 baseline, baseline<=signal level
-	//data= (i2c_smbus_read_byte_data(client,MPR03X_E2FDH_REG)<<6)|(i2c_smbus_read_byte_data(client,MPR03X_E2FDL_REG)>>2) & 0xF8;;  
-	//i2c_smbus_write_byte_data(client,MPR03X_E2BV_REG,data); 
-	  
-	//Set baseline filtering
-	//i2c_smbus_write_byte_data(client,MPR03X_MHD_REG,0x01); 
-	//i2c_smbus_write_byte_data(client,MPR03X_NHD_REG,0x01); 
-	//i2c_smbus_write_byte_data(client,MPR03X_NCL_REG,0x0f); 	
+	//Set baseline filtering	
 	pBuf[0]=MPR03X_MHD_REG;
 	pBuf[1]=0x01;
 	HalI2CWrite(2,pBuf);	
@@ -3656,12 +2628,6 @@ static int mpr03x_phys_init(void)
 	HalI2CWrite(2,pBuf);
 	  
 	//Set touch/release threshold
-	//i2c_smbus_write_byte_data(client,MPR03X_E0TTH_REG,MPR03X_TOUCH_THRESHOLD); 
-	//i2c_smbus_write_byte_data(client,MPR03X_E0RTH_REG,MPR03X_RELEASE_THRESHOLD);
-	//i2c_smbus_write_byte_data(client,MPR03X_E1TTH_REG,MPR03X_TOUCH_THRESHOLD); 
-	//i2c_smbus_write_byte_data(client,MPR03X_E1RTH_REG,MPR03X_RELEASE_THRESHOLD);
-	//i2c_smbus_write_byte_data(client,MPR03X_E2TTH_REG,MPR03X_TOUCH_THRESHOLD); 
-	//i2c_smbus_write_byte_data(client,MPR03X_E2RTH_REG,MPR03X_RELEASE_THRESHOLD);	
 	pBuf[0]=MPR03X_E0TTH_REG;
 	pBuf[1]=MPR03X_TOUCH_THRESHOLD;
 	HalI2CWrite(2,pBuf);
@@ -3670,13 +2636,12 @@ static int mpr03x_phys_init(void)
 	HalI2CWrite(2,pBuf);
 	
 	//Set AFE  
-	//i2c_smbus_write_byte_data(client,MPR03X_AFEC_REG,MPR03X_FFI_6| CDC); 
-	//i2c_smbus_write_byte_data(client,MPR03X_FC_REG,CDT<<5 | MPR03X_SFI_4 | MPR03X_ESI_4MS);
 	pBuf[0]=MPR03X_AFEC_REG;
 	pBuf[1]=MPR03X_FFI_6| CDC;
 	HalI2CWrite(2,pBuf);
 	pBuf[0]=MPR03X_FC_REG;
-	pBuf[1]=CDT<<5 | MPR03X_SFI_4 | MPR03X_ESI_8MS;//MPR03X_ESI_4MS
+	//pBuf[1]=CDT<<5 | MPR03X_SFI_4 | MPR03X_ESI_8MS;//MPR03X_ESI_4MS
+        pBuf[1]=CDT<<5 | MPR03X_SFI_4 | MPR03X_ESI_64MS;//MPR03X_ESI_4MS //v1008 modify
 	HalI2CWrite(2,pBuf);
 	return 0;
 		 
