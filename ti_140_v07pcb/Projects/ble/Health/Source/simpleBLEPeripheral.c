@@ -49,7 +49,7 @@
  * CONSTANTS
  */
 
-#define FIRMWARE                              118
+#define FIRMWARE                              120
 
 #define HI_UINT32(x)                          (((x) >> 16) & 0xffff)
 #define LO_UINT32(x)                          ((x) & 0xffff)
@@ -80,6 +80,7 @@
 #define SBP_PERIODIC_300s_EVT_PERIOD            300000
 #define MPR03X_CALIBRATION_EVT_1min_EVT_PERIOD  60000   
 #define MPR03XCALIBRATIONCOUNT                  10
+#define CLOSE_ALL_1s_EVT                      1000
      
 
 // The led all on timing, READY is the time from power on to led all on
@@ -87,6 +88,7 @@
 #define SBP_START_DEVICE_EVT_READY_PERIOD			 3000
 //#define SBP_START_DEVICE_EVT_GO_PERIOD				 2000
 #define SBP_START_DEVICE_EVT_GO_PERIOD				 1000
+#define SBP_START_DEVICE_EVT_READY_500ms_PERIOD                  500
 
 // What is the advertising interval when device is discoverable (units of 625us, 160=100ms)
 #define DEFAULT_ADVERTISING_INTERVAL          8000//16000
@@ -283,7 +285,7 @@ uint8 dataAtxbufCnt=0;
 uint8 dataAtxbufpointer=0;
 uint8 flagTxAccData=FALSE;
 uint8 flagAccData221=FALSE;
-uint8 activeAccAction = TRUE;
+uint8 activeAccAction = FALSE;
 
 union mma_data_u
 {
@@ -749,6 +751,8 @@ void SimpleBLEPeripheral_Init( uint8 task_id )
     osal_set_event( simpleBLEPeripheral_TaskID, SBP_PERIODIC_EVT);
     //MPR03X self-calibration funciton
     osal_set_event( simpleBLEPeripheral_TaskID, MPR03X_CALIBRATION_EVT);
+    //close power
+    osal_set_event( simpleBLEPeripheral_TaskID,CLOSE_ALL_EVT);
 }
 
 /*********************************************************************
@@ -1022,6 +1026,19 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
         // double tap!!!
         if (tapWaitFor == 3)
         {
+           LED0_PIO = CLOSE_PIO; //when KEY VALIDD 
+           LED1_PIO = CLOSE_PIO;
+           LED2_PIO = CLOSE_PIO;
+           LED3_PIO = CLOSE_PIO;
+           LED4_PIO = CLOSE_PIO;
+           LED5_PIO = CLOSE_PIO;
+           LED6_PIO = CLOSE_PIO;
+           LED7_PIO = CLOSE_PIO;
+           LED8_PIO = CLOSE_PIO;
+           LED9_PIO = CLOSE_PIO;
+           LED10_PIO = CLOSE_PIO;
+           LED11_PIO = CLOSE_PIO;
+           
             time();
 
             //stop long press
@@ -1116,18 +1133,43 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
 
     if ( events & CLOSE_ALL_EVT )
     {
-
-        closeAllPIO();
-
+    LED0_PIO = OPEN_PIO;
+    LED1_PIO = OPEN_PIO;
+    LED2_PIO = OPEN_PIO;
+    LED3_PIO = OPEN_PIO;
+    LED4_PIO = OPEN_PIO;
+    LED5_PIO = OPEN_PIO;
+    LED6_PIO = OPEN_PIO;
+    LED7_PIO = OPEN_PIO;
+    LED8_PIO = OPEN_PIO;
+    LED9_PIO = OPEN_PIO;
+    LED10_PIO = OPEN_PIO;
+    LED11_PIO = OPEN_PIO;
         return (events ^ CLOSE_ALL_EVT);
     }
 
     if ( events & LONG_PRESS_EVT )
     {
-
-        if (onTheKey)
+           LED0_PIO = CLOSE_PIO; //when KEY VALIDD 
+           LED1_PIO = CLOSE_PIO;
+           LED2_PIO = CLOSE_PIO;
+           LED3_PIO = CLOSE_PIO;
+           LED4_PIO = CLOSE_PIO;
+           LED5_PIO = CLOSE_PIO;
+           LED6_PIO = CLOSE_PIO;
+           LED7_PIO = CLOSE_PIO;
+           LED8_PIO = CLOSE_PIO;
+           LED9_PIO = CLOSE_PIO;
+           LED10_PIO = CLOSE_PIO;
+           LED11_PIO = CLOSE_PIO;
+        if (onTheKey && (activeAccAction == TRUE)) //119
         {
             longPressAndCycleLED6();
+        }
+        else if(onTheKey && (activeAccAction == FALSE))
+        {
+        flagSBPStart = 1;
+        osal_start_timerEx( simpleBLEPeripheral_TaskID, SBP_START_DEVICE_EVT, SBP_START_DEVICE_EVT_READY_500ms_PERIOD );
         }
 
         return (events ^ LONG_PRESS_EVT);
@@ -1244,11 +1286,11 @@ static void simpleBLEPeripheral_ProcessOSALMsg( osal_event_hdr_t *pMsg )
         if (onTheKey)
         {
             osal_start_timerEx( simpleBLEPeripheral_TaskID, LONG_PRESS_EVT , LONG_PRESS_INTERVAL );
-        }else{
+        }else {
           osal_stop_timerEx( simpleBLEPeripheral_TaskID, LONG_PRESS_EVT );
         }
-  
-        if (onTheKey)
+       // if (onTheKey)
+        if (onTheKey && (activeAccAction == TRUE)) //v119
         {
             
             // for tap
@@ -1381,14 +1423,14 @@ static void peripheralStateNotificationCB( gaprole_States_t newState )
 	//HalADCToggleChannel(HAL_ADC_CHANNEL_0,ADC_CHANNEL_ON);       
         //set i2c device address  //v112 modify
 	HalI2CInit(TOUCH_ADDRESS, I2C_CLOCK_RATE);                         //v112 modify
-        if(activeAccAction == TRUE)
+        if(activeAccAction == FALSE)
         {
           mpr03x_stop();//(client);
         //avtive acc //v1008 modify
         pBuf[0]=MPR03X_FC_REG; //v1008 modify
         pBuf[1]=CDT<<5 | MPR03X_SFI_4 | MPR03X_ESI_8MS;//MPR03X_ESI_1MS;//v1008 modify	
 	HalI2CWrite(2,pBuf);         //v1008 modify  
-        activeAccAction = FALSE;
+        activeAccAction = TRUE;
         mpr03x_start();//(client);
         }     
         
@@ -1554,8 +1596,7 @@ static void simpleProfileChangeCB( uint8 paramID )
  * @return  none
  */
 
-static void closeAllPIO(void){
-
+static void closeAllPIO(void){  
     LED0_PIO = CLOSE_PIO;
     LED1_PIO = CLOSE_PIO;
     LED2_PIO = CLOSE_PIO;
@@ -1570,12 +1611,12 @@ static void closeAllPIO(void){
     LED11_PIO = CLOSE_PIO;
 	 led_status=0x0000;
 	 LED_POWER=BOOSTOFF;
-
 	 //P1_3 = 0;
 	 P0_0 = 0;//VBAT ANALOG INPUT PORT
 
     P1_4 = 0;
     P1_5 = 0;
+    osal_start_timerEx( simpleBLEPeripheral_TaskID, CLOSE_ALL_EVT, CLOSE_ALL_1s_EVT );
 }
 
 /*********************************************************************
@@ -1620,7 +1661,10 @@ static void toggleLEDWithTime(uint8 num, uint8 io){
 	else
 		led_status |= BV(num);
 	if(0 == led_status)
+        {
 		LED_POWER=BOOSTOFF;
+                osal_start_timerEx( simpleBLEPeripheral_TaskID, CLOSE_ALL_EVT, CLOSE_ALL_1s_EVT );
+        }
 	else
 		LED_POWER=BOOSTON;
 
