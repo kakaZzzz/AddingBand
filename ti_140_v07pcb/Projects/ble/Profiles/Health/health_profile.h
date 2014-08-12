@@ -60,6 +60,7 @@ extern "C"
 #define HEALTH_TIMEZONE               3
 #define HEALTH_DATA_HEADER            4  // RW uint8 - Profile Characteristic 3 value
 #define HEALTH_DATA_BODY              5  // RW uint8 - Profile Characteristic 4 value
+#define HEALTH_SYSACTIVE              6  // RW uint8 - Profile Characteristic 4 value
   
 // Simple Profile Service UUID
 #define HEALTH_SERV_UUID              0x2300
@@ -71,6 +72,7 @@ extern "C"
 #define HEALTH_TIMEZONE_UUID          0x2304
 #define HEALTH_DATA_HEADER_UUID       0x2305
 #define HEALTH_DATA_BODY_UUID         0x2306
+#define HEALTH_SYSACTIVE_UUID         0x2307
   
 // Simple Keys Profile Services bit fields
 #define SIMPLEPROFILE_SERVICE               0x00000001  

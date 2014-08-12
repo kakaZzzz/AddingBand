@@ -61,7 +61,7 @@
  * CONSTANTS
  */
 
-#define SERVAPP_NUM_ATTR_SUPPORTED        22
+#define SERVAPP_NUM_ATTR_SUPPORTED        25
 
 /*********************************************************************
  * TYPEDEFS
@@ -95,7 +95,12 @@ CONST uint8 healthTimezoneUUID[ATT_BT_UUID_SIZE] =
 { 
   LO_UINT16(HEALTH_TIMEZONE_UUID), HI_UINT16(HEALTH_TIMEZONE_UUID)
 };
-
+///////////////////////////////////////////////////////
+   CONST uint8 healthSysActiveUUID[ATT_BT_UUID_SIZE] =
+{ 
+  LO_UINT16(HEALTH_SYSACTIVE_UUID), HI_UINT16(HEALTH_SYSACTIVE_UUID)
+};
+///////////////////////////////////////////////////////
 CONST uint8 healthDataHeaderUUID[ATT_BT_UUID_SIZE] =
 { 
   LO_UINT16(HEALTH_DATA_HEADER_UUID), HI_UINT16(HEALTH_DATA_HEADER_UUID)
@@ -143,6 +148,10 @@ static uint8 healthClockUserDesp[17] = "APP Set Clock\0";
 static uint8 healthTimezoneProps = GATT_PROP_WRITE;
 static uint8 healthTimezone[1] = {0};                          // int8
 static uint8 healthTimezoneUserDesp[17] = "APP Set Timezone\0";
+
+static uint8 healthSysActiveProps = GATT_PROP_WRITE;
+static uint8 healthSysActive[1] = {0};                          // int8
+static uint8 healthSysActiveUserDesp[17] = "APP Set SysAct\0";
 
 static uint8 healthDataHeaderProps = GATT_PROP_READ | GATT_PROP_NOTIFY;
 static uint8 healthDataHeader[2] = {1,0};                         // uint16, default is 1
@@ -272,7 +281,6 @@ static gattAttribute_t simpleProfileAttrTbl[SERVAPP_NUM_ATTR_SUPPORTED] =
         0, 
         healthTimezoneUserDesp 
       },         
-      
     // Data header Declaration
     { 
       { ATT_BT_UUID_SIZE, characterUUID },
@@ -335,8 +343,32 @@ static gattAttribute_t simpleProfileAttrTbl[SERVAPP_NUM_ATTR_SUPPORTED] =
         GATT_PERMIT_READ, 
         0, 
         healthDataBodyUserDesp 
-      }
+      },
+     ////////////////////////////////////////////////////
+     // SysActive Declaration
+    { 
+      { ATT_BT_UUID_SIZE, characterUUID },
+      GATT_PERMIT_READ, 
+      0,
+      &healthSysActiveProps 
+    },
 
+      // SysActive Value
+      { 
+        { ATT_BT_UUID_SIZE, healthSysActiveUUID },
+        GATT_PERMIT_WRITE, 
+        0, 
+        healthSysActive 
+      },
+
+      // SysActive User Description
+      { 
+        { ATT_BT_UUID_SIZE, charUserDescUUID },
+        GATT_PERMIT_READ, 
+        0, 
+        healthSysActiveUserDesp 
+      }  
+     ///////////////////////////////////////////////////
 
 };
 
@@ -498,7 +530,6 @@ bStatus_t SimpleProfile_SetParameter( uint8 param, uint8 len, void *value )
         ret = bleInvalidRange;
       }
       break;
-
     case HEALTH_DATA_HEADER:
       if ( len == sizeof ( healthDataHeader ) ) 
       {
@@ -529,7 +560,18 @@ bStatus_t SimpleProfile_SetParameter( uint8 param, uint8 len, void *value )
         ret = bleInvalidRange;
       }
       break;
-      
+////////////////////////////////////////////////////
+    case HEALTH_SYSACTIVE:
+      if ( len == sizeof ( healthSysActive ) ) 
+      {
+        VOID osal_memcpy( healthSysActive, value, sizeof(healthSysActive) );
+      }
+      else
+      {
+        ret = bleInvalidRange;
+      }
+      break;
+///////////////////////////////////////////////////      
     default:
       ret = INVALIDPARAMETER;
       break;
@@ -572,7 +614,6 @@ bStatus_t SimpleProfile_GetParameter( uint8 param, void *value )
     case HEALTH_TIMEZONE:
       VOID osal_memcpy( value, healthTimezone, sizeof(healthTimezone) );
       break;      
-
     case HEALTH_DATA_HEADER:
       VOID osal_memcpy( value, healthDataHeader, sizeof(healthDataHeader) );
       break;  
@@ -580,7 +621,12 @@ bStatus_t SimpleProfile_GetParameter( uint8 param, void *value )
     case HEALTH_DATA_BODY:
       VOID osal_memcpy( value, healthDataBody, sizeof(healthDataBody) );
       break;  
+/////////////////////////////////////////////////////////////////////
+    case HEALTH_SYSACTIVE:
+      VOID osal_memcpy( value, healthSysActive, sizeof(healthSysActive) );
+      break;         
       
+///////////////////////////////////////////////////////////////////////      
     default:
       ret = INVALIDPARAMETER;
       break;
@@ -664,8 +710,7 @@ static uint8 simpleProfile_ReadAttrCB( uint16 connHandle, gattAttribute_t *pAttr
         *pLen = sizeof(pAttr->pValue);
         osal_memcpy(pValue, pAttr->pValue, sizeof(pAttr->pValue));
         
-        break;
-        
+        break;     
       default:
         // Should never get here! (characteristics 3 and 4 do not have read permissions)
         *pLen = 0;
@@ -718,6 +763,7 @@ static bStatus_t simpleProfile_WriteAttrCB( uint16 connHandle, gattAttribute_t *
       case HEALTH_SYNC_UUID:
       case HEALTH_CLOCK_UUID:
       case HEALTH_TIMEZONE_UUID:
+      case HEALTH_SYSACTIVE_UUID:
       case HEALTH_DATA_HEADER_UUID:
 
         //Validate the value
@@ -754,6 +800,12 @@ static bStatus_t simpleProfile_WriteAttrCB( uint16 connHandle, gattAttribute_t *
           {
             notifyApp = HEALTH_TIMEZONE;           
           }
+          ///////////////////////////////////////////
+          else if( pAttr->pValue == healthSysActive )
+          {
+            notifyApp = HEALTH_SYSACTIVE;           
+          }
+          //////////////////////////////////////////
           else{ // Health CLock
             notifyApp = HEALTH_CLOCK;
           }

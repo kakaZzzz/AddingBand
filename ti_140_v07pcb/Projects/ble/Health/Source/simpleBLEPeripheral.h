@@ -67,9 +67,10 @@ extern "C"
 #define TIME_STOP_EVT                                     0x0200
 #define LONG_PRESS_EVT                                    0x0400
 #define CYCLE_LED_12_EVT                                  0x0800
-#define RUN_TRIBLE_TAP_EVT                                0x1000
+//#define RUN_TRIBLE_TAP_EVT                                0x1000
 #define READ_EVT                                          0x2000
 #define MPR03X_CALIBRATION_EVT                            0x4000  
+#define WATCHDOG_CLEAR_EVT                                0x1000
 
 /*********************************************************************
  * MACROS
