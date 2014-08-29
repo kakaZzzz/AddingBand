@@ -49,7 +49,7 @@
  * CONSTANTS
  */
 
-#define FIRMWARE                              122
+#define FIRMWARE                              124
 
 #define HI_UINT32(x)                          (((x) >> 16) & 0xffff)
 #define LO_UINT32(x)                          ((x) & 0xffff)
@@ -77,7 +77,7 @@
 // How often to perform periodic event
 //#define SBP_PERIODIC_EVT_PERIOD               200
 #define SBP_PERIODIC_1s_EVT_PERIOD              1000
-#define SBP_PERIODIC_300s_EVT_PERIOD            300000
+#define SBP_PERIODIC_60s_EVT_PERIOD             60000
 #define MPR03X_CALIBRATION_EVT_1min_EVT_PERIOD  60000   
 #define MPR03XCALIBRATIONCOUNT                  10
 #define CLOSE_ALL_1s_EVT                      1000
@@ -85,6 +85,10 @@
 //watchdog event
 
 #define  WATCHDOG_CLEAR_EVT_PERIOD           900
+
+
+//fetal movement record valid max time
+#define  FETALMOVEMENTRECORD_MAX_EVT_PERIOD 8500
 
 
 // The led all on timing, READY is the time from power on to led all on
@@ -223,7 +227,8 @@
 //same with app
 #define SYNC_CODE                           22
 
-#define LONG_PRESS_INTERVAL                 1000
+//#define LONG_PRESS_INTERVAL                 1000
+#define LONG_PRESS_INTERVAL                 1500 //v123
 #define NEXT_TAP_INTERVAL                   500
 #define ACC_LOAD_INTERVAL                   2500    // 80MS * 30
 #define CYCLE_LED_6_INTERVAL                80
@@ -369,6 +374,12 @@ uint8 mpr03xCalReadState = TRUE;
 uint8 mpr03xCalDatePos = 0xCA;
 uint8 mpr03xCalDateCur = 0xCA;
 uint8 adverCount = ADVERCOUNT;
+uint8 longPressJudgeFlag = 0; //v123
+uint8 battMeasureCount = 0;
+uint16 battADwordSum = 0;
+uint8 battADwordMin = 153;
+uint8 battADwordMax = 0;
+uint8 battADwordTemp = 0;
 /*********************************************************************
  * TYPEDEFS
  */
@@ -775,6 +786,8 @@ void SimpleBLEPeripheral_Init( uint8 task_id )
     osal_set_event( simpleBLEPeripheral_TaskID,CLOSE_ALL_EVT);
     //set watchdog clear event
     osal_set_event( simpleBLEPeripheral_TaskID,WATCHDOG_CLEAR_EVT);
+    //set fetal movement record event
+    osal_set_event( simpleBLEPeripheral_TaskID,FETALMOVEMENTRECORD_MAX_EVT);
     
 }
 
@@ -1052,12 +1065,31 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
       {
        if(gapProfileState == GAPROLE_ADVERTISING) 
       {
-        battADword = battMeasure();      
+        battMeasureCount = battMeasureCount + 1;
+        if(battMeasureCount <= 10)
+        {
+            battADwordTemp = battMeasure();
+            battADwordSum = battADwordTemp + battADwordSum; 
+            if(battADwordTemp>=  battADwordMax)
+              battADwordMax = battADwordTemp;  
+            else
+              battADwordMax = battADwordMax;   
+            if(battADwordTemp <=  battADwordMin)
+              battADwordMin = battADwordTemp;  
+            else
+              battADwordMin = battADwordMin;       
+        }   
+        else
+        {
+          battADword = (uint8)((battADwordSum-battADwordMax-battADwordMin)>>3);
+          battMeasureCount = 0; 
+          battADwordSum = 0;
+        }
      }
       HalADCPeripheralSetting(HAL_ADC_CHANNEL_0,IO_FUNCTION_GPIO);
       HalADCToggleChannel(HAL_ADC_CHANNEL_0,ADC_CHANNEL_OFF);
       countAdcSample = FALSE;
-      osal_start_timerEx( simpleBLEPeripheral_TaskID, SBP_PERIODIC_EVT, SBP_PERIODIC_300s_EVT_PERIOD );     
+      osal_start_timerEx( simpleBLEPeripheral_TaskID, SBP_PERIODIC_EVT, SBP_PERIODIC_60s_EVT_PERIOD );     
       }
       return (events ^ SBP_PERIODIC_EVT);
     }
@@ -1142,36 +1174,45 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
 
         return (events ^ CYCLE_LED_6_EVT);
     }
-
-    if ( events & CYCLE_LED_12_EVT )
-    {
-        
-        if (ledCycleCount < 12)
-        {
-            toggleLEDWithTime(ledCycleCount, OPEN_PIO);
-            toggleLEDWithTime(ledCycleCount - 1, CLOSE_PIO);
-        }else if(ledCycleCount == 12)
-        {
-            toggleLEDWithTime(0, OPEN_PIO);
-            toggleLEDWithTime(11, CLOSE_PIO);
-        }else
-        {
-            toggleLEDWithTime(0, CLOSE_PIO);
-        }
-        
-        ledCycleCount++;
-        
-        if (ledCycleCount < 14)
-        {
-            osal_start_timerEx( simpleBLEPeripheral_TaskID, CYCLE_LED_12_EVT, CYCLE_LED_12_INTERVAL );
-
-        }else{
-
-            ledCycleCount = 0;
-            lockSlip = 0;
-        }
-        return (events ^ CYCLE_LED_12_EVT);
-    }
+     if ( events & FETALMOVEMENTRECORD_MAX_EVT)
+     {
+         if(longPressJudgeFlag == 0)
+         {
+             eepromWrite(TAP_DATA_TYPE, 1);
+         }
+         return (events ^ FETALMOVEMENTRECORD_MAX_EVT);
+     }
+       
+       
+//    if ( events & CYCLE_LED_12_EVT )
+//    {
+//        
+//        if (ledCycleCount < 12)
+//        {
+//            toggleLEDWithTime(ledCycleCount, OPEN_PIO);
+//            toggleLEDWithTime(ledCycleCount - 1, CLOSE_PIO);
+//        }else if(ledCycleCount == 12)
+//        {
+//            toggleLEDWithTime(0, OPEN_PIO);
+//            toggleLEDWithTime(11, CLOSE_PIO);
+//        }else
+//        {
+//            toggleLEDWithTime(0, CLOSE_PIO);
+//        }
+//        
+//        ledCycleCount++;
+//        
+//        if (ledCycleCount < 14)
+//        {
+//            osal_start_timerEx( simpleBLEPeripheral_TaskID, CYCLE_LED_12_EVT, CYCLE_LED_12_INTERVAL );
+//
+//        }else{
+//
+//            ledCycleCount = 0;
+//            lockSlip = 0;
+//        }
+//        return (events ^ CYCLE_LED_12_EVT);
+//    }
 
     if ( events & CLOSE_ALL_EVT )
     {
@@ -1328,7 +1369,10 @@ static void simpleBLEPeripheral_ProcessOSALMsg( osal_event_hdr_t *pMsg )
       if((keys&HAL_KEY_SW_1)!=0)//sw_1
       {
         
-  
+         if(onTheKey == 0)
+         {
+         longPressJudgeFlag = 0;  //used for judge valid of longpress before break
+         }
         // LED6_PIO = !onTheKey;
   
         if (lockSlip)
@@ -1339,9 +1383,9 @@ static void simpleBLEPeripheral_ProcessOSALMsg( osal_event_hdr_t *pMsg )
         // for long press
         if (onTheKey)
         {
-            osal_start_timerEx( simpleBLEPeripheral_TaskID, LONG_PRESS_EVT , LONG_PRESS_INTERVAL );
+            osal_start_timerEx( simpleBLEPeripheral_TaskID, LONG_PRESS_EVT , LONG_PRESS_INTERVAL );   
         }else {
-          osal_stop_timerEx( simpleBLEPeripheral_TaskID, LONG_PRESS_EVT );
+          osal_stop_timerEx( simpleBLEPeripheral_TaskID, LONG_PRESS_EVT );      
         }
        // if (onTheKey)
         if (onTheKey && (activeAccAction == TRUE)) //v119
@@ -1835,7 +1879,9 @@ static void longPressAndCycleLED6(void){
 
     lockSlip = 1;
 
-    eepromWrite(TAP_DATA_TYPE, 1);
+   // eepromWrite(TAP_DATA_TYPE, 1);//123
+    osal_start_timerEx( simpleBLEPeripheral_TaskID,FETALMOVEMENTRECORD_MAX_EVT,FETALMOVEMENTRECORD_MAX_EVT_PERIOD);
+    longPressJudgeFlag = 1;
     osal_set_event( simpleBLEPeripheral_TaskID, CYCLE_LED_6_EVT );
 }
 
