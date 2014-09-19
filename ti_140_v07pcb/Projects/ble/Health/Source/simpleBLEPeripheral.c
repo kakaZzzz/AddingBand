@@ -49,7 +49,7 @@
  * CONSTANTS
  */
 
-#define FIRMWARE                              124
+#define FIRMWARE                              128
 
 #define HI_UINT32(x)                          (((x) >> 16) & 0xffff)
 #define LO_UINT32(x)                          ((x) & 0xffff)
@@ -99,7 +99,7 @@
 #define SBP_START_DEVICE_EVT_READY_500ms_PERIOD                  500
 
 // What is the advertising interval when device is discoverable (units of 625us, 160=100ms)
-#define DEFAULT_ADVERTISING_INTERVAL          8000//16000
+#define DEFAULT_ADVERTISING_INTERVAL          3408//16000
 
 // Limited discoverable mode advertises for 30.72s, and then stops
 // General discoverable mode advertises indefinitely
@@ -107,16 +107,19 @@
 #define DEFAULT_DISCOVERABLE_MODE             GAP_ADTYPE_FLAGS_GENERAL
 
 // Minimum connection interval (units of 1.25ms, 80=100ms) if automatic parameter update request is enabled
-#define DEFAULT_DESIRED_MIN_CONN_INTERVAL     800
+//#define DEFAULT_DESIRED_MIN_CONN_INTERVAL     800
+#define DEFAULT_DESIRED_MIN_CONN_INTERVAL     40
 
 // Maximum connection interval (units of 1.25ms, 800=1000ms) if automatic parameter update request is enabled
-#define DEFAULT_DESIRED_MAX_CONN_INTERVAL     1200
+//#define DEFAULT_DESIRED_MAX_CONN_INTERVAL     1200
+#define DEFAULT_DESIRED_MAX_CONN_INTERVAL     60
 
 // Slave latency to use if automatic parameter update request is enabled
 #define DEFAULT_DESIRED_SLAVE_LATENCY         4
 
 // Supervision timeout value (units of 10ms, 1000=10s) if automatic parameter update request is enabled
-#define DEFAULT_DESIRED_CONN_TIMEOUT          5000
+//#define DEFAULT_DESIRED_CONN_TIMEOUT          5000
+#define DEFAULT_DESIRED_CONN_TIMEOUT          500
 
 // Whether to enable automatic parameter update request when a connection is formed
 #define DEFAULT_ENABLE_UPDATE_REQUEST         TRUE
@@ -268,7 +271,7 @@
 #define ACC_POPUP_DATA_BLE		TRUE
 //#define ACC_POPUP_DATA_BLE		FALSE
 
-#define ADVERCOUNT 120
+#define ADVERCOUNT 60  //9*900ms = 54S
 
 #define  WdctlModeWdog 0x02
 #define  WdctlModeIdle 0x0
@@ -303,7 +306,7 @@ uint8 dataAtxbufCnt=0;
 uint8 dataAtxbufpointer=0;
 uint8 flagTxAccData=FALSE;
 uint8 flagAccData221=FALSE;
-uint8 activeAccAction = FALSE;
+uint8 activeAccAction = TRUE;
 
 union mma_data_u
 {
@@ -404,7 +407,8 @@ static uint8 simpleBLEPeripheral_TaskID;   // Task ID for internal task/event pr
 static gaprole_States_t gapProfileState = GAPROLE_INIT;
 
 int8 timezone = 0;
-int8 sysnonactive = FALSE;
+//int8 sysnonactive = FALSE;
+int8 sysnonactive = TRUE;
 
 // GAP - SCAN RSP data (max size = 31 bytes)
 uint8 scanRspData[] =
@@ -847,7 +851,28 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
 			  osal_start_timerEx( simpleBLEPeripheral_TaskID, SBP_START_DEVICE_EVT, SBP_START_DEVICE_EVT_READY_PERIOD );
 			  flagSBPStart++;
 			}
-			else if(1==flagSBPStart)
+                      else if(1==flagSBPStart)
+			{
+				//Open all LED and set timer for led all off, GO period
+			  //openAllLED();
+                              LED0_PIO = OPEN_PIO;
+                              LED1_PIO = CLOSE_PIO;
+                              LED2_PIO = CLOSE_PIO;
+                              LED3_PIO = CLOSE_PIO;
+                              LED4_PIO = CLOSE_PIO;
+                              LED5_PIO = CLOSE_PIO;
+                              LED6_PIO = CLOSE_PIO;
+                              LED7_PIO = CLOSE_PIO;
+                              LED8_PIO = CLOSE_PIO;
+                              LED9_PIO = CLOSE_PIO;
+                              LED10_PIO =CLOSE_PIO;
+                              LED11_PIO = CLOSE_PIO;
+	                      led_status=0x0021;
+	                      LED_POWER=BOOSTON;
+	                      osal_start_timerEx( simpleBLEPeripheral_TaskID, SBP_START_DEVICE_EVT, SBP_START_DEVICE_EVT_GO_PERIOD );
+	                      flagSBPStart++;
+			}			
+                      else if(2==flagSBPStart)
 			{
 				//Open all LED and set timer for led all off, GO period
 			  //openAllLED();
@@ -868,7 +893,7 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
 	                      osal_start_timerEx( simpleBLEPeripheral_TaskID, SBP_START_DEVICE_EVT, SBP_START_DEVICE_EVT_GO_PERIOD );
 	                      flagSBPStart++;
 			}
-			else if(2==flagSBPStart)
+			else if(3==flagSBPStart)
 			{
                               LED0_PIO = CLOSE_PIO;
                               LED1_PIO = OPEN_PIO;
@@ -887,7 +912,7 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
 				osal_start_timerEx( simpleBLEPeripheral_TaskID, SBP_START_DEVICE_EVT,SBP_START_DEVICE_EVT_GO_PERIOD);
 				flagSBPStart++;
 			}
- 			else if(3==flagSBPStart)
+ 			else if(4==flagSBPStart)
 			{
                               LED0_PIO = CLOSE_PIO;
                               LED1_PIO = CLOSE_PIO;
@@ -906,7 +931,7 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
 				osal_start_timerEx( simpleBLEPeripheral_TaskID, SBP_START_DEVICE_EVT,SBP_START_DEVICE_EVT_GO_PERIOD);
 				flagSBPStart++;
 			}
-  			else if(4==flagSBPStart)
+  			else if(5==flagSBPStart)
 			{
                               LED0_PIO = CLOSE_PIO;
                               LED1_PIO = CLOSE_PIO;
@@ -925,7 +950,7 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
 				osal_start_timerEx( simpleBLEPeripheral_TaskID, SBP_START_DEVICE_EVT,SBP_START_DEVICE_EVT_GO_PERIOD);
 				flagSBPStart++;
 			}
-  			else if(5==flagSBPStart)
+  			else if(6==flagSBPStart)
 			{
                               LED0_PIO = CLOSE_PIO;
                               LED1_PIO = CLOSE_PIO;
@@ -944,7 +969,7 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
 				osal_start_timerEx( simpleBLEPeripheral_TaskID, SBP_START_DEVICE_EVT,SBP_START_DEVICE_EVT_GO_PERIOD);
 				flagSBPStart++;
 			}
-  			else if(6==flagSBPStart)
+  			else if(7==flagSBPStart)
 			{
                               LED0_PIO = CLOSE_PIO;
                               LED1_PIO = CLOSE_PIO;
@@ -963,7 +988,7 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
 				osal_start_timerEx( simpleBLEPeripheral_TaskID, SBP_START_DEVICE_EVT,SBP_START_DEVICE_EVT_GO_PERIOD);
 				flagSBPStart++;
 			}
-   			else if(7==flagSBPStart)
+   			else if(8==flagSBPStart)
 			{
                               LED0_PIO = OPEN_PIO;
                               LED1_PIO = CLOSE_PIO;
@@ -982,7 +1007,7 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
 				osal_start_timerEx( simpleBLEPeripheral_TaskID, SBP_START_DEVICE_EVT,SBP_START_DEVICE_EVT_GO_PERIOD);
 				flagSBPStart++;
 			}
-   			else if(8==flagSBPStart)
+   			else if(9==flagSBPStart)
 			{
 				//Close all LED and the timer
 				closeAllPIO();
@@ -1011,7 +1036,10 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
 
         if (val)//if F_CNTX[5:0]!=0
         {
-		accDataProcess(val);
+            if(gapProfileState != GAPROLE_CONNECTED) //avoid the time of connected interals
+            {
+             accDataProcess(val);
+            }
 		//accGetAccData(val);
         }
 
@@ -1020,24 +1048,25 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
           osal_start_timerEx( simpleBLEPeripheral_TaskID, ACC_PERIODIC_EVT, accLoadInterval );
         }
         
-      //fixed non adv problem
-      if(gapProfileState == GAPROLE_ADVERTISING)
-      {
-        if(adverCount >= ADVERCOUNT)
-           adverCount = ADVERCOUNT;
-        else
-            adverCount = adverCount + 1;
-      }
-      else
-      {
-        if(adverCount > 0)
-            adverCount = adverCount - 1;
-        else
-        {
-        adverCount = ADVERCOUNT;
-        toggleAdvert(TRUE);
-        }
-      }
+     //fixed non adv problem
+    //  if(gapProfileState == GAPROLE_ADVERTISING)
+     // {
+     //   if(adverCount >= ADVERCOUNT)
+     //      adverCount = ADVERCOUNT;
+     //   else
+     //       adverCount = adverCount + 1;
+     // }
+     // else
+     // {
+//        if(adverCount > 0)
+//            adverCount = adverCount - 1;
+//        else
+//        {
+//        adverCount = ADVERCOUNT;
+//        toggleAdvert(FALSE);//FIXED NON ADV
+//        toggleAdvert(TRUE);
+//        }
+   //   }
       //////////////////////////////////////////////////////
         return (events ^ ACC_PERIODIC_EVT);
     }
@@ -1246,11 +1275,13 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
            LED10_PIO = CLOSE_PIO;
            LED11_PIO = CLOSE_PIO;
            osal_stop_timerEx( simpleBLEPeripheral_TaskID, CLOSE_ALL_EVT);//v122
-        if (onTheKey && (activeAccAction == TRUE)) //119
+        //if (onTheKey && (activeAccAction == TRUE)) //119      
+           if (onTheKey && (sysnonactive  == FALSE)&& (activeAccAction == FALSE))
         {
             longPressAndCycleLED6();
         }
-        else if(onTheKey && (activeAccAction == FALSE))
+        //else if(onTheKey && (activeAccAction == FALSE))
+        else if(onTheKey && (sysnonactive == TRUE)&& (activeAccAction == TRUE))
         {
         flagSBPStart = 1;
         osal_start_timerEx( simpleBLEPeripheral_TaskID, SBP_START_DEVICE_EVT, SBP_START_DEVICE_EVT_READY_500ms_PERIOD );
@@ -1322,7 +1353,23 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
     
         if ( events & WATCHDOG_CLEAR_EVT )
     {
-        WDCTL = (WDCTL & 0x0F) | WdctlClrFirst<<4;     //设置关门狗模式\设置关门狗间隔为1S
+        
+         if(adverCount > 1)
+            adverCount = adverCount - 1;
+        else
+        {
+         if(adverCount == 1)
+         {
+           adverCount = adverCount - 1;
+           toggleAdvert(FALSE);//FIXED NON ADV
+         }
+         else if(adverCount == 0)
+         {
+         adverCount = ADVERCOUNT;
+         toggleAdvert(TRUE);
+         }
+        }
+      WDCTL = (WDCTL & 0x0F) | WdctlClrFirst<<4;     //设置关门狗模式\设置关门狗间隔为1S
         WDCTL = (WDCTL & 0x0F) | WdctlClrSec<<4;     //设置关门狗模式\设置关门狗间隔为1S
         
          osal_start_timerEx( simpleBLEPeripheral_TaskID, WATCHDOG_CLEAR_EVT, WATCHDOG_CLEAR_EVT_PERIOD );
@@ -1388,7 +1435,8 @@ static void simpleBLEPeripheral_ProcessOSALMsg( osal_event_hdr_t *pMsg )
           osal_stop_timerEx( simpleBLEPeripheral_TaskID, LONG_PRESS_EVT );      
         }
        // if (onTheKey)
-        if (onTheKey && (activeAccAction == TRUE)) //v119
+       // if (onTheKey && (activeAccAction == TRUE)) //v119
+         if (onTheKey && (sysnonactive == FALSE)&& (activeAccAction == FALSE))
         {
             
             // for tap
@@ -1505,18 +1553,49 @@ static void peripheralStateNotificationCB( gaprole_States_t newState )
     break;
 
     case GAPROLE_ADVERTISING:
-    {
-     HalI2CInit(TOUCH_ADDRESS, I2C_CLOCK_RATE);  
-      if((sysnonactive == TRUE) && (activeAccAction == TRUE))
+    { 
+      if((sysnonactive == TRUE) && (activeAccAction == FALSE))
         {
+         HalI2CInit(TOUCH_ADDRESS, I2C_CLOCK_RATE); 
+         mpr03x_stop();//(client);
+        //avtive acc //v1008 modify
+        pBuf[0]=MPR03X_FC_REG; //v1008 modify
+        pBuf[1]=CDT<<5 | MPR03X_SFI_4 | MPR03X_ESI_64MS;//MPR03X_ESI_1MS;
+	HalI2CWrite(2,pBuf);         //v1008 modify  
+        activeAccAction = TRUE;
+        mpr03x_start();//(client);
+        ///////////////////////////////////
+            HalI2CInit(ACC_ADDRESS, I2C_CLOCK_RATE);
+            pBuf[0] = CTRL_REG1;
+            pBuf[1] = (ASLP_RATE_12_5HZ + DATA_RATE_12_5HZ) | (!ACTIVE_MASK);
+           HalI2CWrite(2, pBuf);
+        ///////////////////////////////////////
+         oneData[0].count = 0;
+         oneData[1].count = 0;
+         oneData[2].count = 0;
+         rawDataStart = 0;
+         rawDataStop  = 0;
+         saveRawDataIndex();
+        } 
+      else if((sysnonactive == FALSE) && (activeAccAction == TRUE))
+        {
+          HalI2CInit(TOUCH_ADDRESS, I2C_CLOCK_RATE);
           mpr03x_stop();//(client);
         //avtive acc //v1008 modify
         pBuf[0]=MPR03X_FC_REG; //v1008 modify
-        pBuf[1]=CDT<<5 | MPR03X_SFI_4 | MPR03X_ESI_64MS;//MPR03X_ESI_1MS;//v1008 modify	
+        pBuf[1]=CDT<<5 | MPR03X_SFI_4 | MPR03X_ESI_8MS;//MPR03X_ESI_1MS;
 	HalI2CWrite(2,pBuf);         //v1008 modify  
         activeAccAction = FALSE;
         mpr03x_start();//(client);
-        }  
+        /////////////////////////////////////////
+                ///////////////////////////////////
+            HalI2CInit(ACC_ADDRESS, I2C_CLOCK_RATE);
+            pBuf[0] = CTRL_REG1;
+            pBuf[1] = (ASLP_RATE_12_5HZ + DATA_RATE_12_5HZ) | (ACTIVE_MASK);
+           HalI2CWrite(2, pBuf);
+        ///////////////////////////////////////
+        //////////////////////////////////////////
+        }        
         // LED2_PIO = OPEN_PIO;
 			 //when disconnected, adc analog channel off
 //		  HalADCPeripheralSetting(HAL_ADC_CHANNEL_0,IO_FUNCTION_GPIO);
@@ -1531,18 +1610,18 @@ static void peripheralStateNotificationCB( gaprole_States_t newState )
         //HalADCPeripheralSetting(HAL_ADC_CHANNEL_0,IO_FUNCTION_PERI);
 	//HalADCToggleChannel(HAL_ADC_CHANNEL_0,ADC_CHANNEL_ON);       
         //set i2c device address  //v112 modify
-	HalI2CInit(TOUCH_ADDRESS, I2C_CLOCK_RATE);                         //v112 modify
-        if(activeAccAction == FALSE)
-        {
-          mpr03x_stop();//(client);
-        //avtive acc //v1008 modify
-        pBuf[0]=MPR03X_FC_REG; //v1008 modify
-        pBuf[1]=CDT<<5 | MPR03X_SFI_4 | MPR03X_ESI_8MS;//MPR03X_ESI_1MS;//v1008 modify	
-	HalI2CWrite(2,pBuf);         //v1008 modify  
-        activeAccAction = TRUE;
-        mpr03x_start();//(client);
-        sysnonactive = FALSE;
-        }         
+//	HalI2CInit(TOUCH_ADDRESS, I2C_CLOCK_RATE);                         //v112 modify
+//        if(sysnonactive == TRUE)
+//        {
+//          mpr03x_stop();//(client);
+//        //avtive acc //v1008 modify
+//        pBuf[0]=MPR03X_FC_REG; //v1008 modify
+//        pBuf[1]=CDT<<5 | MPR03X_SFI_4 | MPR03X_ESI_8MS;//MPR03X_ESI_1MS;//v1008 modify	
+//	HalI2CWrite(2,pBuf);         //v1008 modify  
+//        //activeAccAction = TRUE;
+//        mpr03x_start();//(client);
+//        sysnonactive = FALSE;
+//        }         
     }
     break;
 
@@ -1974,7 +2053,8 @@ static void accInit( void )
     HalI2CWrite(2, pBuf);
 
     pBuf[0] = CTRL_REG1;
-    pBuf[1] = (ASLP_RATE_12_5HZ + DATA_RATE_12_5HZ) | ACTIVE_MASK;
+    //pBuf[1] = (ASLP_RATE_12_5HZ + DATA_RATE_12_5HZ) | ACTIVE_MASK;
+    pBuf[1] = (ASLP_RATE_12_5HZ + DATA_RATE_12_5HZ) | (!ACTIVE_MASK);
     HalI2CWrite(2, pBuf);
 
 }
@@ -2369,11 +2449,11 @@ static void eepromWrite(uint8 type, uint8 cnt){
             rawDataStart += 8;
         }
 
-        uint16 length = dataLength();
+       // uint16 length = dataLength();//127
 
         // for debug
         // SimpleProfile_SetParameter( HEALTH_DATA_HEADER, 2,  &rawDataStop);
-        SimpleProfile_SetParameter( HEALTH_DATA_HEADER, 2,  &length);
+        //SimpleProfile_SetParameter( HEALTH_DATA_HEADER, 2,  &length);//v127
         //SimpleProfile_SetParameter( HEALTH_SYNC, 8, dBuf);
 
 
