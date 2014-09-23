@@ -49,7 +49,7 @@
  * CONSTANTS
  */
 
-#define FIRMWARE                              128
+#define FIRMWARE                              131
 
 #define HI_UINT32(x)                          (((x) >> 16) & 0xffff)
 #define LO_UINT32(x)                          ((x) & 0xffff)
@@ -649,11 +649,11 @@ void SimpleBLEPeripheral_Init( uint8 task_id )
         // until the enabler is set back to TRUE
         uint16 gapRole_AdvertOffTime = 0;
 
-        uint8 enable_update_request = DEFAULT_ENABLE_UPDATE_REQUEST;
-        uint16 desired_min_interval = DEFAULT_DESIRED_MIN_CONN_INTERVAL;
-        uint16 desired_max_interval = DEFAULT_DESIRED_MAX_CONN_INTERVAL;
-        uint16 desired_slave_latency = DEFAULT_DESIRED_SLAVE_LATENCY;
-        uint16 desired_conn_timeout = DEFAULT_DESIRED_CONN_TIMEOUT;
+        //uint8 enable_update_request = DEFAULT_ENABLE_UPDATE_REQUEST;
+        //uint16 desired_min_interval = DEFAULT_DESIRED_MIN_CONN_INTERVAL;
+        //uint16 desired_max_interval = DEFAULT_DESIRED_MAX_CONN_INTERVAL;
+        //uint16 desired_slave_latency = DEFAULT_DESIRED_SLAVE_LATENCY;
+        //uint16 desired_conn_timeout = DEFAULT_DESIRED_CONN_TIMEOUT;
 
         // Set the GAP Role Parameters
         GAPRole_SetParameter( GAPROLE_ADVERT_ENABLED, sizeof( uint8 ), &initial_advertising_enable );
@@ -662,11 +662,11 @@ void SimpleBLEPeripheral_Init( uint8 task_id )
         GAPRole_SetParameter( GAPROLE_SCAN_RSP_DATA, sizeof ( scanRspData ), scanRspData );
         GAPRole_SetParameter( GAPROLE_ADVERT_DATA, sizeof( advertData ), advertData );
 
-        GAPRole_SetParameter( GAPROLE_PARAM_UPDATE_ENABLE, sizeof( uint8 ), &enable_update_request );
-        GAPRole_SetParameter( GAPROLE_MIN_CONN_INTERVAL, sizeof( uint16 ), &desired_min_interval );
-        GAPRole_SetParameter( GAPROLE_MAX_CONN_INTERVAL, sizeof( uint16 ), &desired_max_interval );
-        GAPRole_SetParameter( GAPROLE_SLAVE_LATENCY, sizeof( uint16 ), &desired_slave_latency );
-        GAPRole_SetParameter( GAPROLE_TIMEOUT_MULTIPLIER, sizeof( uint16 ), &desired_conn_timeout );
+       // GAPRole_SetParameter( GAPROLE_PARAM_UPDATE_ENABLE, sizeof( uint8 ), &enable_update_request );
+      //  GAPRole_SetParameter( GAPROLE_MIN_CONN_INTERVAL, sizeof( uint16 ), &desired_min_interval );
+      //  GAPRole_SetParameter( GAPROLE_MAX_CONN_INTERVAL, sizeof( uint16 ), &desired_max_interval );
+      //  GAPRole_SetParameter( GAPROLE_SLAVE_LATENCY, sizeof( uint16 ), &desired_slave_latency );
+      //  GAPRole_SetParameter( GAPROLE_TIMEOUT_MULTIPLIER, sizeof( uint16 ), &desired_conn_timeout );
     }
 
     // Set the GAP Characteristics
@@ -1352,9 +1352,12 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
     }  
     
         if ( events & WATCHDOG_CLEAR_EVT )
-    {
-        
-         if(adverCount > 1)
+    {       
+     if(gapProfileState == GAPROLE_CONNECTED)
+        adverCount = ADVERCOUNT;
+     else
+     {
+      if(adverCount > 1)
             adverCount = adverCount - 1;
         else
         {
@@ -1369,6 +1372,7 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
          toggleAdvert(TRUE);
          }
         }
+     }
       WDCTL = (WDCTL & 0x0F) | WdctlClrFirst<<4;     //设置关门狗模式\设置关门狗间隔为1S
         WDCTL = (WDCTL & 0x0F) | WdctlClrSec<<4;     //设置关门狗模式\设置关门狗间隔为1S
         
@@ -1593,8 +1597,8 @@ static void peripheralStateNotificationCB( gaprole_States_t newState )
             pBuf[0] = CTRL_REG1;
             pBuf[1] = (ASLP_RATE_12_5HZ + DATA_RATE_12_5HZ) | (ACTIVE_MASK);
            HalI2CWrite(2, pBuf);
-        ///////////////////////////////////////
-        //////////////////////////////////////////
+        /////////////////////////////////////
+        ////////////////////////////////////////
         }        
         // LED2_PIO = OPEN_PIO;
 			 //when disconnected, adc analog channel off
@@ -2323,11 +2327,11 @@ static uint8 accDataProcess(uint8 count)
                              stepCountTotal =  count0 +  count1 +  count2+ count3;
 			       eepromWrite(STEP_DATA_TYPE, stepCountTotal);
 		        }
-	       else 
-	        	{                            
-	        	stepCountTotal =  0;
-			       eepromWrite(STEP_DATA_TYPE, stepCountTotal);
-			}
+//	       else 
+//	        	{                            
+//	        	stepCountTotal =  0;
+//			       eepromWrite(STEP_DATA_TYPE, stepCountTotal);
+//			}
              countPeriod = 0;
              stepCount[0]   = 0;
              stepCount[1]   = 0;
