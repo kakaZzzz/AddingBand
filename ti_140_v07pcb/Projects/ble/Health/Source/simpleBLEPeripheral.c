@@ -49,7 +49,7 @@
  * CONSTANTS
  */
 
-#define FIRMWARE                              131
+#define FIRMWARE                              133
 
 #define HI_UINT32(x)                          (((x) >> 16) & 0xffff)
 #define LO_UINT32(x)                          ((x) & 0xffff)
@@ -867,8 +867,9 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
                               LED9_PIO = CLOSE_PIO;
                               LED10_PIO =CLOSE_PIO;
                               LED11_PIO = CLOSE_PIO;
-	                      led_status=0x0021;
+	                      led_status=0x0001;
 	                      LED_POWER=BOOSTON;
+//						  toggleLEDWithTime(0,OPEN_PIO);
 	                      osal_start_timerEx( simpleBLEPeripheral_TaskID, SBP_START_DEVICE_EVT, SBP_START_DEVICE_EVT_GO_PERIOD );
 	                      flagSBPStart++;
 			}			
@@ -888,15 +889,16 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
                               LED9_PIO = CLOSE_PIO;
                               LED10_PIO =CLOSE_PIO;
                               LED11_PIO = CLOSE_PIO;
-	                      led_status=0x0021;
+	                      led_status=0x0041;
 	                      LED_POWER=BOOSTON;
+//			  toggleLEDWithTime(6,OPEN_PIO);
 	                      osal_start_timerEx( simpleBLEPeripheral_TaskID, SBP_START_DEVICE_EVT, SBP_START_DEVICE_EVT_GO_PERIOD );
 	                      flagSBPStart++;
 			}
 			else if(3==flagSBPStart)
 			{
                               LED0_PIO = CLOSE_PIO;
-                              LED1_PIO = OPEN_PIO;
+                             LED1_PIO = OPEN_PIO;
                               LED2_PIO = CLOSE_PIO;
                               LED3_PIO = CLOSE_PIO;
                               LED4_PIO = CLOSE_PIO;
@@ -907,8 +909,12 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
                               LED9_PIO = CLOSE_PIO;
                               LED10_PIO =CLOSE_PIO;
                               LED11_PIO = CLOSE_PIO;
-	                      led_status=0x0042;
+	                      led_status=0x0082;
 	                      LED_POWER=BOOSTON;
+//			  toggleLEDWithTime(0,CLOSE_PIO);
+//			  toggleLEDWithTime(6,CLOSE_PIO);
+//			  toggleLEDWithTime(1,OPEN_PIO);
+//			  toggleLEDWithTime(7,OPEN_PIO);
 				osal_start_timerEx( simpleBLEPeripheral_TaskID, SBP_START_DEVICE_EVT,SBP_START_DEVICE_EVT_GO_PERIOD);
 				flagSBPStart++;
 			}
@@ -926,8 +932,12 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
                               LED9_PIO = CLOSE_PIO;
                               LED10_PIO =CLOSE_PIO;
                               LED11_PIO = CLOSE_PIO;
-	                      led_status=0x0084;
+	                      led_status=0x0104;
 	                      LED_POWER=BOOSTON;
+//			  toggleLEDWithTime(1,CLOSE_PIO);
+//			  toggleLEDWithTime(7,CLOSE_PIO);
+//			  toggleLEDWithTime(2,OPEN_PIO);
+//			  toggleLEDWithTime(8,OPEN_PIO);
 				osal_start_timerEx( simpleBLEPeripheral_TaskID, SBP_START_DEVICE_EVT,SBP_START_DEVICE_EVT_GO_PERIOD);
 				flagSBPStart++;
 			}
@@ -945,8 +955,12 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
                               LED9_PIO = OPEN_PIO;
                               LED10_PIO =CLOSE_PIO;
                               LED11_PIO = CLOSE_PIO;
-	                      led_status=0x0108;
+	                      led_status=0x0208;
 	                      LED_POWER=BOOSTON;
+//			  toggleLEDWithTime(2,CLOSE_PIO);
+//			  toggleLEDWithTime(8,CLOSE_PIO);
+//			  toggleLEDWithTime(3,OPEN_PIO);
+//			  toggleLEDWithTime(9,OPEN_PIO);
 				osal_start_timerEx( simpleBLEPeripheral_TaskID, SBP_START_DEVICE_EVT,SBP_START_DEVICE_EVT_GO_PERIOD);
 				flagSBPStart++;
 			}
@@ -964,8 +978,12 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
                               LED9_PIO = CLOSE_PIO;
                               LED10_PIO =OPEN_PIO;
                               LED11_PIO = CLOSE_PIO;
-	                      led_status=0x0210;
+	                      led_status=0x0410;
 	                      LED_POWER=BOOSTON;
+//			  toggleLEDWithTime(3,CLOSE_PIO);
+//			  toggleLEDWithTime(9,CLOSE_PIO);
+//			  toggleLEDWithTime(4,OPEN_PIO);
+//			  toggleLEDWithTime(10,OPEN_PIO);
 				osal_start_timerEx( simpleBLEPeripheral_TaskID, SBP_START_DEVICE_EVT,SBP_START_DEVICE_EVT_GO_PERIOD);
 				flagSBPStart++;
 			}
@@ -983,8 +1001,12 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
                               LED9_PIO = CLOSE_PIO;
                               LED10_PIO =CLOSE_PIO;
                               LED11_PIO = OPEN_PIO;
-	                      led_status=0x0420;
+	                      led_status=0x0820;
 	                      LED_POWER=BOOSTON;
+//			  toggleLEDWithTime(4,CLOSE_PIO);
+//			  toggleLEDWithTime(10,CLOSE_PIO);
+//			  toggleLEDWithTime(5,OPEN_PIO);
+//			  toggleLEDWithTime(11,OPEN_PIO);
 				osal_start_timerEx( simpleBLEPeripheral_TaskID, SBP_START_DEVICE_EVT,SBP_START_DEVICE_EVT_GO_PERIOD);
 				flagSBPStart++;
 			}
@@ -1002,8 +1024,12 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
                               LED9_PIO = CLOSE_PIO;
                               LED10_PIO =CLOSE_PIO;
                               LED11_PIO = CLOSE_PIO;
-	                      led_status=0x0840;
+	                      led_status=0x0041;
 	                      LED_POWER=BOOSTON;
+//			  toggleLEDWithTime(4,CLOSE_PIO);
+//			  toggleLEDWithTime(10,CLOSE_PIO);
+//			  toggleLEDWithTime(0,OPEN_PIO);
+//			  toggleLEDWithTime(6,OPEN_PIO);
 				osal_start_timerEx( simpleBLEPeripheral_TaskID, SBP_START_DEVICE_EVT,SBP_START_DEVICE_EVT_GO_PERIOD);
 				flagSBPStart++;
 			}
@@ -2087,15 +2113,61 @@ static uint8 accDataProcess(uint8 count)
 		HalMotionI2CWrite(1, &addr);//read from mma into accBuf and locate them begin in last tail
 		HalMotionI2CRead(count * 6, accBufCur);
 		mmaDataACnt=count;
+		if(mmaDataACnt<=SLIDE_MEAN_WIDTH)
+		{
+			osal_mem_free(accBufCur);
+//                              LED0_PIO = CLOSE_PIO;
+//                              LED1_PIO = OPEN_PIO;
+//                              LED2_PIO = CLOSE_PIO;
+//                              LED3_PIO = CLOSE_PIO;
+//                              LED4_PIO = CLOSE_PIO;
+//                              LED5_PIO = CLOSE_PIO;
+//                              LED6_PIO = CLOSE_PIO;
+//                              LED7_PIO = CLOSE_PIO;
+//                              LED8_PIO = CLOSE_PIO;
+//                              LED9_PIO = CLOSE_PIO;
+//                              LED10_PIO =CLOSE_PIO;
+//                              LED11_PIO = OPEN_PIO;
+//	                      led_status=0x0802;
+//	                      LED_POWER=BOOSTON;
+			return 0;
+		}
+		else
+			{
+//			 LED0_PIO = OPEN_PIO;
+//                      LED1_PIO = CLOSE_PIO;
+//                      LED2_PIO = CLOSE_PIO;
+//                      LED3_PIO = CLOSE_PIO;
+//                      LED4_PIO = CLOSE_PIO;
+//                      LED5_PIO = CLOSE_PIO;
+//                      LED6_PIO = CLOSE_PIO;
+//                      LED7_PIO = CLOSE_PIO;
+//                      LED8_PIO = CLOSE_PIO;
+//                      LED9_PIO = CLOSE_PIO;
+//                      LED10_PIO =CLOSE_PIO;
+//                      LED11_PIO = CLOSE_PIO;
+//                  led_status=0x0001;
+//                  LED_POWER=BOOSTON;
+		}
 	}
 	else
 	{
 		//flagAccDataError=TRUE;
 		mmaDataACnt=0;
-		return 0;
-	}
-	if(mmaDataACnt<=SLIDE_MEAN_WIDTH)
-	{
+//                              LED0_PIO = CLOSE_PIO;
+//                              LED1_PIO = CLOSE_PIO;
+//                              LED2_PIO = OPEN_PIO;
+//                              LED3_PIO = CLOSE_PIO;
+//                              LED4_PIO = CLOSE_PIO;
+//                              LED5_PIO = CLOSE_PIO;
+//                              LED6_PIO = CLOSE_PIO;
+//                              LED7_PIO = CLOSE_PIO;
+//                              LED8_PIO = CLOSE_PIO;
+//                              LED9_PIO = CLOSE_PIO;
+//                              LED10_PIO =OPEN_PIO;
+//                              LED11_PIO = CLOSE_PIO;
+//	                      led_status=0x0404;
+//	                      LED_POWER=BOOSTON;
 		return 0;
 	}
 	

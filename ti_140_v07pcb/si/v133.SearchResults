@@ -1,0 +1,18 @@
+---- rawDataStart Matches (17 in 1 files) ----
+simpleBLEPeripheral.c (c:\github\addingband\ti_140_v07pcb_v131to133\projects\ble\health\source):uint16 rawDataStart = 0, rawDataStop = 0;
+simpleBLEPeripheral.c (c:\github\addingband\ti_140_v07pcb_v131to133\projects\ble\health\source):         rawDataStart = 0;
+simpleBLEPeripheral.c (c:\github\addingband\ti_140_v07pcb_v131to133\projects\ble\health\source):    if (rawDataStop >= rawDataStart)
+simpleBLEPeripheral.c (c:\github\addingband\ti_140_v07pcb_v131to133\projects\ble\health\source):        return ((rawDataStop - rawDataStart) / 8) + DATA_TYPE_COUNT;
+simpleBLEPeripheral.c (c:\github\addingband\ti_140_v07pcb_v131to133\projects\ble\health\source):        return ((rawDataStop - rawDataStart + EEPROM_ADDRESS_BLOCK_COUNT) / 8) + DATA_TYPE_COUNT;
+simpleBLEPeripheral.c (c:\github\addingband\ti_140_v07pcb_v131to133\projects\ble\health\source):        if (rawDataStop == rawDataStart)
+simpleBLEPeripheral.c (c:\github\addingband\ti_140_v07pcb_v131to133\projects\ble\health\source):            rawDataStart += 8;
+simpleBLEPeripheral.c (c:\github\addingband\ti_140_v07pcb_v131to133\projects\ble\health\source):    if(rawDataStart != rawDataStop){
+simpleBLEPeripheral.c (c:\github\addingband\ti_140_v07pcb_v131to133\projects\ble\health\source):            HI_UINT16(rawDataStart),
+simpleBLEPeripheral.c (c:\github\addingband\ti_140_v07pcb_v131to133\projects\ble\health\source):            LO_UINT16(rawDataStart)
+simpleBLEPeripheral.c (c:\github\addingband\ti_140_v07pcb_v131to133\projects\ble\health\source):        rawDataStart += 8;
+simpleBLEPeripheral.c (c:\github\addingband\ti_140_v07pcb_v131to133\projects\ble\health\source):        if (rawDataStart >= EEPROM_ADDRESS_DATA_MAX)
+simpleBLEPeripheral.c (c:\github\addingband\ti_140_v07pcb_v131to133\projects\ble\health\source):            rawDataStart = 0;
+simpleBLEPeripheral.c (c:\github\addingband\ti_140_v07pcb_v131to133\projects\ble\health\source):    if (rawDataStart == rawDataStop)
+simpleBLEPeripheral.c (c:\github\addingband\ti_140_v07pcb_v131to133\projects\ble\health\source):        LO_UINT16(rawDataStart),
+simpleBLEPeripheral.c (c:\github\addingband\ti_140_v07pcb_v131to133\projects\ble\health\source):        HI_UINT16(rawDataStart),
+simpleBLEPeripheral.c (c:\github\addingband\ti_140_v07pcb_v131to133\projects\ble\health\source):        rawDataStart = (uint16)((dBuf[1] << 8) | dBuf[0]);
